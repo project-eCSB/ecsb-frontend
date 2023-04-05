@@ -21,6 +21,7 @@
         "sourceType": "module",
         "project": ["./tsconfig.json"]
     },
+    "ignorePatterns": ["src/assets/cloud_city.json"],
     "settings": {
         "react": {
             "version": "detect"
