@@ -14,6 +14,12 @@
         "prettier"
     ],
     "overrides": [
+      {
+        "files": ["*.ts"],
+        "rules": {
+          "@typescript-eslint/explicit-function-return-type": "error"
+        }
+      }
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -36,11 +42,11 @@
         "react/react-in-jsx-scope": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "error",
-        "react/jsx-filename-extension": [ "warn", {"extensions": [".tsx"]} ],
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/no-unused-vars": "warn",
-        "@typescript-eslint/no-floating-promises": "off",
+        "react/jsx-filename-extension": [ "error", {"extensions": [".tsx"]} ],
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/no-floating-promises": "warn",
         "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-empty-interface": "off",
         "@typescript-eslint/promise-function-async": "off",
         "@typescript-eslint/no-misused-promises": "off",
