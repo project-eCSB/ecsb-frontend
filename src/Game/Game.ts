@@ -2,9 +2,7 @@ import Phaser from 'phaser'
 import GridEngine from 'grid-engine'
 import { Scene } from './scenes/Scene'
 
-let game: Phaser.Game | null = null
-
-export const createGame = (): void => {
+export const createGame = (): Phaser.Game => {
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     render: {
@@ -28,12 +26,7 @@ export const createGame = (): void => {
     },
   }
 
-  game = new Phaser.Game(config)
-}
+  const game = new Phaser.Game(config)
 
-export const endGame = (): void => {
-  if (game) {
-    game.destroy(true)
-    game = null
-  }
+  return game
 }
