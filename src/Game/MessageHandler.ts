@@ -1,3 +1,4 @@
+import type { Direction } from 'grid-engine'
 import type { Websocket } from 'websocket-ts'
 
 export enum MessageType {
@@ -18,6 +19,7 @@ export interface PlayerAddedMessage {
   type: MessageType.PlayerAdded
   id: string
   coords: Coordinates
+  direction: Direction
 }
 
 export interface PlayerRemovedMessage {
@@ -29,11 +31,13 @@ export interface PlayerMovedMessage {
   type: MessageType.PlayerMoved
   id: string
   coords: Coordinates
+  direction: Direction
 }
 
 export interface MoveMessage {
   type: MessageType.Move
   coords: Coordinates
+  direction: string
 }
 
 export interface SyncRequestMessage {
@@ -43,6 +47,7 @@ export interface SyncRequestMessage {
 export interface PlayerPosition {
   id: string
   coords: Coordinates
+  direction: Direction
 }
 
 export interface PlayersSyncMessage {
@@ -68,6 +73,7 @@ export const parseMessage = (message: string): Message | null => {
           type: MessageType.PlayerAdded,
           id: parsed.message.id,
           coords: parsed.message.coords,
+          direction: parsed.message.direction,
         }
       case MessageType.PlayerRemoved:
         return {
@@ -79,6 +85,7 @@ export const parseMessage = (message: string): Message | null => {
           type: MessageType.PlayerMoved,
           id: parsed.message.id,
           coords: parsed.message.coords,
+          direction: parsed.message.direction,
         }
       case MessageType.PlayerSyncing:
         return {

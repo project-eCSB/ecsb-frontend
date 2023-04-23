@@ -51,6 +51,7 @@
         "@typescript-eslint/promise-function-async": "off",
         "@typescript-eslint/no-misused-promises": "off",
         "@typescript-eslint/consistent-indexed-object-style": "off", 
+        "@typescript-eslint/no-dynamic-delete": "off",
         "object-shorthand": "off"
     }
 }
