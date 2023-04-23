@@ -26,9 +26,9 @@ export class Scene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('tiles', 'src/assets/cloud_tileset.png')
-    this.load.tilemapTiledJSON('cloud-city-map', 'src/assets/cloud_city.json')
-    this.load.spritesheet('player', 'src/assets/characters.png', {
+    this.load.image('tiles', '/assets/cloud_tileset.png')
+    this.load.tilemapTiledJSON('cloud-city-map', '/assets/cloud_city.json')
+    this.load.spritesheet('player', '/assets/characters.png', {
       frameWidth: 52,
       frameHeight: 72,
     })
