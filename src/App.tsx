@@ -1,25 +1,7 @@
-import { createGame, endGame } from './Game/Game'
+import Game from './components/Game'
 
 const App = () => {
-  return (
-    <>
-      <button
-        onClick={() => {
-          createGame()
-        }}
-      >
-        START
-      </button>
-      <button
-        onClick={() => {
-          endGame()
-        }}
-      >
-        END
-      </button>
-      <div id='game-content' />
-    </>
-  )
+  return <Game />
 }
 
 export default App
