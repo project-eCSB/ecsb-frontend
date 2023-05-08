@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import GridEngine from 'grid-engine'
-import { Scene } from './scenes/Scene'
-import type { GameSettings, GameStatus } from '../services/game/Types'
+import {Scene} from './scenes/Scene'
+import type {GameSettings, GameStatus} from '../services/game/Types'
 
 export const startGame = (
   gameToken: string,
@@ -10,6 +10,9 @@ export const startGame = (
 ): Phaser.Game => {
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
+    dom: {
+      createContainer: true
+    },
     render: {
       antialias: false,
     },
