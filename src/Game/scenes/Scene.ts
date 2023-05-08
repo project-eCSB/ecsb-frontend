@@ -5,19 +5,16 @@ import { WebsocketBuilder } from 'websocket-ts'
 import type { Websocket } from 'websocket-ts'
 import { MessageType, parseMessage, sendMessage } from '../MessageHandler'
 import type { Coordinates } from '../MessageHandler'
-import { v4 as uuidv4 } from 'uuid'
+import type { GameSettings, GameStatus } from '../../services/game/Types'
+import { decodeGameToken } from '../../apis/apis'
 
 type PlayerId = string
-
 interface PlayerState {
   coords: Coordinates
   direction: Direction
 }
 
-const players: Record<PlayerId, PlayerState> = {}
-const currSessionId = 10
-const currPlayerId = uuidv4()
-const ECSB_MOVE_API_URL: string = import.meta.env.VITE_ECSB_MOVE_API_URL as string
+const VITE_ECSB_WS_API_URL: string = import.meta.env.VITE_ECSB_WS_API_URL as string
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
@@ -26,10 +23,20 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine
+  private readonly gameToken: string
+  private readonly playerId: PlayerId
+  private readonly status: GameStatus
+  private readonly settings: GameSettings
+  private readonly players: Record<PlayerId, PlayerState>
   private ws!: Websocket
 
-  constructor() {
+  constructor(gameToken: string, userStatus: GameStatus, settings: GameSettings) {
     super(sceneConfig)
+    this.gameToken = gameToken
+    this.playerId = decodeGameToken(gameToken).playerId
+    this.status = userStatus
+    this.settings = settings
+    this.players = {}
   }
 
   preload(): void {
@@ -61,7 +68,7 @@ export class Scene extends Phaser.Scene {
     const gridEngineConfig = {
       characters: [
         {
-          id: currPlayerId,
+          id: this.playerId,
           sprite: playerSprite,
           container,
           walkingAnimationMapping: 6,
@@ -77,7 +84,7 @@ export class Scene extends Phaser.Scene {
     this.configureWebSocket()
 
     this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
-      if (charId === currPlayerId) {
+      if (charId === this.playerId) {
         const direction = this.getDirection(exitTile, enterTile)
 
         sendMessage(this.ws, {
@@ -92,16 +99,14 @@ export class Scene extends Phaser.Scene {
     })
 
     this.gridEngine.positionChangeFinished().subscribe(({ charId, exitTile, enterTile }) => {
-      if (charId !== currPlayerId) {
-        this.gridEngine.turnTowards(charId, players[charId].direction)
+      if (charId !== this.playerId) {
+        this.gridEngine.turnTowards(charId, this.players[charId].direction)
       }
     })
   }
 
   configureWebSocket(): void {
-    this.ws = new WebsocketBuilder(
-      `${ECSB_MOVE_API_URL}/ws?gameSessionId=${currSessionId}&name=${currPlayerId}`,
-    )
+    this.ws = new WebsocketBuilder(`${VITE_ECSB_WS_API_URL}/ws?gameToken=${this.gameToken}`)
       .onOpen((i, ev) => {
         console.log('ws opened')
 
@@ -134,7 +139,7 @@ export class Scene extends Phaser.Scene {
             break
           case MessageType.PlayerSyncing:
             msg.players.forEach((player) => {
-              if (player.id !== currPlayerId) {
+              if (player.id !== this.playerId) {
                 this.addPlayer(player.id, player.coords, player.direction)
               }
             })
@@ -187,7 +192,7 @@ export class Scene extends Phaser.Scene {
       collides: false,
     })
 
-    players[id] = {
+    this.players[id] = {
       coords,
       direction,
     }
@@ -198,13 +203,13 @@ export class Scene extends Phaser.Scene {
     this.gridEngine.getContainer(id)?.destroy()
     this.gridEngine.removeCharacter(id)
 
-    delete players[id]
+    delete this.players[id]
   }
 
   movePlayer(id: string, coords: Coordinates, direction: Direction): void {
     this.gridEngine.moveTo(id, coords)
 
-    players[id] = {
+    this.players[id] = {
       coords,
       direction,
     }
@@ -214,21 +219,21 @@ export class Scene extends Phaser.Scene {
     const cursors = this.input.keyboard.createCursorKeys()
 
     if (cursors.left.isDown && cursors.up.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.UP_LEFT)
+      this.gridEngine.move(this.playerId, Direction.UP_LEFT)
     } else if (cursors.left.isDown && cursors.down.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.DOWN_LEFT)
+      this.gridEngine.move(this.playerId, Direction.DOWN_LEFT)
     } else if (cursors.right.isDown && cursors.up.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.UP_RIGHT)
+      this.gridEngine.move(this.playerId, Direction.UP_RIGHT)
     } else if (cursors.right.isDown && cursors.down.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.DOWN_RIGHT)
+      this.gridEngine.move(this.playerId, Direction.DOWN_RIGHT)
     } else if (cursors.left.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.LEFT)
+      this.gridEngine.move(this.playerId, Direction.LEFT)
     } else if (cursors.right.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.RIGHT)
+      this.gridEngine.move(this.playerId, Direction.RIGHT)
     } else if (cursors.up.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.UP)
+      this.gridEngine.move(this.playerId, Direction.UP)
     } else if (cursors.down.isDown) {
-      this.gridEngine.move(currPlayerId, Direction.DOWN)
+      this.gridEngine.move(this.playerId, Direction.DOWN)
     }
   }
 }

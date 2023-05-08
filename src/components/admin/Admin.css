@@ -1,0 +1,40 @@
+.navbar {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar button {
+  background-color: #423bc8;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.navbar button:hover {
+  background-color: #3730a3;
+}
+
+.navbar button.disabled {
+  background-color: #a4a4a4;
+  cursor: not-allowed;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}

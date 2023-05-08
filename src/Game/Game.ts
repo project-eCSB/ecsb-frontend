@@ -1,8 +1,13 @@
 import Phaser from 'phaser'
 import GridEngine from 'grid-engine'
 import { Scene } from './scenes/Scene'
+import type { GameSettings, GameStatus } from '../services/game/Types'
 
-export const createGame = (): Phaser.Game => {
+export const startGame = (
+  gameToken: string,
+  userStatus: GameStatus,
+  settings: GameSettings,
+): Phaser.Game => {
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     render: {
@@ -14,7 +19,7 @@ export const createGame = (): Phaser.Game => {
       height: window.innerHeight,
     },
     parent: 'game-content',
-    scene: Scene,
+    scene: new Scene(gameToken, userStatus, settings),
     plugins: {
       scene: [
         {
@@ -29,4 +34,10 @@ export const createGame = (): Phaser.Game => {
   const game = new Phaser.Game(config)
 
   return game
+}
+
+export const stopGame = (game: Phaser.Game): void => {
+  game.plugins.removeScenePlugin('gridEngine')
+  game.plugins.removeScenePlugin('GridEngine')
+  game.destroy(true)
 }
