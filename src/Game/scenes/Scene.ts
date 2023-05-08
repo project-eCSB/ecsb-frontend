@@ -1,25 +1,30 @@
 import * as Phaser from 'phaser'
-import { Direction } from 'grid-engine'
-import type { GridEngine, Position } from 'grid-engine'
-import { WebsocketBuilder } from 'websocket-ts'
-import type { Websocket } from 'websocket-ts'
-import { MessageType, parseMessage, sendMessage } from '../MessageHandler'
-import type { Coordinates } from '../MessageHandler'
-import type { GameSettings, GameStatus } from '../../services/game/Types'
-import { decodeGameToken } from '../../apis/apis'
+import {Direction} from 'grid-engine'
+import type {GridEngine, Position} from 'grid-engine'
+import {WebsocketBuilder} from 'websocket-ts'
+import type {Websocket} from 'websocket-ts'
+import {MessageType, parseMessage, sendMessage} from '../MessageHandler'
+import type {Coordinates} from '../MessageHandler'
+import type {GameSettings, GameStatus} from '../../services/game/Types'
+import {decodeGameToken} from '../../apis/apis'
+import Key = Phaser.Input.Keyboard.Key;
 
 type PlayerId = string
+
 interface PlayerState {
   coords: Coordinates
   direction: Direction
 }
 
 const VITE_ECSB_WS_API_URL: string = import.meta.env.VITE_ECSB_WS_API_URL as string
+
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
   key: 'Game',
 }
+
+const getPlayerMapping = (initialCharacterMapping: { [p: string]: number }) => (playerClass: string): number => initialCharacterMapping[playerClass] ?? 0
 
 export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine
@@ -42,14 +47,14 @@ export class Scene extends Phaser.Scene {
   preload(): void {
     this.load.image('tiles', '/assets/cloud_tileset.png')
     this.load.tilemapTiledJSON('cloud-city-map', '/assets/cloud_city.json')
-    this.load.spritesheet('player', '/assets/characters.png', {
+    this.load.spritesheet('player', this.settings.assetUrl, {
       frameWidth: 52,
       frameHeight: 72,
     })
   }
 
   create(): void {
-    const cloudCityTilemap = this.make.tilemap({ key: 'cloud-city-map' })
+    const cloudCityTilemap = this.make.tilemap({key: 'cloud-city-map'})
     cloudCityTilemap.addTilesetImage('Cloud City', 'tiles')
 
     for (let i = 0; i < cloudCityTilemap.layers.length; i++) {
@@ -58,10 +63,13 @@ export class Scene extends Phaser.Scene {
     }
 
     const playerSprite = this.add.sprite(0, 0, 'player')
-    const text = this.add.text(0, -10, 'You')
+    const text = this.add.text(0, -20, 'You')
     text.setColor('#000000')
 
-    const container = this.add.container(0, 0, [playerSprite, text])
+    const className = this.add.text(0, -5, `[${this.status.className}]`)
+    className.setColor('#000000')
+
+    const container = this.add.container(0, 0, [playerSprite, text, className])
     this.cameras.main.startFollow(container, true)
     this.cameras.main.setFollowOffset(-playerSprite.width, -playerSprite.height)
 
@@ -71,8 +79,8 @@ export class Scene extends Phaser.Scene {
           id: this.playerId,
           sprite: playerSprite,
           container,
-          walkingAnimationMapping: 6,
-          startPosition: { x: 3, y: 3 },
+          walkingAnimationMapping: getPlayerMapping(this.settings.classRepresentation)(this.status.className),
+          startPosition: this.status.coords,
           collides: false,
         },
       ],
@@ -83,7 +91,7 @@ export class Scene extends Phaser.Scene {
 
     this.configureWebSocket()
 
-    this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
+    this.gridEngine.positionChangeStarted().subscribe(({charId, exitTile, enterTile}) => {
       if (charId === this.playerId) {
         const direction = this.getDirection(exitTile, enterTile)
 
@@ -98,7 +106,7 @@ export class Scene extends Phaser.Scene {
       }
     })
 
-    this.gridEngine.positionChangeFinished().subscribe(({ charId, exitTile, enterTile }) => {
+    this.gridEngine.positionChangeFinished().subscribe(({charId, exitTile, enterTile}) => {
       if (charId !== this.playerId) {
         this.gridEngine.turnTowards(charId, this.players[charId].direction)
       }
@@ -129,7 +137,7 @@ export class Scene extends Phaser.Scene {
 
         switch (msg.type) {
           case MessageType.PlayerAdded:
-            this.addPlayer(msg.id, msg.coords, msg.direction)
+            this.addPlayer(msg.id, msg.coords, msg.direction, msg.className)
             break
           case MessageType.PlayerMoved:
             this.movePlayer(msg.id, msg.coords, msg.direction)
@@ -138,9 +146,10 @@ export class Scene extends Phaser.Scene {
             this.removePlayer(msg.id)
             break
           case MessageType.PlayerSyncing:
-            msg.players.forEach((player) => {
+            msg.players.forEach((playerWithClass) => {
+              const player = playerWithClass.playerPosition
               if (player.id !== this.playerId) {
-                this.addPlayer(player.id, player.coords, player.direction)
+                this.addPlayer(player.id, player.coords, player.direction, playerWithClass.className)
               }
             })
             break
@@ -175,19 +184,22 @@ export class Scene extends Phaser.Scene {
     return yDiff > 0 ? Direction.UP_RIGHT : Direction.DOWN_RIGHT
   }
 
-  addPlayer(id: string, coords: Coordinates, direction: Direction): void {
+  addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
     const sprite = this.add.sprite(0, 0, 'player')
     const text = this.add.text(0, -10, id)
     text.setColor('#000000')
 
-    const container = this.add.container(0, 0, [sprite, text])
+    const className = this.add.text(0, 10, characterClass)
+    className.setColor('#000000')
+
+    const container = this.add.container(0, 0, [sprite, text, className])
 
     this.gridEngine.addCharacter({
       id: id,
       sprite: sprite,
       container,
       facingDirection: direction,
-      walkingAnimationMapping: 5,
+      walkingAnimationMapping: getPlayerMapping(this.settings.classRepresentation)(characterClass),
       startPosition: coords,
       collides: false,
     })
@@ -215,25 +227,27 @@ export class Scene extends Phaser.Scene {
     }
   }
 
-  update(): void {
-    const cursors = this.input.keyboard.createCursorKeys()
+  private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
+    return keys.every(value => value.isDown)
+  }
 
-    if (cursors.left.isDown && cursors.up.isDown) {
-      this.gridEngine.move(this.playerId, Direction.UP_LEFT)
-    } else if (cursors.left.isDown && cursors.down.isDown) {
-      this.gridEngine.move(this.playerId, Direction.DOWN_LEFT)
-    } else if (cursors.right.isDown && cursors.up.isDown) {
-      this.gridEngine.move(this.playerId, Direction.UP_RIGHT)
-    } else if (cursors.right.isDown && cursors.down.isDown) {
-      this.gridEngine.move(this.playerId, Direction.DOWN_RIGHT)
-    } else if (cursors.left.isDown) {
-      this.gridEngine.move(this.playerId, Direction.LEFT)
-    } else if (cursors.right.isDown) {
-      this.gridEngine.move(this.playerId, Direction.RIGHT)
-    } else if (cursors.up.isDown) {
-      this.gridEngine.move(this.playerId, Direction.UP)
-    } else if (cursors.down.isDown) {
-      this.gridEngine.move(this.playerId, Direction.DOWN)
+  update(): void {
+    const cursors = this.input.keyboard.createCursorKeys();
+
+    const moveMapping: Array<{ keys: Key[], direction: Direction }> = [
+      {keys: [cursors.left, cursors.up], direction: Direction.UP_LEFT},
+      {keys: [cursors.left, cursors.down], direction: Direction.DOWN_LEFT},
+      {keys: [cursors.right, cursors.up], direction: Direction.UP_RIGHT},
+      {keys: [cursors.right, cursors.down], direction: Direction.DOWN_RIGHT},
+      {keys: [cursors.left], direction: Direction.LEFT},
+      {keys: [cursors.down], direction: Direction.DOWN},
+      {keys: [cursors.right], direction: Direction.RIGHT},
+      {keys: [cursors.up], direction: Direction.UP},
+    ]
+
+    const foundMapping = moveMapping.find(mapping => this.areAllKeysDown(mapping.keys));
+    if (foundMapping) {
+      this.gridEngine.move(this.playerId, foundMapping.direction);
     }
   }
 }

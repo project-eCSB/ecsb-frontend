@@ -1,5 +1,5 @@
-import type { Direction } from 'grid-engine'
-import type { Websocket } from 'websocket-ts'
+import type {Direction} from 'grid-engine'
+import type {Websocket} from 'websocket-ts'
 
 export enum MessageType {
   PlayerAdded = 'player_added',
@@ -20,6 +20,7 @@ export interface PlayerAddedMessage {
   id: string
   coords: Coordinates
   direction: Direction
+  className: string;
 }
 
 export interface PlayerRemovedMessage {
@@ -44,6 +45,11 @@ export interface SyncRequestMessage {
   type: MessageType.SyncRequest
 }
 
+export interface PlayerPositionWithClass {
+  className: string;
+  playerPosition: PlayerPosition;
+}
+
 export interface PlayerPosition {
   id: string
   coords: Coordinates
@@ -52,7 +58,7 @@ export interface PlayerPosition {
 
 export interface PlayersSyncMessage {
   type: MessageType.PlayerSyncing
-  players: PlayerPosition[]
+  players: PlayerPositionWithClass[]
 }
 
 export type Message =
@@ -69,29 +75,13 @@ export const parseMessage = (message: string): Message | null => {
 
     switch (parsed.message.type) {
       case MessageType.PlayerAdded:
-        return {
-          type: MessageType.PlayerAdded,
-          id: parsed.message.id,
-          coords: parsed.message.coords,
-          direction: parsed.message.direction,
-        }
+        return parsed.message
       case MessageType.PlayerRemoved:
-        return {
-          type: MessageType.PlayerRemoved,
-          id: parsed.message.id,
-        }
+        return parsed.message
       case MessageType.PlayerMoved:
-        return {
-          type: MessageType.PlayerMoved,
-          id: parsed.message.id,
-          coords: parsed.message.coords,
-          direction: parsed.message.direction,
-        }
+        return parsed.message
       case MessageType.PlayerSyncing:
-        return {
-          type: MessageType.PlayerSyncing,
-          players: parsed.message.players,
-        }
+        return parsed.message
       default:
         console.error(
           `Unrecognized message type: ${(parsed as { message: { type: string } }).message.type}`,
