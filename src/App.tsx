@@ -13,8 +13,14 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Navigate to='/home' replace />} />
-        <Route path='/login' element={<NoAuthTokenProtectedRoute children={<LoginForm />} />} />
+        <Route 
+          path='/' 
+          element={<Navigate to='/home' replace />} 
+        />
+        <Route 
+          path='/login' 
+          element={<NoAuthTokenProtectedRoute children={<LoginForm />} />} 
+        />
         <Route
           path='/register'
           element={<NoAuthTokenProtectedRoute children={<RegisterForm />} />}
@@ -29,14 +35,12 @@ const App = () => {
         />
         <Route
           path='/game/:gameId'
-          element={
-            <AuthTokenProtectedRoute
-              children={<GameTokenProtectedRoute children={<Game />} roles={['USER']} />}
-              roles={['USER']}
-            />
-          }
+          element={<AuthTokenProtectedRoute children={<GameTokenProtectedRoute children={<Game />} roles={['USER']} />} roles={['USER']} />}
         />
-        <Route path='*' element={<Navigate to='/home' replace />} />
+        <Route 
+          path='*' 
+          element={<Navigate to='/home' replace />} 
+        />
       </Routes>
     </BrowserRouter>
   )

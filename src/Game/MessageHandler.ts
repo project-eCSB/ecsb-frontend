@@ -1,5 +1,5 @@
-import type {Direction} from 'grid-engine'
-import type {Websocket} from 'websocket-ts'
+import type { Direction } from 'grid-engine'
+import type { Websocket } from 'websocket-ts'
 
 export enum MessageType {
   PlayerAdded = 'player_added',
@@ -20,7 +20,7 @@ export interface PlayerAddedMessage {
   id: string
   coords: Coordinates
   direction: Direction
-  className: string;
+  className: string
 }
 
 export interface PlayerRemovedMessage {
@@ -46,8 +46,8 @@ export interface SyncRequestMessage {
 }
 
 export interface PlayerPositionWithClass {
-  className: string;
-  playerPosition: PlayerPosition;
+  className: string
+  playerPosition: PlayerPosition
 }
 
 export interface PlayerPosition {
