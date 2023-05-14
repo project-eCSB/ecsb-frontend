@@ -48,7 +48,7 @@ jobs:
           echo "VITE_ECSB_WS_API_URL=$VITE_ECSB_MOVE_API" >> .env
           echo "VITE_ECSB_HTTP_API_URL=$VITE_ECSB_HTTP_API_URL" >> .env
         env:
-          VITE_ECSB_MOVE_API: ${{ vars.VITE_ECSB_WS_API_URL }}
+          VITE_ECSB_MOVE_API: ${{ vars.VITE_ECSB_MOVE_API_URL }}
           VITE_ECSB_HTTP_API_URL: ${{ vars.VITE_ECSB_HTTP_API_URL }}
       - name: Build files
         run: npm run build
