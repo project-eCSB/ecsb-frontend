@@ -109,7 +109,7 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
 
 const getUserGameStatus = async (): Promise<UserGameStatusResponse> => {
   return await gameTokenAPI
-    .get('/init/gameStatus/')
+    .get('/gameStatus/')
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
