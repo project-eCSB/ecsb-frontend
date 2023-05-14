@@ -20,6 +20,7 @@ const HomeNavbar = () => {
   const handleLogOut = () => {
     authService.logout()
     navigate('/login')
+    window.location.reload()
   }
 
   return (
