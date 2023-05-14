@@ -1,13 +1,14 @@
 import { create } from 'zustand'
+import type { GameData } from '../Game/Game'
 
 interface GameState {
-  game: Phaser.Game | null
-  setGame: (game: Phaser.Game | null) => void
+  gameData: GameData | null
+  setGameData: (game: GameData | null) => void
 }
 
 export const useGameStore = create<GameState>((set) => ({
-  game: null,
-  setGame: (game: Phaser.Game | null) => {
-    set({ game })
+  gameData: null,
+  setGameData: (gameData: GameData | null) => {
+    set({ gameData })
   },
 }))

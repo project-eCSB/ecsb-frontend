@@ -12,7 +12,7 @@ import { startGame } from '../../Game/Game'
 const Home = () => {
   const navigate: NavigateFunction = useNavigate()
 
-  const { setGame } = useGameStore()
+  const { setGameData } = useGameStore()
   const [gameCode, setGameCode] = useState<string>('')
   const [error, setError] = useState<string>('')
 
@@ -45,8 +45,8 @@ const Home = () => {
                   return
                 }
 
-                const game = startGame(gameToken, gameStatus, gameSettings)
-                setGame(game)
+                const gameData = startGame(gameToken, gameStatus, gameSettings)
+                setGameData(gameData)
                 navigate(`/game/${res}`)
               })
               .catch((error: Error) => {

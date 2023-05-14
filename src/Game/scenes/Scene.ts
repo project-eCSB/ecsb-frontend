@@ -260,4 +260,8 @@ export class Scene extends Phaser.Scene {
       this.gridEngine.move(this.playerId, foundMapping.direction)
     }
   }
+
+  destroy(): void {
+    this.ws.close()
+  }
 }
