@@ -67,7 +67,6 @@ const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> 
         throw new GameResponseError(response.status, response.data)
       }
 
-      console.log(response.data.gameToken)
       return {
         gameToken: response.data.gameToken,
         gameSessionId: response.data.gameSessionId,

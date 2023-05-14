@@ -2,13 +2,17 @@ import { useNavigate } from 'react-router'
 import type { NavigateFunction } from 'react-router'
 import { useState } from 'react'
 import gameService from '../../services/game/GameService'
-import { decodeAuthToken, getAuthToken } from '../../apis/apis'
+import { decodeAuthToken, getAuthToken, getGameToken } from '../../apis/apis'
 import './Home.css'
 import HomeNavbar from './HomeNavbar'
+import { useGameStore } from '../../store/GameStore'
+import type { GameSettings, GameStatus } from '../../services/game/Types'
+import { startGame } from '../../Game/Game'
 
 const Home = () => {
   const navigate: NavigateFunction = useNavigate()
 
+  const { setGame } = useGameStore()
   const [gameCode, setGameCode] = useState<string>('')
   const [error, setError] = useState<string>('')
 
@@ -29,7 +33,29 @@ const Home = () => {
     await gameService
       .getGameSession(gameCode, decodedAuthToken.name)
       .then((res: number) => {
-        navigate(`/game/${res}`)
+        gameService
+          .getUserGameSettings()
+          .then((gameSettings: GameSettings) => {
+            gameService
+              .getUserGameStatus()
+              .then((gameStatus: GameStatus) => {
+                const gameToken = getGameToken()
+                if (!gameToken) {
+                  setError("Game token doesn't exist")
+                  return
+                }
+
+                const game = startGame(gameToken, gameStatus, gameSettings)
+                setGame(game)
+                navigate(`/game/${res}`)
+              })
+              .catch((error: Error) => {
+                setError(error.message)
+              })
+          })
+          .catch((error: Error) => {
+            setError(error.message)
+          })
       })
       .catch((error: Error) => {
         setError(error.message)
