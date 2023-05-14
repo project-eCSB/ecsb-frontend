@@ -13,7 +13,7 @@ import { GameResponseError } from './Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAPI
-    .post('/init/admin/createGame', data)
+    .post('/admin/createGame', data)
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
@@ -36,7 +36,7 @@ const getAdminGameSettings = async (
   data: AdminGameSettingsRequest,
 ): Promise<AdminGameSettingsResponse> => {
   return await authTokenAPI
-    .get(`/init/admin/settings/${data.gameSessionId}`)
+    .get(`/admin/settings/${data.gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
@@ -61,7 +61,7 @@ const getAdminGameSettings = async (
 
 const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> => {
   return await authTokenAPI
-    .post('/init/getGameToken', data)
+    .post('/getGameToken', data)
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
@@ -84,7 +84,7 @@ const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> 
 
 const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
   return await gameTokenAPI
-    .get('/init/settings')
+    .get('/settings')
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
