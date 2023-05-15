@@ -17,6 +17,7 @@ interface PlayerState {
 }
 
 const VITE_ECSB_WS_API_URL: string = import.meta.env.VITE_ECSB_WS_API_URL as string
+const LAYER_SCALE = 3
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -62,7 +63,7 @@ export class Scene extends Phaser.Scene {
 
     for (let i = 0; i < cloudCityTilemap.layers.length; i++) {
       const layer = cloudCityTilemap.createLayer(i, 'Overworld', 0, 0)
-      layer.scale = 3
+      layer.scale = LAYER_SCALE
     }
 
     const playerSprite = this.add.sprite(0, 0, 'player')
@@ -72,7 +73,10 @@ export class Scene extends Phaser.Scene {
     const className = this.add.text(0, -5, `[${this.status.className}]`)
     className.setColor('#000000')
 
+    this.cameras.main.setBounds(0, 0, cloudCityTilemap.widthInPixels * LAYER_SCALE, cloudCityTilemap.heightInPixels * LAYER_SCALE)
+
     const container = this.add.container(0, 0, [playerSprite, text, className])
+
     this.cameras.main.startFollow(container, true)
     this.cameras.main.setFollowOffset(-playerSprite.width, -playerSprite.height)
 
