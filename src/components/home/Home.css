@@ -40,3 +40,8 @@ input {
   font-size: 1rem;
   margin-bottom: 10px;
 }
+
+button.disabled {
+  background-color: #a4a4a4;
+  cursor: not-allowed;
+}

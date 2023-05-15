@@ -52,9 +52,7 @@ export const startGame = (
 export const stopGame = (gameData: GameData): void => {
   gameData.scene.destroy()
   gameData.scene.sys.plugins.removeScenePlugin('gridEngine')
-  gameData.scene.sys.plugins.removeScenePlugin('GridEngine')
   gameData.scene.sys.game.destroy(true)
   gameData.game.plugins.removeScenePlugin('gridEngine')
-  gameData.game.plugins.removeScenePlugin('GridEngine')
   gameData.game.destroy(true)
 }
