@@ -48,8 +48,8 @@ export class Scene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('tiles', '/assets/cloud_tileset.png')
-    this.load.tilemapTiledJSON('cloud-city-map', '/assets/cloud_city.json')
+    this.load.image('tiles', '/assets/overworld.png')
+    this.load.tilemapTiledJSON('cloud-city-map', '/assets/forest_glade.json')
     this.load.spritesheet('player', this.settings.assetUrl, {
       frameWidth: 52,
       frameHeight: 72,
@@ -58,10 +58,10 @@ export class Scene extends Phaser.Scene {
 
   create(): void {
     const cloudCityTilemap = this.make.tilemap({ key: 'cloud-city-map' })
-    cloudCityTilemap.addTilesetImage('Cloud City', 'tiles')
+    cloudCityTilemap.addTilesetImage('Overworld', 'tiles')
 
     for (let i = 0; i < cloudCityTilemap.layers.length; i++) {
-      const layer = cloudCityTilemap.createLayer(i, 'Cloud City', 0, 0)
+      const layer = cloudCityTilemap.createLayer(i, 'Overworld', 0, 0)
       layer.scale = 3
     }
 
@@ -86,7 +86,7 @@ export class Scene extends Phaser.Scene {
             this.status.className,
           ),
           startPosition: this.status.coords,
-          collides: false,
+          collides: true,
         },
       ],
       numberOfDirections: 8,
