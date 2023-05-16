@@ -1,6 +1,6 @@
 export interface GameSettings {
   classRepresentation: {
-    [className: string]: number
+    [className: string]: {assetNumber:number, resourceName:string}
   }
   assetUrl: string
   gameSessionId: number
