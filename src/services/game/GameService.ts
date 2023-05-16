@@ -1,17 +1,17 @@
-import { setGameToken } from '../../apis/apis'
+import {setGameToken} from '../../apis/apis'
 import gameApi from '../../apis/game/GameApi'
 import type {
-  AdminGameSettingsResponse,
-  CreateGameResponse,
-  GameResponseError,
-  GameTokenResponse,
-  UserGameSettingsResponse,
-  UserGameStatusResponse,
+    AdminGameSettingsResponse,
+    CreateGameResponse,
+    GameResponseError,
+    GameTokenResponse,
+    UserGameSettingsResponse,
+    UserGameStatusResponse,
 } from '../../apis/game/Types'
-import type { GameSettings, GameStatus } from './Types'
+import type {GameSettings, GameStatus} from './Types'
 
 const createGame = async (
-  classRepresentation: { [className: string]: number },
+  classRepresentation: { [className: string]: {assetNumber:number, resourceName:string} },
   charactersSpreadsheetUrl: string,
   gameName: string,
 ): Promise<number> => {

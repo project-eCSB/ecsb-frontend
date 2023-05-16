@@ -1,13 +1,13 @@
 import * as Phaser from 'phaser'
-import { Direction } from 'grid-engine'
-import type { GridEngine, Position } from 'grid-engine'
-import { WebsocketBuilder } from 'websocket-ts'
-import type { Websocket } from 'websocket-ts'
-import { MessageType, parseMessage, sendMessage } from '../MessageHandler'
-import type { Coordinates } from '../MessageHandler'
-import type { GameSettings, GameStatus } from '../../services/game/Types'
-import { decodeGameToken } from '../../apis/apis'
-import Key = Phaser.Input.Keyboard.Key
+import type {GridEngine, Position} from 'grid-engine'
+import {Direction} from 'grid-engine'
+import type {Websocket} from 'websocket-ts'
+import {WebsocketBuilder} from 'websocket-ts'
+import type {Coordinates} from '../MessageHandler'
+import {MessageType, parseMessage, sendMessage} from '../MessageHandler'
+import type {GameSettings, GameStatus} from '../../services/game/Types'
+import {decodeGameToken} from '../../apis/apis'
+import Key = Phaser.Input.Keyboard.Key;
 
 type PlayerId = string
 
@@ -26,9 +26,9 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 }
 
 const getPlayerMapping =
-  (initialCharacterMapping: { [p: string]: number }) =>
+  (initialCharacterMapping: { [p: string]: {assetNumber:number, resourceName:string} }) =>
   (playerClass: string): number =>
-    initialCharacterMapping[playerClass] ?? 0
+    initialCharacterMapping[playerClass].assetNumber ?? 0
 
 export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine

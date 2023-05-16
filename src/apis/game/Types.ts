@@ -1,6 +1,6 @@
 export interface CreateGameRequest {
   classRepresentation: {
-    [className: string]: number
+    [className: string]: {assetNumber:number, resourceName:string}
   }
   charactersSpreadsheetUrl: string
   gameName: string
@@ -16,7 +16,7 @@ export interface AdminGameSettingsRequest {
 
 export interface AdminGameSettingsResponse {
   classRepresentation: {
-    [className: string]: number
+    [className: string]: {assetNumber:number, resourceName:string}
   }
   assetUrl: string
   gameSessionId: number
@@ -36,7 +36,7 @@ export interface GameTokenResponse {
 
 export interface UserGameSettingsResponse {
   classRepresentation: {
-    [className: string]: number
+    [className: string]: {assetNumber:number, resourceName:string}
   }
   assetUrl: string
   gameSessionId: number
