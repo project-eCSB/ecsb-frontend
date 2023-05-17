@@ -74,9 +74,9 @@ const GetGameSettingsForm = () => {
                   <h3>
                     <strong>Class Representation:</strong>
                   </h3>
-                  {Object.entries(settings.classRepresentation).map(([className, classValue]) => (
-                    <p key={classValue.assetNumber}>
-                      {classValue.assetNumber} : <strong>{className}</strong> : {classValue.resourceName}
+                  {settings.classResourceRepresentation.map(classDto => (
+                    <p key={classDto.classAsset}>
+                      {classDto.classAsset} : <strong>{classDto.gameClassName}</strong> : {classDto.gameResourceName}
                     </p>
                   ))}
                 </div>

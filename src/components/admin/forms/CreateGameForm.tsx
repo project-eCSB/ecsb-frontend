@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import {useState} from 'react'
 import './Form.css'
 import gameService from '../../../services/game/GameService'
+import {type GameClassResourceDto} from "../../../apis/game/Types";
 
 const CreateGameForm = () => {
   const [gameName, setGameName] = useState<string>('')
   const [charactersSpreadsheetUrl, setCharactersSpreadsheetUrl] = useState<string>('')
-  const [classRepresentation, setClassRepresentation] = useState({})
+  const [classResourceRepresentation, setClassResourceRepresentation] = useState<GameClassResourceDto[]>([])
   const [error, setError] = useState<string | null>('')
   const [sessionId, setSessionId] = useState<number | null>(null)
 
@@ -16,7 +17,7 @@ const CreateGameForm = () => {
     setError(null)
 
     await gameService
-      .createGame(classRepresentation, charactersSpreadsheetUrl, gameName)
+      .createGame(classResourceRepresentation, charactersSpreadsheetUrl, gameName)
       .then((sessionId: number) => {
         setSessionId(sessionId)
       })
@@ -54,9 +55,9 @@ const CreateGameForm = () => {
         <input
           id='class-representation'
           type='text'
-          value={JSON.stringify(classRepresentation)}
+          value={JSON.stringify(classResourceRepresentation)}
           onChange={(e) => {
-            setClassRepresentation(JSON.parse(e.target.value))
+            setClassResourceRepresentation(JSON.parse(e.target.value))
           }}
           required
         />
