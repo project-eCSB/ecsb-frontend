@@ -1,15 +1,15 @@
-import { authTokenAPI, gameTokenAPI } from '../apis'
+import {authTokenAPI, gameTokenAPI} from '../apis'
 import type {
-  AdminGameSettingsRequest,
-  AdminGameSettingsResponse,
-  CreateGameRequest,
-  CreateGameResponse,
-  GameTokenRequest,
-  GameTokenResponse,
-  UserGameSettingsResponse,
-  UserGameStatusResponse,
+    AdminGameSettingsRequest,
+    AdminGameSettingsResponse,
+    CreateGameRequest,
+    CreateGameResponse,
+    GameTokenRequest,
+    GameTokenResponse,
+    UserGameSettingsResponse,
+    UserGameStatusResponse,
 } from './Types'
-import { GameResponseError } from './Types'
+import {GameResponseError} from './Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAPI
@@ -43,7 +43,7 @@ const getAdminGameSettings = async (
       }
 
       return {
-        classRepresentation: response.data.classRepresentation,
+        classResourceRepresentation: response.data.classResourceRepresentation,
         assetUrl: response.data.assetUrl,
         gameSessionId: response.data.gameSessionId,
         name: response.data.name,
@@ -90,7 +90,7 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
       }
 
       return {
-        classRepresentation: response.data.classRepresentation,
+        classResourceRepresentation: response.data.classResourceRepresentation,
         assetUrl: response.data.assetUrl,
         gameSessionId: response.data.gameSessionId,
         name: response.data.name,
