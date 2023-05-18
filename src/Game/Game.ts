@@ -55,4 +55,6 @@ export const stopGame = (gameData: GameData): void => {
   gameData.scene.sys.game.destroy(true)
   gameData.game.plugins.removeScenePlugin('gridEngine')
   gameData.game.destroy(true)
+  window.document.getElementById('btn')?.remove()
+  window.document.getElementById('tradeBox')?.remove()
 }

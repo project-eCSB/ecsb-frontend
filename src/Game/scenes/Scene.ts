@@ -15,10 +15,12 @@ type PlayerId = string
 interface PlayerState {
   coords: Coordinates
   direction: Direction
+  sprite: Phaser.GameObjects.Sprite
 }
 
 const VITE_ECSB_WS_API_URL: string = import.meta.env.VITE_ECSB_WS_API_URL as string
 const LAYER_SCALE = 3
+const RANGE = 3
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -38,6 +40,8 @@ export class Scene extends Phaser.Scene {
   private readonly status: GameStatus
   private readonly settings: GameSettings
   private readonly players: Record<PlayerId, PlayerState>
+  private actionTrade: string | null
+  private movingEnabled: boolean
   private ws!: Websocket
 
   constructor(gameToken: string, userStatus: GameStatus, settings: GameSettings) {
@@ -47,6 +51,8 @@ export class Scene extends Phaser.Scene {
     this.status = userStatus
     this.settings = settings
     this.players = {}
+    this.actionTrade = null
+    this.movingEnabled = true
   }
 
   preload(): void {
@@ -81,6 +87,10 @@ export class Scene extends Phaser.Scene {
       cloudCityTilemap.heightInPixels * LAYER_SCALE,
     )
 
+    playerSprite.setInteractive()
+    playerSprite.on('pointerdown', () => {
+      console.log(this.playerId)
+    })
     const container = this.add.container(0, 0, [playerSprite, text, className])
 
     this.cameras.main.startFollow(container, true)
@@ -97,11 +107,13 @@ export class Scene extends Phaser.Scene {
           ),
           startPosition: this.status.coords,
           collides: true,
+
         },
       ],
       numberOfDirections: 8,
     }
 
+    this.players[this.playerId] = { coords: this.status.coords, direction: this.status.direction as Direction , sprite: playerSprite}
     this.gridEngine.create(cloudCityTilemap, gridEngineConfig)
 
     this.configureWebSocket()
@@ -118,6 +130,9 @@ export class Scene extends Phaser.Scene {
           },
           direction: direction,
         })
+
+        this.players[this.playerId].coords = {x: enterTile.x, y: enterTile.y}
+        this.players[this.playerId].direction = direction
       }
     })
 
@@ -126,6 +141,46 @@ export class Scene extends Phaser.Scene {
         this.gridEngine.turnTowards(charId, this.players[charId].direction)
       }
     })
+
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer, gameObjects: Phaser.GameObjects.GameObject[]) => {
+      if(gameObjects.length === 0) {
+        window.document.getElementById('btn')?.remove()
+        this.actionTrade = null
+      }
+    })
+
+    this.scale.resize(window.innerWidth, window.innerHeight)
+  }
+    
+  createTradeWindow = (id: number, name: string): HTMLDivElement => {
+    const tradeBox = document.createElement('div')
+    tradeBox.id = 'tradeBox'
+    const tradeBoxName = document.createElement('div')
+    tradeBoxName.appendChild(document.createTextNode(name))
+    const tradeBoxId = document.createElement('div')
+    tradeBoxId.appendChild(document.createTextNode(id.toString()))
+    const tradeBoxClose = document.createElement('button')
+    tradeBoxClose.innerText = 'Close'
+    tradeBoxClose.addEventListener('click', () => {
+      document.getElementById('tradeBox')?.remove()
+      this.movingEnabled = true
+    })
+  
+    tradeBox.appendChild(tradeBoxName)
+    tradeBox.appendChild(tradeBoxId)
+    tradeBox.appendChild(tradeBoxClose)
+  
+    tradeBox.style.width = '500px'
+    tradeBox.style.height = '800px'
+    tradeBox.style.padding = '5px 20px 20px 10px'
+    tradeBox.style.position = 'fixed'
+    tradeBox.style.top = 'calc(50% - 100px)'
+    tradeBox.style.left = 'calc(50% - 150px)'
+    tradeBox.style.background = 'white'
+  
+    this.movingEnabled = false
+
+    return tradeBox
   }
 
   configureWebSocket(): void {
@@ -212,6 +267,44 @@ export class Scene extends Phaser.Scene {
     const className = this.add.text(0, 10, characterClass)
     className.setColor('#000000')
 
+    const div = document.createElement('div')
+    div.id = 'btn'
+    div.style.backgroundColor = 'white'
+
+    const buttonPartnership = document.createElement('button')
+    buttonPartnership.textContent = 'Partnership'
+    buttonPartnership.onclick = (e: Event) => {
+      window.document.getElementById('btn')?.remove()
+      this.actionTrade = null
+    }
+    const buttonTrade = document.createElement('button')
+    buttonTrade.textContent = 'Trade'
+    buttonTrade.onclick = (e: Event) => {
+      window.document.getElementById('btn')?.remove()
+
+      window.document.body.appendChild(this.createTradeWindow(1, "TEST")) 
+
+      this.actionTrade = null
+    }
+    
+    div.appendChild(buttonPartnership)
+    div.appendChild(buttonTrade)
+
+    sprite.setInteractive()
+    sprite.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if ((!this.actionTrade || this.actionTrade !== id) && (this.movingEnabled)) {
+        const neighbor = this.players[id]
+        const currPlayer = this.players[this.playerId]
+        if (
+          Math.abs(neighbor.coords.x - currPlayer.coords.x) <= RANGE &&
+          Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
+        ) {
+          window.document.getElementById('btn')?.remove()
+          this.add.dom(this.cameras.main.scrollX + pointer.x, this.cameras.main.scrollY + pointer.y, div)
+          this.actionTrade = id
+        }
+      }
+    })
     const container = this.add.container(0, 0, [sprite, text, className])
 
     this.gridEngine.addCharacter({
@@ -229,6 +322,7 @@ export class Scene extends Phaser.Scene {
     this.players[id] = {
       coords,
       direction,
+      sprite
     }
   }
 
@@ -243,10 +337,8 @@ export class Scene extends Phaser.Scene {
   movePlayer(id: string, coords: Coordinates, direction: Direction): void {
     this.gridEngine.moveTo(id, coords)
 
-    this.players[id] = {
-      coords,
-      direction,
-    }
+    this.players[id].coords = coords
+    this.players[id].direction = direction
   }
 
   private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
@@ -254,6 +346,8 @@ export class Scene extends Phaser.Scene {
   }
 
   update(): void {
+    if (!this.movingEnabled) return
+
     const cursors = this.input.keyboard.createCursorKeys()
 
     const moveMapping: Array<{ keys: Key[]; direction: Direction }> = [
