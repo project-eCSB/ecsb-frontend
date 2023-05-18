@@ -1,5 +1,4 @@
 import { type GameClassResourceDto } from '../../apis/game/Types'
-import Key = Phaser.Input.Keyboard.Key
 
 export interface GameSettings {
   classResourceRepresentation: GameClassResourceDto[]
@@ -19,10 +18,13 @@ export interface GameStatus {
   playerId: string
 }
 
-export interface Controls {
-  up: Key
-  down: Key
-  left: Key
-  right: Key
-  action: Key
+export interface GameResourceDto {
+  name: string
+  value: number
+}
+
+export interface PlayerEquipment {
+  money: number
+  time: number
+  resources: GameResourceDto[]
 }

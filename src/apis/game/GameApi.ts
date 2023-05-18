@@ -10,6 +10,7 @@ import type {
   UserGameStatusResponse,
 } from './Types'
 import { GameResponseError } from './Types'
+import { type PlayerEquipment } from '../../services/game/Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAPI
@@ -106,6 +107,25 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
     })
 }
 
+const getPlayerEquipment = async (): Promise<PlayerEquipment> => {
+  return await gameTokenAPI
+    .get('/equipment')
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return response.data
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
 const getUserGameStatus = async (): Promise<UserGameStatusResponse> => {
   return await gameTokenAPI
     .get('/gameStatus')
@@ -137,6 +157,7 @@ const gameApi = {
   createGame,
   getAdminGameSettings,
   getGameToken,
+  getPlayerEquipment,
   getUserGameSettings,
   getUserGameStatus,
 }
