@@ -152,7 +152,14 @@ export class Scene extends Phaser.Scene {
     this.scale.resize(window.innerWidth, window.innerHeight)
   }
     
-  createTradeWindow = (id: number, name: string): HTMLDivElement => {
+  createTradeWindow = (id: string, name: string): void => {
+    const neighbor = this.players[id]
+    const currPlayer = this.players[this.playerId]
+    if (!(
+      Math.abs(neighbor.coords.x - currPlayer.coords.x) <= RANGE &&
+      Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
+    )) return
+
     const tradeBox = document.createElement('div')
     tradeBox.id = 'tradeBox'
     const tradeBoxName = document.createElement('div')
@@ -180,7 +187,7 @@ export class Scene extends Phaser.Scene {
   
     this.movingEnabled = false
 
-    return tradeBox
+    window.document.body.appendChild(tradeBox) 
   }
 
   configureWebSocket(): void {
@@ -282,7 +289,7 @@ export class Scene extends Phaser.Scene {
     buttonTrade.onclick = (e: Event) => {
       window.document.getElementById('btn')?.remove()
 
-      window.document.body.appendChild(this.createTradeWindow(1, "TEST")) 
+      this.createTradeWindow(id, "TEST")
 
       this.actionTrade = null
     }
