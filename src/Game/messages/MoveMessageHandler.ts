@@ -1,7 +1,7 @@
 import type { Direction } from 'grid-engine'
 import type { Websocket } from 'websocket-ts'
 
-export enum MessageType {
+export enum MovementMessageType {
   PlayerAdded = 'player_added',
   PlayerRemoved = 'player_remove',
   PlayerMoved = 'player_moved',
@@ -16,7 +16,7 @@ export interface Coordinates {
 }
 
 export interface PlayerAddedMessage {
-  type: MessageType.PlayerAdded
+  type: MovementMessageType.PlayerAdded
   id: string
   coords: Coordinates
   direction: Direction
@@ -24,25 +24,25 @@ export interface PlayerAddedMessage {
 }
 
 export interface PlayerRemovedMessage {
-  type: MessageType.PlayerRemoved
+  type: MovementMessageType.PlayerRemoved
   id: string
 }
 
 export interface PlayerMovedMessage {
-  type: MessageType.PlayerMoved
+  type: MovementMessageType.PlayerMoved
   id: string
   coords: Coordinates
   direction: Direction
 }
 
 export interface MoveMessage {
-  type: MessageType.Move
+  type: MovementMessageType.Move
   coords: Coordinates
   direction: string
 }
 
 export interface SyncRequestMessage {
-  type: MessageType.SyncRequest
+  type: MovementMessageType.SyncRequest
 }
 
 export interface PlayerPositionWithClass {
@@ -57,7 +57,7 @@ export interface PlayerPosition {
 }
 
 export interface PlayersSyncMessage {
-  type: MessageType.PlayerSyncing
+  type: MovementMessageType.PlayerSyncing
   players: PlayerPositionWithClass[]
 }
 
@@ -69,18 +69,18 @@ export type Message =
   | PlayersSyncMessage
   | MoveMessage
 
-export const parseMessage = (message: string): Message | null => {
+export const parseMovementMessage = (message: string): Message | null => {
   try {
     const parsed = JSON.parse(message)
 
     switch (parsed.message.type) {
-      case MessageType.PlayerAdded:
+      case MovementMessageType.PlayerAdded:
         return parsed.message
-      case MessageType.PlayerRemoved:
+      case MovementMessageType.PlayerRemoved:
         return parsed.message
-      case MessageType.PlayerMoved:
+      case MovementMessageType.PlayerMoved:
         return parsed.message
-      case MessageType.PlayerSyncing:
+      case MovementMessageType.PlayerSyncing:
         return parsed.message
       default:
         console.error(
@@ -94,7 +94,7 @@ export const parseMessage = (message: string): Message | null => {
   }
 }
 
-export const sendMessage = (socket: Websocket, message: Message): void => {
+export const sendMovementMessage = (socket: Websocket, message: Message): void => {
   try {
     const serialized = JSON.stringify(message)
     socket.send(serialized)

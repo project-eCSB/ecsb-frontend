@@ -32,7 +32,9 @@ export const removeAuthToken = (): void => {
   delete authTokenAPI.defaults.headers.Authorization
 }
 
-export const decodeAuthToken = (token: string): AuthTokenData => jwt_decode(token)
+export const decodeAuthToken = (token: string): AuthTokenData => {
+  return jwt_decode(token)
+}
 
 export const getGameToken = (): string | null => localStorage.getItem(GAME_TOKEN_KEY)
 
@@ -46,7 +48,9 @@ export const removeGameToken = (): void => {
   delete gameTokenAPI.defaults.headers.Authorization
 }
 
-export const decodeGameToken = (token: string): GameTokenData => jwt_decode(token)
+export const decodeGameToken = (token: string): GameTokenData => {
+  return jwt_decode(token)
+}
 
 export const authTokenAPI: AxiosInstance = axios.create({
   baseURL: API_URL,
