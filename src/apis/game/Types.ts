@@ -5,10 +5,10 @@ export interface CreateGameRequest {
 }
 
 export interface GameClassResourceDto {
-  gameClassName: string,
-  classAsset:number,
-  gameResourceName:string,
-  resourceAsset:number
+  gameClassName: string
+  classAsset: number
+  gameResourceName: string
+  resourceAsset: number
 }
 
 export interface CreateGameResponse {
