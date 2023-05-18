@@ -4,7 +4,7 @@ import { Scene } from './scenes/Scene'
 import type { GameSettings, GameStatus } from '../services/game/Types'
 
 export interface GameData {
-  game : Phaser.Game
+  game: Phaser.Game
   scene: Scene
 }
 
@@ -45,7 +45,7 @@ export const startGame = (
 
   return {
     game,
-    scene
+    scene,
   }
 }
 

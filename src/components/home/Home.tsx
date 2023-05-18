@@ -97,9 +97,13 @@ const Home = () => {
             required
           />
           {error && <span className='home-form-error'>{error}</span>}
-          <button 
-            ref={submitBtnRef} 
-            className={`${submitBtnRef && submitBtnRef.current && submitBtnRef.current.disabled ? 'disabled' : ''} home-form-btn-submit`}
+          <button
+            ref={submitBtnRef}
+            className={`${
+              submitBtnRef && submitBtnRef.current && submitBtnRef.current.disabled
+                ? 'disabled'
+                : ''
+            } home-form-btn-submit`}
             type='submit'
           >
             JOIN THE GAME

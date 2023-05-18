@@ -1,15 +1,15 @@
-import {authTokenAPI, gameTokenAPI} from '../apis'
+import { authTokenAPI, gameTokenAPI } from '../apis'
 import type {
-    AdminGameSettingsRequest,
-    AdminGameSettingsResponse,
-    CreateGameRequest,
-    CreateGameResponse,
-    GameTokenRequest,
-    GameTokenResponse,
-    UserGameSettingsResponse,
-    UserGameStatusResponse,
+  AdminGameSettingsRequest,
+  AdminGameSettingsResponse,
+  CreateGameRequest,
+  CreateGameResponse,
+  GameTokenRequest,
+  GameTokenResponse,
+  UserGameSettingsResponse,
+  UserGameStatusResponse,
 } from './Types'
-import {GameResponseError} from './Types'
+import { GameResponseError } from './Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAPI

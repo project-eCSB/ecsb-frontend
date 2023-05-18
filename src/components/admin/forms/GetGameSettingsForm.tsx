@@ -1,7 +1,7 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import './Form.css'
 import gameService from '../../../services/game/GameService'
-import type {GameSettings} from '../../../services/game/Types'
+import type { GameSettings } from '../../../services/game/Types'
 
 const GetGameSettingsForm = () => {
   const [gameSessionId, setGameSessionId] = useState<number>(0)
@@ -74,9 +74,10 @@ const GetGameSettingsForm = () => {
                   <h3>
                     <strong>Class Representation:</strong>
                   </h3>
-                  {settings.classResourceRepresentation.map(classDto => (
+                  {settings.classResourceRepresentation.map((classDto) => (
                     <p key={classDto.classAsset}>
-                      {classDto.classAsset} : <strong>{classDto.gameClassName}</strong> : {classDto.gameResourceName}
+                      {classDto.classAsset} : <strong>{classDto.gameClassName}</strong> :{' '}
+                      {classDto.gameResourceName}
                     </p>
                   ))}
                 </div>

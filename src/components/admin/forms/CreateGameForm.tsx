@@ -1,23 +1,58 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import './Form.css'
 import gameService from '../../../services/game/GameService'
-import {type GameClassResourceDto} from "../../../apis/game/Types";
+import { type GameClassResourceDto } from '../../../apis/game/Types'
+
+const validateClassRepresentation = (classRepresentation: string): boolean => {
+  try {
+    const classRepresentationJSON: GameClassResourceDto[] = JSON.parse(classRepresentation)
+    if (!Array.isArray(classRepresentationJSON)) {
+      return false
+    }
+    for (const classResource of classRepresentationJSON) {
+      if (
+        !Object.prototype.hasOwnProperty.call(classResource, 'gameClassName') ||
+        !Object.prototype.hasOwnProperty.call(classResource, 'classAsset') ||
+        !Object.prototype.hasOwnProperty.call(classResource, 'gameResourceName') ||
+        !Object.prototype.hasOwnProperty.call(classResource, 'resourceAsset')
+      ) {
+        return false
+      }
+    }
+    return true
+  } catch (error) {
+    return false
+  }
+}
 
 const CreateGameForm = () => {
   const [gameName, setGameName] = useState<string>('')
   const [charactersSpreadsheetUrl, setCharactersSpreadsheetUrl] = useState<string>('')
-  const [classResourceRepresentation, setClassResourceRepresentation] = useState<GameClassResourceDto[]>([])
+  const [classResourceRepresentation, setClassResourceRepresentation] = useState<string>('')
   const [error, setError] = useState<string | null>('')
   const [sessionId, setSessionId] = useState<number | null>(null)
+
+  const handleClassResourceRepresentationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setClassResourceRepresentation(e.target.value)
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    setSessionId(null)
     setError(null)
+    setSessionId(null)
+
+    if (!validateClassRepresentation(classResourceRepresentation)) {
+      setError(
+        'Invalid class representation! Make sure your JSON is valid and has the correct structure.',
+      )
+      return
+    }
+
+    const classRepresentationJSON: GameClassResourceDto[] = JSON.parse(classResourceRepresentation)
 
     await gameService
-      .createGame(classResourceRepresentation, charactersSpreadsheetUrl, gameName)
+      .createGame(classRepresentationJSON, charactersSpreadsheetUrl, gameName)
       .then((sessionId: number) => {
         setSessionId(sessionId)
       })
@@ -55,9 +90,9 @@ const CreateGameForm = () => {
         <input
           id='class-representation'
           type='text'
-          value={JSON.stringify(classResourceRepresentation)}
+          value={classResourceRepresentation}
           onChange={(e) => {
-            setClassResourceRepresentation(JSON.parse(e.target.value))
+            handleClassResourceRepresentationChange(e)
           }}
           required
         />

@@ -1,7 +1,7 @@
-import {type GameClassResourceDto} from "../../apis/game/Types";
+import { type GameClassResourceDto } from '../../apis/game/Types'
 
 export interface GameSettings {
-  classResourceRepresentation:GameClassResourceDto[]
+  classResourceRepresentation: GameClassResourceDto[]
   assetUrl: string
   gameSessionId: number
   name: string
