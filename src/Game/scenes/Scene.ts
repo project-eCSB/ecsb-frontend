@@ -152,7 +152,7 @@ export class Scene extends Phaser.Scene {
     this.scale.resize(window.innerWidth, window.innerHeight)
   }
     
-  createTradeWindow = (id: string, name: string): void => {
+  createTradeWindow = (id: string): void => {
     const neighbor = this.players[id]
     const currPlayer = this.players[this.playerId]
     if (!(
@@ -160,30 +160,71 @@ export class Scene extends Phaser.Scene {
       Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
     )) return
 
+    // CONTAIENR
     const tradeBox = document.createElement('div')
     tradeBox.id = 'tradeBox'
-    const tradeBoxName = document.createElement('div')
-    tradeBoxName.appendChild(document.createTextNode(name))
-    const tradeBoxId = document.createElement('div')
-    tradeBoxId.appendChild(document.createTextNode(id.toString()))
+   
+    // TITLE
+    const tradeBoxTitle = document.createElement('h1')
+    tradeBoxTitle.id = 'tradeBoxTitle'
+    tradeBoxTitle.innerText = 'Trade'
+    
+    // CONTENT
+    const tradeBoxContent = document.createElement('div')
+    tradeBoxContent.id = 'tradeBoxContent'
+
+    const tradeBoxPlayer = document.createElement('div')
+    tradeBoxPlayer.id = 'tradeBoxContentPlayer'
+
+    const tradeBoxPlayerTitle = document.createElement('h2')
+    tradeBoxPlayerTitle.innerText = 'Your Offer'
+
+    const tradeBoxPlayerOfferEq = document.createElement('div')
+
+    tradeBoxPlayer.appendChild(tradeBoxPlayerTitle)
+    tradeBoxPlayer.appendChild(tradeBoxPlayerOfferEq)
+
+    const tradeBoxNeighbor = document.createElement('div')
+    tradeBoxNeighbor.id = 'tradeBoxContentNeighbor'
+
+    const tradeBoxNeighborTitle = document.createElement('h2')
+    tradeBoxNeighborTitle.innerText = `${id}'s Offer`
+
+    const tradeBoxNeighborOfferEq = document.createElement('div')
+
+    tradeBoxNeighbor.appendChild(tradeBoxNeighborTitle)
+    tradeBoxNeighbor.appendChild(tradeBoxNeighborOfferEq)
+
+    tradeBoxContent.appendChild(tradeBoxPlayer)
+    tradeBoxContent.appendChild(tradeBoxNeighbor)
+
+    // BUTTONS
+    const tradeBoxButtons = document.createElement('div')
+    tradeBoxButtons.id = 'tradeBoxButtons'
+
+    const tradeBoxAccept = document.createElement('button')
+    tradeBoxAccept.id = 'tradeBoxAcceptBtn'
+    tradeBoxAccept.innerText = 'Accept'
+
+    const tradeBoxSendOffer = document.createElement('button')
+    tradeBoxSendOffer.id = 'tradeBoxSendOfferBtn'
+    tradeBoxSendOffer.innerText = 'Send Counter Offer'
+
     const tradeBoxClose = document.createElement('button')
+    tradeBoxClose.id = 'tradeBoxCloseBtn'
     tradeBoxClose.innerText = 'Close'
     tradeBoxClose.addEventListener('click', () => {
       document.getElementById('tradeBox')?.remove()
       this.movingEnabled = true
     })
-  
-    tradeBox.appendChild(tradeBoxName)
-    tradeBox.appendChild(tradeBoxId)
-    tradeBox.appendChild(tradeBoxClose)
-  
-    tradeBox.style.width = '500px'
-    tradeBox.style.height = '800px'
-    tradeBox.style.padding = '5px 20px 20px 10px'
-    tradeBox.style.position = 'fixed'
-    tradeBox.style.top = 'calc(50% - 100px)'
-    tradeBox.style.left = 'calc(50% - 150px)'
-    tradeBox.style.background = 'white'
+
+    tradeBoxButtons.appendChild(tradeBoxAccept)
+    tradeBoxButtons.appendChild(tradeBoxSendOffer)
+    tradeBoxButtons.appendChild(tradeBoxClose)
+
+    tradeBox.appendChild(tradeBoxTitle)
+    tradeBox.appendChild(tradeBoxContent)
+    tradeBox.appendChild(tradeBoxButtons)
   
     this.movingEnabled = false
 
@@ -289,7 +330,7 @@ export class Scene extends Phaser.Scene {
     buttonTrade.onclick = (e: Event) => {
       window.document.getElementById('btn')?.remove()
 
-      this.createTradeWindow(id, "TEST")
+      this.createTradeWindow(id)
 
       this.actionTrade = null
     }
