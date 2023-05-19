@@ -6,7 +6,7 @@
 
 #tradeBox {
   width: 40vw;
-  height: 75vh;
+  height: 65vh;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -91,7 +91,7 @@
 
 #tradeBoxButtons button {
   padding: 0.2rem;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 #tradeBoxButtons button:hover {
