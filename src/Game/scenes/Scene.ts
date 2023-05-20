@@ -5,7 +5,7 @@ import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
 import type { Coordinates } from '../MessageHandler'
 import { MessageType, parseMessage, sendMessage } from '../MessageHandler'
-import type { GameSettings, GameStatus } from '../../services/game/Types'
+import type { Controls, GameSettings, GameStatus } from '../../services/game/Types'
 import { decodeGameToken } from '../../apis/apis'
 import { type GameClassResourceDto } from '../../apis/game/Types'
 import Key = Phaser.Input.Keyboard.Key
@@ -254,17 +254,22 @@ export class Scene extends Phaser.Scene {
   }
 
   update(): void {
-    const cursors = this.input.keyboard.createCursorKeys()
+
+    const controls: Controls = {up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S), 
+      left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A), 
+      right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D), 
+      action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)}
 
     const moveMapping: Array<{ keys: Key[]; direction: Direction }> = [
-      { keys: [cursors.left, cursors.up], direction: Direction.UP_LEFT },
-      { keys: [cursors.left, cursors.down], direction: Direction.DOWN_LEFT },
-      { keys: [cursors.right, cursors.up], direction: Direction.UP_RIGHT },
-      { keys: [cursors.right, cursors.down], direction: Direction.DOWN_RIGHT },
-      { keys: [cursors.left], direction: Direction.LEFT },
-      { keys: [cursors.down], direction: Direction.DOWN },
-      { keys: [cursors.right], direction: Direction.RIGHT },
-      { keys: [cursors.up], direction: Direction.UP },
+      { keys: [controls.left, controls.up], direction: Direction.UP_LEFT },
+      { keys: [controls.left, controls.down], direction: Direction.DOWN_LEFT },
+      { keys: [controls.right, controls.up], direction: Direction.UP_RIGHT },
+      { keys: [controls.right, controls.down], direction: Direction.DOWN_RIGHT },
+      { keys: [controls.left], direction: Direction.LEFT },
+      { keys: [controls.down], direction: Direction.DOWN },
+      { keys: [controls.right], direction: Direction.RIGHT },
+      { keys: [controls.up], direction: Direction.UP },
     ]
 
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))
