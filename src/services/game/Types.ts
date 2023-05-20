@@ -1,4 +1,5 @@
 import { type GameClassResourceDto } from '../../apis/game/Types'
+import Key = Phaser.Input.Keyboard.Key
 
 export interface GameSettings {
   classResourceRepresentation: GameClassResourceDto[]
@@ -16,4 +17,12 @@ export interface GameStatus {
   direction: string
   className: string
   playerId: string
+}
+
+export interface Controls {
+  up: Key
+  down: Key
+  left: Key
+  right: Key
+  action: Key
 }
