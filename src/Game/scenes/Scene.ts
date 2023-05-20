@@ -9,10 +9,11 @@ import type { GameSettings, GameStatus } from '../../services/game/Types'
 import { decodeGameToken } from '../../apis/apis'
 import { type GameClassResourceDto } from '../../apis/game/Types'
 import Key = Phaser.Input.Keyboard.Key
+import { TradeWindow } from '../TradeWindow'
 
-type PlayerId = string
+export type PlayerId = string
 
-interface PlayerState {
+export interface PlayerState {
   coords: Coordinates
   direction: Direction
   sprite: Phaser.GameObjects.Sprite
@@ -38,10 +39,11 @@ export class Scene extends Phaser.Scene {
   private readonly gameToken: string
   private readonly playerId: PlayerId
   private readonly status: GameStatus
-  private readonly settings: GameSettings
+  public readonly settings: GameSettings
   private readonly players: Record<PlayerId, PlayerState>
   private actionTrade: string | null
-  private movingEnabled: boolean
+  public tradeWindow: TradeWindow | null
+  public movingEnabled: boolean
   private ws!: Websocket
 
   constructor(gameToken: string, userStatus: GameStatus, settings: GameSettings) {
@@ -53,6 +55,7 @@ export class Scene extends Phaser.Scene {
     this.players = {}
     this.actionTrade = null
     this.movingEnabled = true
+    this.tradeWindow = null
   }
 
   preload(): void {
@@ -87,10 +90,6 @@ export class Scene extends Phaser.Scene {
       cloudCityTilemap.heightInPixels * LAYER_SCALE,
     )
 
-    playerSprite.setInteractive()
-    playerSprite.on('pointerdown', () => {
-      console.log(this.playerId)
-    })
     const container = this.add.container(0, 0, [playerSprite, text, className])
 
     this.cameras.main.startFollow(container, true)
@@ -159,163 +158,9 @@ export class Scene extends Phaser.Scene {
       Math.abs(neighbor.coords.x - currPlayer.coords.x) <= RANGE &&
       Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
     )) return
-
-    // CONTAIENR
-    const tradeBox = document.createElement('div')
-    tradeBox.id = 'tradeBox'
-   
-    // TITLE
-    const tradeBoxTitle = document.createElement('h1')
-    tradeBoxTitle.id = 'tradeBoxTitle'
-    tradeBoxTitle.innerText = `Trade with ${id}`
-    
-    // CONTENT
-    const tradeBoxContent = document.createElement('div')
-    tradeBoxContent.id = 'tradeBoxContent'
-
-    const tradeBoxPlayer = document.createElement('div')
-    tradeBoxPlayer.id = 'tradeBoxContentPlayer'
-
-    const tradeBoxPlayerTitle = document.createElement('h2')
-    tradeBoxPlayerTitle.innerText = 'You Offer'
-
-    const tradeBoxPlayerOfferEq = document.createElement('div')
-    tradeBoxPlayerOfferEq.id = 'tradeBoxContentPlayerOfferEq'
-
-    this.fillEq(tradeBoxPlayerOfferEq)
-    tradeBoxPlayer.appendChild(tradeBoxPlayerTitle)
-    tradeBoxPlayer.appendChild(tradeBoxPlayerOfferEq)
-
-    const tradeBoxNeighbor = document.createElement('div')
-    tradeBoxNeighbor.id = 'tradeBoxContentNeighbor'
-
-    const tradeBoxNeighborTitle = document.createElement('h2')
-    tradeBoxNeighborTitle.innerText = 'You Get'
-
-    const tradeBoxNeighborOfferEq = document.createElement('div')
-    tradeBoxNeighborOfferEq.id = 'tradeBoxContentNeighborOfferEq'
-
-    this.fillEq(tradeBoxNeighborOfferEq)
-    tradeBoxNeighbor.appendChild(tradeBoxNeighborTitle)
-    tradeBoxNeighbor.appendChild(tradeBoxNeighborOfferEq)
-
-    tradeBoxContent.appendChild(tradeBoxPlayer)
-    tradeBoxContent.appendChild(tradeBoxNeighbor)
-
-    // BUTTONS
-    const tradeBoxButtons = document.createElement('div')
-    tradeBoxButtons.id = 'tradeBoxButtons'
-
-    const tradeBoxAccept = document.createElement('button')
-    tradeBoxAccept.id = 'tradeBoxAcceptBtn'
-    tradeBoxAccept.innerText = 'Accept'
-
-    const tradeBoxSendOffer = document.createElement('button')
-    tradeBoxSendOffer.id = 'tradeBoxSendOfferBtn'
-    tradeBoxSendOffer.innerText = 'Send Offer'
-
-    const tradeBoxClose = document.createElement('button')
-    tradeBoxClose.id = 'tradeBoxCloseBtn'
-    tradeBoxClose.innerText = 'Close'
-    tradeBoxClose.addEventListener('click', () => {
-      document.getElementById('tradeBox')?.remove()
-      this.movingEnabled = true
-    })
-
-    tradeBoxButtons.appendChild(tradeBoxAccept)
-    tradeBoxButtons.appendChild(tradeBoxSendOffer)
-    tradeBoxButtons.appendChild(tradeBoxClose)
-
-    tradeBox.appendChild(tradeBoxTitle)
-    tradeBox.appendChild(tradeBoxContent)
-    tradeBox.appendChild(tradeBoxButtons)
   
-    this.movingEnabled = false
-
-    window.document.body.appendChild(tradeBox) 
-  }
-
-  fillEq(container: HTMLDivElement): void {
-    for (const eq of this.settings.classResourceRepresentation) {
-      const resourceItem = document.createElement('div')
-
-      const resourceItemName = document.createElement('h5')
-      resourceItemName.innerText = eq.gameResourceName
-
-      const tradeBoxPlayerOfferEqItemAmount = document.createElement('p')
-      tradeBoxPlayerOfferEqItemAmount.innerText = `${0}`
-
-      const tradeBoxPlayerOfferEqItemBtnUp = document.createElement('button')
-      tradeBoxPlayerOfferEqItemBtnUp.innerText = '+'
-      tradeBoxPlayerOfferEqItemBtnUp.addEventListener('click', () => {
-        tradeBoxPlayerOfferEqItemAmount.innerText = `${parseInt(tradeBoxPlayerOfferEqItemAmount.innerText) + 1}`
-      })
-      const tradeBoxPlayerOfferEqItemBtnDown = document.createElement('button')
-      tradeBoxPlayerOfferEqItemBtnDown.innerText = '-'
-      tradeBoxPlayerOfferEqItemBtnDown.addEventListener('click', () => {
-        if (parseInt(tradeBoxPlayerOfferEqItemAmount.innerText) === 0) return
-        tradeBoxPlayerOfferEqItemAmount.innerText = `${parseInt(tradeBoxPlayerOfferEqItemAmount.innerText) - 1}`
-      })
-
-      resourceItem.appendChild(resourceItemName)
-      resourceItem.appendChild(tradeBoxPlayerOfferEqItemAmount)
-      resourceItem.appendChild(tradeBoxPlayerOfferEqItemBtnUp)
-      resourceItem.appendChild(tradeBoxPlayerOfferEqItemBtnDown)
-
-      container.appendChild(resourceItem)
-    }
-
-    const moneyItem = document.createElement('div')
-
-    const moneyItemName = document.createElement('h5')
-    moneyItemName.innerText = 'money'
-
-    const moneyItemAmount = document.createElement('p')
-    moneyItemAmount.innerText = `${0}`
-
-    const moneyItemAmountBtnUp = document.createElement('button')
-    moneyItemAmountBtnUp.innerText = '+'
-    moneyItemAmountBtnUp.addEventListener('click', () => {
-      moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) + 1}`
-    })
-    const moneyItemAmountBtnDown = document.createElement('button')
-    moneyItemAmountBtnDown.innerText = '-'
-    moneyItemAmountBtnDown.addEventListener('click', () => {
-      if (parseInt(moneyItemAmount.innerText) === 0) return
-      moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) - 1}`
-    })
-
-    moneyItem.appendChild(moneyItemName)
-    moneyItem.appendChild(moneyItemAmount)
-    moneyItem.appendChild(moneyItemAmountBtnUp)
-    moneyItem.appendChild(moneyItemAmountBtnDown)
-    container.appendChild(moneyItem)
-
-    const timeItem = document.createElement('div')
-
-    const timeItemName = document.createElement('h5')
-    timeItemName.innerText = 'time'
-
-    const timeItemAmount = document.createElement('p')
-    timeItemAmount.innerText = `${0}`
-
-    const timeItemBtnUp = document.createElement('button')
-    timeItemBtnUp.innerText = '+'
-    timeItemBtnUp.addEventListener('click', () => {
-      timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) + 1}`
-    })
-    const timeItemBtnUpDown = document.createElement('button')
-    timeItemBtnUpDown.innerText = '-'
-    timeItemBtnUpDown.addEventListener('click', () => {
-      if (parseInt(timeItemAmount.innerText) === 0) return
-      timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) - 1}`
-    })
-
-    timeItem.appendChild(timeItemName)
-    timeItem.appendChild(timeItemAmount)
-    timeItem.appendChild(timeItemBtnUp)
-    timeItem.appendChild(timeItemBtnUpDown)
-    container.appendChild(timeItem)
+    this.tradeWindow = new TradeWindow(this, currPlayer, this.playerId, neighbor, id)
+    this.tradeWindow.show()
   }
 
   configureWebSocket(): void {
