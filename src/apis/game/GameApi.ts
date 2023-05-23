@@ -2,10 +2,16 @@ import { authTokenAPI, gameTokenAPI } from '../apis'
 import type {
   AdminGameSettingsRequest,
   AdminGameSettingsResponse,
+  AssetConfigRequest,
+  AssetConfigResponse,
   CreateGameRequest,
   CreateGameResponse,
   GameTokenRequest,
   GameTokenResponse,
+  SavedAssetsRequest,
+  SavedAssetsResponse,
+  UploadAssetRequest,
+  UploadAssetResponse,
   UserGameSettingsResponse,
   UserGameStatusResponse,
 } from './Types'
@@ -45,10 +51,11 @@ const getAdminGameSettings = async (
 
       return {
         classResourceRepresentation: response.data.classResourceRepresentation,
-        assetUrl: response.data.assetUrl,
+        travels: response.data.travels,
         gameSessionId: response.data.gameSessionId,
         name: response.data.name,
         shortName: response.data.shortName,
+        gameAssets: response.data.gameAssets,
       }
     })
     .catch((error) => {
@@ -92,10 +99,11 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
 
       return {
         classResourceRepresentation: response.data.classResourceRepresentation,
-        assetUrl: response.data.assetUrl,
+        travels: response.data.travels,
         gameSessionId: response.data.gameSessionId,
         name: response.data.name,
         shortName: response.data.shortName,
+        gameAssets: response.data.gameAssets,
       }
     })
     .catch((error) => {
@@ -150,6 +158,74 @@ const getUserGameStatus = async (): Promise<UserGameStatusResponse> => {
     })
 }
 
+const uploadAsset = async (
+  uploadAssetRequest: UploadAssetRequest,
+): Promise<UploadAssetResponse> => {
+  return await authTokenAPI
+    .post(
+      `/assets?fileName=${uploadAssetRequest.fileName}&fileType=${uploadAssetRequest.fileType}`,
+      uploadAssetRequest.file,
+    )
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return {
+        assetId: response.data,
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const getAssetConfig = async (
+  assetConfigRequest: AssetConfigRequest,
+): Promise<AssetConfigResponse> => {
+  return await authTokenAPI
+    .get(`/assets/config/${assetConfigRequest.assetId}`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return response.data as AssetConfigResponse
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsResponse> => {
+  return await authTokenAPI
+    .get(`/assets?fileType=${request.fileType}`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return {
+        assets: response.data,
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
 /**
  * Game API is used to make request to the server that refers to game.
  */
@@ -160,6 +236,9 @@ const gameApi = {
   getPlayerEquipment,
   getUserGameSettings,
   getUserGameStatus,
+  uploadAsset,
+  getAssetConfig,
+  getSavedAssets,
 }
 
 export default gameApi

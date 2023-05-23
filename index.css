@@ -4,10 +4,6 @@
   box-sizing: border-box;
 }
 
-body {
-  overflow: hidden;
-}
-
 #equipmentBox {
   position: fixed;
   top: 0;
