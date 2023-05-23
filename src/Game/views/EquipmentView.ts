@@ -68,7 +68,6 @@ export class EquipmentView {
 
     this.equipmentBoxContent.appendChild(moneyBox)
 
-    this.equipmentBox.appendChild(this.userName)
     this.equipmentBox.appendChild(this.equipmentBoxContent)
   }
 

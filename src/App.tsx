@@ -8,6 +8,8 @@ import NoAuthTokenProtectedRoute from './components/protectedRoutes/NoAuthTokenP
 import GameTokenProtectedRoute from './components/protectedRoutes/GameTokenProtectedRoute'
 import './App.css'
 import Admin from './components/admin/Admin'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -38,6 +40,7 @@ const App = () => {
         />
         <Route path='*' element={<Navigate to='/home' replace />} />
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   )
 }

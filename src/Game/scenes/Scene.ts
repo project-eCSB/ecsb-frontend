@@ -17,8 +17,9 @@ import {
 import gameService from '../../services/game/GameService'
 import { parseTradeMessage, sendTradeMessage, TradeMessageType } from '../messages/TradeMessagehandler'
 import { EquipmentView } from '../views/EquipmentView'
-import { RequestView } from '../views/RequestView'
 import Key = Phaser.Input.Keyboard.Key
+import { toast } from 'react-toastify'
+import { TradeOfferPopup } from '../../components/messages/TradeOfferPopup'
 
 export type PlayerId = string
 
@@ -32,7 +33,7 @@ const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
 const LAYER_SCALE = 3
-const RANGE = 3
+export const RANGE = 3
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -51,11 +52,10 @@ export class Scene extends Phaser.Scene {
   readonly playerId: PlayerId
   private readonly status: GameStatus
   public readonly settings: GameSettings
-  private readonly players: Record<PlayerId, PlayerState>
+  public readonly players: Record<PlayerId, PlayerState>
   private actionTrade: string | null
   public tradeWindow: TradeWindow | null
   public equipmentView: EquipmentView | null
-  public requestView: RequestView | null
   public movingEnabled: boolean
   private movementWs!: Websocket
   private tradeWs!: Websocket
@@ -74,7 +74,6 @@ export class Scene extends Phaser.Scene {
     this.movingEnabled = true
     this.tradeWindow = null
     this.equipmentView = null
-    this.requestView = null
   }
 
   preload(): void {
@@ -189,17 +188,6 @@ export class Scene extends Phaser.Scene {
   }
 
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const neighbor = this.players[targetId]
-    const currPlayer = this.players[this.playerId]
-    if (
-      !(
-        Math.abs(neighbor.coords.x - currPlayer.coords.x) <= RANGE &&
-        Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
-      )
-    )
-      return
-
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     this.tradeWindow = new TradeWindow(this, this.equipment!, this.playerId, this.otherEquipment!, targetId, isUserTurn)
     this.tradeWindow.show()
@@ -442,18 +430,16 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    this.requestView = new RequestView(this)
-    this.requestView.setContent(
-      'Trade invitation - Do you want to trade with ' + from + '?',
-      () => {
-        this.acceptTradeInvitation(from)
-        this.requestView?.close()
-      },
-      () => {
-        this.requestView?.close()
-      },
-    )
-    this.requestView.show()
+    toast.info(TradeOfferPopup({scene:this, from:from}), {
+      position: "bottom-right",
+      autoClose: 8000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      theme: "dark",
+      })
   }
 
   acceptTradeInvitation(senderId: string): void {
@@ -519,7 +505,16 @@ export class Scene extends Phaser.Scene {
   }
 
   showBusyPopup(senderId: string, message: string): void {
-    console.log(senderId, message)
+    toast.info(`${senderId} is already busy`, {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: "dark",
+  });
   }
 
   showInterruptMessage(senderId: string, message: string): void {
