@@ -33,7 +33,6 @@ export class TradeWindow {
     isUserTurn: boolean,
   ) {
 
-    console.log(isUserTurn)
     this.isUserTurn = isUserTurn
     this.currPlayerId = currPlayerId
     this.otherPlayerId = otherPlayerId

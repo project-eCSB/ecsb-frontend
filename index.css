@@ -9,11 +9,9 @@ body {
 }
 
 #equipmentBox {
-  width: 30vw;
-  height: 10vh;
   position: fixed;
   top: 0;
-  left: 70vw;
+  right: 0;
   background-color: lightgray;
   opacity: 0.8;
   border-bottom-left-radius: 2rem;
@@ -34,23 +32,39 @@ body {
   height: 90%;
   display: flex;
   flex-direction: row;
+  gap: 1.5rem;
   justify-content: space-evenly;
   align-items: center;
   font-size: 1.2rem;
 }
 
+#equipmentBoxContent h5 {
+  font-size: 1.2rem;
+}
+
+#equipmentBoxContent p {
+  font-size: 1rem;
+}
+
 #requestBox {
-  width: 10vw;
-  height: 13vh;
   position: fixed;
-  top: 82vh;
-  left: 87vw;
+  bottom: 0;
+  right: 0;
+  margin-right: 4vw;
+  margin-bottom: 4vw;
+  max-width: 30vw;
   background-color: rgb(136, 89, 41);
   opacity: 0.8;
   border-radius: 2rem;
   display: flex;
   justify-content: center;
   padding: 1rem;
+}
+
+#requestBoxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 #requestBox h5 {
@@ -61,7 +75,6 @@ body {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  height: 80%;
 }
 
 #requestButtonsBox button {
