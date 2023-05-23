@@ -32,7 +32,6 @@ export class TradeWindow {
     otherPlayerId: string,
     isUserTurn: boolean,
   ) {
-
     this.isUserTurn = isUserTurn
     this.currPlayerId = currPlayerId
     this.otherPlayerId = otherPlayerId
@@ -57,7 +56,9 @@ export class TradeWindow {
     // TITLE
     this.tradeBoxTitle = document.createElement('h1')
     this.tradeBoxTitle.id = 'tradeBoxTitle'
-    this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId} - ${this.isUserTurn ? 'your turn' : 'wait for your turn'}`
+    this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId} - ${
+      this.isUserTurn ? 'your turn' : 'wait for your turn'
+    }`
 
     // CONTENT
     this.tradeBoxContent = document.createElement('div')

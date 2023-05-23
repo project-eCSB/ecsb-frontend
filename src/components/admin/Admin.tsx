@@ -1,18 +1,17 @@
 import { useRef, useState } from 'react'
-import './Admin.css'
-import CreateGameForm from './forms/CreateGameForm'
-import GetGameSettingsForm from './forms/GetGameSettingsForm'
+import GetGameSettingsForm from './forms/getGameSettingsForm/GetGameSettingsForm'
 import { useNavigate } from 'react-router-dom'
 import authService from '../../services/auth/AuthService'
+import CreateGameForm from './forms/createGameForm/CreateGameForm'
+import './Admin.css'
 
 enum FormType {
-  CreateGame = 1,
+  CreateGame,
   GetGameSettings,
 }
 
 const Admin = () => {
   const navigate = useNavigate()
-
   const [form, setForm] = useState<FormType | null>(null)
   const btnCreateGame = useRef<HTMLButtonElement>(null)
   const btnGetGameSettings = useRef<HTMLButtonElement>(null)
@@ -24,8 +23,8 @@ const Admin = () => {
 
   return (
     <div className='admin-container'>
-      <div className='navbar'>
-        <div className='buttons'>
+      <div className='admin-container-navbar'>
+        <div className='admin-container-navbar-buttons'>
           <button
             ref={btnCreateGame}
             onClick={() => {
@@ -47,7 +46,7 @@ const Admin = () => {
             Get Game Settings
           </button>
         </div>
-        <div className='buttons'>
+        <div className='admin-container-navbar-buttons'>
           <button
             onClick={() => {
               navigate('/')
@@ -55,14 +54,18 @@ const Admin = () => {
           >
             Home
           </button>
-          <button className='home-navbar-btn' onClick={handleLogOut}>
+          <button
+            onClick={() => {
+              handleLogOut()
+            }}
+          >
             Log Out
           </button>
         </div>
       </div>
-      <div className='form-container'>
-        {form && form === FormType.CreateGame && <CreateGameForm />}
-        {form && form === FormType.GetGameSettings && <GetGameSettingsForm />}
+      <div className='admin-container-form'>
+        {form === FormType.CreateGame && <CreateGameForm />}
+        {form === FormType.GetGameSettings && <GetGameSettingsForm />}
       </div>
     </div>
   )

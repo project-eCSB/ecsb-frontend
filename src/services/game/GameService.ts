@@ -2,22 +2,39 @@ import { setGameToken } from '../../apis/apis'
 import gameApi from '../../apis/game/GameApi'
 import type {
   AdminGameSettingsResponse,
+  AssetConfigResponse,
+  ClassResourceRepresentation,
+  CreateGameRequestTravels,
   CreateGameResponse,
-  GameClassResourceDto,
   GameResponseError,
   GameTokenResponse,
+  SavedAsset,
+  SavedAssetsResponse,
+  UploadAssetResponse,
   UserGameSettingsResponse,
   UserGameStatusResponse,
 } from '../../apis/game/Types'
-import type { GameSettings, GameStatus, PlayerEquipment } from './Types'
+import type { AssetConfig, GameSettings, GameStatus, PlayerEquipment } from './Types'
 
 const createGame = async (
-  classResourceRepresentation: GameClassResourceDto[],
-  charactersSpreadsheetUrl: string,
+  classResourceRepresentation: ClassResourceRepresentation[],
   gameName: string,
+  travels: CreateGameRequestTravels[],
+  mapAssetId: number,
+  tileAssetId: number,
+  characterAssetId: number,
+  resourceAssetsId: number,
 ): Promise<number> => {
   return await gameApi
-    .createGame({ classResourceRepresentation, charactersSpreadsheetUrl, gameName })
+    .createGame({
+      classResourceRepresentation,
+      gameName,
+      travels,
+      mapAssetId,
+      tileAssetId,
+      characterAssetId,
+      resourceAssetsId,
+    })
     .then((res: CreateGameResponse) => {
       return res.gameSessionId
     })
@@ -32,10 +49,11 @@ const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings
     .then((res: AdminGameSettingsResponse) => {
       const gameSettings: GameSettings = {
         classResourceRepresentation: res.classResourceRepresentation,
-        assetUrl: res.assetUrl,
+        travels: res.travels,
         gameSessionId: res.gameSessionId,
         name: res.name,
         shortName: res.shortName,
+        gameAssets: res.gameAssets,
       }
 
       return gameSettings
@@ -67,10 +85,11 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
     .then((res: UserGameSettingsResponse) => {
       const gameSettings: GameSettings = {
         classResourceRepresentation: res.classResourceRepresentation,
-        assetUrl: res.assetUrl,
+        travels: res.travels,
         gameSessionId: res.gameSessionId,
         name: res.name,
         shortName: res.shortName,
+        gameAssets: res.gameAssets,
       }
 
       return gameSettings
@@ -102,6 +121,47 @@ const getUserGameStatus = async (): Promise<GameStatus> => {
     })
 }
 
+const uploadAsset = async (
+  file: string | ArrayBuffer,
+  fileName: string,
+  fileType: string,
+): Promise<number> => {
+  return await gameApi
+    .uploadAsset({ file, fileName, fileType })
+    .then((response: UploadAssetResponse) => {
+      const assetId: number = response.assetId
+
+      return assetId
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
+const getAssetConfig = async (assetId: number): Promise<AssetConfig> => {
+  return await gameApi
+    .getAssetConfig({ assetId })
+    .then((response: AssetConfigResponse) => {
+      return response
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
+const getSavedAssets = async (fileType: string): Promise<SavedAsset[]> => {
+  return await gameApi
+    .getSavedAssets({ fileType: fileType })
+    .then((res: SavedAssetsResponse) => {
+      const savedAssets: SavedAsset[] = res.assets
+
+      return savedAssets
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
 const gameService = {
   createGame,
   getAdminGameSettings,
@@ -109,6 +169,9 @@ const gameService = {
   getGameSession,
   getPlayerEquipment,
   getUserGameStatus,
+  uploadAsset,
+  getAssetConfig,
+  getSavedAssets,
 }
 
 export default gameService

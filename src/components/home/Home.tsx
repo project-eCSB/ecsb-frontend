@@ -57,6 +57,7 @@ const Home = () => {
                   } else {
                     const gameData = startGame(gameToken, gameStatus, gameSettings)
                     setGameData(gameData)
+                    document.body.style.overflow = 'hidden'
                     navigate(`/game/${res}`)
                   }
                 })

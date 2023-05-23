@@ -12,6 +12,7 @@ const Game = () => {
       if (gameData) {
         stopGame(gameData)
         setGameData(null)
+        document.body.style.overflow = 'auto'
       }
     }
 

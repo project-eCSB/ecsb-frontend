@@ -6,7 +6,6 @@ import { WebsocketBuilder } from 'websocket-ts'
 import type { GameSettings, GameStatus, PlayerEquipment } from '../../services/game/Types'
 import { type Controls } from './Types'
 import { decodeGameToken } from '../../apis/apis'
-import { type GameClassResourceDto } from '../../apis/game/Types'
 import { TradeWindow } from '../views/TradeWindow'
 import {
   type Coordinates,
@@ -15,11 +14,16 @@ import {
   sendMovementMessage,
 } from '../messages/MoveMessageHandler'
 import gameService from '../../services/game/GameService'
-import { parseTradeMessage, sendTradeMessage, TradeMessageType } from '../messages/TradeMessagehandler'
+import {
+  parseTradeMessage,
+  sendTradeMessage,
+  TradeMessageType,
+} from '../messages/TradeMessagehandler'
 import { EquipmentView } from '../views/EquipmentView'
 import Key = Phaser.Input.Keyboard.Key
 import { toast } from 'react-toastify'
 import { TradeOfferPopup } from '../../components/messages/TradeOfferPopup'
+import { type ClassResourceRepresentation } from '../../apis/game/Types'
 
 export type PlayerId = string
 
@@ -42,9 +46,9 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 }
 
 const getPlayerMapping =
-  (initialCharacterMapping: GameClassResourceDto[]) =>
+  (initialCharacterMapping: ClassResourceRepresentation[]) =>
   (playerClass: string): number =>
-    initialCharacterMapping.find((dto) => dto.gameClassName === playerClass)?.classAsset ?? 0
+    initialCharacterMapping.find((dto) => dto.key === playerClass)?.value.classAsset ?? 0
 
 export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine
@@ -79,7 +83,7 @@ export class Scene extends Phaser.Scene {
   preload(): void {
     this.load.image('tiles', '/assets/overworld.png')
     this.load.tilemapTiledJSON('cloud-city-map', '/assets/forest_glade.json')
-    this.load.spritesheet('player', this.settings.assetUrl, {
+    this.load.spritesheet('player', '/assets/characters.png', {
       frameWidth: 52,
       frameHeight: 72,
     })
@@ -430,16 +434,16 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    toast.info(TradeOfferPopup({scene:this, from:from}), {
-      position: "bottom-right",
+    toast.info(TradeOfferPopup({ scene: this, from: from }), {
+      position: 'bottom-right',
       autoClose: 8000,
       hideProgressBar: false,
       closeOnClick: false,
       pauseOnHover: true,
       draggable: false,
       progress: undefined,
-      theme: "dark",
-      })
+      theme: 'dark',
+    })
   }
 
   acceptTradeInvitation(senderId: string): void {
@@ -506,15 +510,15 @@ export class Scene extends Phaser.Scene {
 
   showBusyPopup(senderId: string, message: string): void {
     toast.info(`${senderId} is already busy`, {
-      position: "top-center",
+      position: 'top-center',
       autoClose: 5000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,
       draggable: false,
       progress: undefined,
-      theme: "dark",
-  });
+      theme: 'dark',
+    })
   }
 
   showInterruptMessage(senderId: string, message: string): void {
