@@ -162,6 +162,14 @@ export interface SavedAssetsResponse {
   assets: SavedAsset[]
 }
 
+export interface ProductionRequest {
+  quantity: number
+}
+
+export interface ProductionResponse {
+  success: boolean
+}
+
 /**
   GameReponseError represents an error from the server.
   Code is 0 if the error is not from the server.

@@ -6,8 +6,8 @@ import { decodeAuthToken, getAuthToken, getGameToken } from '../../apis/apis'
 import './Home.css'
 import HomeNavbar from './HomeNavbar'
 import { useGameStore } from '../../store/GameStore'
-import type { GameSettings, GameStatus } from '../../services/game/Types'
 import { startGame } from '../../Game/Game'
+import LoadingSpinner from '../common/spinner/LoadingSpinner'
 
 const Home = () => {
   const navigate: NavigateFunction = useNavigate()
@@ -16,6 +16,7 @@ const Home = () => {
   const [gameCode, setGameCode] = useState<string>('')
   const [error, setError] = useState<string>('')
   const submitBtnRef = useRef<HTMLButtonElement | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGameCode(event.target.value)
@@ -33,56 +34,47 @@ const Home = () => {
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
+  
+    setIsLoading(true)
     disableSubmitBtn()
 
-    const authToken = getAuthToken()
-    if (authToken) {
-      const decodedAuthToken = decodeAuthToken(authToken)
-      gameService
-        .getGameSession(gameCode, decodedAuthToken.name)
-        .then((res: number) => {
-          gameService
-            .getUserGameSettings()
-            .then((gameSettings: GameSettings) => {
-              gameService
-                .getUserGameStatus()
-                .then((gameStatus: GameStatus) => {
-                  const gameToken = getGameToken()
-                  if (!gameToken) {
-                    setError("Game token doesn't exist")
-                    enableSubmitBtn()
-                  } else {
-                    const gameData = startGame(gameToken, gameStatus, gameSettings)
-                    setGameData(gameData)
-                    document.body.style.overflow = 'hidden'
-                    navigate(`/game/${res}`)
-                  }
-                })
-                .catch((error: Error) => {
-                  setError(error.message)
-                  enableSubmitBtn()
-                })
-            })
-            .catch((error: Error) => {
-              setError(error.message)
-              enableSubmitBtn()
-            })
-        })
-        .catch((error: Error) => {
-          setError(error.message)
-          enableSubmitBtn()
-        })
+    try {
+      const authToken = getAuthToken()
+  
+      if (authToken) {
+        const decodedAuthToken = decodeAuthToken(authToken);
+  
+        const gameSession = await gameService.getGameSession(gameCode, decodedAuthToken.name)
+        const gameSettings = await gameService.getUserGameSettings()
+        const gameStatus = await gameService.getUserGameStatus()
 
-      return
+        const gameToken = getGameToken()
+  
+        if (!gameToken) {
+          setError('Error getting game token')
+        } else {
+          const mapConfig = await gameService.getAssetConfig(gameSettings.gameAssets.mapAssetId)
+          const gameData = startGame(gameToken, gameStatus, gameSettings, mapConfig)
+
+          setGameData(gameData)
+
+          document.body.style.overflow = 'hidden'
+
+          navigate(`/game/${gameSession}`)
+        }
+      }
+    } catch (error: any) {
+      setError(`Error joining game: ${error.message}`)
+    } finally {
+      setIsLoading(false)
+      enableSubmitBtn()
     }
-
-    enableSubmitBtn()
   }
 
   return (
+    <>
     <div className='home-container'>
       <HomeNavbar />
       <div className='home-form-container'>
@@ -112,6 +104,8 @@ const Home = () => {
         </form>
       </div>
     </div>
+    {isLoading && <LoadingSpinner />}
+    </>
   )
 }
 

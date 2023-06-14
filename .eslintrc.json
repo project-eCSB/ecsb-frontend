@@ -58,6 +58,7 @@
         "@typescript-eslint/prefer-optional-chain": "off",
         "@typescript-eslint/array-type": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-explicit-any": "off",
         "object-shorthand": "off"
     }
 }

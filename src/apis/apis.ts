@@ -2,7 +2,8 @@ import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import jwt_decode from 'jwt-decode'
 
-const API_URL: string = import.meta.env.VITE_ECSB_HTTP_API_URL
+const AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
+const SELF_INTERACTIONS_API_URL: string = import.meta.env.VITE_ECSB_HTTP_SELF_INTERACTIONS_API_URL
 const AUTH_TOKEN_KEY = 'auth-token'
 const GAME_TOKEN_KEY = 'game-token'
 
@@ -24,12 +25,12 @@ export const getAuthToken = (): string | null => localStorage.getItem(AUTH_TOKEN
 
 export const setAuthToken = (token: string): void => {
   localStorage.setItem(AUTH_TOKEN_KEY, token)
-  authTokenAPI.defaults.headers.Authorization = `Bearer ${token}`
+  authTokenAuthAndMenagementAPI.defaults.headers.Authorization = `Bearer ${token}`
 }
 
 export const removeAuthToken = (): void => {
   localStorage.removeItem(AUTH_TOKEN_KEY)
-  delete authTokenAPI.defaults.headers.Authorization
+  delete authTokenAuthAndMenagementAPI.defaults.headers.Authorization
 }
 
 export const decodeAuthToken = (token: string): AuthTokenData => {
@@ -41,27 +42,37 @@ export const getGameToken = (): string | null => localStorage.getItem(GAME_TOKEN
 export const setGameToken = (token: string): void => {
   localStorage.setItem(GAME_TOKEN_KEY, token)
   gameTokenAPI.defaults.headers.Authorization = `Bearer ${token}`
+  gameTokenSelfInteractionsAPI.defaults.headers.Authorization = `Bearer ${token}`
 }
 
 export const removeGameToken = (): void => {
   localStorage.removeItem(GAME_TOKEN_KEY)
   delete gameTokenAPI.defaults.headers.Authorization
+  delete gameTokenSelfInteractionsAPI.defaults.headers.Authorization
 }
 
 export const decodeGameToken = (token: string): GameTokenData => {
   return jwt_decode(token)
 }
 
-export const authTokenAPI: AxiosInstance = axios.create({
-  baseURL: API_URL,
+export const authTokenAuthAndMenagementAPI: AxiosInstance = axios.create({
+  baseURL: AUTH_AND_MENAGEMENT_API_URL,
   headers: {
     'Content-type': 'application/json',
     'Authorization': `Bearer ${getAuthToken()}` || '',
   },
 })
 
+export const gameTokenSelfInteractionsAPI: AxiosInstance = axios.create({
+  baseURL: SELF_INTERACTIONS_API_URL,
+  headers: {
+    'Content-type': 'application/json',
+    'Authorization': `Bearer ${getGameToken()}` || '',
+  },
+})
+
 export const gameTokenAPI: AxiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: AUTH_AND_MENAGEMENT_API_URL,
   headers: {
     'Content-type': 'application/json',
     'Authorization': `Bearer ${getGameToken()}` || '',

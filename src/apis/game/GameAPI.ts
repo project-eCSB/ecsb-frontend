@@ -1,4 +1,4 @@
-import { authTokenAPI, gameTokenAPI } from '../apis'
+import { authTokenAuthAndMenagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI } from '../apis'
 import type {
   AdminGameSettingsRequest,
   AdminGameSettingsResponse,
@@ -8,6 +8,8 @@ import type {
   CreateGameResponse,
   GameTokenRequest,
   GameTokenResponse,
+  ProductionRequest,
+  ProductionResponse,
   SavedAssetsRequest,
   SavedAssetsResponse,
   UploadAssetRequest,
@@ -19,7 +21,7 @@ import { GameResponseError } from './Types'
 import { type PlayerEquipment } from '../../services/game/Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .post('/admin/createGame', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -42,7 +44,7 @@ const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> 
 const getAdminGameSettings = async (
   data: AdminGameSettingsRequest,
 ): Promise<AdminGameSettingsResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .get(`/admin/settings/${data.gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -68,7 +70,7 @@ const getAdminGameSettings = async (
 }
 
 const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .post('/getGameToken', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -161,7 +163,7 @@ const getUserGameStatus = async (): Promise<UserGameStatusResponse> => {
 const uploadAsset = async (
   uploadAssetRequest: UploadAssetRequest,
 ): Promise<UploadAssetResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .post(
       `/assets?fileName=${uploadAssetRequest.fileName}&fileType=${uploadAssetRequest.fileType}`,
       uploadAssetRequest.file,
@@ -187,7 +189,7 @@ const uploadAsset = async (
 const getAssetConfig = async (
   assetConfigRequest: AssetConfigRequest,
 ): Promise<AssetConfigResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .get(`/assets/config/${assetConfigRequest.assetId}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -206,7 +208,7 @@ const getAssetConfig = async (
 }
 
 const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .get(`/assets?fileType=${request.fileType}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -226,10 +228,31 @@ const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsR
     })
 }
 
+const produce = async (data: ProductionRequest): Promise<ProductionResponse> => {
+  return await gameTokenSelfInteractionsAPI
+    .post('/production', data.quantity)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return {
+        success: true,
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
 /**
  * Game API is used to make request to the server that refers to game.
  */
-const gameApi = {
+const gameAPI = {
   createGame,
   getAdminGameSettings,
   getGameToken,
@@ -239,6 +262,7 @@ const gameApi = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
+  produce
 }
 
-export default gameApi
+export default gameAPI

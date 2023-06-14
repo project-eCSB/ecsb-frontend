@@ -1,9 +1,9 @@
 import { AuthResponseError } from './Types'
 import type { AuthRequest, AuthResponse } from './Types'
-import { authTokenAPI } from '../apis'
+import { authTokenAuthAndMenagementAPI } from '../apis'
 
 const login = async (data: AuthRequest): Promise<AuthResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .post('/login', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -26,7 +26,7 @@ const login = async (data: AuthRequest): Promise<AuthResponse> => {
 }
 
 const register = async (data: AuthRequest): Promise<AuthResponse> => {
-  return await authTokenAPI
+  return await authTokenAuthAndMenagementAPI
     .post('/register', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -51,9 +51,9 @@ const register = async (data: AuthRequest): Promise<AuthResponse> => {
 /**
  * Auth API is used to make request to the server that refers to authentication.
  */
-const authApi = {
+const authAPI = {
   login,
   register,
 }
 
-export default authApi
+export default authAPI

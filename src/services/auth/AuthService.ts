@@ -1,10 +1,10 @@
-import authApi from '../../apis/auth/AuthApi'
 import type { AuthResponse, AuthResponseError } from '../../apis/auth/Types'
 import type { UserData } from './Types'
 import { removeAuthToken, removeGameToken, setAuthToken } from '../../apis/apis'
+import authAPI from '../../apis/auth/AuthAPI'
 
 const login = async (email: string, password: string): Promise<UserData> => {
-  return await authApi
+  return await authAPI
     .login({ email, password })
     .then((res: AuthResponse) => {
       const userData: UserData = {
@@ -24,7 +24,7 @@ const login = async (email: string, password: string): Promise<UserData> => {
 }
 
 const register = async (email: string, password: string): Promise<UserData> => {
-  return await authApi
+  return await authAPI
     .register({ email, password })
     .then((res: AuthResponse) => {
       const userData: UserData = {

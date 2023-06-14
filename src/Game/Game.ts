@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import GridEngine from 'grid-engine'
 import { Scene } from './scenes/Scene'
-import type { GameSettings, GameStatus } from '../services/game/Types'
+import type { AssetConfig, GameSettings, GameStatus } from '../services/game/Types'
 
 export interface GameData {
   game: Phaser.Game
@@ -12,8 +12,9 @@ export const startGame = (
   gameToken: string,
   userStatus: GameStatus,
   settings: GameSettings,
+  mapConfig: AssetConfig,
 ): GameData => {
-  const scene = new Scene(gameToken, userStatus, settings)
+  const scene = new Scene(gameToken, userStatus, settings, mapConfig)
 
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -59,4 +60,6 @@ export const stopGame = (gameData: GameData): void => {
   window.document.getElementById('tradeBox')?.remove()
   window.document.getElementById('equipmentBox')?.remove()
   window.document.getElementById('requestBox')?.remove()
+  window.document.getElementById('workshop-container')?.remove()
+  window.document.getElementById('interaction')?.remove()
 }
