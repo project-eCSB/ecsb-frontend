@@ -1,4 +1,4 @@
-import gameApi from '../../../../../apis/game/GameApi'
+import gameAPI from '../../../../../apis/game/GameAPI'
 import { type CreateGameRequest, type CreateGameResponse } from '../../../../../apis/game/Types'
 import { type ClassResource, type CreateGameFormData, type Travel } from '../CreateGameForm'
 import './SubmitForm.css'
@@ -141,7 +141,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   const handleSubmit = () => {
     setRequestInProgress(true)
 
-    gameApi.createGame(transformFormData(createGameFormData)).then(
+    gameAPI.createGame(transformFormData(createGameFormData)).then(
       (response: CreateGameResponse) => {
         setRequestInProgress(false)
         setAndShowResultModal(`Game created successfully! Game ID: ${response.gameSessionId}`)

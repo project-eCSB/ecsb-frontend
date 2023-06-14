@@ -1,5 +1,5 @@
 import { setGameToken } from '../../apis/apis'
-import gameApi from '../../apis/game/GameApi'
+import gameAPI from '../../apis/game/GameAPI'
 import type {
   AdminGameSettingsResponse,
   AssetConfigResponse,
@@ -8,6 +8,7 @@ import type {
   CreateGameResponse,
   GameResponseError,
   GameTokenResponse,
+  ProductionResponse,
   SavedAsset,
   SavedAssetsResponse,
   UploadAssetResponse,
@@ -25,7 +26,7 @@ const createGame = async (
   characterAssetId: number,
   resourceAssetsId: number,
 ): Promise<number> => {
-  return await gameApi
+  return await gameAPI
     .createGame({
       classResourceRepresentation,
       gameName,
@@ -44,7 +45,7 @@ const createGame = async (
 }
 
 const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings> => {
-  return await gameApi
+  return await gameAPI
     .getAdminGameSettings({ gameSessionId })
     .then((res: AdminGameSettingsResponse) => {
       const gameSettings: GameSettings = {
@@ -64,7 +65,7 @@ const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings
 }
 
 const getGameSession = async (gameCode: string, playerId: string): Promise<number> => {
-  return await gameApi
+  return await gameAPI
     .getGameToken({ gameCode, playerId })
     .then((res: GameTokenResponse) => {
       const gameToken: string = res.gameToken
@@ -80,7 +81,7 @@ const getGameSession = async (gameCode: string, playerId: string): Promise<numbe
 }
 
 const getUserGameSettings = async (): Promise<GameSettings> => {
-  return await gameApi
+  return await gameAPI
     .getUserGameSettings()
     .then((res: UserGameSettingsResponse) => {
       const gameSettings: GameSettings = {
@@ -100,11 +101,18 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
 }
 
 const getPlayerEquipment = async (): Promise<PlayerEquipment> => {
-  return await gameApi.getPlayerEquipment()
+  return await gameAPI
+    .getPlayerEquipment()
+    .then((res: PlayerEquipment) => {
+      return res
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
 }
 
 const getUserGameStatus = async (): Promise<GameStatus> => {
-  return await gameApi
+  return await gameAPI
     .getUserGameStatus()
     .then((res: UserGameStatusResponse) => {
       const gameStatus: GameStatus = {
@@ -126,7 +134,7 @@ const uploadAsset = async (
   fileName: string,
   fileType: string,
 ): Promise<number> => {
-  return await gameApi
+  return await gameAPI
     .uploadAsset({ file, fileName, fileType })
     .then((response: UploadAssetResponse) => {
       const assetId: number = response.assetId
@@ -139,7 +147,7 @@ const uploadAsset = async (
 }
 
 const getAssetConfig = async (assetId: number): Promise<AssetConfig> => {
-  return await gameApi
+  return await gameAPI
     .getAssetConfig({ assetId })
     .then((response: AssetConfigResponse) => {
       return response
@@ -150,12 +158,23 @@ const getAssetConfig = async (assetId: number): Promise<AssetConfig> => {
 }
 
 const getSavedAssets = async (fileType: string): Promise<SavedAsset[]> => {
-  return await gameApi
+  return await gameAPI
     .getSavedAssets({ fileType: fileType })
     .then((res: SavedAssetsResponse) => {
       const savedAssets: SavedAsset[] = res.assets
 
       return savedAssets
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
+const produce = async (quantity: number): Promise<boolean> => {
+  return await gameAPI
+    .produce({ quantity: quantity })
+    .then((response: ProductionResponse) => {
+      return response.success
     })
     .catch((err: GameResponseError) => {
       throw new Error(err.message)
@@ -172,6 +191,7 @@ const gameService = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
+  produce
 }
 
 export default gameService

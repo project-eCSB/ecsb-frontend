@@ -3,7 +3,7 @@ import type { GridEngine, Position } from 'grid-engine'
 import { Direction } from 'grid-engine'
 import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
-import type { GameSettings, GameStatus, PlayerEquipment } from '../../services/game/Types'
+import type { AssetConfig, GameSettings, GameStatus, PlayerEquipment } from '../../services/game/Types'
 import { type Controls } from './Types'
 import { decodeGameToken } from '../../apis/apis'
 import { TradeWindow } from '../views/TradeWindow'
@@ -24,6 +24,9 @@ import Key = Phaser.Input.Keyboard.Key
 import { toast } from 'react-toastify'
 import { TradeOfferPopup } from '../../components/messages/TradeOfferPopup'
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
+import { WorkshopView } from '../views/WorkshopView'
+import { InteractionView } from '../views/InteractionView'
+import { type LoadingView } from '../views/LoadingView'
 
 export type PlayerId = string
 
@@ -54,12 +57,20 @@ export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine
   private readonly gameToken: string
   readonly playerId: PlayerId
-  private readonly status: GameStatus
+  public readonly status: GameStatus
   public readonly settings: GameSettings
+  private readonly mapConfig: AssetConfig
+  private readonly playerWorkshopsCoordinates: Coordinates[]
+  public playerWorkshopUnitPrice = 0
+  public playerWorkshopResouseName = ''
+  public playerWorkshopMaxProduction = 0
   public readonly players: Record<PlayerId, PlayerState>
   private actionTrade: string | null
   public tradeWindow: TradeWindow | null
   public equipmentView: EquipmentView | null
+  public workshopView: WorkshopView| null
+  public interactionView: InteractionView | null
+  public loadingView: LoadingView | null
   public movingEnabled: boolean
   private movementWs!: Websocket
   private tradeWs!: Websocket
@@ -68,7 +79,7 @@ export class Scene extends Phaser.Scene {
   private otherEquipment?: PlayerEquipment
   private otherPlayerId?: PlayerId
 
-  constructor(gameToken: string, userStatus: GameStatus, settings: GameSettings) {
+  constructor(gameToken: string, userStatus: GameStatus, settings: GameSettings, mapConfig: AssetConfig) {
     super(sceneConfig)
     this.gameToken = gameToken
     this.playerId = decodeGameToken(gameToken).playerId
@@ -79,6 +90,19 @@ export class Scene extends Phaser.Scene {
     this.movingEnabled = true
     this.tradeWindow = null
     this.equipmentView = null
+    this.workshopView = null
+    this.interactionView = null
+    this.loadingView = null
+    this.mapConfig = mapConfig
+    this.playerWorkshopsCoordinates = mapConfig.professionWorkshops[userStatus.className]
+
+    settings.classResourceRepresentation.forEach((dto) => {
+      if (dto.key === userStatus.className) {
+        this.playerWorkshopUnitPrice = dto.value.unitPrice
+        this.playerWorkshopResouseName = dto.value.gameResourceName
+        this.playerWorkshopMaxProduction = dto.value.maxProduction
+      }
+    })
   }
 
   preload(): void {
@@ -165,6 +189,18 @@ export class Scene extends Phaser.Scene {
     this.gridEngine.positionChangeFinished().subscribe(({ charId, exitTile, enterTile }) => {
       if (charId !== this.playerId) {
         this.gridEngine.turnTowards(charId, this.players[charId].direction)
+        return
+      } 
+
+      if (charId === this.playerId) {
+        if (this.playerWorkshopsCoordinates.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)) {
+          if (!this.interactionView) {
+            this.interactionView = new InteractionView(this, "enter the workshop...")
+            this.interactionView.show()
+          }
+        } else {
+          this.interactionView?.close()
+        }
       }
     })
 
@@ -588,6 +624,15 @@ export class Scene extends Phaser.Scene {
       { keys: [controls.right], direction: Direction.RIGHT },
       { keys: [controls.up], direction: Direction.UP },
     ]
+
+    if (controls.action.isDown) {
+      if (this.playerWorkshopsCoordinates.some((coords) => this.players[this.playerId].coords.x === coords.x && this.players[this.playerId].coords.y === coords.y)) {
+        this.workshopView = new WorkshopView(this)
+        this.workshopView.show()
+
+        this.interactionView?.close()
+      }
+    }
 
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))
     if (foundMapping) {
