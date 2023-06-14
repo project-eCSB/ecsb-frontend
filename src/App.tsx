@@ -40,7 +40,16 @@ const App = () => {
         />
         <Route path='*' element={<Navigate to='/home' replace />} />
       </Routes>
-      <ToastContainer />
+      <ToastContainer
+        toastStyle={{
+          backgroundColor: '#524436',
+          borderRadius: '2px',
+          color: 'white',
+          boxShadow: '0px 3px 10px black',
+          opacity: '0.9',
+          fontSize: 'medium',
+        }}
+      />
     </BrowserRouter>
   )
 }

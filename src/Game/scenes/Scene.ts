@@ -64,6 +64,7 @@ export class Scene extends Phaser.Scene {
   private movementWs!: Websocket
   private tradeWs!: Websocket
   equipment?: PlayerEquipment
+  visibleEquipment?: PlayerEquipment
   private otherEquipment?: PlayerEquipment
   private otherPlayerId?: PlayerId
 
@@ -82,7 +83,7 @@ export class Scene extends Phaser.Scene {
 
   preload(): void {
     this.load.image('tiles', '/assets/overworld.png')
-    this.load.tilemapTiledJSON('cloud-city-map', '/assets/forest_glade.json')
+    this.load.tilemapTiledJSON('glade', '/assets/forest_glade.json')
     this.load.spritesheet('player', '/assets/characters.png', {
       frameWidth: 52,
       frameHeight: 72,
@@ -90,7 +91,7 @@ export class Scene extends Phaser.Scene {
   }
 
   create(): void {
-    const cloudCityTilemap = this.make.tilemap({ key: 'cloud-city-map' })
+    const cloudCityTilemap = this.make.tilemap({ key: 'glade' })
     cloudCityTilemap.addTilesetImage('Overworld', 'tiles')
 
     for (let i = 0; i < cloudCityTilemap.layers.length; i++) {
@@ -171,7 +172,7 @@ export class Scene extends Phaser.Scene {
       'pointerdown',
       (pointer: Phaser.Input.Pointer, gameObjects: Phaser.GameObjects.GameObject[]) => {
         if (gameObjects.length === 0) {
-          window.document.getElementById('btn')?.remove()
+          window.document.getElementById('btns')?.remove()
           this.actionTrade = null
         }
       },
@@ -181,6 +182,7 @@ export class Scene extends Phaser.Scene {
       .getPlayerEquipment()
       .then((res: PlayerEquipment) => {
         this.equipment = res
+        this.visibleEquipment = JSON.parse(JSON.stringify(res))
         this.equipmentView = new EquipmentView(this)
         this.equipmentView.show()
       })
@@ -192,8 +194,14 @@ export class Scene extends Phaser.Scene {
   }
 
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    this.tradeWindow = new TradeWindow(this, this.equipment!, this.playerId, this.otherEquipment!, targetId, isUserTurn)
+    this.tradeWindow = new TradeWindow(
+      this,
+      this.equipment!,
+      this.playerId,
+      this.otherEquipment!,
+      targetId,
+      isUserTurn,
+    )
     this.tradeWindow.show()
   }
 
@@ -300,6 +308,18 @@ export class Scene extends Phaser.Scene {
               .getPlayerEquipment()
               .then((res: PlayerEquipment) => {
                 this.equipment = res
+                for (const resource of res.resources) {
+                  const val = this.visibleEquipment?.resources.find(
+                    (it) => it.name === resource.name,
+                  )
+                  if (val) {
+                    val.value = Math.min(resource.value, val.value)
+                  }
+                }
+                if (this.visibleEquipment) {
+                  this.visibleEquipment.money = Math.min(this.visibleEquipment.money, res.money)
+                  this.visibleEquipment.time = Math.min(this.visibleEquipment.time, res.time)
+                }
                 this.equipmentView?.update()
               })
               .catch((err) => {
@@ -352,25 +372,46 @@ export class Scene extends Phaser.Scene {
     className.setColor('#000000')
 
     const div = document.createElement('div')
-    div.id = 'btn'
-    div.style.backgroundColor = 'white'
+    div.id = 'btns'
+    div.style.backgroundColor = 'transparent'
 
     const buttonPartnership = document.createElement('button')
-    buttonPartnership.textContent = 'Partnership'
+    const buttonPartnershipText = document.createElement('p')
+    const iconPartnership = document.createElement('i')
+    iconPartnership.className = 'fa fa-handshake-o'
+    iconPartnership.ariaHidden = 'true'
+    buttonPartnershipText.innerText = 'Company'
+    buttonPartnership.appendChild(iconPartnership)
+    buttonPartnership.appendChild(buttonPartnershipText)
     buttonPartnership.onclick = (e: Event) => {
-      window.document.getElementById('btn')?.remove()
+      window.document.getElementById('btns')?.remove()
       this.actionTrade = null
     }
     const buttonTrade = document.createElement('button')
-    buttonTrade.textContent = 'Trade'
+    const buttonTradeText = document.createElement('p')
+    const iconTrade = document.createElement('i')
+    iconTrade.className = 'fa fa-exchange'
+    iconTrade.ariaHidden = 'true'
+    buttonTradeText.innerText = 'Trade'
+    buttonTrade.appendChild(iconTrade)
+    buttonTrade.appendChild(buttonTradeText)
     buttonTrade.onclick = (e: Event) => {
-      window.document.getElementById('btn')?.remove()
+      window.document.getElementById('btns')?.remove()
       sendTradeMessage(this.tradeWs, {
         senderId: this.playerId,
         message: {
           type: TradeMessageType.TradeStart,
           receiverId: id,
         },
+      })
+      toast.info('Trade invite sent', {
+        position: 'bottom-right',
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
       })
       this.actionTrade = null
     }
@@ -387,7 +428,7 @@ export class Scene extends Phaser.Scene {
           Math.abs(neighbor.coords.x - currPlayer.coords.x) <= RANGE &&
           Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
         ) {
-          window.document.getElementById('btn')?.remove()
+          window.document.getElementById('btns')?.remove()
           this.add.dom(
             this.cameras.main.scrollX + pointer.x,
             this.cameras.main.scrollY + pointer.y,
@@ -434,7 +475,7 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    toast.info(TradeOfferPopup({ scene: this, from: from }), {
+    toast.warn(TradeOfferPopup({ scene: this, from: from }), {
       position: 'bottom-right',
       autoClose: 8000,
       hideProgressBar: false,
@@ -442,7 +483,6 @@ export class Scene extends Phaser.Scene {
       pauseOnHover: true,
       draggable: false,
       progress: undefined,
-      theme: 'dark',
     })
   }
 
@@ -465,7 +505,6 @@ export class Scene extends Phaser.Scene {
           senderOffer: ourSide,
           senderRequest: otherSide,
         },
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         receiverId: this.otherPlayerId!,
       },
     })
@@ -489,7 +528,6 @@ export class Scene extends Phaser.Scene {
           senderOffer: ourSide,
           senderRequest: otherSide,
         },
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         receiverId: this.otherPlayerId!,
       },
     })
@@ -500,7 +538,6 @@ export class Scene extends Phaser.Scene {
       senderId: this.playerId,
       message: {
         type: TradeMessageType.TradeCancel,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         receiverId: this.otherPlayerId!,
       },
     })
@@ -509,15 +546,14 @@ export class Scene extends Phaser.Scene {
   }
 
   showBusyPopup(senderId: string, message: string): void {
-    toast.info(`${senderId} is already busy`, {
+    toast.error(`${senderId} is already busy`, {
       position: 'top-center',
       autoClose: 5000,
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: true,
       pauseOnHover: false,
       draggable: false,
       progress: undefined,
-      theme: 'dark',
     })
   }
 
@@ -562,5 +598,6 @@ export class Scene extends Phaser.Scene {
   destroy(): void {
     this.movementWs.close()
     this.tradeWs.close()
+    toast.dismiss()
   }
 }

@@ -57,6 +57,7 @@
         "@typescript-eslint/restrict-template-expressions": "off",
         "@typescript-eslint/prefer-optional-chain": "off",
         "@typescript-eslint/array-type": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
         "object-shorthand": "off"
     }
 }
