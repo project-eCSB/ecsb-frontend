@@ -9,7 +9,7 @@ interface tradeProps{
 
 export const TradeOfferPopup = (props: tradeProps) => {
     return <div className='container'>
-        <h4>{props.from} wants to trade</h4>
+        <p>{props.from} wants to trade</p>
         <button className='accept' id={`${props.from}-accept`} onClick={() => {
             const neighbor = props.scene.players[props.from]
             const currPlayer = props.scene.players[props.scene.playerId]
@@ -17,15 +17,14 @@ export const TradeOfferPopup = (props: tradeProps) => {
                     Math.abs(neighbor.coords.x - currPlayer.coords.x) <= RANGE &&
                     Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
                 )){
-                    toast.info(`${props.from} wants to trade with you, but you are too far, get closer if you wanna trade with him`, {
+                    toast.error(`${props.from} wants to trade with you, but you are too far`, {
                         position: "top-center",
                         autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: false,
+                        hideProgressBar: true,
+                        closeOnClick: false,
+                        pauseOnHover: true,
                         draggable: false,
                         progress: undefined,
-                        theme: "dark",
                     });
                     return
                 } 

@@ -12,6 +12,28 @@
   opacity: 0.8;
   border-bottom-left-radius: 2rem;
   padding: 1rem;
+  padding-top: 0.6rem;
+}
+
+#equipmentBox hr {
+  width: 100%;
+}
+
+#iconBox {
+  display: flex;
+  flex-direction: column;
+  margin-right: -1rem;
+}
+
+#visibilityText {
+  visibility: hidden;
+}
+
+#box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 12%;
 }
 
 #equipmentBox h3 {
@@ -21,6 +43,7 @@
   justify-content: center;
   align-items: center;
   font-size: 1.5rem;
+  margin-bottom: 0.2rem;
 }
 
 #equipmentBoxContent {
@@ -34,12 +57,43 @@
   font-size: 1.2rem;
 }
 
+#equipmentBoxContent div hr {
+  width: 100%;
+}
+
 #equipmentBoxContent h5 {
   font-size: 1.2rem;
 }
 
 #equipmentBoxContent p {
   font-size: 1rem;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#visibleAmountContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+#visibleAmountContainer button {
+  width: 30%;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#visibleAmountContainer button:hover {
+  background-color: rgb(168, 168, 168);
 }
 
 #requestBox {
@@ -204,4 +258,47 @@
 
 #tradeBoxButtons button:hover {
   cursor: pointer;
+}
+
+#btns button {
+  background-color: #524436;
+  border-radius: 50%;
+  width: 4rem;
+  height: 4rem;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+#btns button:hover {
+  background-color: #42372c;
+}
+
+#btns button:hover > i {
+  display: none;
+}
+
+#btns button:hover > p {
+  display: inline;
+}
+
+#btns button:first-child {
+  transform: translate(-75%, 0);
+}
+
+#btns button:last-child {
+  transform: translate(75%, 0);
+}
+
+#btns button p {
+  display: None;
+  font-weight: 600;
+  font-size: small;
+  color: white;
+}
+
+#btns button i {
+  transform: scale(2);
+  color: white;
 }
