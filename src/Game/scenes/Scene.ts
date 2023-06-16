@@ -3,22 +3,22 @@ import type { GridEngine, Position } from 'grid-engine'
 import { Direction } from 'grid-engine'
 import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
-import type { AssetConfig, GameSettings, GameStatus, PlayerEquipment } from '../../services/game/Types'
-import { type Controls } from './Types'
+import type {
+  AssetConfig,
+  GameSettings,
+  GameStatus,
+  PlayerEquipment,
+} from '../../services/game/Types'
+import {
+  CloudType,
+  type PlayerId,
+  type Controls,
+  type Coordinates,
+  type PlayerState,
+} from './Types'
 import { decodeGameToken } from '../../apis/apis'
 import { TradeWindow } from '../views/TradeWindow'
-import {
-  type Coordinates,
-  MovementMessageType,
-  parseMovementMessage,
-  sendMovementMessage,
-} from '../messages/MoveMessageHandler'
 import gameService from '../../services/game/GameService'
-import {
-  parseTradeMessage,
-  sendTradeMessage,
-  TradeMessageType,
-} from '../messages/TradeMessagehandler'
 import { EquipmentView } from '../views/EquipmentView'
 import Key = Phaser.Input.Keyboard.Key
 import { toast } from 'react-toastify'
@@ -27,14 +27,17 @@ import { type ClassResourceRepresentation } from '../../apis/game/Types'
 import { WorkshopView } from '../views/WorkshopView'
 import { InteractionView } from '../views/InteractionView'
 import { type LoadingView } from '../views/LoadingView'
-
-export type PlayerId = string
-
-export interface PlayerState {
-  coords: Coordinates
-  direction: Direction
-  sprite: Phaser.GameObjects.Sprite
-}
+import { parseChatMessage } from '../webSocketMessage/chat/MessageParser'
+import {
+  MovementMessageType,
+  sendMovementMessage,
+} from '../webSocketMessage/movement/MovementMessage'
+import { parseMovementMessage } from '../webSocketMessage/movement/MessageParser'
+import { TradeMessageType, sendTradeMessage } from '../webSocketMessage/chat/TradeMessageHandler'
+import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
+import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
+import { CloudBuilder } from '../views/CloudBuilder'
+import { ContextMenuBuilder } from '../views/ContextMenuBuilder'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -65,21 +68,28 @@ export class Scene extends Phaser.Scene {
   public playerWorkshopResouseName = ''
   public playerWorkshopMaxProduction = 0
   public readonly players: Record<PlayerId, PlayerState>
-  private actionTrade: string | null
+  public actionTrade: string | null
   public tradeWindow: TradeWindow | null
   public equipmentView: EquipmentView | null
-  public workshopView: WorkshopView| null
+  public workshopView: WorkshopView | null
   public interactionView: InteractionView | null
   public loadingView: LoadingView | null
+  public cloudBuilder!: CloudBuilder
+  public contextMenuBuilder!: ContextMenuBuilder
   public movingEnabled: boolean
   private movementWs!: Websocket
-  private tradeWs!: Websocket
+  public tradeWs!: Websocket
   equipment?: PlayerEquipment
   visibleEquipment?: PlayerEquipment
   private otherEquipment?: PlayerEquipment
   private otherPlayerId?: PlayerId
 
-  constructor(gameToken: string, userStatus: GameStatus, settings: GameSettings, mapConfig: AssetConfig) {
+  constructor(
+    gameToken: string,
+    userStatus: GameStatus,
+    settings: GameSettings,
+    mapConfig: AssetConfig,
+  ) {
     super(sceneConfig)
     this.gameToken = gameToken
     this.playerId = decodeGameToken(gameToken).playerId
@@ -93,6 +103,8 @@ export class Scene extends Phaser.Scene {
     this.workshopView = null
     this.interactionView = null
     this.loadingView = null
+    this.cloudBuilder = new CloudBuilder()
+    this.contextMenuBuilder = new ContextMenuBuilder()
     this.mapConfig = mapConfig
     this.playerWorkshopsCoordinates = mapConfig.professionWorkshops[userStatus.className]
 
@@ -126,9 +138,10 @@ export class Scene extends Phaser.Scene {
     const playerSprite = this.add.sprite(0, 0, 'player')
     const text = this.add.text(0, -20, 'You')
     text.setColor('#000000')
-
     const className = this.add.text(0, -5, `[${this.status.className}]`)
     className.setColor('#000000')
+
+    const clouds = this.cloudBuilder.build(this, this.playerId)
 
     this.cameras.main.setBounds(
       0,
@@ -137,7 +150,15 @@ export class Scene extends Phaser.Scene {
       cloudCityTilemap.heightInPixels * LAYER_SCALE,
     )
 
-    const container = this.add.container(0, 0, [playerSprite, text, className])
+    const container = this.add.container(0, 0, [
+      playerSprite,
+      text,
+      className,
+      clouds.workSymbol,
+      clouds.travelSymbol,
+      clouds.talkSymbol,
+      clouds.productionSymbol,
+    ])
 
     this.cameras.main.startFollow(container, true)
     this.cameras.main.setFollowOffset(-playerSprite.width, -playerSprite.height)
@@ -190,12 +211,16 @@ export class Scene extends Phaser.Scene {
       if (charId !== this.playerId) {
         this.gridEngine.turnTowards(charId, this.players[charId].direction)
         return
-      } 
+      }
 
       if (charId === this.playerId) {
-        if (this.playerWorkshopsCoordinates.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)) {
+        if (
+          this.playerWorkshopsCoordinates.some(
+            (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
+          )
+        ) {
           if (!this.interactionView) {
-            this.interactionView = new InteractionView(this, "enter the workshop...")
+            this.interactionView = new InteractionView(this, 'enter the workshop...')
             this.interactionView.show()
           }
         } else {
@@ -223,7 +248,7 @@ export class Scene extends Phaser.Scene {
         this.equipmentView.show()
       })
       .catch((err) => {
-        console.log('Error getting equipment:', err)
+        console.error(err)
       })
 
     this.scale.resize(window.innerWidth, window.innerHeight)
@@ -310,11 +335,9 @@ export class Scene extends Phaser.Scene {
         console.error('tradeWs error')
       })
       .onMessage((i, ev) => {
-        const msg = parseTradeMessage(ev.data)
+        const msg = parseChatMessage(ev.data)
 
-        if (!msg) {
-          return
-        }
+        if (!msg) return
 
         switch (msg.message.type) {
           case TradeMessageType.TradeStart:
@@ -362,11 +385,35 @@ export class Scene extends Phaser.Scene {
                 console.log('Error getting equipment:', err)
               })
             break
-          case TradeMessageType.UserBusy:
+          case UserStatusMessageType.UserBusy:
             this.showBusyPopup(msg.senderId, msg.message.reason)
             break
-          case TradeMessageType.UserInterrupt:
+          case UserStatusMessageType.UserInterrupt:
             this.showInterruptMessage(msg.senderId, msg.message.reason)
+            break
+          case NotificationMessageType.NotificationProductionStart:
+            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            break
+          case NotificationMessageType.NotificationProductionEnd:
+            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            break
+          case NotificationMessageType.NotificationTradeStart:
+            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TALK)
+            break
+          case NotificationMessageType.NotificationTradeEnd:
+            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TALK)
+            break
+          case NotificationMessageType.NotificationTravelStart:
+            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            break
+          case NotificationMessageType.NotificationTravelEnd:
+            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            break
+          case NotificationMessageType.NotificationWorkshopStart:
+            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.WORK)
+            break
+          case NotificationMessageType.NotificationWorkshopStop:
+            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
             break
         }
       })
@@ -401,59 +448,13 @@ export class Scene extends Phaser.Scene {
 
   addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
     const sprite = this.add.sprite(0, 0, 'player')
-    const text = this.add.text(0, -10, id)
+    const text = this.add.text(0, -20, id)
     text.setColor('#000000')
-
-    const className = this.add.text(0, 10, characterClass)
+    const className = this.add.text(0, -10, `[${characterClass}]`)
     className.setColor('#000000')
 
-    const div = document.createElement('div')
-    div.id = 'btns'
-    div.style.backgroundColor = 'transparent'
-
-    const buttonPartnership = document.createElement('button')
-    const buttonPartnershipText = document.createElement('p')
-    const iconPartnership = document.createElement('i')
-    iconPartnership.className = 'fa fa-handshake-o'
-    iconPartnership.ariaHidden = 'true'
-    buttonPartnershipText.innerText = 'Company'
-    buttonPartnership.appendChild(iconPartnership)
-    buttonPartnership.appendChild(buttonPartnershipText)
-    buttonPartnership.onclick = (e: Event) => {
-      window.document.getElementById('btns')?.remove()
-      this.actionTrade = null
-    }
-    const buttonTrade = document.createElement('button')
-    const buttonTradeText = document.createElement('p')
-    const iconTrade = document.createElement('i')
-    iconTrade.className = 'fa fa-exchange'
-    iconTrade.ariaHidden = 'true'
-    buttonTradeText.innerText = 'Trade'
-    buttonTrade.appendChild(iconTrade)
-    buttonTrade.appendChild(buttonTradeText)
-    buttonTrade.onclick = (e: Event) => {
-      window.document.getElementById('btns')?.remove()
-      sendTradeMessage(this.tradeWs, {
-        senderId: this.playerId,
-        message: {
-          type: TradeMessageType.TradeStart,
-          receiverId: id,
-        },
-      })
-      toast.info('Trade invite sent', {
-        position: 'bottom-right',
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-      })
-      this.actionTrade = null
-    }
-
-    div.appendChild(buttonPartnership)
-    div.appendChild(buttonTrade)
+    const clouds = this.cloudBuilder.build(this, id)
+    const div = this.contextMenuBuilder.build(this, id)
 
     sprite.setInteractive()
     sprite.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -474,7 +475,15 @@ export class Scene extends Phaser.Scene {
         }
       }
     })
-    const container = this.add.container(0, 0, [sprite, text, className])
+    const container = this.add.container(0, 0, [
+      sprite,
+      text,
+      className,
+      clouds.workSymbol,
+      clouds.travelSymbol,
+      clouds.talkSymbol,
+      clouds.productionSymbol,
+    ])
 
     this.gridEngine.addCharacter({
       id: id,
@@ -596,7 +605,6 @@ export class Scene extends Phaser.Scene {
   showInterruptMessage(senderId: string, message: string): void {
     this.otherEquipment = undefined
     this.otherPlayerId = undefined
-    console.log(senderId, message)
   }
 
   private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
@@ -626,7 +634,13 @@ export class Scene extends Phaser.Scene {
     ]
 
     if (controls.action.isDown) {
-      if (this.playerWorkshopsCoordinates.some((coords) => this.players[this.playerId].coords.x === coords.x && this.players[this.playerId].coords.y === coords.y)) {
+      if (
+        this.playerWorkshopsCoordinates.some(
+          (coords) =>
+            this.players[this.playerId].coords.x === coords.x &&
+            this.players[this.playerId].coords.y === coords.y,
+        )
+      ) {
         this.workshopView = new WorkshopView(this)
         this.workshopView.show()
 

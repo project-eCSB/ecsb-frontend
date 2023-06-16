@@ -1,5 +1,6 @@
 import { type Scene } from '../scenes/Scene'
 import { type PlayerEquipment } from '../../services/game/Types'
+import { CloudType } from '../scenes/Types'
 
 export class TradeWindow {
   isUserTurn: boolean
@@ -128,6 +129,10 @@ export class TradeWindow {
     this.tradeBoxClose.innerText = 'Close'
     this.tradeBoxClose.addEventListener('click', () => {
       scene.cancelTrade()
+      const cloud = document.getElementById(`actionCloud-${this.scene.playerId}`)
+      if (cloud) {
+        cloud.style.visibility = 'hidden'
+      }
       this.close()
     })
 
@@ -307,11 +312,13 @@ export class TradeWindow {
   }
 
   show(): void {
+    this.scene.cloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.TALK)
     window.document.body.appendChild(this.tradeBox)
     this.scene.movingEnabled = false
   }
 
   close(): void {
+    this.scene.cloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
     document.getElementById('tradeBox')?.remove()
     this.scene.tradeWindow = null
     this.scene.movingEnabled = true

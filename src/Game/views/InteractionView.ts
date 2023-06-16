@@ -5,10 +5,7 @@ export class InteractionView {
   interaction: HTMLDivElement
   interactionText: HTMLParagraphElement
 
-  constructor(
-    scene: Scene,
-    text: string,
-  ) {
+  constructor(scene: Scene, text: string) {
     this.scene = scene
 
     // CONTAIENR
@@ -17,8 +14,8 @@ export class InteractionView {
 
     // TITLE
     const icon = document.createElement('i')
-    icon.className = "fa fa-question-circle"
-    icon.ariaHidden = "true"
+    icon.className = 'fa fa-question-circle'
+    icon.ariaHidden = 'true'
 
     this.interactionText = document.createElement('p')
     this.interactionText.id = 'interactionTitle'
