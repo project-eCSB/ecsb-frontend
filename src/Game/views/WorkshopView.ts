@@ -1,6 +1,9 @@
 import gameService from '../../services/game/GameService'
 import { type PlayerEquipment } from '../../services/game/Types'
 import { type Scene } from '../scenes/Scene'
+import { CloudType } from '../scenes/Types'
+import { WorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessage'
+import { InteractionView } from './InteractionView'
 import { LoadingView } from './LoadingView'
 
 export class WorkshopView {
@@ -15,9 +18,7 @@ export class WorkshopView {
   workshopBtnSubmit: HTMLButtonElement
   workshopBtnClose: HTMLButtonElement
 
-  constructor(
-    scene: Scene,
-  ) {
+  constructor(scene: Scene) {
     this.scene = scene
 
     // CONTAIENR
@@ -30,7 +31,9 @@ export class WorkshopView {
 
     this.workshopTitle = document.createElement('h1')
     this.workshopTitle.id = 'workshop-header-title'
-    this.workshopTitle.innerText = `${this.scene.status.className.charAt(0).toUpperCase() + this.scene.status.className.slice(1)} Workshop`
+    this.workshopTitle.innerText = `${
+      this.scene.status.className.charAt(0).toUpperCase() + this.scene.status.className.slice(1)
+    } Workshop`
 
     this.workshopHeader.appendChild(this.workshopTitle)
 
@@ -57,17 +60,19 @@ export class WorkshopView {
 
     const plusBtn = document.createElement('button')
     const iconPlus = document.createElement('i')
-    iconPlus.className = "fa fa-plus"
-    iconPlus.ariaHidden = "true"
+    iconPlus.className = 'fa fa-plus'
+    iconPlus.ariaHidden = 'true'
 
     plusBtn.addEventListener('click', () => {
       const value = parseInt(pWantInput.innerText)
       pWantInput.innerText = `${value + 1}`
 
       const moneyCost = parseInt(pWantInput.innerText) * this.scene.playerWorkshopUnitPrice
-      const timeCost = Math.ceil(parseInt(pWantInput.innerText)/this.scene.playerWorkshopMaxProduction)
+      const timeCost = Math.ceil(
+        parseInt(pWantInput.innerText) / this.scene.playerWorkshopMaxProduction,
+      )
 
-      if ((moneyCost > this.scene.equipment!.money) || (timeCost > this.scene.equipment!.time)) {
+      if (moneyCost > this.scene.equipment!.money || timeCost > this.scene.equipment!.time) {
         this.disableSubmitBtn()
       } else {
         this.enableSubmitBtn()
@@ -80,8 +85,8 @@ export class WorkshopView {
 
     const minusBtn = document.createElement('button')
     const iconMinus = document.createElement('i')
-    iconMinus.className = "fa fa-minus"
-    iconMinus.ariaHidden = "true"
+    iconMinus.className = 'fa fa-minus'
+    iconMinus.ariaHidden = 'true'
 
     minusBtn.addEventListener('click', () => {
       const value = parseInt(pWantInput.innerText)
@@ -89,18 +94,20 @@ export class WorkshopView {
         pWantInput.innerText = `${value - 1}`
 
         const moneyCost = parseInt(pWantInput.innerText) * this.scene.playerWorkshopUnitPrice
-        const timeCost = Math.ceil(parseInt(pWantInput.innerText)/this.scene.playerWorkshopMaxProduction)
-  
+        const timeCost = Math.ceil(
+          parseInt(pWantInput.innerText) / this.scene.playerWorkshopMaxProduction,
+        )
+
         if (moneyCost === 0) {
           this.disableSubmitBtn()
         } else {
-          if ((moneyCost > this.scene.equipment!.money) || (timeCost > this.scene.equipment!.time)) {
+          if (moneyCost > this.scene.equipment!.money || timeCost > this.scene.equipment!.time) {
             this.disableSubmitBtn()
           } else {
             this.enableSubmitBtn()
           }
         }
-        
+
         pCostLabel.innerText = `Cost: ${moneyCost} money & ${timeCost} time`
       }
     })
@@ -131,26 +138,28 @@ export class WorkshopView {
       this.scene.loadingView = new LoadingView(this.scene)
       this.scene.loadingView.show()
 
-      gameService.produce(parseInt(pWantInput.innerText))
-      .then(() => {
-        gameService.getPlayerEquipment()
-        .then((res: PlayerEquipment) => {
-          this.scene.equipment = res
-          this.scene.equipmentView!.update()
-          this.scene.loadingView?.close()
-          this.close()
-          })
+      gameService
+        .produce(parseInt(pWantInput.innerText))
+        .then(() => {
+          gameService
+            .getPlayerEquipment()
+            .then((res: PlayerEquipment) => {
+              this.scene.equipment = res
+              this.scene.equipmentView!.update()
+              this.scene.loadingView?.close()
+              this.close()
+            })
+            .catch((err) => {
+              console.error(err)
+              this.scene.loadingView?.close()
+              this.close()
+            })
+        })
         .catch((err) => {
           console.error(err)
           this.scene.loadingView?.close()
-          this.close()
+          this.enableSubmitBtn()
         })
-      })
-      .catch((err) => {
-        console.error(err)
-        this.scene.loadingView?.close()
-        this.enableSubmitBtn()
-      })
     })
 
     this.workshopBtnClose = document.createElement('button')
@@ -181,14 +190,29 @@ export class WorkshopView {
   }
 
   show(): void {
+    sendWorkshopMessage(this.scene.tradeWs, {
+      type: WorkshopMessageType.WorkshopStart,
+    })
+    this.scene.cloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.WORK)
     window.document.body.appendChild(this.workshopContainer)
     this.scene.workshopView = this
     this.scene.movingEnabled = false
+    const cloud = document.getElementById(`actionCloud-${this.scene.playerId}`)
+    if (cloud) {
+      cloud.style.visibility = 'visible'
+    }
   }
 
   close(): void {
+    sendWorkshopMessage(this.scene.tradeWs, {
+      type: WorkshopMessageType.WorkshopStop,
+    })
+    this.scene.cloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     document.getElementById('workshop-container')?.remove()
     this.scene.workshopView = null
     this.scene.movingEnabled = true
+
+    this.scene.interactionView = new InteractionView(this.scene, 'enter the workshop...')
+    this.scene.interactionView.show()
   }
 }
