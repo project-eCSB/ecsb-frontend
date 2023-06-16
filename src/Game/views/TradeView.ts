@@ -1,16 +1,20 @@
 import { type Scene } from '../scenes/Scene'
 import { type PlayerEquipment } from '../../services/game/Types'
 import { CloudType } from '../scenes/Types'
+import { SPRITE_WIDTH, SPRITE_HEIGHT } from '../GameUtils'
 
-export class TradeWindow {
+export class TradeView {
   isUserTurn: boolean
   scene: Scene
   currPlayerId: string
   otherPlayerId: string
   currPlayer: PlayerEquipment
   otherPlayer: PlayerEquipment
+  youOfferPrevious: PlayerEquipment
+  youGetPrevious: PlayerEquipment
   youOffer: PlayerEquipment
   youGet: PlayerEquipment
+  changesDone: number
   tradeBox: HTMLDivElement
   tradeBoxTitle: HTMLHeadingElement
   tradeBoxContent: HTMLDivElement
@@ -49,6 +53,17 @@ export class TradeWindow {
       money: 0,
       resources: otherPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
     }
+    this.youOfferPrevious = {
+      time: 0,
+      money: 0,
+      resources: currPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
+    }
+    this.youGetPrevious = {
+      time: 0,
+      money: 0,
+      resources: otherPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
+    }
+    this.changesDone = 69
 
     // CONTAIENR
     this.tradeBox = document.createElement('div')
@@ -57,9 +72,7 @@ export class TradeWindow {
     // TITLE
     this.tradeBoxTitle = document.createElement('h1')
     this.tradeBoxTitle.id = 'tradeBoxTitle'
-    this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId} - ${
-      this.isUserTurn ? 'your turn' : 'wait for your turn'
-    }`
+    this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId}`
 
     // CONTENT
     this.tradeBoxContent = document.createElement('div')
@@ -74,7 +87,7 @@ export class TradeWindow {
     this.tradeBoxPlayerOfferEq = document.createElement('div')
     this.tradeBoxPlayerOfferEq.id = 'tradeBoxContentPlayerOfferEq'
 
-    this.fillEq(this.tradeBoxPlayerOfferEq, this.youOffer, this.currPlayer)
+    this.fillEq(this.tradeBoxPlayerOfferEq, this.youOffer, this.currPlayer, true)
     this.tradeBoxPlayer.appendChild(this.tradeBoxPlayerTitle)
     this.tradeBoxPlayer.appendChild(this.tradeBoxPlayerOfferEq)
 
@@ -87,12 +100,35 @@ export class TradeWindow {
     this.tradeBoxNeighborOfferEq = document.createElement('div')
     this.tradeBoxNeighborOfferEq.id = 'tradeBoxContentNeighborOfferEq'
 
-    this.fillEq(this.tradeBoxNeighborOfferEq, this.youGet, this.otherPlayer)
+    this.fillEq(this.tradeBoxNeighborOfferEq, this.youGet, this.otherPlayer, false)
     this.tradeBoxNeighbor.appendChild(this.tradeBoxNeighborTitle)
     this.tradeBoxNeighbor.appendChild(this.tradeBoxNeighborOfferEq)
 
+    // AVATARS
+    const youDiv = document.createElement('div')
+    youDiv.className = 'arrow-container'
+    const opponentDiv = document.createElement('div')
+    opponentDiv.className = 'arrow-container'
+    const iconUp = document.createElement('i')
+    iconUp.className = 'arrow fa fa-arrow-up'
+    iconUp.id = 'you'
+    iconUp.ariaHidden = 'true'
+    const iconUp2 = document.createElement('i')
+    iconUp2.className = 'arrow fa fa-arrow-up'
+    iconUp2.ariaHidden = 'true'
+    iconUp2.id = 'notYou'
+    youDiv.appendChild(scene.imageCropper.crop(scene, currPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, '/assets/characters.png', 4))
+    youDiv.appendChild(iconUp)
+    opponentDiv.appendChild(scene.imageCropper.crop(scene, otherPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, '/assets/characters.png', 4))
+    opponentDiv.appendChild(iconUp2)
+
+    iconUp.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
+    iconUp2.style.visibility = this.isUserTurn ? 'hidden' : 'visible'
+
+    this.tradeBoxContent.appendChild(youDiv)
     this.tradeBoxContent.appendChild(this.tradeBoxPlayer)
     this.tradeBoxContent.appendChild(this.tradeBoxNeighbor)
+    this.tradeBoxContent.appendChild(opponentDiv)
 
     // BUTTONS
     this.tradeBoxButtons = document.createElement('div')
@@ -116,6 +152,8 @@ export class TradeWindow {
       if (this.isUserTurn) {
         scene.sendTradeBid(this.youOffer, this.youGet)
         this.setUserTurn(false)
+        this.youOfferPrevious = JSON.parse(JSON.stringify(this.youOffer))
+        this.youGetPrevious = JSON.parse(JSON.stringify(this.youGet))
       }
     })
     if (isUserTurn) {
@@ -149,7 +187,9 @@ export class TradeWindow {
     container: HTMLDivElement,
     offer: PlayerEquipment,
     realState: PlayerEquipment,
+    playerEq: boolean,
   ): void {
+    const bid = JSON.parse(JSON.stringify(offer))
     for (const resource of offer.resources) {
       const resourceItem = document.createElement('div')
       const upperBoundary = realState?.resources.find((item) => item.key === resource.key)?.value
@@ -158,6 +198,27 @@ export class TradeWindow {
 
       const tradeBoxPlayerOfferEqItemAmount = document.createElement('p')
       tradeBoxPlayerOfferEqItemAmount.innerText = `${resource.value}`
+
+      const downBid = document.createElement('i')
+      downBid.className = 'arrow fa fa-arrow-down'
+      downBid.ariaHidden = 'true'
+      downBid.id = 'downBid'
+      const stableBid = document.createElement('i')
+      stableBid.className = 'arrow fa fa-minus'
+      stableBid.ariaHidden = 'true'
+      stableBid.id = 'stableBid'
+      const upBid = document.createElement('i')
+      upBid.className = 'arrow fa fa-arrow-up'
+      upBid.ariaHidden = 'true'
+      upBid.id = 'upBid'
+
+      this.updateBidIndicators(
+        (playerEq ? this.youOfferPrevious : this.youGetPrevious).resources.find((item) => item.key === resource.key)!.value,
+        resource.value,
+        downBid,
+        stableBid,
+        upBid,
+      )
 
       const tradeBoxPlayerOfferEqItemBtnUp = document.createElement('button')
       tradeBoxPlayerOfferEqItemBtnUp.innerText = '+'
@@ -168,8 +229,18 @@ export class TradeWindow {
             parseInt(tradeBoxPlayerOfferEqItemAmount.innerText) + 1
           }`
           resource.value += 1
-          this.enableSendOfferBtn()
-          this.disableAcceptBtn()
+
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1) this.changesDone += 1
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value) this.changesDone -= 1
+
+          if (this.changesDone !== 0){
+            this.enableSendOfferBtn()
+            this.disableAcceptBtn()
+          } else {
+            this.disableSendOfferBtn()
+            this.enableAcceptBtn()
+          }
         }
       })
       const tradeBoxPlayerOfferEqItemBtnDown = document.createElement('button')
@@ -181,8 +252,18 @@ export class TradeWindow {
             parseInt(tradeBoxPlayerOfferEqItemAmount.innerText) - 1
           }`
           resource.value -= 1
-          this.enableSendOfferBtn()
-          this.disableAcceptBtn()
+
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1) this.changesDone += 1
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value) this.changesDone -= 1
+
+          if (this.changesDone !== 0){
+            this.enableSendOfferBtn()
+            this.disableAcceptBtn()
+          } else {
+            this.disableSendOfferBtn()
+            this.enableAcceptBtn()
+          }
         }
       })
 
@@ -190,6 +271,9 @@ export class TradeWindow {
       resourceItem.appendChild(tradeBoxPlayerOfferEqItemAmount)
       resourceItem.appendChild(tradeBoxPlayerOfferEqItemBtnUp)
       resourceItem.appendChild(tradeBoxPlayerOfferEqItemBtnDown)
+      resourceItem.appendChild(downBid)
+      resourceItem.appendChild(stableBid)
+      resourceItem.appendChild(upBid)
 
       container.appendChild(resourceItem)
     }
@@ -202,14 +286,45 @@ export class TradeWindow {
     const moneyItemAmount = document.createElement('p')
     moneyItemAmount.innerText = `${offer.money}`
 
+    const downBidMoney = document.createElement('i')
+    downBidMoney.className = 'arrow fa fa-arrow-down'
+    downBidMoney.ariaHidden = 'true'
+    downBidMoney.id = 'downBid'
+    const stableBidMoney = document.createElement('i')
+    stableBidMoney.className = 'arrow fa fa-minus'
+    stableBidMoney.ariaHidden = 'true'
+    stableBidMoney.id = 'stableBid'
+    const upBidMoney = document.createElement('i')
+    upBidMoney.className = 'arrow fa fa-arrow-up'
+    upBidMoney.ariaHidden = 'true'
+    upBidMoney.id = 'upBid'
+
+    this.updateBidIndicators(
+      (playerEq ? this.youOfferPrevious : this.youGetPrevious).money,
+      offer.money,
+      downBidMoney,
+      stableBidMoney,
+      upBidMoney,
+    )
+
     const moneyItemAmountBtnUp = document.createElement('button')
     moneyItemAmountBtnUp.innerText = '+'
     moneyItemAmountBtnUp.addEventListener('click', () => {
       if (this.isUserTurn && moneyUpperBoundary > offer.money) {
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) + 1}`
         offer.money += 1
-        this.enableSendOfferBtn()
-        this.disableAcceptBtn()
+        
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        if (offer.money === bid.money + 1) this.changesDone += 1
+        if (offer.money === bid.money) this.changesDone -= 1
+
+        if (this.changesDone !== 0){
+          this.enableSendOfferBtn()
+          this.disableAcceptBtn()
+        } else {
+          this.disableSendOfferBtn()
+          this.enableAcceptBtn()
+        }
       }
     })
     const moneyItemAmountBtnDown = document.createElement('button')
@@ -219,8 +334,18 @@ export class TradeWindow {
         if (parseInt(moneyItemAmount.innerText) === 0) return
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) - 1}`
         offer.money -= 1
-        this.enableSendOfferBtn()
-        this.disableAcceptBtn()
+        
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        if (offer.money === bid.money - 1) this.changesDone += 1
+        if (offer.money === bid.money) this.changesDone -= 1
+
+        if (this.changesDone !== 0){
+          this.enableSendOfferBtn()
+          this.disableAcceptBtn()
+        } else {
+          this.disableSendOfferBtn()
+          this.enableAcceptBtn()
+        }
       }
     })
 
@@ -228,6 +353,10 @@ export class TradeWindow {
     moneyItem.appendChild(moneyItemAmount)
     moneyItem.appendChild(moneyItemAmountBtnUp)
     moneyItem.appendChild(moneyItemAmountBtnDown)
+    moneyItem.appendChild(downBidMoney)
+    moneyItem.appendChild(stableBidMoney)
+    moneyItem.appendChild(upBidMoney)
+
     container.appendChild(moneyItem)
 
     const timeItem = document.createElement('div')
@@ -238,14 +367,45 @@ export class TradeWindow {
     const timeItemAmount = document.createElement('p')
     timeItemAmount.innerText = `${offer.time}`
 
+    const downBidTime = document.createElement('i')
+    downBidTime.className = 'arrow fa fa-arrow-down'
+    downBidTime.ariaHidden = 'true'
+    downBidTime.id = 'downBid'
+    const stableBidTime = document.createElement('i')
+    stableBidTime.className = 'arrow fa fa-minus'
+    stableBidTime.ariaHidden = 'true'
+    stableBidTime.id = 'stableBid'
+    const upBidTime = document.createElement('i')
+    upBidTime.className = 'arrow fa fa-arrow-up'
+    upBidTime.ariaHidden = 'true'
+    upBidTime.id = 'upBid'
+
+    this.updateBidIndicators(
+      (playerEq ? this.youOfferPrevious : this.youGetPrevious).time,
+      offer.time,
+      downBidTime,
+      stableBidTime,
+      upBidTime,
+    )
+
     const timeItemBtnUp = document.createElement('button')
     timeItemBtnUp.innerText = '+'
     timeItemBtnUp.addEventListener('click', () => {
       if (this.isUserTurn && timeUpperBoundary > offer.time) {
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) + 1}`
         offer.time += 1
-        this.enableSendOfferBtn()
-        this.disableAcceptBtn()
+        
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        if (offer.time === bid.time + 1) this.changesDone += 1
+        if (offer.time === bid.time) this.changesDone -= 1
+
+        if (this.changesDone !== 0){
+          this.enableSendOfferBtn()
+          this.disableAcceptBtn()
+        } else {
+          this.disableSendOfferBtn()
+          this.enableAcceptBtn()
+        }
       }
     })
     const timeItemBtnUpDown = document.createElement('button')
@@ -255,8 +415,18 @@ export class TradeWindow {
         if (parseInt(timeItemAmount.innerText) === 0) return
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) - 1}`
         offer.time -= 1
-        this.enableSendOfferBtn()
-        this.disableAcceptBtn()
+        
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        if (offer.time === bid.time - 1) this.changesDone += 1
+        if (offer.time === bid.time) this.changesDone -= 1
+
+        if (this.changesDone !== 0){
+          this.enableSendOfferBtn()
+          this.disableAcceptBtn()
+        } else {
+          this.disableSendOfferBtn()
+          this.enableAcceptBtn()
+        }
       }
     })
 
@@ -264,31 +434,39 @@ export class TradeWindow {
     timeItem.appendChild(timeItemAmount)
     timeItem.appendChild(timeItemBtnUp)
     timeItem.appendChild(timeItemBtnUpDown)
+    timeItem.appendChild(downBidTime)
+    timeItem.appendChild(stableBidTime)
+    timeItem.appendChild(upBidTime)
+
     container.appendChild(timeItem)
   }
 
   update(youOffer: PlayerEquipment, youGet: PlayerEquipment): void {
     this.youOffer = youOffer
     this.youGet = youGet
+    this.changesDone = 0
 
     document.getElementById('tradeBoxContentPlayerOfferEq')?.remove()
     this.tradeBoxPlayerOfferEq = document.createElement('div')
     this.tradeBoxPlayerOfferEq.id = 'tradeBoxContentPlayerOfferEq'
-    this.fillEq(this.tradeBoxPlayerOfferEq, youOffer, this.currPlayer)
+    this.fillEq(this.tradeBoxPlayerOfferEq, youOffer, this.currPlayer, true)
     this.tradeBoxPlayer.appendChild(this.tradeBoxPlayerOfferEq)
 
     document.getElementById('tradeBoxContentNeighborOfferEq')?.remove()
     this.tradeBoxNeighborOfferEq = document.createElement('div')
     this.tradeBoxNeighborOfferEq.id = 'tradeBoxContentNeighborOfferEq'
-    this.fillEq(this.tradeBoxNeighborOfferEq, youGet, this.otherPlayer)
+    this.fillEq(this.tradeBoxNeighborOfferEq, youGet, this.otherPlayer, false)
     this.tradeBoxNeighbor.appendChild(this.tradeBoxNeighborOfferEq)
   }
 
   setUserTurn(value: boolean): void {
     this.isUserTurn = value
-    this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId} - ${
-      this.isUserTurn ? 'your turn' : 'wait for your turn'
-    }`
+    this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId}`
+
+    const you = document.getElementById('you')
+    if(you) you.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
+    const notYou = document.getElementById('notYou')
+    if(notYou) notYou.style.visibility = this.isUserTurn ? 'hidden' : 'visible'
   }
 
   disableAcceptBtn(): void {
@@ -309,6 +487,30 @@ export class TradeWindow {
   enableSendOfferBtn(): void {
     this.tradeBoxSendOffer.disabled = false
     this.tradeBoxSendOffer.style.display = 'block'
+  }
+
+  disableBidElement(element: HTMLElement): void {
+    element.style.display = 'none'
+  }
+
+  enableBidElement(element: HTMLElement): void {
+    element.style.display = 'inline'
+  }
+
+  updateBidIndicators(oldValue: number, newValue: number, down: HTMLElement, stable: HTMLElement, up: HTMLElement): void {
+    if (oldValue > newValue){
+      this.enableBidElement(down)
+      this.disableBidElement(stable)
+      this.disableBidElement(up)
+    } else if (oldValue === newValue) {
+      this.disableBidElement(down)
+      this.enableBidElement(stable)
+      this.disableBidElement(up)
+    } else {
+      this.disableBidElement(down)
+      this.disableBidElement(stable)
+      this.enableBidElement(up)
+    }
   }
 
   show(): void {
