@@ -4,17 +4,13 @@
   box-sizing: border-box;
 }
 
-.actionCloud { 
+.actionCloud {
   border-radius: 50%;
-  background: #FFFFFF;
-  height: 20px; 
+  background: #ffffff;
+  height: 20px;
   width: 20px;
-  box-shadow:
-        #FFFFFF 22px -5px, 
-        #FFFFFF 8px -8px, 
-        #FFFFFF 10px 3px, 
-        #FFFFFF 20px 5px, 
-        #FFFFFF 28px 2px;
+  box-shadow: #ffffff 22px -5px, #ffffff 8px -8px, #ffffff 10px 3px, #ffffff 20px 5px,
+    #ffffff 28px 2px;
   visibility: hidden;
 }
 
@@ -398,6 +394,96 @@
 #workshop-button-close:hover {
   background-color: rgb(120, 0, 0);
   cursor: pointer;
+}
+
+#travel-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  background-color: lightgray;
+  opacity: 0.9;
+  padding: 1rem;
+  border-radius: 2px;
+  box-shadow: '0px 3px 10px black';
+  font-size: medium;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-radius: 5%;
+}
+
+#travel-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#travel-buttons button {
+  padding: 0.2rem;
+  font-size: medium;
+  color: white;
+  padding: 5px 10px;
+  border: 2px solid rgb(255, 255, 255);
+  border-radius: 8px;
+  font-weight: 300;
+}
+
+#travel-button-submit {
+  background-color: rgb(0, 90, 0);
+}
+
+#travel-button-submit:hover {
+  background-color: rgb(0, 120, 0);
+  cursor: pointer;
+}
+
+#travel-button-close {
+  background-color: rgb(90, 0, 0);
+}
+
+#travel-button-close:hover {
+  background-color: rgb(120, 0, 0);
+  cursor: pointer;
+}
+
+#travel-content {
+  max-height: 50vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.travel-content-item-header {
+  display: flex;
+  flex-direction: row;
+  align-items: first baseline;
+  gap: 0.5rem;
+}
+
+.travel-content-item-title {
+  font-size: large;
+}
+
+.travel-content-item-money,
+.travel-content-item-resources-title {
+  font-size: medium;
+}
+
+.travel-content-item-resources {
+  list-style-type: none;
+  margin-left: 0.5rem;
+}
+
+.travel-content-item-resource {
+  font-size: small;
+}
+
+.travel-content-item-resource:before {
+  content: '-';
+  margin-right: 0.5rem;
 }
 
 #interaction {

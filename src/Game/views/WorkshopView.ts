@@ -197,10 +197,6 @@ export class WorkshopView {
     window.document.body.appendChild(this.workshopContainer)
     this.scene.workshopView = this
     this.scene.movingEnabled = false
-    const cloud = document.getElementById(`actionCloud-${this.scene.playerId}`)
-    if (cloud) {
-      cloud.style.visibility = 'visible'
-    }
   }
 
   close(): void {

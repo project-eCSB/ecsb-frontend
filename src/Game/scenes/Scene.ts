@@ -38,6 +38,7 @@ import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessag
 import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
 import { CloudBuilder } from '../views/CloudBuilder'
 import { ContextMenuBuilder } from '../views/ContextMenuBuilder'
+import { TravelType, TravelView } from '../views/TravelView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -63,6 +64,9 @@ export class Scene extends Phaser.Scene {
   public readonly status: GameStatus
   public readonly settings: GameSettings
   private readonly mapConfig: AssetConfig
+  private readonly lowTravels: Coordinates[]
+  private readonly mediumTravels: Coordinates[]
+  private readonly highTravels: Coordinates[]
   private readonly playerWorkshopsCoordinates: Coordinates[]
   public playerWorkshopUnitPrice = 0
   public playerWorkshopResouseName = ''
@@ -74,6 +78,7 @@ export class Scene extends Phaser.Scene {
   public workshopView: WorkshopView | null
   public interactionView: InteractionView | null
   public loadingView: LoadingView | null
+  public travelView: TravelView | null
   public cloudBuilder!: CloudBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public movingEnabled: boolean
@@ -103,9 +108,14 @@ export class Scene extends Phaser.Scene {
     this.workshopView = null
     this.interactionView = null
     this.loadingView = null
+    this.travelView = null
     this.cloudBuilder = new CloudBuilder()
     this.contextMenuBuilder = new ContextMenuBuilder()
     this.mapConfig = mapConfig
+    this.lowTravels = mapConfig.lowLevelTravels
+    this.mediumTravels = mapConfig.mediumLevelTravels
+    this.highTravels = mapConfig.highLevelTravels
+
     this.playerWorkshopsCoordinates = mapConfig.professionWorkshops[userStatus.className]
 
     settings.classResourceRepresentation.forEach((dto) => {
@@ -219,10 +229,27 @@ export class Scene extends Phaser.Scene {
             (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
           )
         ) {
-          if (!this.interactionView) {
-            this.interactionView = new InteractionView(this, 'enter the workshop...')
-            this.interactionView.show()
-          }
+          this.interactionView?.close()
+          this.interactionView = new InteractionView(this, 'enter the workshop...')
+          this.interactionView.show()
+        } else if (
+          this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
+        ) {
+          this.interactionView?.close()
+          this.interactionView = new InteractionView(this, 'start a short journey...')
+          this.interactionView.show()
+        } else if (
+          this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
+        ) {
+          this.interactionView?.close()
+          this.interactionView = new InteractionView(this, 'start a medium-distance journey...')
+          this.interactionView.show()
+        } else if (
+          this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
+        ) {
+          this.interactionView?.close()
+          this.interactionView = new InteractionView(this, 'start a long-distance journey...')
+          this.interactionView.show()
         } else {
           this.interactionView?.close()
         }
@@ -252,6 +279,34 @@ export class Scene extends Phaser.Scene {
       })
 
     this.scale.resize(window.innerWidth, window.innerHeight)
+
+    if (
+      this.playerWorkshopsCoordinates.some(
+        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
+      )
+    ) {
+      this.interactionView?.close()
+      this.interactionView = new InteractionView(this, 'enter the workshop...')
+      this.interactionView.show()
+    } else if (
+      this.lowTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+    ) {
+      this.interactionView?.close()
+      this.interactionView = new InteractionView(this, 'start a short journey...')
+      this.interactionView.show()
+    } else if (
+      this.mediumTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+    ) {
+      this.interactionView?.close()
+      this.interactionView = new InteractionView(this, 'start a medium-distance journey...')
+      this.interactionView.show()
+    } else if (
+      this.highTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+    ) {
+      this.interactionView?.close()
+      this.interactionView = new InteractionView(this, 'start a long-distance journey...')
+      this.interactionView.show()
+    } 
   }
 
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
@@ -645,7 +700,42 @@ export class Scene extends Phaser.Scene {
         this.workshopView.show()
 
         this.interactionView?.close()
+      } else if (
+        this.lowTravels.some(
+          (coords) =>
+            this.players[this.playerId].coords.x === coords.x &&
+            this.players[this.playerId].coords.y === coords.y,
+        )
+      ) {
+        this.travelView = new TravelView(this, TravelType.LOW)
+        this.travelView.show()
+
+        this.interactionView?.close()
+      } else if (
+        this.mediumTravels.some(
+          (coords) =>
+            this.players[this.playerId].coords.x === coords.x &&
+            this.players[this.playerId].coords.y === coords.y,
+        )
+      ) {
+        this.travelView = new TravelView(this, TravelType.MEDIUM)
+        this.travelView.show()
+
+        this.interactionView?.close()
+      } else if (
+        this.highTravels.some(
+          (coords) =>
+            this.players[this.playerId].coords.x === coords.x &&
+            this.players[this.playerId].coords.y === coords.y,
+        )
+      ) {
+        this.travelView = new TravelView(this, TravelType.HIGH)
+        this.travelView.show()
+
+        this.interactionView?.close()
       }
+
+      return
     }
 
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))
