@@ -170,6 +170,14 @@ export interface ProductionResponse {
   success: boolean
 }
 
+export interface TravelRequest {
+  city: string
+}
+
+export interface TravelResponse {
+  success: boolean
+}
+
 /**
   GameReponseError represents an error from the server.
   Code is 0 if the error is not from the server.
