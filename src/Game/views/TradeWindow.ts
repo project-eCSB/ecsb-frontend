@@ -42,12 +42,12 @@ export class TradeWindow {
     this.youOffer = {
       time: 0,
       money: 0,
-      resources: currPlayer.resources.map((dto) => ({ name: dto.name, value: 0 })),
+      resources: currPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
     }
     this.youGet = {
       time: 0,
       money: 0,
-      resources: otherPlayer.resources.map((dto) => ({ name: dto.name, value: 0 })),
+      resources: otherPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
     }
 
     // CONTAIENR
@@ -152,9 +152,9 @@ export class TradeWindow {
   ): void {
     for (const resource of offer.resources) {
       const resourceItem = document.createElement('div')
-      const upperBoundary = realState?.resources.find((item) => item.name === resource.name)?.value
+      const upperBoundary = realState?.resources.find((item) => item.key === resource.key)?.value
       const resourceItemName = document.createElement('h5')
-      resourceItemName.innerText = resource.name
+      resourceItemName.innerText = resource.key
 
       const tradeBoxPlayerOfferEqItemAmount = document.createElement('p')
       tradeBoxPlayerOfferEqItemAmount.innerText = `${resource.value}`

@@ -424,7 +424,7 @@ export class Scene extends Phaser.Scene {
                 this.equipment = res
                 for (const resource of res.resources) {
                   const val = this.visibleEquipment?.resources.find(
-                    (it) => it.name === resource.name,
+                    (it) => it.key === resource.key,
                   )
                   if (val) {
                     val.value = Math.min(resource.value, val.value)

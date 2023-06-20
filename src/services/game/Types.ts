@@ -35,7 +35,7 @@ export interface GameStatus {
 }
 
 export interface GameResourceDto {
-  name: string
+  key: string
   value: number
 }
 
