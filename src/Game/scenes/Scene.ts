@@ -445,12 +445,6 @@ export class Scene extends Phaser.Scene {
           case UserStatusMessageType.UserInterrupt:
             this.showInterruptMessage(msg.senderId, msg.message.reason)
             break
-          case NotificationMessageType.NotificationProductionStart:
-            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
-            break
-          case NotificationMessageType.NotificationProductionEnd:
-            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
-            break
           case NotificationMessageType.NotificationTradeStart:
             this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TALK)
             break
@@ -462,12 +456,24 @@ export class Scene extends Phaser.Scene {
             break
           case NotificationMessageType.NotificationTravelEnd:
             this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            break            
+          case NotificationMessageType.NotificationTravelChoosingStart:
+            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
             break
-          case NotificationMessageType.NotificationWorkshopStart:
+          case NotificationMessageType.NotificationTravelChoosingStop:
+            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            break
+          case NotificationMessageType.NotificationWorkshopChoosingStart:
             this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.WORK)
             break
-          case NotificationMessageType.NotificationWorkshopStop:
+          case NotificationMessageType.NotificationWorkshopChoosingStop:
             this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
+            break
+          case NotificationMessageType.NotificationProductionStart:
+            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            break
+          case NotificationMessageType.NotificationProductionEnd:
+            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
             break
         }
       })

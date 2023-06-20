@@ -33,9 +33,13 @@ export const parseChatMessage = (
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTravelEnd:
         return { senderId: parsed.senderId, message: parsed.message }
-      case NotificationMessageType.NotificationWorkshopStart:
+      case NotificationMessageType.NotificationTravelChoosingStart:
         return { senderId: parsed.senderId, message: parsed.message }
-      case NotificationMessageType.NotificationWorkshopStop:
+      case NotificationMessageType.NotificationTravelChoosingStop:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationWorkshopChoosingStart:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationWorkshopChoosingStop:
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationProductionStart:
         return { senderId: parsed.senderId, message: parsed.message }

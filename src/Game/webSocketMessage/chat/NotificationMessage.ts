@@ -1,14 +1,16 @@
 import type { Websocket } from 'websocket-ts'
 
 export enum NotificationMessageType {
-  NotificationWorkshopStart = 'notification/workshop/start',
-  NotificationWorkshopStop = 'notification/workshop/stop',
-  NotificationTradeStart = 'notification/tradeStart',
-  NotificationTradeEnd = 'notification/tradeEnd',
-  NotificationTravelStart = 'notification/travelStart',
-  NotificationTravelEnd = 'notification/travelEnd',
-  NotificationProductionStart = 'notification/productionStart',
-  NotificationProductionEnd = 'notification/productionEnd',
+  NotificationWorkshopChoosingStart = 'notification/choosing/workshop/start', // One of the players opened workshop window
+  NotificationWorkshopChoosingStop = 'notification/choosing/workshop/stop', // One of the players closed workshop window
+  NotificationProductionStart = 'notification/productionStart', // One of the players started production
+  NotificationProductionEnd = 'notification/productionEnd', // One of the players ended production
+  NotificationTravelChoosingStart = 'notification/choosing/travel/start', // One of the players opened travel window
+  NotificationTravelChoosingStop = 'notification/choosing/travel/stop', // One of the players closed travel window
+  NotificationTravelStart = 'notification/travelStart', // One of the players started travel
+  NotificationTravelEnd = 'notification/travelEnd', // One of the players ended travel
+  NotificationTradeStart = 'notification/tradeStart', // One of the players opened trade window
+  NotificationTradeEnd = 'notification/tradeEnd', // One of the players closed trade window
 }
 
 export interface NotificationTradeStartMessage {
@@ -43,18 +45,34 @@ export interface NotificationTravelEndMessage {
   }
 }
 
-export interface NotificationWorkshopStartMessage {
+export interface NotificationTravelChoosingStartMessage {
   senderId: string
   message: {
-    type: NotificationMessageType.NotificationWorkshopStart
+    type: NotificationMessageType.NotificationTravelChoosingStart
     playerId: string
   }
 }
 
-export interface NotificationWorkshopStopMessage {
+export interface NotificationTravelChoosingStopMessage {
   senderId: string
   message: {
-    type: NotificationMessageType.NotificationWorkshopStop
+    type: NotificationMessageType.NotificationTravelChoosingStop
+    playerId: string
+  }
+}
+
+export interface NotificationWorkshopChoosingStartMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationWorkshopChoosingStart
+    playerId: string
+  }
+}
+
+export interface NotificationWorkshopChoosingStopMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationWorkshopChoosingStop
     playerId: string
   }
 }
@@ -80,8 +98,10 @@ export type NotificationMessage =
   | NotificationTradeEndMessage
   | NotificationTravelStartMessage
   | NotificationTravelEndMessage
-  | NotificationWorkshopStartMessage
-  | NotificationWorkshopStopMessage
+  | NotificationTravelChoosingStartMessage
+  | NotificationTravelChoosingStopMessage
+  | NotificationWorkshopChoosingStartMessage
+  | NotificationWorkshopChoosingStopMessage
   | NotificationProductionStartMessage
   | NotificationProductionEndMessage
 

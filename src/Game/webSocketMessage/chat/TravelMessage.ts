@@ -1,8 +1,8 @@
 import { type Websocket } from 'websocket-ts'
 
 export enum TravelMessageType {
-  TravelStart = 'travel/start',
-  TravelStop = 'travel/stop',
+  TravelStart = 'travel/start', // Signal opening travel window
+  TravelStop = 'travel/stop', // Signal closing travel window
 }
 
 export interface TravelStartMessage {
