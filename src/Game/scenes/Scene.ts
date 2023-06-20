@@ -71,7 +71,7 @@ export class Scene extends Phaser.Scene {
   public tradeWindow: TradeView | null
   public equipmentView: EquipmentView | null
   public workshopView: WorkshopView | null
-  public interactionView: InteractionView | null
+  public interactionView: InteractionView
   public loadingView: LoadingView | null
   public travelView: TravelView | null
   public cloudBuilder!: CloudBuilder
@@ -80,8 +80,8 @@ export class Scene extends Phaser.Scene {
   public movingEnabled: boolean
   private movementWs!: Websocket
   public tradeWs!: Websocket
-  equipment?: PlayerEquipment
-  visibleEquipment?: PlayerEquipment
+  public equipment?: PlayerEquipment
+  public visibleEquipment?: PlayerEquipment
   private otherEquipment?: PlayerEquipment
   private otherPlayerId?: PlayerId
 
@@ -102,7 +102,7 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow = null
     this.equipmentView = null
     this.workshopView = null
-    this.interactionView = null
+    this.interactionView = new InteractionView(this)
     this.loadingView = null
     this.travelView = null
     this.cloudBuilder = new CloudBuilder()
@@ -228,29 +228,25 @@ export class Scene extends Phaser.Scene {
             (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
           )
         ) {
-          this.interactionView?.close()
-          this.interactionView = new InteractionView(this, 'enter the workshop...')
+          this.interactionView.setText('enter the workshop...')
           this.interactionView.show()
         } else if (
           this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView?.close()
-          this.interactionView = new InteractionView(this, 'start a short journey...')
+          this.interactionView.setText('start a short journey...')
           this.interactionView.show()
         } else if (
           this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView?.close()
-          this.interactionView = new InteractionView(this, 'start a medium-distance journey...')
+          this.interactionView.setText('start a medium-distance journey...')
           this.interactionView.show()
         } else if (
           this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView?.close()
-          this.interactionView = new InteractionView(this, 'start a long-distance journey...')
+          this.interactionView.setText('start a long-distance journey...')
           this.interactionView.show()
         } else {
-          this.interactionView?.close()
+          this.interactionView.close()
         }
       }
     })
@@ -284,26 +280,22 @@ export class Scene extends Phaser.Scene {
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView?.close()
-      this.interactionView = new InteractionView(this, 'enter the workshop...')
+      this.interactionView.setText('enter the workshop...')
       this.interactionView.show()
     } else if (
       this.lowTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
     ) {
-      this.interactionView?.close()
-      this.interactionView = new InteractionView(this, 'start a short journey...')
+      this.interactionView.setText('start a short journey...')
       this.interactionView.show()
     } else if (
       this.mediumTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
     ) {
-      this.interactionView?.close()
-      this.interactionView = new InteractionView(this, 'start a medium-distance journey...')
+      this.interactionView.setText('start a medium-distance journey...')
       this.interactionView.show()
     } else if (
       this.highTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
     ) {
-      this.interactionView?.close()
-      this.interactionView = new InteractionView(this, 'start a long-distance journey...')
+      this.interactionView.setText('start a long-distance journey...')
       this.interactionView.show()
     } 
   }
@@ -695,7 +687,7 @@ export class Scene extends Phaser.Scene {
       { keys: [controls.up], direction: Direction.UP },
     ]
 
-    if (controls.action.isDown) {
+    if (controls.action.isDown && Phaser.Input.Keyboard.JustDown(controls.action)) {
       if (
         this.playerWorkshopsCoordinates.some(
           (coords) =>
@@ -706,7 +698,7 @@ export class Scene extends Phaser.Scene {
         this.workshopView = new WorkshopView(this)
         this.workshopView.show()
 
-        this.interactionView?.close()
+        this.interactionView.close()
       } else if (
         this.lowTravels.some(
           (coords) =>
@@ -717,7 +709,7 @@ export class Scene extends Phaser.Scene {
         this.travelView = new TravelView(this, TravelType.LOW)
         this.travelView.show()
 
-        this.interactionView?.close()
+        this.interactionView.close()
       } else if (
         this.mediumTravels.some(
           (coords) =>
@@ -728,7 +720,7 @@ export class Scene extends Phaser.Scene {
         this.travelView = new TravelView(this, TravelType.MEDIUM)
         this.travelView.show()
 
-        this.interactionView?.close()
+        this.interactionView.close()
       } else if (
         this.highTravels.some(
           (coords) =>
@@ -739,7 +731,7 @@ export class Scene extends Phaser.Scene {
         this.travelView = new TravelView(this, TravelType.HIGH)
         this.travelView.show()
 
-        this.interactionView?.close()
+        this.interactionView.close()
       }
 
       return

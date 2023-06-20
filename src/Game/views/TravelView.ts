@@ -3,7 +3,6 @@ import { type PlayerEquipment } from '../../services/game/Types'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { TravelMessageType, sendTravelMessage } from '../webSocketMessage/chat/TravelMessage'
-import { InteractionView } from './InteractionView'
 import { LoadingView } from './LoadingView'
 
 export enum TravelType {
@@ -214,18 +213,14 @@ export class TravelView {
 
     switch (this.travelType) {
       case TravelType.LOW:
-        this.scene.interactionView = new InteractionView(this.scene, 'start a short journey...')
+        this.scene.interactionView.setText('start a short journey...')
         break
       case TravelType.MEDIUM:
-        this.scene.interactionView = new InteractionView(
-          this.scene,
-          'start a medium-distance journey...',
+        this.scene.interactionView.setText('start a medium-distance journey...',
         )
         break
       case TravelType.HIGH:
-        this.scene.interactionView = new InteractionView(
-          this.scene,
-          'start a long-distance journey...',
+        this.scene.interactionView.setText('start a long-distance journey...',
         )
         break
     }

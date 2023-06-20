@@ -3,7 +3,6 @@ import { type PlayerEquipment } from '../../services/game/Types'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { WorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessage'
-import { InteractionView } from './InteractionView'
 import { LoadingView } from './LoadingView'
 
 export class WorkshopView {
@@ -222,7 +221,7 @@ export class WorkshopView {
     this.scene.workshopView = null
     this.scene.movingEnabled = true
 
-    this.scene.interactionView = new InteractionView(this.scene, 'enter the workshop...')
+    this.scene.interactionView.setText('enter the workshop...')
     this.scene.interactionView.show()
   }
 }
