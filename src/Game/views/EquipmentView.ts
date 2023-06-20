@@ -58,7 +58,7 @@ export class EquipmentView {
       itemBox.id = 'box'
 
       const itemName = document.createElement('h5')
-      itemName.innerText = item.name
+      itemName.innerText = item.key
       const itemValue = document.createElement('p')
       itemValue.innerText = item.value.toString()
 
@@ -77,21 +77,21 @@ export class EquipmentView {
       down.appendChild(iconDown)
       down.id = 'down'
       const itemValue2 = document.createElement('p')
-      const visibleValue = this.scene.visibleEquipment.resources.find((it) => it.name === item.name)
+      const visibleValue = this.scene.visibleEquipment.resources.find((it) => it.key === item.key)
       if (visibleValue) {
         itemValue2.innerText = visibleValue.value.toString()
       }
 
       up.onclick = (e: Event) => {
-        const val = this.scene.visibleEquipment?.resources.find((it) => it.name === item.name)
-        const boundary = this.scene.equipment?.resources.find((it) => it.name === item.name)
+        const val = this.scene.visibleEquipment?.resources.find((it) => it.key === item.key)
+        const boundary = this.scene.equipment?.resources.find((it) => it.key === item.key)
         if (val && boundary && val.value < boundary.value) {
           val.value += 1
           itemValue2.innerText = `${parseInt(itemValue2.innerText) + 1}`
         }
       }
       down.onclick = (e: Event) => {
-        const val = this.scene.visibleEquipment?.resources.find((it) => it.name === item.name)
+        const val = this.scene.visibleEquipment?.resources.find((it) => it.key === item.key)
         if (val && val.value > 0) {
           val.value -= 1
           itemValue2.innerText = `${parseInt(itemValue2.innerText) - 1}`
