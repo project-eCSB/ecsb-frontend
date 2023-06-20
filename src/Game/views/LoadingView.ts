@@ -27,6 +27,6 @@ export class LoadingView {
 
   close(): void {
     document.getElementById('modal-overlay')?.remove()
-    this.scene.interactionView = null
+    this.scene.loadingView = null
   }
 }

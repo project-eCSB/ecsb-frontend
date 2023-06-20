@@ -5,33 +5,35 @@ export class InteractionView {
   interaction: HTMLDivElement
   interactionText: HTMLParagraphElement
 
-  constructor(scene: Scene, text: string) {
+  constructor(scene: Scene) {
     this.scene = scene
 
-    // CONTAIENR
     this.interaction = document.createElement('div')
     this.interaction.id = 'interaction'
 
-    // TITLE
     const icon = document.createElement('i')
     icon.className = 'fa fa-question-circle'
     icon.ariaHidden = 'true'
 
     this.interactionText = document.createElement('p')
     this.interactionText.id = 'interactionTitle'
-    this.interactionText.innerHTML = `Press <strong>space</strong> to ${text}`
 
     this.interaction.appendChild(icon)
     this.interaction.appendChild(this.interactionText)
+
+    this.interaction.style.display = 'none'
+    window.document.body.appendChild(this.interaction)
+  }
+
+  setText(text: string): void {
+    this.interactionText.innerHTML = `Press <strong>space</strong> to ${text}`
   }
 
   show(): void {
-    window.document.body.appendChild(this.interaction)
-    this.scene.interactionView = this
+    this.interaction.style.display = 'flex'
   }
 
   close(): void {
-    document.getElementById('interaction')?.remove()
-    this.scene.interactionView = null
+    this.interaction.style.display = 'none'
   }
 }
