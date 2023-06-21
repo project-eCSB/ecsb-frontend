@@ -43,18 +43,26 @@ export class WorkshopView {
     this.workshopContentCost = document.createElement('div')
     this.workshopContentCost.id = 'workshop-content-cost'
 
-    const pCostLabel = document.createElement('p')
-    pCostLabel.innerText = `Cost: 0 money & 0 time`
+    const pMoneyLabel = document.createElement('h4')
+    pMoneyLabel.innerText = `money: 0`
+    const pTimeLabel = document.createElement('h4')
+    pTimeLabel.innerText = `time: 0`
 
-    this.workshopContentCost.appendChild(pCostLabel)
+    const costH = document.createElement('h2')
+    costH.innerText = `Cost:`
+    this.workshopContentCost.appendChild(costH)
+    const labelsDiv = document.createElement('div')
+    labelsDiv.appendChild(pMoneyLabel)
+    labelsDiv.appendChild(pTimeLabel)
+    this.workshopContentCost.appendChild(labelsDiv)
 
     this.workshopContentValue = document.createElement('div')
     this.workshopContentValue.id = 'workshop-content-value'
 
-    const pWantLabel = document.createElement('p')
-    pWantLabel.innerText = `How many ${this.scene.playerWorkshopResouseName}s to produce: `
+    const pWantLabel = document.createElement('h2')
+    pWantLabel.innerText = `Produce: `
 
-    const pWantInput = document.createElement('p')
+    const pWantInput = document.createElement('h2')
     pWantInput.innerText = '0'
 
     const plusBtn = document.createElement('button')
@@ -77,7 +85,8 @@ export class WorkshopView {
         this.enableSubmitBtn()
       }
 
-      pCostLabel.innerText = `Cost: ${moneyCost} money & ${timeCost} time`
+      pMoneyLabel.innerText = `money: ${moneyCost}`
+      pTimeLabel.innerText = `time: ${timeCost}`
     })
 
     plusBtn.appendChild(iconPlus)
@@ -107,7 +116,8 @@ export class WorkshopView {
           }
         }
 
-        pCostLabel.innerText = `Cost: ${moneyCost} money & ${timeCost} time`
+      pMoneyLabel.innerText = `money: ${moneyCost}`
+      pTimeLabel.innerText = `time: ${timeCost}`
       }
     })
 
@@ -182,8 +192,8 @@ export class WorkshopView {
       this.close()
     })
 
-    this.workshopButtons.appendChild(this.workshopBtnClose)
     this.workshopButtons.appendChild(this.workshopBtnSubmit)
+    this.workshopButtons.appendChild(this.workshopBtnClose)
 
     this.workshopContainer.appendChild(this.workshopHeader)
     this.workshopContainer.appendChild(this.workshopContent)

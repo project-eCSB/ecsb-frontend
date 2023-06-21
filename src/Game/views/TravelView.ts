@@ -88,13 +88,13 @@ export class TravelView {
           // ITEM CONTENT
           const travelItemCostMoney = document.createElement('p')
           travelItemCostMoney.className = 'travel-content-item-money'
-          travelItemCostMoney.innerText = `Possible reward: ${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to} $`
+          travelItemCostMoney.innerText = `Reward: ${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to} $`
 
           travelItemContainer.appendChild(travelItemCostMoney)
 
           const travelItemCostResourcesTitle = document.createElement('p')
           travelItemCostResourcesTitle.className = 'travel-content-item-resources-title'
-          travelItemCostResourcesTitle.innerText = 'Journey cost:'
+          travelItemCostResourcesTitle.innerText = 'Cost:'
 
           travelItemContainer.appendChild(travelItemCostResourcesTitle)
 
