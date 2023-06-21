@@ -17,13 +17,12 @@ import {
   type PlayerState,
 } from './Types'
 import { decodeGameToken } from '../../apis/apis'
-import { TradeWindow } from '../views/TradeWindow'
+import { TradeView } from '../views/TradeView'
 import gameService from '../../services/game/GameService'
 import { EquipmentView } from '../views/EquipmentView'
 import Key = Phaser.Input.Keyboard.Key
 import { toast } from 'react-toastify'
-import { TradeOfferPopup } from '../../components/messages/TradeOfferPopup'
-import { type ClassResourceRepresentation } from '../../apis/game/Types'
+import { TradeOfferPopup } from '../components/TradeOfferPopup'
 import { WorkshopView } from '../views/WorkshopView'
 import { InteractionView } from '../views/InteractionView'
 import { type LoadingView } from '../views/LoadingView'
@@ -36,26 +35,21 @@ import { parseMovementMessage } from '../webSocketMessage/movement/MessageParser
 import { TradeMessageType, sendTradeMessage } from '../webSocketMessage/chat/TradeMessageHandler'
 import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
 import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
-import { CloudBuilder } from '../views/CloudBuilder'
-import { ContextMenuBuilder } from '../views/ContextMenuBuilder'
+import { CloudBuilder } from '../tools/CloudBuilder'
+import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
 import { TravelType, TravelView } from '../views/TravelView'
+import { ImageCropper } from '../tools/ImageCropper'
+import { ALL_PLAYERS_DESC_OFFSET_TOP, LAYER_SCALE, MOVEMENT_SPEED, PLAYER_DESC_OFFSET_LEFT, RANGE, SPRITE_HEIGHT, SPRITE_WIDTH, getPlayerMapping } from '../GameUtils'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
-const LAYER_SCALE = 3
-export const RANGE = 3
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
   visible: false,
   key: 'Game',
 }
-
-const getPlayerMapping =
-  (initialCharacterMapping: ClassResourceRepresentation[]) =>
-  (playerClass: string): number =>
-    initialCharacterMapping.find((dto) => dto.key === playerClass)?.value.classAsset ?? 0
 
 export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine
@@ -72,8 +66,9 @@ export class Scene extends Phaser.Scene {
   public playerWorkshopResouseName = ''
   public playerWorkshopMaxProduction = 0
   public readonly players: Record<PlayerId, PlayerState>
+  public playersClasses!: Map<string, string>
   public actionTrade: string | null
-  public tradeWindow: TradeWindow | null
+  public tradeWindow: TradeView | null
   public equipmentView: EquipmentView | null
   public workshopView: WorkshopView | null
   public interactionView: InteractionView | null
@@ -81,6 +76,7 @@ export class Scene extends Phaser.Scene {
   public travelView: TravelView | null
   public cloudBuilder!: CloudBuilder
   public contextMenuBuilder!: ContextMenuBuilder
+  public imageCropper!: ImageCropper
   public movingEnabled: boolean
   private movementWs!: Websocket
   public tradeWs!: Websocket
@@ -111,6 +107,8 @@ export class Scene extends Phaser.Scene {
     this.travelView = null
     this.cloudBuilder = new CloudBuilder()
     this.contextMenuBuilder = new ContextMenuBuilder()
+    this.imageCropper = new ImageCropper()
+    this.playersClasses = new Map()
     this.mapConfig = mapConfig
     this.lowTravels = mapConfig.lowLevelTravels
     this.mediumTravels = mapConfig.mediumLevelTravels
@@ -131,8 +129,8 @@ export class Scene extends Phaser.Scene {
     this.load.image('tiles', '/assets/overworld.png')
     this.load.tilemapTiledJSON('glade', '/assets/forest_glade.json')
     this.load.spritesheet('player', '/assets/characters.png', {
-      frameWidth: 52,
-      frameHeight: 72,
+      frameWidth: SPRITE_WIDTH,
+      frameHeight: SPRITE_HEIGHT,
     })
   }
 
@@ -146,10 +144,11 @@ export class Scene extends Phaser.Scene {
     }
 
     const playerSprite = this.add.sprite(0, 0, 'player')
-    const text = this.add.text(0, -20, 'You')
+    const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
     text.setColor('#000000')
-    const className = this.add.text(0, -5, `[${this.status.className}]`)
-    className.setColor('#000000')
+    text.setFontFamily('Georgia, serif')
+
+    this.playersClasses.set(this.playerId, this.status.className)
 
     const clouds = this.cloudBuilder.build(this, this.playerId)
 
@@ -163,7 +162,6 @@ export class Scene extends Phaser.Scene {
     const container = this.add.container(0, 0, [
       playerSprite,
       text,
-      className,
       clouds.workSymbol,
       clouds.travelSymbol,
       clouds.talkSymbol,
@@ -182,6 +180,7 @@ export class Scene extends Phaser.Scene {
           walkingAnimationMapping: getPlayerMapping(this.settings.classResourceRepresentation)(
             this.status.className,
           ),
+          speed: MOVEMENT_SPEED,
           startPosition: this.status.coords,
           collides: true,
         },
@@ -310,7 +309,7 @@ export class Scene extends Phaser.Scene {
   }
 
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
-    this.tradeWindow = new TradeWindow(
+    this.tradeWindow = new TradeView(
       this,
       this.equipment!,
       this.playerId,
@@ -503,10 +502,11 @@ export class Scene extends Phaser.Scene {
 
   addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
     const sprite = this.add.sprite(0, 0, 'player')
-    const text = this.add.text(0, -20, id)
+    const text = this.add.text(0, ALL_PLAYERS_DESC_OFFSET_TOP, id)
     text.setColor('#000000')
-    const className = this.add.text(0, -10, `[${characterClass}]`)
-    className.setColor('#000000')
+    text.setFontFamily('Georgia, serif')
+
+    this.playersClasses.set(id, characterClass)
 
     const clouds = this.cloudBuilder.build(this, id)
     const div = this.contextMenuBuilder.build(this, id)
@@ -533,7 +533,6 @@ export class Scene extends Phaser.Scene {
     const container = this.add.container(0, 0, [
       sprite,
       text,
-      className,
       clouds.workSymbol,
       clouds.travelSymbol,
       clouds.talkSymbol,
@@ -548,6 +547,7 @@ export class Scene extends Phaser.Scene {
       walkingAnimationMapping: getPlayerMapping(this.settings.classResourceRepresentation)(
         characterClass,
       ),
+      speed: MOVEMENT_SPEED,
       startPosition: coords,
       collides: false,
     })
@@ -575,7 +575,7 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    toast.warn(TradeOfferPopup({ scene: this, from: from }), {
+    toast.warn(TradeOfferPopup({ scene: this, from: from}), {
       position: 'bottom-right',
       autoClose: 8000,
       hideProgressBar: false,
@@ -583,6 +583,7 @@ export class Scene extends Phaser.Scene {
       pauseOnHover: true,
       draggable: false,
       progress: undefined,
+      toastId: from,
     })
   }
 
