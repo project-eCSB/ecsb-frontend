@@ -152,6 +152,7 @@ export class TradeView {
       if (this.isUserTurn) {
         scene.sendTradeBid(this.youOffer, this.youGet)
         this.setUserTurn(false)
+        this.resetBidIndicators()
         this.youOfferPrevious = JSON.parse(JSON.stringify(this.youOffer))
         this.youGetPrevious = JSON.parse(JSON.stringify(this.youGet))
       }
@@ -200,17 +201,14 @@ export class TradeView {
       tradeBoxPlayerOfferEqItemAmount.innerText = `${resource.value}`
 
       const downBid = document.createElement('i')
-      downBid.className = 'arrow fa fa-arrow-down'
+      downBid.className = 'arrow downBid fa fa-arrow-down'
       downBid.ariaHidden = 'true'
-      downBid.id = 'downBid'
       const stableBid = document.createElement('i')
-      stableBid.className = 'arrow fa fa-minus'
+      stableBid.className = 'arrow stableBid fa fa-minus'
       stableBid.ariaHidden = 'true'
-      stableBid.id = 'stableBid'
       const upBid = document.createElement('i')
-      upBid.className = 'arrow fa fa-arrow-up'
+      upBid.className = 'arrow upBid fa fa-arrow-up'
       upBid.ariaHidden = 'true'
-      upBid.id = 'upBid'
 
       this.updateBidIndicators(
         (playerEq ? this.youOfferPrevious : this.youGetPrevious).resources.find((item) => item.key === resource.key)!.value,
@@ -221,7 +219,10 @@ export class TradeView {
       )
 
       const tradeBoxPlayerOfferEqItemBtnUp = document.createElement('button')
-      tradeBoxPlayerOfferEqItemBtnUp.innerText = '+'
+      const plus = document.createElement('i')
+      plus.className = 'fa fa-plus'
+      plus.ariaHidden = 'true'
+      tradeBoxPlayerOfferEqItemBtnUp.appendChild(plus)
       tradeBoxPlayerOfferEqItemBtnUp.addEventListener('click', () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         if (this.isUserTurn && upperBoundary! > resource.value) {
@@ -244,7 +245,10 @@ export class TradeView {
         }
       })
       const tradeBoxPlayerOfferEqItemBtnDown = document.createElement('button')
-      tradeBoxPlayerOfferEqItemBtnDown.innerText = '-'
+      const minus = document.createElement('i')
+      minus.className = 'fa fa-minus'
+      minus.ariaHidden = 'true'
+      tradeBoxPlayerOfferEqItemBtnDown.appendChild(minus)
       tradeBoxPlayerOfferEqItemBtnDown.addEventListener('click', () => {
         if (this.isUserTurn && resource.value > 0) {
           if (parseInt(tradeBoxPlayerOfferEqItemAmount.innerText) === 0) return
@@ -267,13 +271,22 @@ export class TradeView {
         }
       })
 
-      resourceItem.appendChild(resourceItemName)
-      resourceItem.appendChild(tradeBoxPlayerOfferEqItemAmount)
-      resourceItem.appendChild(tradeBoxPlayerOfferEqItemBtnUp)
-      resourceItem.appendChild(tradeBoxPlayerOfferEqItemBtnDown)
-      resourceItem.appendChild(downBid)
-      resourceItem.appendChild(stableBid)
-      resourceItem.appendChild(upBid)
+      const resourceWrapper = document.createElement('div')
+      resourceWrapper.id = 'resourceWrapper'
+      resourceWrapper.appendChild(resourceItemName)
+      resourceWrapper.appendChild(tradeBoxPlayerOfferEqItemAmount)
+      resourceItem.appendChild(resourceWrapper)
+      const tradeButtonWrapper = document.createElement('div')
+      tradeButtonWrapper.id = 'tradeButtonWrapper'
+      tradeButtonWrapper.appendChild(tradeBoxPlayerOfferEqItemBtnUp)
+      tradeButtonWrapper.appendChild(tradeBoxPlayerOfferEqItemBtnDown)
+      resourceItem.appendChild(tradeButtonWrapper)
+      const bidIndicatorWrapper = document.createElement('div')
+      bidIndicatorWrapper.id = 'bidIndicatorWrapper'
+      bidIndicatorWrapper.appendChild(downBid)
+      bidIndicatorWrapper.appendChild(stableBid)
+      bidIndicatorWrapper.appendChild(upBid)
+      resourceItem.appendChild(bidIndicatorWrapper)
 
       container.appendChild(resourceItem)
     }
@@ -287,17 +300,14 @@ export class TradeView {
     moneyItemAmount.innerText = `${offer.money}`
 
     const downBidMoney = document.createElement('i')
-    downBidMoney.className = 'arrow fa fa-arrow-down'
+    downBidMoney.className = 'arrow downBid fa fa-arrow-down'
     downBidMoney.ariaHidden = 'true'
-    downBidMoney.id = 'downBid'
     const stableBidMoney = document.createElement('i')
-    stableBidMoney.className = 'arrow fa fa-minus'
+    stableBidMoney.className = 'arrow stableBid fa fa-minus'
     stableBidMoney.ariaHidden = 'true'
-    stableBidMoney.id = 'stableBid'
     const upBidMoney = document.createElement('i')
-    upBidMoney.className = 'arrow fa fa-arrow-up'
+    upBidMoney.className = 'arrow upBid fa fa-arrow-up'
     upBidMoney.ariaHidden = 'true'
-    upBidMoney.id = 'upBid'
 
     this.updateBidIndicators(
       (playerEq ? this.youOfferPrevious : this.youGetPrevious).money,
@@ -308,7 +318,10 @@ export class TradeView {
     )
 
     const moneyItemAmountBtnUp = document.createElement('button')
-    moneyItemAmountBtnUp.innerText = '+'
+    const plus = document.createElement('i')
+    plus.className = 'fa fa-plus'
+    plus.ariaHidden = 'true'
+    moneyItemAmountBtnUp.appendChild(plus)
     moneyItemAmountBtnUp.addEventListener('click', () => {
       if (this.isUserTurn && moneyUpperBoundary > offer.money) {
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) + 1}`
@@ -328,7 +341,10 @@ export class TradeView {
       }
     })
     const moneyItemAmountBtnDown = document.createElement('button')
-    moneyItemAmountBtnDown.innerText = '-'
+    const minus = document.createElement('i')
+    minus.className = 'fa fa-minus'
+    minus.ariaHidden = 'true'
+    moneyItemAmountBtnDown.appendChild(minus)
     moneyItemAmountBtnDown.addEventListener('click', () => {
       if (this.isUserTurn && offer.money > 0) {
         if (parseInt(moneyItemAmount.innerText) === 0) return
@@ -349,13 +365,22 @@ export class TradeView {
       }
     })
 
-    moneyItem.appendChild(moneyItemName)
-    moneyItem.appendChild(moneyItemAmount)
-    moneyItem.appendChild(moneyItemAmountBtnUp)
-    moneyItem.appendChild(moneyItemAmountBtnDown)
-    moneyItem.appendChild(downBidMoney)
-    moneyItem.appendChild(stableBidMoney)
-    moneyItem.appendChild(upBidMoney)
+    const resourceWrapperMoney = document.createElement('div')
+    resourceWrapperMoney.id = 'resourceWrapper'
+    resourceWrapperMoney.appendChild(moneyItemName)
+    resourceWrapperMoney.appendChild(moneyItemAmount)
+    moneyItem.appendChild(resourceWrapperMoney)
+    const tradeButtonWrapperMoney = document.createElement('div')
+    tradeButtonWrapperMoney.id = 'tradeButtonWrapper'
+    tradeButtonWrapperMoney.appendChild(moneyItemAmountBtnUp)
+    tradeButtonWrapperMoney.appendChild(moneyItemAmountBtnDown)
+    moneyItem.appendChild(tradeButtonWrapperMoney)
+    const bidIndicatorWrapperMoney = document.createElement('div')
+    bidIndicatorWrapperMoney.id = 'bidIndicatorWrapper'
+    bidIndicatorWrapperMoney.appendChild(downBidMoney)
+    bidIndicatorWrapperMoney.appendChild(stableBidMoney)
+    bidIndicatorWrapperMoney.appendChild(upBidMoney)
+    moneyItem.appendChild(bidIndicatorWrapperMoney)
 
     container.appendChild(moneyItem)
 
@@ -368,17 +393,14 @@ export class TradeView {
     timeItemAmount.innerText = `${offer.time}`
 
     const downBidTime = document.createElement('i')
-    downBidTime.className = 'arrow fa fa-arrow-down'
+    downBidTime.className = 'arrow downBid fa fa-arrow-down'
     downBidTime.ariaHidden = 'true'
-    downBidTime.id = 'downBid'
     const stableBidTime = document.createElement('i')
-    stableBidTime.className = 'arrow fa fa-minus'
+    stableBidTime.className = 'arrow stableBid fa fa-minus'
     stableBidTime.ariaHidden = 'true'
-    stableBidTime.id = 'stableBid'
     const upBidTime = document.createElement('i')
-    upBidTime.className = 'arrow fa fa-arrow-up'
+    upBidTime.className = 'arrow upBid fa fa-arrow-up'
     upBidTime.ariaHidden = 'true'
-    upBidTime.id = 'upBid'
 
     this.updateBidIndicators(
       (playerEq ? this.youOfferPrevious : this.youGetPrevious).time,
@@ -389,7 +411,10 @@ export class TradeView {
     )
 
     const timeItemBtnUp = document.createElement('button')
-    timeItemBtnUp.innerText = '+'
+    const plus2 = document.createElement('i')
+    plus2.className = 'fa fa-plus'
+    plus2.ariaHidden = 'true'
+    timeItemBtnUp.appendChild(plus2)
     timeItemBtnUp.addEventListener('click', () => {
       if (this.isUserTurn && timeUpperBoundary > offer.time) {
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) + 1}`
@@ -409,7 +434,10 @@ export class TradeView {
       }
     })
     const timeItemBtnUpDown = document.createElement('button')
-    timeItemBtnUpDown.innerText = '-'
+    const minus2 = document.createElement('i')
+    minus2.className = 'fa fa-minus'
+    minus2.ariaHidden = 'true'
+    timeItemBtnUpDown.appendChild(minus2)
     timeItemBtnUpDown.addEventListener('click', () => {
       if (this.isUserTurn && offer.time > 0) {
         if (parseInt(timeItemAmount.innerText) === 0) return
@@ -430,13 +458,22 @@ export class TradeView {
       }
     })
 
-    timeItem.appendChild(timeItemName)
-    timeItem.appendChild(timeItemAmount)
-    timeItem.appendChild(timeItemBtnUp)
-    timeItem.appendChild(timeItemBtnUpDown)
-    timeItem.appendChild(downBidTime)
-    timeItem.appendChild(stableBidTime)
-    timeItem.appendChild(upBidTime)
+    const resourceWrapperTime = document.createElement('div')
+    resourceWrapperTime.id = 'resourceWrapper'
+    resourceWrapperTime.appendChild(timeItemName)
+    resourceWrapperTime.appendChild(timeItemAmount)
+    timeItem.appendChild(resourceWrapperTime)
+    const tradeButtonWrapperTime = document.createElement('div')
+    tradeButtonWrapperTime.id = 'tradeButtonWrapper'
+    tradeButtonWrapperTime.appendChild(timeItemBtnUp)
+    tradeButtonWrapperTime.appendChild(timeItemBtnUpDown)
+    timeItem.appendChild(tradeButtonWrapperTime)
+    const bidIndicatorWrapperTime = document.createElement('div')
+    bidIndicatorWrapperTime.id = 'bidIndicatorWrapper'
+    bidIndicatorWrapperTime.appendChild(downBidTime)
+    bidIndicatorWrapperTime.appendChild(stableBidTime)
+    bidIndicatorWrapperTime.appendChild(upBidTime)
+    timeItem.appendChild(bidIndicatorWrapperTime)
 
     container.appendChild(timeItem)
   }
@@ -511,6 +548,12 @@ export class TradeView {
       this.disableBidElement(stable)
       this.enableBidElement(up)
     }
+  }
+
+  resetBidIndicators(): void {
+    for(const element of document.getElementsByClassName('stableBid')) (element as HTMLElement).style.display = 'inline'
+    for(const element of document.getElementsByClassName('upBid')) (element as HTMLElement).style.display = 'none'
+    for(const element of document.getElementsByClassName('downBid')) (element as HTMLElement).style.display = 'none'
   }
 
   show(): void {
