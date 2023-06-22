@@ -595,6 +595,20 @@ export class Scene extends Phaser.Scene {
     })
   }
 
+  sendTradeMinorChange(ourSide: PlayerEquipment, otherSide: PlayerEquipment): void {
+    sendTradeMessage(this.tradeWs, {
+      senderId: this.playerId,
+      message: {
+        type: TradeMessageType.TradeMinorChange,
+        tradeBid: {
+          senderOffer: ourSide,
+          senderRequest: otherSide,
+        },
+        receiverId: this.otherPlayerId!,
+      },
+    })
+  }
+
   sendTradeBid(ourSide: PlayerEquipment, otherSide: PlayerEquipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
