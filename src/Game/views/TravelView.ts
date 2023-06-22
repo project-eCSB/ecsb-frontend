@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import gameService from '../../services/game/GameService'
 import { type PlayerEquipment } from '../../services/game/Types'
 import { type Scene } from '../scenes/Scene'
@@ -159,6 +160,15 @@ export class TravelView {
             })
         })
         .catch((err) => {
+          toast.error(`Insufficient materials`, {
+            position: 'top-center',
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+          })
           console.error(err)
           this.scene.loadingView?.close()
           this.enableSubmitBtn()
@@ -172,8 +182,8 @@ export class TravelView {
       this.close()
     })
 
-    travelButtons.appendChild(this.travelBtnClose)
     travelButtons.appendChild(this.travelBtnSubmit)
+    travelButtons.appendChild(this.travelBtnClose)
 
     this.travelContainer.appendChild(travelHeader)
     this.travelContainer.appendChild(travelContent)
