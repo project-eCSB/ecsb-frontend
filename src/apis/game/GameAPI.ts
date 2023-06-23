@@ -4,10 +4,14 @@ import type {
   AdminGameSettingsResponse,
   AssetConfigRequest,
   AssetConfigResponse,
+  AssetRequest,
+  AssetResponse,
   CreateGameRequest,
   CreateGameResponse,
+  DecreaseVisibleEquipmentSourceRequest,
   GameTokenRequest,
   GameTokenResponse,
+  IncreaseVisibleEquipmentSourceRequest,
   ProductionRequest,
   ProductionResponse,
   SavedAssetsRequest,
@@ -120,7 +124,7 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
 }
 
 const getPlayerEquipment = async (): Promise<PlayerEquipment> => {
-  return await gameTokenAPI
+  return await gameTokenSelfInteractionsAPI
     .get('/equipment')
     .then((response) => {
       if (response.status !== 200) {
@@ -128,6 +132,44 @@ const getPlayerEquipment = async (): Promise<PlayerEquipment> => {
       }
 
       return response.data
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const increaseVisibleEquipmentSource = async (data: IncreaseVisibleEquipmentSourceRequest): Promise<null> => {
+  return await gameTokenSelfInteractionsAPI
+    .put(`/visibleEquipment/${data.resourceName}/increase`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return null
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const decreaseVisibleEquipmentSource = async (data: DecreaseVisibleEquipmentSourceRequest): Promise<null> => {
+  return await gameTokenSelfInteractionsAPI
+    .put(`/visibleEquipment/${data.resourceName}/decrease`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return null
     })
     .catch((error) => {
       if (error.response) {
@@ -169,6 +211,11 @@ const uploadAsset = async (
     .post(
       `/assets?fileName=${uploadAssetRequest.fileName}&fileType=${uploadAssetRequest.fileType}`,
       uploadAssetRequest.file,
+      {
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        }
+      }
     )
     .then((response) => {
       if (response.status !== 200) {
@@ -222,6 +269,33 @@ const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsR
       }
     })
     .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const getAsset = async (request: AssetRequest): Promise<AssetResponse> => {
+  return await authTokenAuthAndMenagementAPI
+  .get(`/assets/${request.assetId}`, { responseType: 'arraybuffer' })
+  .then((response) => {
+    if (response.status !== 200) {
+      throw new GameResponseError(response.status, response.data)
+    }
+
+    const blob = new Blob(
+      [response.data], 
+      { type: response.headers['content-type'] }
+    )
+    const url = URL.createObjectURL(blob)
+
+    return {
+      assetURL: url
+    }
+  })
+  .catch((error) => {
       if (error.response) {
         throw new GameResponseError(error.response.status, error.response.data)
       } else {
@@ -285,8 +359,11 @@ const gameAPI = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
+  getAsset,
   produce,
   travel,
+  increaseVisibleEquipmentSource,
+  decreaseVisibleEquipmentSource,
 }
 
 export default gameAPI

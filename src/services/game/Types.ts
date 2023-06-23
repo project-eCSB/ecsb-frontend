@@ -39,8 +39,13 @@ export interface GameResourceDto {
   value: number
 }
 
-export interface PlayerEquipment {
+export interface Equipment {
   money: number
   time: number
   resources: GameResourceDto[]
+}
+
+export interface PlayerEquipment {
+  full: Equipment
+  shared: Equipment
 }

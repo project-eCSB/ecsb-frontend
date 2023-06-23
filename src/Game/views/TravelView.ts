@@ -134,21 +134,10 @@ export class TravelView {
           gameService
             .getPlayerEquipment()
             .then((res: PlayerEquipment) => {
-              this.scene.equipment = res
+              this.scene.equipment = res.full
+              this.scene.visibleEquipment = res.shared
               this.scene.loadingView?.close()
 
-              for (const resource of res.resources) {
-                const val = this.scene.visibleEquipment?.resources.find(
-                  (it) => it.key === resource.key,
-                )
-                if (val) {
-                  val.value = Math.min(resource.value, val.value)
-                }
-              }
-              if (this.scene.visibleEquipment) {
-                this.scene.visibleEquipment.money = Math.min(this.scene.visibleEquipment.money, res.money)
-                this.scene.visibleEquipment.time = Math.min(this.scene.visibleEquipment.time, res.time)
-              }
               this.scene.equipmentView!.update()
 
               this.close()

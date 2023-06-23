@@ -3,6 +3,7 @@ import gameAPI from '../../apis/game/GameAPI'
 import type {
   AdminGameSettingsResponse,
   AssetConfigResponse,
+  AssetResponse,
   ClassResourceRepresentation,
   CreateGameRequestTravels,
   CreateGameResponse,
@@ -130,7 +131,7 @@ const getUserGameStatus = async (): Promise<GameStatus> => {
 }
 
 const uploadAsset = async (
-  file: string | ArrayBuffer,
+  file: ArrayBuffer,
   fileName: string,
   fileType: string,
 ): Promise<number> => {
@@ -170,6 +171,17 @@ const getSavedAssets = async (fileType: string): Promise<SavedAsset[]> => {
     })
 }
 
+const getAsset = async (assetId: number): Promise<string> => {
+  return await gameAPI
+  .getAsset({ assetId: assetId })
+  .then((response: AssetResponse) => {
+    return response.assetURL
+  })
+  .catch((err: GameResponseError) => {
+    throw new Error(err.message)
+  })
+}
+
 const produce = async (quantity: number): Promise<boolean> => {
   return await gameAPI
     .produce({ quantity: quantity })
@@ -192,6 +204,28 @@ const travel = async (city: string): Promise<boolean> => {
     })
 }
 
+const increaseVisibleEquipmentSource = async (resourceName: string): Promise<null> => {
+  return await gameAPI
+    .increaseVisibleEquipmentSource({ resourceName: resourceName })
+    .then((response: null) => {
+      return response
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
+const decreaseVisibleEquipmentSource = async (resourceName: string): Promise<null> => {
+  return await gameAPI
+    .decreaseVisibleEquipmentSource({ resourceName: resourceName })
+    .then((response: null) => {
+      return response
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
 const gameService = {
   createGame,
   getAdminGameSettings,
@@ -202,8 +236,11 @@ const gameService = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
+  getAsset,
   produce, 
-  travel
+  travel, 
+  increaseVisibleEquipmentSource,
+  decreaseVisibleEquipmentSource,
 }
 
 export default gameService

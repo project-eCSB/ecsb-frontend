@@ -1,5 +1,5 @@
 import { type Scene } from '../scenes/Scene'
-import { type PlayerEquipment } from '../../services/game/Types'
+import { type Equipment } from '../../services/game/Types'
 import { CloudType } from '../scenes/Types'
 import { SPRITE_WIDTH, SPRITE_HEIGHT } from '../GameUtils'
 
@@ -8,12 +8,12 @@ export class TradeView {
   scene: Scene
   currPlayerId: string
   otherPlayerId: string
-  currPlayer: PlayerEquipment
-  otherPlayer: PlayerEquipment
-  youOfferPrevious: PlayerEquipment
-  youGetPrevious: PlayerEquipment
-  youOffer: PlayerEquipment
-  youGet: PlayerEquipment
+  currPlayer: Equipment
+  otherPlayer: Equipment
+  youOfferPrevious: Equipment
+  youGetPrevious: Equipment
+  youOffer: Equipment
+  youGet: Equipment
   changesDone: number
   tradeBox: HTMLDivElement
   tradeBoxTitle: HTMLHeadingElement
@@ -31,9 +31,9 @@ export class TradeView {
 
   constructor(
     scene: Scene,
-    currPlayer: PlayerEquipment,
+    currPlayer: Equipment,
     currPlayerId: string,
-    otherPlayer: PlayerEquipment,
+    otherPlayer: Equipment,
     otherPlayerId: string,
     isUserTurn: boolean,
   ) {
@@ -117,9 +117,9 @@ export class TradeView {
     iconUp2.className = 'arrow fa fa-arrow-up'
     iconUp2.ariaHidden = 'true'
     iconUp2.id = 'notYou'
-    youDiv.appendChild(scene.imageCropper.crop(scene, currPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, '/assets/characters.png', 4))
+    youDiv.appendChild(scene.imageCropper.crop(scene, currPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, this.scene.characterUrl, 4))
     youDiv.appendChild(iconUp)
-    opponentDiv.appendChild(scene.imageCropper.crop(scene, otherPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, '/assets/characters.png', 4))
+    opponentDiv.appendChild(scene.imageCropper.crop(scene, otherPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, this.scene.characterUrl, 4))
     opponentDiv.appendChild(iconUp2)
 
     iconUp.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
@@ -186,8 +186,8 @@ export class TradeView {
 
   private fillEq(
     container: HTMLDivElement,
-    offer: PlayerEquipment,
-    realState: PlayerEquipment,
+    offer: Equipment,
+    realState: Equipment,
     playerEq: boolean,
   ): void {
     const bid = JSON.parse(JSON.stringify(offer))
@@ -490,7 +490,7 @@ export class TradeView {
     container.appendChild(timeItem)
   }
 
-  update(youOffer: PlayerEquipment, youGet: PlayerEquipment): void {
+  update(youOffer: Equipment, youGet: Equipment): void {
     this.youOffer = youOffer
     this.youGet = youGet
     this.changesDone = 0

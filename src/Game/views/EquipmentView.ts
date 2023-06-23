@@ -1,3 +1,4 @@
+import gameService from '../../services/game/GameService'
 import { type Scene } from '../scenes/Scene'
 
 export class EquipmentView {
@@ -88,13 +89,20 @@ export class EquipmentView {
         if (val && boundary && val.value < boundary.value) {
           val.value += 1
           itemValue2.innerText = `${parseInt(itemValue2.innerText) + 1}`
+
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          gameService.increaseVisibleEquipmentSource(val.key)
         }
       }
+
       down.onclick = (e: Event) => {
         const val = this.scene.visibleEquipment?.resources.find((it) => it.key === item.key)
         if (val && val.value > 0) {
           val.value -= 1
           itemValue2.innerText = `${parseInt(itemValue2.innerText) - 1}`
+
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          gameService.decreaseVisibleEquipmentSource(val.key)
         }
       }
 
@@ -143,13 +151,20 @@ export class EquipmentView {
       if (val && boundary && val.money < boundary.money) {
         val.money += 1
         moneyBoxValue2.innerText = `${parseInt(moneyBoxValue2.innerText) + 1}`
+        
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        gameService.increaseVisibleEquipmentSource('money')
       }
     }
+    
     downMoney.onclick = (e: Event) => {
       const val = this.scene.visibleEquipment
       if (val && val.money > 0) {
         val.money -= 1
         moneyBoxValue2.innerText = `${parseInt(moneyBoxValue2.innerText) - 1}`
+
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises        
+        gameService.decreaseVisibleEquipmentSource('money')
       }
     }
 
@@ -193,13 +208,20 @@ export class EquipmentView {
       if (val && boundary && val.time < boundary.time) {
         val.time += 1
         timeBoxValue2.innerText = `${parseInt(timeBoxValue2.innerText) + 1}`
+
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        gameService.increaseVisibleEquipmentSource('time')
       }
     }
+
     downTime.onclick = (e: Event) => {
       const val = this.scene.visibleEquipment
       if (val && val.time > 0) {
         val.time -= 1
         timeBoxValue2.innerText = `${parseInt(timeBoxValue2.innerText) - 1}`
+
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        gameService.decreaseVisibleEquipmentSource('time')
       }
     }
 
