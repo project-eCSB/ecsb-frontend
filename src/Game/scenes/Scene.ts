@@ -5,6 +5,7 @@ import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
 import type {
   AssetConfig,
+  Equipment,
   GameSettings,
   GameStatus,
   PlayerEquipment,
@@ -39,11 +40,12 @@ import { CloudBuilder } from '../tools/CloudBuilder'
 import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
 import { TravelType, TravelView } from '../views/TravelView'
 import { ImageCropper } from '../tools/ImageCropper'
-import { ALL_PLAYERS_DESC_OFFSET_TOP, LAYER_SCALE, MOVEMENT_SPEED, PLAYER_DESC_OFFSET_LEFT, RANGE, SPRITE_HEIGHT, SPRITE_WIDTH, getPlayerMapping } from '../GameUtils'
+import { ALL_PLAYERS_DESC_OFFSET_TOP, CHARACTER_ASSET_KEY, LAYER_SCALE, MAP_ASSET_KEY, MOVEMENT_SPEED, PLAYER_DESC_OFFSET_LEFT, RANGE, SPRITE_HEIGHT, SPRITE_WIDTH, TILES_ASSET_KEY, getPlayerMapping } from '../GameUtils'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
+const VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -80,16 +82,22 @@ export class Scene extends Phaser.Scene {
   public movingEnabled: boolean
   private movementWs!: Websocket
   public tradeWs!: Websocket
-  public equipment?: PlayerEquipment
-  public visibleEquipment?: PlayerEquipment
-  private otherEquipment?: PlayerEquipment
+  public equipment?: Equipment
+  public visibleEquipment?: Equipment
+  private otherEquipment?: Equipment
   private otherPlayerId?: PlayerId
+  public characterUrl!: string
+  public resourceUrl!: string
+  public tileUrl!: string
 
   constructor(
     gameToken: string,
     userStatus: GameStatus,
     settings: GameSettings,
     mapConfig: AssetConfig,
+    characterUrl: string,
+    resourceUrl: string,
+    tileUrl: string,
   ) {
     super(sceneConfig)
     this.gameToken = gameToken
@@ -113,6 +121,9 @@ export class Scene extends Phaser.Scene {
     this.lowTravels = mapConfig.lowLevelTravels
     this.mediumTravels = mapConfig.mediumLevelTravels
     this.highTravels = mapConfig.highLevelTravels
+    this.characterUrl = characterUrl
+    this.resourceUrl = resourceUrl
+    this.tileUrl = tileUrl
 
     this.playerWorkshopsCoordinates = mapConfig.professionWorkshops[userStatus.className]
 
@@ -126,24 +137,24 @@ export class Scene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('tiles', '/assets/overworld.png')
-    this.load.tilemapTiledJSON('glade', '/assets/forest_glade.json')
-    this.load.spritesheet('player', '/assets/characters.png', {
+    this.load.tilemapTiledJSON(MAP_ASSET_KEY, `${VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL}/assets/${this.settings.gameAssets.mapAssetId}`)
+    this.load.image(TILES_ASSET_KEY, this.tileUrl)
+    this.load.spritesheet(CHARACTER_ASSET_KEY, this.characterUrl, {
       frameWidth: SPRITE_WIDTH,
       frameHeight: SPRITE_HEIGHT,
     })
   }
 
   create(): void {
-    const cloudCityTilemap = this.make.tilemap({ key: 'glade' })
-    cloudCityTilemap.addTilesetImage('Overworld', 'tiles')
+    const cloudCityTilemap = this.make.tilemap({ key: MAP_ASSET_KEY })
+    cloudCityTilemap.addTilesetImage('Overworld', TILES_ASSET_KEY)
 
     for (let i = 0; i < cloudCityTilemap.layers.length; i++) {
       const layer = cloudCityTilemap.createLayer(i, 'Overworld', 0, 0)
       layer.scale = LAYER_SCALE
     }
 
-    const playerSprite = this.add.sprite(0, 0, 'player')
+    const playerSprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
     const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
     text.setColor('#000000')
     text.setFontFamily('Georgia, serif')
@@ -264,8 +275,8 @@ export class Scene extends Phaser.Scene {
     gameService
       .getPlayerEquipment()
       .then((res: PlayerEquipment) => {
-        this.equipment = res
-        this.visibleEquipment = JSON.parse(JSON.stringify(res))
+        this.equipment = res.full
+        this.visibleEquipment = res.shared
         this.equipmentView = new EquipmentView(this)
         this.equipmentView.show()
       })
@@ -412,23 +423,12 @@ export class Scene extends Phaser.Scene {
             gameService
               .getPlayerEquipment()
               .then((res: PlayerEquipment) => {
-                this.equipment = res
-                for (const resource of res.resources) {
-                  const val = this.visibleEquipment?.resources.find(
-                    (it) => it.key === resource.key,
-                  )
-                  if (val) {
-                    val.value = Math.min(resource.value, val.value)
-                  }
-                }
-                if (this.visibleEquipment) {
-                  this.visibleEquipment.money = Math.min(this.visibleEquipment.money, res.money)
-                  this.visibleEquipment.time = Math.min(this.visibleEquipment.time, res.time)
-                }
+                this.equipment = res.full
+                this.visibleEquipment = res.shared
                 this.equipmentView?.update()
               })
               .catch((err) => {
-                console.log('Error getting equipment:', err)
+                console.error('Error getting equipment:', err)
               })
             break
           case UserStatusMessageType.UserBusy:
@@ -499,7 +499,7 @@ export class Scene extends Phaser.Scene {
   }
 
   addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
-    const sprite = this.add.sprite(0, 0, 'player')
+    const sprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
     const text = this.add.text(0, ALL_PLAYERS_DESC_OFFSET_TOP, id)
     text.setColor('#000000')
     text.setFontFamily('Georgia, serif')
@@ -595,7 +595,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeMinorChange(ourSide: PlayerEquipment, otherSide: PlayerEquipment): void {
+  sendTradeMinorChange(ourSide: Equipment, otherSide: Equipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -609,7 +609,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeBid(ourSide: PlayerEquipment, otherSide: PlayerEquipment): void {
+  sendTradeBid(ourSide: Equipment, otherSide: Equipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -625,14 +625,14 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow?.disableAcceptBtn()
   }
 
-  updateTradeDialog(ourSide: PlayerEquipment, otherSide: PlayerEquipment): void {
+  updateTradeDialog(ourSide: Equipment, otherSide: Equipment): void {
     this.tradeWindow?.update(ourSide, otherSide)
     this.tradeWindow?.enableAcceptBtn()
     this.tradeWindow?.disableSendOfferBtn()
     this.tradeWindow?.setUserTurn(true)
   }
 
-  finishTrade(ourSide: PlayerEquipment, otherSide: PlayerEquipment): void {
+  finishTrade(ourSide: Equipment, otherSide: Equipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {

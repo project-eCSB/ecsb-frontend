@@ -124,7 +124,7 @@ export interface GameTokenResponse {
 }
 
 export interface UploadAssetRequest {
-  file: string | ArrayBuffer
+  file: ArrayBuffer
   fileName: string
   fileType: string
 }
@@ -176,6 +176,22 @@ export interface TravelRequest {
 
 export interface TravelResponse {
   success: boolean
+}
+
+export interface AssetRequest {
+  assetId: number
+}
+
+export interface AssetResponse {
+  assetURL: string
+}
+
+export interface IncreaseVisibleEquipmentSourceRequest {
+  resourceName: string
+}
+
+export interface DecreaseVisibleEquipmentSourceRequest {
+  resourceName: string
 }
 
 /**

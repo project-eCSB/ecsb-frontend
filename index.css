@@ -213,7 +213,8 @@
   align-items: center;
 }
 
-#tradeBoxContentPlayer h5, #tradeBoxContentPlayer p {
+#tradeBoxContentPlayer h5,
+#tradeBoxContentPlayer p {
   font-size: 1.1rem;
 }
 
@@ -253,7 +254,8 @@
   align-items: center;
 }
 
-#tradeBoxContentNeighbor h5, #tradeBoxContentNeighbor p {
+#tradeBoxContentNeighbor h5,
+#tradeBoxContentNeighbor p {
   font-size: 1.1rem;
 }
 
@@ -293,19 +295,19 @@
   cursor: pointer;
 }
 
-#resourceWrapper{
+#resourceWrapper {
   display: flex;
   justify-content: space-between;
-  width: 50%
+  width: 50%;
 }
 
-#tradeButtonWrapper{
+#tradeButtonWrapper {
   display: flex;
   justify-content: center;
-  width: 40%
+  width: 40%;
 }
 
-#tradeButtonWrapper > button{
+#tradeButtonWrapper > button {
   font-size: 1.5rem;
   font-weight: 600;
   border-radius: 50%;
@@ -315,29 +317,29 @@
   height: 1.5rem;
 }
 
-#tradeButtonWrapper > button:hover{
+#tradeButtonWrapper > button:hover {
   background-color: #cfcfcf;
 }
 
-#tradeButtonWrapper > button:first-child{
+#tradeButtonWrapper > button:first-child {
   margin-right: 0.5rem;
 }
 
-#bidIndicatorWrapper{
+#bidIndicatorWrapper {
   display: flex;
   justify-content: center;
-  width: 10%
+  width: 10%;
 }
 
-.upBid{
+.upBid {
   color: rgb(0, 180, 0);
 }
 
-.stableBid{
+.stableBid {
   color: rgb(180, 180, 0);
 }
 
-.downBid{
+.downBid {
   color: rgb(180, 0, 0);
 }
 
@@ -596,7 +598,7 @@
 #travel-content::-webkit-scrollbar {
   width: 10px;
 }
- 
+
 #travel-content::-webkit-scrollbar-thumb {
   background-color: #362b21;
   border-radius: 5px;

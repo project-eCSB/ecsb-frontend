@@ -1,5 +1,5 @@
 import { type Websocket } from 'websocket-ts'
-import { type PlayerEquipment } from '../../../services/game/Types'
+import { type Equipment } from '../../../services/game/Types'
 
 export enum TradeMessageType {
   TradeMinorChange = 'tradeMinorChange',
@@ -13,8 +13,8 @@ export enum TradeMessageType {
 }
 
 export interface TradeBid {
-  senderOffer: PlayerEquipment
-  senderRequest: PlayerEquipment
+  senderOffer: Equipment
+  senderRequest: Equipment
 }
 
 export interface TradeBidMessage {
@@ -73,7 +73,7 @@ export interface TradeServerAckMessage {
   message: {
     type: TradeMessageType.TradeServerAck
     myTurn: boolean
-    otherTrader: PlayerEquipment
+    otherTrader: Equipment
     receiverId: string
   }
 }

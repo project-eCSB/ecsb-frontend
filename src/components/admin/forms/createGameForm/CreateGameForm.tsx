@@ -366,7 +366,7 @@ const CreateGameForm = () => {
 
         await gameService
           .uploadAsset(
-            e.target.result,
+            e.target.result as ArrayBuffer,
             createGameFormData.characterAssetFile.name,
             'character_asset_file',
           )
@@ -393,7 +393,7 @@ const CreateGameForm = () => {
         return
       }
 
-      reader.readAsBinaryString(createGameFormData.characterAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.characterAssetFile)
     })
   }
 
@@ -406,7 +406,7 @@ const CreateGameForm = () => {
 
         await gameService
           .uploadAsset(
-            e.target.result,
+            e.target.result as ArrayBuffer,
             createGameFormData.resourceAssetFile.name,
             'resource_asset_file',
           )
@@ -433,7 +433,7 @@ const CreateGameForm = () => {
         return
       }
 
-      reader.readAsBinaryString(createGameFormData.resourceAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.resourceAssetFile)
     })
   }
 
@@ -445,7 +445,7 @@ const CreateGameForm = () => {
         if (!e || !e.target || !e.target.result || !createGameFormData.tileAssetFile) return
 
         await gameService
-          .uploadAsset(e.target.result, createGameFormData.tileAssetFile.name, 'tile_asset_file')
+          .uploadAsset(e.target.result as ArrayBuffer, createGameFormData.tileAssetFile.name, 'tile_asset_file')
           .then(
             (assetId: number) => {
               if (showResultModal) return
@@ -469,7 +469,7 @@ const CreateGameForm = () => {
         return
       }
 
-      reader.readAsBinaryString(createGameFormData.tileAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.tileAssetFile)
     })
   }
 
@@ -481,7 +481,7 @@ const CreateGameForm = () => {
         if (!e || !e.target || !e.target.result || !createGameFormData.mapAssetFile) return
 
         await gameService
-          .uploadAsset(e.target.result, createGameFormData.mapAssetFile.name, 'map')
+          .uploadAsset(e.target.result as ArrayBuffer, createGameFormData.mapAssetFile.name, 'map')
           .then(
             (assetId: number) => {
               if (showResultModal) return
@@ -505,7 +505,7 @@ const CreateGameForm = () => {
         return
       }
 
-      reader.readAsBinaryString(createGameFormData.mapAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.mapAssetFile)
     })
   }
 
