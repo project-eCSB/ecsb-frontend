@@ -1,6 +1,6 @@
-import { AuthResponseError } from './Types'
-import type { AuthRequest, AuthResponse } from './Types'
-import { authTokenAuthAndMenagementAPI } from '../apis'
+import type {AuthRequest, AuthResponse} from './Types'
+import {AuthResponseError} from './Types'
+import {authTokenAuthAndMenagementAPI} from '../apis'
 
 const login = async (data: AuthRequest): Promise<AuthResponse> => {
   return await authTokenAuthAndMenagementAPI

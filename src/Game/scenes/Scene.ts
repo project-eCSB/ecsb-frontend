@@ -1,46 +1,43 @@
 import * as Phaser from 'phaser'
-import type { GridEngine, Position } from 'grid-engine'
-import { Direction } from 'grid-engine'
-import type { Websocket } from 'websocket-ts'
-import { WebsocketBuilder } from 'websocket-ts'
-import type {
-  AssetConfig,
-  Equipment,
-  GameSettings,
-  GameStatus,
-  PlayerEquipment,
-} from '../../services/game/Types'
-import {
-  CloudType,
-  type PlayerId,
-  type Controls,
-  type Coordinates,
-  type PlayerState,
-} from './Types'
-import { decodeGameToken } from '../../apis/apis'
-import { TradeView } from '../views/TradeView'
+import type {GridEngine, Position} from 'grid-engine'
+import {Direction} from 'grid-engine'
+import type {Websocket} from 'websocket-ts'
+import {WebsocketBuilder} from 'websocket-ts'
+import type {AssetConfig, Equipment, GameSettings, GameStatus, PlayerEquipment,} from '../../services/game/Types'
+import {CloudType, type Controls, type Coordinates, type PlayerId, type PlayerState,} from './Types'
+import {decodeGameToken} from '../../apis/apis'
+import {TradeView} from '../views/TradeView'
 import gameService from '../../services/game/GameService'
-import { EquipmentView } from '../views/EquipmentView'
-import Key = Phaser.Input.Keyboard.Key
-import { toast } from 'react-toastify'
-import { TradeOfferPopup } from '../components/TradeOfferPopup'
-import { WorkshopView } from '../views/WorkshopView'
-import { InteractionView } from '../views/InteractionView'
-import { type LoadingView } from '../views/LoadingView'
-import { parseChatMessage } from '../webSocketMessage/chat/MessageParser'
+import {EquipmentView} from '../views/EquipmentView'
+import {toast} from 'react-toastify'
+import {TradeOfferPopup} from '../components/TradeOfferPopup'
+import {WorkshopView} from '../views/WorkshopView'
+import {InteractionView} from '../views/InteractionView'
+import {type LoadingView} from '../views/LoadingView'
+import {parseChatMessage} from '../webSocketMessage/chat/MessageParser'
+import {MovementMessageType, sendMovementMessage,} from '../webSocketMessage/movement/MovementMessage'
+import {parseMovementMessage} from '../webSocketMessage/movement/MessageParser'
+import {sendTradeMessage, TradeMessageType} from '../webSocketMessage/chat/TradeMessageHandler'
+import {UserStatusMessageType} from '../webSocketMessage/chat/UserStatusMessage'
+import {NotificationMessageType} from '../webSocketMessage/chat/NotificationMessage'
+import {CloudBuilder} from '../tools/CloudBuilder'
+import {ContextMenuBuilder} from '../tools/ContextMenuBuilder'
+import {TravelType, TravelView} from '../views/TravelView'
+import {ImageCropper} from '../tools/ImageCropper'
 import {
-  MovementMessageType,
-  sendMovementMessage,
-} from '../webSocketMessage/movement/MovementMessage'
-import { parseMovementMessage } from '../webSocketMessage/movement/MessageParser'
-import { TradeMessageType, sendTradeMessage } from '../webSocketMessage/chat/TradeMessageHandler'
-import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
-import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
-import { CloudBuilder } from '../tools/CloudBuilder'
-import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
-import { TravelType, TravelView } from '../views/TravelView'
-import { ImageCropper } from '../tools/ImageCropper'
-import { ALL_PLAYERS_DESC_OFFSET_TOP, CHARACTER_ASSET_KEY, LAYER_SCALE, MAP_ASSET_KEY, MOVEMENT_SPEED, PLAYER_DESC_OFFSET_LEFT, RANGE, SPRITE_HEIGHT, SPRITE_WIDTH, TILES_ASSET_KEY, getPlayerMapping } from '../GameUtils'
+  ALL_PLAYERS_DESC_OFFSET_TOP,
+  CHARACTER_ASSET_KEY,
+  getPlayerMapping,
+  LAYER_SCALE,
+  MAP_ASSET_KEY,
+  MOVEMENT_SPEED,
+  PLAYER_DESC_OFFSET_LEFT,
+  RANGE,
+  SPRITE_HEIGHT,
+  SPRITE_WIDTH,
+  TILES_ASSET_KEY
+} from '../GameUtils'
+import Key = Phaser.Input.Keyboard.Key;
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -395,17 +392,16 @@ export class Scene extends Phaser.Scene {
         const msg = parseChatMessage(ev.data)
 
         if (!msg) return
-
         switch (msg.message.type) {
-          case TradeMessageType.TradeStart:
+          case TradeMessageType.ProposeTrade:
             this.showTradeInvite(msg.senderId)
             break
-          case TradeMessageType.TradeServerAck:
+          case TradeMessageType.TradeServerStart:
             this.otherEquipment = msg.message.otherTrader
             this.otherPlayerId = msg.senderId
             this.createTradeWindow(msg.senderId, msg.message.myTurn)
             break
-          case TradeMessageType.TradeCancel:
+          case TradeMessageType.TradeServerCancel:
             this.tradeWindow?.close()
             this.otherEquipment = undefined
             this.otherPlayerId = undefined
@@ -433,9 +429,6 @@ export class Scene extends Phaser.Scene {
             break
           case UserStatusMessageType.UserBusy:
             this.showBusyPopup(msg.senderId, msg.message.reason)
-            break
-          case UserStatusMessageType.UserInterrupt:
-            this.showInterruptMessage(msg.senderId, msg.message.reason)
             break
           case NotificationMessageType.NotificationTradeStart:
             this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TALK)
@@ -589,8 +582,8 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.TradeStartAck,
-        receiverId: senderId,
+        type: TradeMessageType.ProposeTradeAck,
+        proposalSenderId: senderId,
       },
     })
   }
@@ -636,7 +629,7 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.TradeFinish,
+        type: TradeMessageType.TradeBidAck,
         finalBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
@@ -651,7 +644,6 @@ export class Scene extends Phaser.Scene {
       senderId: this.playerId,
       message: {
         type: TradeMessageType.TradeCancel,
-        receiverId: this.otherPlayerId!,
       },
     })
     this.otherEquipment = undefined
@@ -668,11 +660,6 @@ export class Scene extends Phaser.Scene {
       draggable: false,
       progress: undefined,
     })
-  }
-
-  showInterruptMessage(senderId: string, message: string): void {
-    this.otherEquipment = undefined
-    this.otherPlayerId = undefined
   }
 
   private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {

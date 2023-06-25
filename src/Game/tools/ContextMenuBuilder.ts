@@ -1,6 +1,6 @@
-import { toast } from 'react-toastify'
-import { type Scene } from '../scenes/Scene'
-import { TradeMessageType, sendTradeMessage } from '../webSocketMessage/chat/TradeMessageHandler'
+import {toast} from 'react-toastify'
+import {type Scene} from '../scenes/Scene'
+import {sendTradeMessage, TradeMessageType} from '../webSocketMessage/chat/TradeMessageHandler'
 
 export class ContextMenuBuilder {
   build(scene: Scene, id: string): HTMLDivElement {
@@ -34,8 +34,8 @@ export class ContextMenuBuilder {
       sendTradeMessage(scene.tradeWs, {
         senderId: scene.playerId,
         message: {
-          type: TradeMessageType.TradeStart,
-          receiverId: id,
+          type: TradeMessageType.ProposeTrade,
+          proposalReceiverId: id,
         },
       })
       toast.info('Trade invite sent', {

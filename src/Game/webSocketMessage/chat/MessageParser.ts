@@ -1,6 +1,6 @@
-import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
-import { type TradeMessage, TradeMessageType } from './TradeMessageHandler'
-import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
+import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
+import {type TradeMessage, TradeMessageType} from './TradeMessageHandler'
+import {type UserStatusMessage, UserStatusMessageType} from './UserStatusMessage'
 
 export const parseChatMessage = (
   message: string,
@@ -9,21 +9,21 @@ export const parseChatMessage = (
     const parsed = JSON.parse(message)
 
     switch (parsed.message.type) {
-      case TradeMessageType.TradeStart:
+      case TradeMessageType.ProposeTrade:
         return { senderId: parsed.senderId, message: parsed.message }
-      case TradeMessageType.TradeStartAck:
+      case TradeMessageType.ProposeTradeAck:
         return { senderId: parsed.senderId, message: parsed.message }
-      case TradeMessageType.TradeServerAck:
+      case TradeMessageType.TradeServerStart:
         return { senderId: parsed.senderId, message: parsed.message }
       case TradeMessageType.TradeBid:
         return { senderId: parsed.senderId, message: parsed.message }
       case TradeMessageType.TradeCancel:
         return { senderId: parsed.senderId, message: parsed.message }
+      case TradeMessageType.TradeServerCancel:
+        return { senderId: parsed.senderId, message: parsed.message }
       case TradeMessageType.TradeServerFinish:
         return { senderId: parsed.senderId, message: parsed.message }
       case UserStatusMessageType.UserBusy:
-        return { senderId: parsed.senderId, message: parsed.message }
-      case UserStatusMessageType.UserInterrupt:
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTradeStart:
         return { senderId: parsed.senderId, message: parsed.message }
