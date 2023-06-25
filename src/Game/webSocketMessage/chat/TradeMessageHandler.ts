@@ -1,15 +1,16 @@
-import { type Websocket } from 'websocket-ts'
-import { type Equipment } from '../../../services/game/Types'
+import {type Websocket} from 'websocket-ts'
+import {type Equipment} from '../../../services/game/Types'
 
 export enum TradeMessageType {
-  TradeMinorChange = 'tradeMinorChange',
-  TradeBid = 'tradeBid',
-  TradeStart = 'tradeStart',
-  TradeStartAck = 'tradeStartAck',
-  TradeFinish = 'tradeFinish',
-  TradeCancel = 'tradeCancel',
-  TradeServerAck = 'tradeServerAck',
-  TradeServerFinish = 'tradeServerFinish',
+  TradeMinorChange = 'trade/minor_change',
+  TradeBid = 'trade/trade_bid',
+  ProposeTrade = 'trade/propose_trade',
+  ProposeTradeAck = 'trade/propose_trade_ack',
+  TradeBidAck = 'trade/trade_bid_ack',
+  TradeCancel = 'trade/cancel_trade',
+  TradeServerCancel = 'trade/server_cancel_trade',
+  TradeServerStart = 'trade/server_start_trade',
+  TradeServerFinish = 'trade/server_finish_trade',
 }
 
 export interface TradeBid {
@@ -35,26 +36,26 @@ export interface TradeMinorChangeMessage {
   }
 }
 
-export interface TradeStartMessage {
+export interface ProposeTradeMessage {
   senderId: string
   message: {
-    type: TradeMessageType.TradeStart
-    receiverId: string
+    type: TradeMessageType.ProposeTrade
+    proposalReceiverId: string
   }
 }
 
-export interface TradeStartAckMessage {
+export interface ProposeTradeAckMessage {
   senderId: string
   message: {
-    type: TradeMessageType.TradeStartAck
-    receiverId: string
+    type: TradeMessageType.ProposeTradeAck
+    proposalSenderId: string
   }
 }
 
 export interface TradeFinishMessage {
   senderId: string
   message: {
-    type: TradeMessageType.TradeFinish
+    type: TradeMessageType.TradeBidAck
     finalBid: TradeBid
     receiverId: string
   }
@@ -64,14 +65,20 @@ export interface TradeCancelMessage {
   senderId: string
   message: {
     type: TradeMessageType.TradeCancel
-    receiverId: string
+  }
+}
+
+export interface TradeServerCancelMessage {
+  senderId: string
+  message: {
+    type: TradeMessageType.TradeServerCancel
   }
 }
 
 export interface TradeServerAckMessage {
   senderId: string
   message: {
-    type: TradeMessageType.TradeServerAck
+    type: TradeMessageType.TradeServerStart
     myTurn: boolean
     otherTrader: Equipment
     receiverId: string
@@ -87,14 +94,15 @@ export interface TradeServerFinishMessage {
 }
 
 export type TradeMessage =
-  | TradeStartMessage
-  | TradeStartAckMessage
+  | ProposeTradeMessage
+  | ProposeTradeAckMessage
   | TradeServerAckMessage
   | TradeBidMessage
   | TradeFinishMessage
   | TradeServerFinishMessage
   | TradeCancelMessage
   | TradeMinorChangeMessage
+  | TradeServerCancelMessage
 
 export const sendTradeMessage = (socket: Websocket, message: TradeMessage): void => {
   try {

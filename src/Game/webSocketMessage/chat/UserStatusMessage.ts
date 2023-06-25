@@ -1,8 +1,7 @@
-import { type Websocket } from 'websocket-ts'
+import {type Websocket} from 'websocket-ts'
 
 export enum UserStatusMessageType {
   UserBusy = 'userBusy',
-  UserInterrupt = 'userInterrupt',
 }
 
 export interface UserBusyMessage {
@@ -14,16 +13,7 @@ export interface UserBusyMessage {
   }
 }
 
-export interface UserInterruptMessage {
-  senderId: string
-  message: {
-    type: UserStatusMessageType.UserInterrupt
-    reason: string
-    receiverId: string
-  }
-}
-
-export type UserStatusMessage = UserBusyMessage | UserInterruptMessage
+export type UserStatusMessage = UserBusyMessage
 
 export const sendUserStatusMessage = (socket: Websocket, message: UserStatusMessage): void => {
   try {

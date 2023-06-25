@@ -1,5 +1,5 @@
+import type {AxiosInstance} from 'axios'
 import axios from 'axios'
-import type { AxiosInstance } from 'axios'
 import jwt_decode from 'jwt-decode'
 
 const AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
