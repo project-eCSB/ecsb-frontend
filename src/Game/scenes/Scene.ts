@@ -314,7 +314,7 @@ export class Scene extends Phaser.Scene {
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
     this.tradeWindow = new TradeView(
       this,
-      this.equipment!,
+      this.visibleEquipment!,
       this.playerId,
       this.otherEquipment!,
       targetId,
