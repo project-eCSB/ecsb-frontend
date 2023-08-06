@@ -569,13 +569,13 @@ export class TradeView {
   }
 
   show(): void {
-    this.scene.cloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.TALK)
+    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TALK)
     window.document.body.appendChild(this.tradeBox)
     this.scene.movingEnabled = false
   }
 
   close(): void {
-    this.scene.cloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
+    this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
     document.getElementById('tradeBox')?.remove()
     this.scene.tradeWindow = null
     this.scene.movingEnabled = true

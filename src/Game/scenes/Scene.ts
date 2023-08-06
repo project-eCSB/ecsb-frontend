@@ -20,7 +20,7 @@ import {parseMovementMessage} from '../webSocketMessage/movement/MessageParser'
 import {sendTradeMessage, TradeMessageType} from '../webSocketMessage/chat/TradeMessageHandler'
 import {UserStatusMessageType} from '../webSocketMessage/chat/UserStatusMessage'
 import {NotificationMessageType} from '../webSocketMessage/chat/NotificationMessage'
-import {CloudBuilder} from '../tools/CloudBuilder'
+import {InteractionCloudBuilder} from '../tools/InteractionCloudBuilder'
 import {ContextMenuBuilder} from '../tools/ContextMenuBuilder'
 import {TravelType, TravelView} from '../views/TravelView'
 import {ImageCropper} from '../tools/ImageCropper'
@@ -61,11 +61,12 @@ export class Scene extends Phaser.Scene {
   private readonly mediumTravels: Coordinates[]
   private readonly highTravels: Coordinates[]
   private readonly playerWorkshopsCoordinates: Coordinates[]
+  public playerCloudMovement!: Map<PlayerId, boolean>
   public playerWorkshopUnitPrice = 0
   public playerWorkshopResouseName = ''
   public playerWorkshopMaxProduction = 0
   public readonly players: Record<PlayerId, PlayerState>
-  public playersClasses!: Map<string, string>
+  public playersClasses!: Map<PlayerId, string>
   public actionTrade: string | null
   public tradeWindow: TradeView | null
   public equipmentView: EquipmentView | null
@@ -73,7 +74,7 @@ export class Scene extends Phaser.Scene {
   public interactionView: InteractionView
   public loadingView: LoadingView | null
   public travelView: TravelView | null
-  public cloudBuilder!: CloudBuilder
+  public interactionCloudBuiler!: InteractionCloudBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public imageCropper!: ImageCropper
   public movingEnabled: boolean
@@ -110,9 +111,10 @@ export class Scene extends Phaser.Scene {
     this.interactionView = new InteractionView(this)
     this.loadingView = null
     this.travelView = null
-    this.cloudBuilder = new CloudBuilder()
+    this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.contextMenuBuilder = new ContextMenuBuilder()
     this.imageCropper = new ImageCropper()
+    this.playerCloudMovement = new Map()
     this.playersClasses = new Map()
     this.mapConfig = mapConfig
     this.lowTravels = mapConfig.lowLevelTravels
@@ -156,9 +158,10 @@ export class Scene extends Phaser.Scene {
     text.setColor('#000000')
     text.setFontFamily('Georgia, serif')
 
+    this.playerCloudMovement.set(this.playerId, false)
     this.playersClasses.set(this.playerId, this.status.className)
 
-    const clouds = this.cloudBuilder.build(this, this.playerId)
+    const cloud = this.interactionCloudBuiler.build(this, this.playerId)
 
     this.cameras.main.setBounds(
       0,
@@ -170,10 +173,7 @@ export class Scene extends Phaser.Scene {
     const container = this.add.container(0, 0, [
       playerSprite,
       text,
-      clouds.workSymbol,
-      clouds.travelSymbol,
-      clouds.talkSymbol,
-      clouds.productionSymbol,
+      cloud,
     ])
 
     this.cameras.main.startFollow(container, true)
@@ -431,34 +431,36 @@ export class Scene extends Phaser.Scene {
             this.showBusyPopup(msg.senderId, msg.message.reason)
             break
           case NotificationMessageType.NotificationTradeStart:
-            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TALK)
+            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
             break
           case NotificationMessageType.NotificationTradeEnd:
-            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TALK)
+            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TALK)
             break
           case NotificationMessageType.NotificationTravelStart:
-            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
             break
           case NotificationMessageType.NotificationTravelEnd:
-            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
             break            
           case NotificationMessageType.NotificationTravelChoosingStart:
-            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
             break
           case NotificationMessageType.NotificationTravelChoosingStop:
-            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
             break
           case NotificationMessageType.NotificationWorkshopChoosingStart:
-            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.WORK)
+            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.WORK)
             break
           case NotificationMessageType.NotificationWorkshopChoosingStop:
-            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
+            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
             break
           case NotificationMessageType.NotificationProductionStart:
-            this.cloudBuilder.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            this.playerCloudMovement.set(msg.message.playerId, true)
             break
           case NotificationMessageType.NotificationProductionEnd:
-            this.cloudBuilder.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            this.playerCloudMovement.set(msg.message.playerId, false)
             break
         }
       })
@@ -497,9 +499,10 @@ export class Scene extends Phaser.Scene {
     text.setColor('#000000')
     text.setFontFamily('Georgia, serif')
 
+    this.playerCloudMovement.set(id, false)
     this.playersClasses.set(id, characterClass)
 
-    const clouds = this.cloudBuilder.build(this, id)
+    const cloud = this.interactionCloudBuiler.build(this, id)
     const div = this.contextMenuBuilder.build(this, id)
 
     sprite.setInteractive()
@@ -524,10 +527,7 @@ export class Scene extends Phaser.Scene {
     const container = this.add.container(0, 0, [
       sprite,
       text,
-      clouds.workSymbol,
-      clouds.travelSymbol,
-      clouds.talkSymbol,
-      clouds.productionSymbol,
+      cloud,
     ])
 
     this.gridEngine.addCharacter({
@@ -561,6 +561,7 @@ export class Scene extends Phaser.Scene {
   movePlayer(id: string, coords: Coordinates, direction: Direction): void {
     this.gridEngine.moveTo(id, coords)
 
+    this.interactionCloudBuiler.purgeUnnecessaryIcons(id)
     this.players[id].coords = coords
     this.players[id].direction = direction
   }
@@ -741,6 +742,7 @@ export class Scene extends Phaser.Scene {
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))
     if (foundMapping) {
       this.gridEngine.move(this.playerId, foundMapping.direction)
+      this.interactionCloudBuiler.purgeUnnecessaryIcons(this.playerId)
     }
   }
 
