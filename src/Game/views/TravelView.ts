@@ -195,7 +195,7 @@ export class TravelView {
     sendTravelMessage(this.scene.tradeWs, {
       type: TravelMessageType.TravelStart,
     })
-    this.scene.cloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
+    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     window.document.body.appendChild(this.travelContainer)
     this.scene.travelView = this
     this.scene.movingEnabled = false
@@ -205,7 +205,7 @@ export class TravelView {
     sendTravelMessage(this.scene.tradeWs, {
       type: TravelMessageType.TravelStop,
     })
-    this.scene.cloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
+    this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     document.getElementById('travel-container')?.remove()
     this.scene.travelView = null
     this.scene.movingEnabled = true

@@ -205,7 +205,7 @@ export class WorkshopView {
     sendWorkshopMessage(this.scene.tradeWs, {
       type: WorkshopMessageType.WorkshopStart,
     })
-    this.scene.cloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.WORK)
+    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.WORK)
     window.document.body.appendChild(this.workshopContainer)
     this.scene.workshopView = this
     this.scene.movingEnabled = false
@@ -215,7 +215,7 @@ export class WorkshopView {
     sendWorkshopMessage(this.scene.tradeWs, {
       type: WorkshopMessageType.WorkshopStop,
     })
-    this.scene.cloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
+    this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     document.getElementById('workshop-container')?.remove()
     this.scene.workshopView = null
     this.scene.movingEnabled = true
