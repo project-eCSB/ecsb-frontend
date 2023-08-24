@@ -1,11 +1,11 @@
-import { Direction, type Position } from "grid-engine"
-import { type ClassResourceRepresentation } from "../apis/game/Types"
+import { Direction, type Position } from 'grid-engine'
+import { type ClassResourceRepresentation } from '../apis/game/Types'
 
 // ASSETS
 export const TILES_ASSET_KEY = 'tiles'
 export const MAP_ASSET_KEY = 'glade'
 export const CHARACTER_ASSET_KEY = 'player'
-    
+
 // MAP
 export const LAYER_SCALE = 2.25
 export const RANGE = 3

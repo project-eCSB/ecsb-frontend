@@ -151,19 +151,19 @@ export class EquipmentView {
       if (val && boundary && val.money < boundary.money) {
         val.money += 1
         moneyBoxValue2.innerText = `${parseInt(moneyBoxValue2.innerText) + 1}`
-        
+
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         gameService.increaseVisibleEquipmentSource('money')
       }
     }
-    
+
     downMoney.onclick = (e: Event) => {
       const val = this.scene.visibleEquipment
       if (val && val.money > 0) {
         val.money -= 1
         moneyBoxValue2.innerText = `${parseInt(moneyBoxValue2.innerText) - 1}`
 
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises        
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         gameService.decreaseVisibleEquipmentSource('money')
       }
     }

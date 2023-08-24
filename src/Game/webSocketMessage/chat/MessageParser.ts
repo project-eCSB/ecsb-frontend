@@ -1,6 +1,6 @@
-import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
-import {type TradeMessage, TradeMessageType} from './TradeMessageHandler'
-import {type UserStatusMessage, UserStatusMessageType} from './UserStatusMessage'
+import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
+import { type TradeMessage, TradeMessageType } from './TradeMessageHandler'
+import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
 
 export const parseChatMessage = (
   message: string,

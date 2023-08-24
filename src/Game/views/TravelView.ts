@@ -215,12 +215,10 @@ export class TravelView {
         this.scene.interactionView.setText('start a short journey...')
         break
       case TravelType.MEDIUM:
-        this.scene.interactionView.setText('start a medium-distance journey...',
-        )
+        this.scene.interactionView.setText('start a medium-distance journey...')
         break
       case TravelType.HIGH:
-        this.scene.interactionView.setText('start a long-distance journey...',
-        )
+        this.scene.interactionView.setText('start a long-distance journey...')
         break
     }
 

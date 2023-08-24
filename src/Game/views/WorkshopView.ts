@@ -116,8 +116,8 @@ export class WorkshopView {
           }
         }
 
-      pMoneyLabel.innerText = `money: ${moneyCost}`
-      pTimeLabel.innerText = `time: ${timeCost}`
+        pMoneyLabel.innerText = `money: ${moneyCost}`
+        pTimeLabel.innerText = `time: ${timeCost}`
       }
     })
 

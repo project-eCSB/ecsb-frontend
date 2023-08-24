@@ -17,7 +17,15 @@ export const startGame = (
   resourceURL: string,
   tileSetURL: string,
 ): GameData => {
-  const scene = new Scene(gameToken, userStatus, settings, mapConfig, characterURL, resourceURL, tileSetURL)
+  const scene = new Scene(
+    gameToken,
+    userStatus,
+    settings,
+    mapConfig,
+    characterURL,
+    resourceURL,
+    tileSetURL,
+  )
 
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,

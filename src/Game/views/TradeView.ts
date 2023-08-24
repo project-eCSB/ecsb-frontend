@@ -117,9 +117,27 @@ export class TradeView {
     iconUp2.className = 'arrow fa fa-arrow-up'
     iconUp2.ariaHidden = 'true'
     iconUp2.id = 'notYou'
-    youDiv.appendChild(scene.imageCropper.crop(scene, currPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, this.scene.characterUrl, 4))
+    youDiv.appendChild(
+      scene.imageCropper.crop(
+        scene,
+        currPlayerId,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        this.scene.characterUrl,
+        4,
+      ),
+    )
     youDiv.appendChild(iconUp)
-    opponentDiv.appendChild(scene.imageCropper.crop(scene, otherPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, this.scene.characterUrl, 4))
+    opponentDiv.appendChild(
+      scene.imageCropper.crop(
+        scene,
+        otherPlayerId,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        this.scene.characterUrl,
+        4,
+      ),
+    )
     opponentDiv.appendChild(iconUp2)
 
     iconUp.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
@@ -211,7 +229,9 @@ export class TradeView {
       upBid.ariaHidden = 'true'
 
       this.updateBidIndicators(
-        (playerEq ? this.youOfferPrevious : this.youGetPrevious).resources.find((item) => item.key === resource.key)!.value,
+        (playerEq ? this.youOfferPrevious : this.youGetPrevious).resources.find(
+          (item) => item.key === resource.key,
+        )!.value,
         resource.value,
         downBid,
         stableBid,
@@ -234,10 +254,18 @@ export class TradeView {
           this.scene.changeTrade(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1) this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value) this.changesDone -= 1
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1
+          )
+            this.changesDone += 1
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value
+          )
+            this.changesDone -= 1
 
-          if (this.changesDone !== 0){
+          if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
             this.disableAcceptBtn()
           } else {
@@ -262,10 +290,18 @@ export class TradeView {
           this.scene.changeTrade(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1) this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value) this.changesDone -= 1
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1
+          )
+            this.changesDone += 1
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value
+          )
+            this.changesDone -= 1
 
-          if (this.changesDone !== 0){
+          if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
             this.disableAcceptBtn()
           } else {
@@ -330,14 +366,14 @@ export class TradeView {
       if (this.isUserTurn && moneyUpperBoundary > offer.money) {
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) + 1}`
         offer.money += 1
-        
+
         this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.money === bid.money + 1) this.changesDone += 1
         if (offer.money === bid.money) this.changesDone -= 1
 
-        if (this.changesDone !== 0){
+        if (this.changesDone !== 0) {
           this.enableSendOfferBtn()
           this.disableAcceptBtn()
         } else {
@@ -356,14 +392,14 @@ export class TradeView {
         if (parseInt(moneyItemAmount.innerText) === 0) return
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) - 1}`
         offer.money -= 1
-        
+
         this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.money === bid.money - 1) this.changesDone += 1
         if (offer.money === bid.money) this.changesDone -= 1
 
-        if (this.changesDone !== 0){
+        if (this.changesDone !== 0) {
           this.enableSendOfferBtn()
           this.disableAcceptBtn()
         } else {
@@ -427,14 +463,14 @@ export class TradeView {
       if (this.isUserTurn && timeUpperBoundary > offer.time) {
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) + 1}`
         offer.time += 1
-        
+
         this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.time === bid.time + 1) this.changesDone += 1
         if (offer.time === bid.time) this.changesDone -= 1
 
-        if (this.changesDone !== 0){
+        if (this.changesDone !== 0) {
           this.enableSendOfferBtn()
           this.disableAcceptBtn()
         } else {
@@ -453,14 +489,14 @@ export class TradeView {
         if (parseInt(timeItemAmount.innerText) === 0) return
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) - 1}`
         offer.time -= 1
-        
+
         this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.time === bid.time - 1) this.changesDone += 1
         if (offer.time === bid.time) this.changesDone -= 1
 
-        if (this.changesDone !== 0){
+        if (this.changesDone !== 0) {
           this.enableSendOfferBtn()
           this.disableAcceptBtn()
         } else {
@@ -513,9 +549,9 @@ export class TradeView {
     this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId}`
 
     const you = document.getElementById('you')
-    if(you) you.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
+    if (you) you.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
     const notYou = document.getElementById('notYou')
-    if(notYou) notYou.style.visibility = this.isUserTurn ? 'hidden' : 'visible'
+    if (notYou) notYou.style.visibility = this.isUserTurn ? 'hidden' : 'visible'
   }
 
   disableAcceptBtn(): void {
@@ -546,8 +582,14 @@ export class TradeView {
     element.style.display = 'inline'
   }
 
-  updateBidIndicators(oldValue: number, newValue: number, down: HTMLElement, stable: HTMLElement, up: HTMLElement): void {
-    if (oldValue > newValue){
+  updateBidIndicators(
+    oldValue: number,
+    newValue: number,
+    down: HTMLElement,
+    stable: HTMLElement,
+    up: HTMLElement,
+  ): void {
+    if (oldValue > newValue) {
       this.enableBidElement(down)
       this.disableBidElement(stable)
       this.disableBidElement(up)
@@ -563,9 +605,12 @@ export class TradeView {
   }
 
   resetBidIndicators(): void {
-    for(const element of document.getElementsByClassName('stableBid')) (element as HTMLElement).style.display = 'inline'
-    for(const element of document.getElementsByClassName('upBid')) (element as HTMLElement).style.display = 'none'
-    for(const element of document.getElementsByClassName('downBid')) (element as HTMLElement).style.display = 'none'
+    for (const element of document.getElementsByClassName('stableBid'))
+      (element as HTMLElement).style.display = 'inline'
+    for (const element of document.getElementsByClassName('upBid'))
+      (element as HTMLElement).style.display = 'none'
+    for (const element of document.getElementsByClassName('downBid'))
+      (element as HTMLElement).style.display = 'none'
   }
 
   show(): void {

@@ -1,5 +1,5 @@
-import {type Websocket} from 'websocket-ts'
-import {type Equipment} from '../../../services/game/Types'
+import { type Websocket } from 'websocket-ts'
+import { type Equipment } from '../../../services/game/Types'
 
 export enum TradeMessageType {
   TradeMinorChange = 'trade/minor_change',
