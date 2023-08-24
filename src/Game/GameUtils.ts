@@ -1,3 +1,4 @@
+import { Direction, type Position } from "grid-engine"
 import { type ClassResourceRepresentation } from "../apis/game/Types"
 
 // ASSETS
@@ -19,3 +20,26 @@ export const getPlayerMapping =
   (initialCharacterMapping: ClassResourceRepresentation[]) =>
   (playerClass: string): number =>
     initialCharacterMapping.find((dto) => dto.key === playerClass)?.value.classAsset ?? 0
+
+export const getDirection = (startPosition: Position, endPosition: Position): Direction => {
+  const xDiff = startPosition.x - endPosition.x
+  const yDiff = startPosition.y - endPosition.y
+
+  if (xDiff === 0 && yDiff === 0) {
+    return Direction.NONE
+  }
+
+  if (xDiff === 0) {
+    return yDiff > 0 ? Direction.UP : Direction.DOWN
+  }
+
+  if (yDiff === 0) {
+    return xDiff > 0 ? Direction.LEFT : Direction.RIGHT
+  }
+
+  if (xDiff > 0) {
+    return yDiff > 0 ? Direction.UP_LEFT : Direction.DOWN_LEFT
+  }
+
+  return yDiff > 0 ? Direction.UP_RIGHT : Direction.DOWN_RIGHT
+}

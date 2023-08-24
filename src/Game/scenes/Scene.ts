@@ -1,5 +1,5 @@
 import * as Phaser from 'phaser'
-import type {GridEngine, Position} from 'grid-engine'
+import type {GridEngine} from 'grid-engine'
 import {Direction} from 'grid-engine'
 import type {Websocket} from 'websocket-ts'
 import {WebsocketBuilder} from 'websocket-ts'
@@ -27,6 +27,7 @@ import {ImageCropper} from '../tools/ImageCropper'
 import {
   ALL_PLAYERS_DESC_OFFSET_TOP,
   CHARACTER_ASSET_KEY,
+  getDirection,
   getPlayerMapping,
   LAYER_SCALE,
   MAP_ASSET_KEY,
@@ -39,8 +40,7 @@ import {
 } from '../GameUtils'
 import Key = Phaser.Input.Keyboard.Key;
 
-const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
-  .VITE_ECSB_MOVEMENT_WS_API_URL as string
+const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env.VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
 const VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
 
@@ -56,7 +56,6 @@ export class Scene extends Phaser.Scene {
   readonly playerId: PlayerId
   public readonly status: GameStatus
   public readonly settings: GameSettings
-  private readonly mapConfig: AssetConfig
   private readonly lowTravels: Coordinates[]
   private readonly mediumTravels: Coordinates[]
   private readonly highTravels: Coordinates[]
@@ -116,7 +115,6 @@ export class Scene extends Phaser.Scene {
     this.imageCropper = new ImageCropper()
     this.playerCloudMovement = new Map()
     this.playersClasses = new Map()
-    this.mapConfig = mapConfig
     this.lowTravels = mapConfig.lowLevelTravels
     this.mediumTravels = mapConfig.mediumLevelTravels
     this.highTravels = mapConfig.highLevelTravels
@@ -153,15 +151,8 @@ export class Scene extends Phaser.Scene {
       layer.scale = LAYER_SCALE
     }
 
-    const playerSprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
-    const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
-    text.setColor('#000000')
-    text.setFontFamily('Georgia, serif')
-
     this.playerCloudMovement.set(this.playerId, false)
     this.playersClasses.set(this.playerId, this.status.className)
-
-    const cloud = this.interactionCloudBuiler.build(this, this.playerId)
 
     this.cameras.main.setBounds(
       0,
@@ -169,6 +160,13 @@ export class Scene extends Phaser.Scene {
       cloudCityTilemap.widthInPixels * LAYER_SCALE,
       cloudCityTilemap.heightInPixels * LAYER_SCALE,
     )
+
+    const playerSprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
+    const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
+    text.setColor('#000000')
+    text.setFontFamily('Georgia, serif')
+
+    const cloud = this.interactionCloudBuiler.build(this, this.playerId)
 
     const container = this.add.container(0, 0, [
       playerSprite,
@@ -203,124 +201,17 @@ export class Scene extends Phaser.Scene {
     }
     this.gridEngine.create(cloudCityTilemap, gridEngineConfig)
 
-    this.configureMovementWebSocket()
-    this.configureChatWebSocket()
+    this.setUpMovementWebSocket()
+    this.setUpChatWebSocket()
 
-    this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
-      if (charId === this.playerId) {
-        const direction = this.getDirection(exitTile, enterTile)
+    this.setUpInputListeners()
 
-        sendMovementMessage(this.movementWs, {
-          type: MovementMessageType.Move,
-          coords: {
-            x: enterTile.x,
-            y: enterTile.y,
-          },
-          direction: direction,
-        })
+    this.loadPlayerEquipment()
 
-        this.players[this.playerId].coords = { x: enterTile.x, y: enterTile.y }
-        this.players[this.playerId].direction = direction
-      }
-    })
-
-    this.gridEngine.positionChangeFinished().subscribe(({ charId, exitTile, enterTile }) => {
-      if (charId !== this.playerId) {
-        this.gridEngine.turnTowards(charId, this.players[charId].direction)
-        return
-      }
-
-      if (charId === this.playerId) {
-        if (
-          this.playerWorkshopsCoordinates.some(
-            (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
-          )
-        ) {
-          this.interactionView.setText('enter the workshop...')
-          this.interactionView.show()
-        } else if (
-          this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
-        ) {
-          this.interactionView.setText('start a short journey...')
-          this.interactionView.show()
-        } else if (
-          this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
-        ) {
-          this.interactionView.setText('start a medium-distance journey...')
-          this.interactionView.show()
-        } else if (
-          this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
-        ) {
-          this.interactionView.setText('start a long-distance journey...')
-          this.interactionView.show()
-        } else {
-          this.interactionView.close()
-        }
-      }
-    })
-
-    this.input.on(
-      'pointerdown',
-      (pointer: Phaser.Input.Pointer, gameObjects: Phaser.GameObjects.GameObject[]) => {
-        if (gameObjects.length === 0) {
-          window.document.getElementById('btns')?.remove()
-          this.actionTrade = null
-        }
-      },
-    )
-
-    gameService
-      .getPlayerEquipment()
-      .then((res: PlayerEquipment) => {
-        this.equipment = res.full
-        this.visibleEquipment = res.shared
-        this.equipmentView = new EquipmentView(this)
-        this.equipmentView.show()
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-
-    this.scale.resize(window.innerWidth, window.innerHeight)
-
-    if (
-      this.playerWorkshopsCoordinates.some(
-        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
-      )
-    ) {
-      this.interactionView.setText('enter the workshop...')
-      this.interactionView.show()
-    } else if (
-      this.lowTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
-    ) {
-      this.interactionView.setText('start a short journey...')
-      this.interactionView.show()
-    } else if (
-      this.mediumTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
-    ) {
-      this.interactionView.setText('start a medium-distance journey...')
-      this.interactionView.show()
-    } else if (
-      this.highTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
-    ) {
-      this.interactionView.setText('start a long-distance journey...')
-      this.interactionView.show()
-    } 
+    this.setUpWindow()
   }
 
-  createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
-    this.tradeWindow = new TradeView(
-      this,
-      this.visibleEquipment!,
-      this.playerId,
-      this.otherEquipment!,
-      targetId,
-      isUserTurn,
-    )
-    this.tradeWindow.show()
-  }
-
-  configureMovementWebSocket(): void {
+  private setUpMovementWebSocket(): void {
     this.movementWs = new WebsocketBuilder(
       `${VITE_ECSB_MOVEMENT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
     )
@@ -375,7 +266,7 @@ export class Scene extends Phaser.Scene {
       .build()
   }
 
-  configureChatWebSocket(): void {
+  private setUpChatWebSocket(): void {
     this.tradeWs = new WebsocketBuilder(
       `${VITE_ECSB_CHAT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
     )
@@ -394,12 +285,12 @@ export class Scene extends Phaser.Scene {
         if (!msg) return
         switch (msg.message.type) {
           case TradeMessageType.ProposeTrade:
-            this.showTradeInvite(msg.senderId)
+            this.showTradeInvitePopup(msg.senderId)
             break
           case TradeMessageType.TradeServerStart:
             this.otherEquipment = msg.message.otherTrader
             this.otherPlayerId = msg.senderId
-            this.createTradeWindow(msg.senderId, msg.message.myTurn)
+            this.showTradeWindow(msg.senderId, msg.message.myTurn)
             break
           case TradeMessageType.TradeServerCancel:
             this.tradeWindow?.close()
@@ -470,30 +361,126 @@ export class Scene extends Phaser.Scene {
       .build()
   }
 
-  getDirection = (startPosition: Position, endPosition: Position): Direction => {
-    const xDiff = startPosition.x - endPosition.x
-    const yDiff = startPosition.y - endPosition.y
+  private setUpInputListeners(): void {
+    this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
+      if (charId === this.playerId) {
+        const direction = getDirection(exitTile, enterTile)
 
-    if (xDiff === 0 && yDiff === 0) {
-      return Direction.NONE
-    }
+        sendMovementMessage(this.movementWs, {
+          type: MovementMessageType.Move,
+          coords: {
+            x: enterTile.x,
+            y: enterTile.y,
+          },
+          direction: direction,
+        })
 
-    if (xDiff === 0) {
-      return yDiff > 0 ? Direction.UP : Direction.DOWN
-    }
+        this.players[this.playerId].coords = { x: enterTile.x, y: enterTile.y }
+        this.players[this.playerId].direction = direction
+      }
+    })
 
-    if (yDiff === 0) {
-      return xDiff > 0 ? Direction.LEFT : Direction.RIGHT
-    }
+    this.gridEngine.positionChangeFinished().subscribe(({ charId, exitTile, enterTile }) => {
+      if (charId !== this.playerId) {
+        this.gridEngine.turnTowards(charId, this.players[charId].direction)
+        return
+      }
 
-    if (xDiff > 0) {
-      return yDiff > 0 ? Direction.UP_LEFT : Direction.DOWN_LEFT
-    }
+      if (charId === this.playerId) {
+        if (
+          this.playerWorkshopsCoordinates.some(
+            (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
+          )
+        ) {
+          this.interactionView.setText('enter the workshop...')
+          this.interactionView.show()
+        } else if (
+          this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
+        ) {
+          this.interactionView.setText('start a short journey...')
+          this.interactionView.show()
+        } else if (
+          this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
+        ) {
+          this.interactionView.setText('start a medium-distance journey...')
+          this.interactionView.show()
+        } else if (
+          this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
+        ) {
+          this.interactionView.setText('start a long-distance journey...')
+          this.interactionView.show()
+        } else {
+          this.interactionView.close()
+        }
+      }
+    })
 
-    return yDiff > 0 ? Direction.UP_RIGHT : Direction.DOWN_RIGHT
+    this.input.on(
+      'pointerdown',
+      (pointer: Phaser.Input.Pointer, gameObjects: Phaser.GameObjects.GameObject[]) => {
+        if (gameObjects.length === 0) {
+          window.document.getElementById('btns')?.remove()
+          this.actionTrade = null
+        }
+      },
+    )
   }
 
-  addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
+  private loadPlayerEquipment = (): void => {
+    gameService
+    .getPlayerEquipment()
+    .then((res: PlayerEquipment) => {
+      this.equipment = res.full
+      this.visibleEquipment = res.shared
+      this.equipmentView = new EquipmentView(this)
+      this.equipmentView.show()
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  }
+
+  private setUpWindow = (): void => {
+    this.scale.resize(window.innerWidth, window.innerHeight)
+
+    if (
+      this.playerWorkshopsCoordinates.some(
+        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
+      )
+    ) {
+      this.interactionView.setText('enter the workshop...')
+      this.interactionView.show()
+    } else if (
+      this.lowTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+    ) {
+      this.interactionView.setText('start a short journey...')
+      this.interactionView.show()
+    } else if (
+      this.mediumTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+    ) {
+      this.interactionView.setText('start a medium-distance journey...')
+      this.interactionView.show()
+    } else if (
+      this.highTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+    ) {
+      this.interactionView.setText('start a long-distance journey...')
+      this.interactionView.show()
+    } 
+  }
+
+  private showTradeWindow = (targetId: string, isUserTurn: boolean): void => {
+    this.tradeWindow = new TradeView(
+      this,
+      this.visibleEquipment!,
+      this.playerId,
+      this.otherEquipment!,
+      targetId,
+      isUserTurn,
+    )
+    this.tradeWindow.show()
+  }
+
+  private addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
     const sprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
     const text = this.add.text(0, ALL_PLAYERS_DESC_OFFSET_TOP, id)
     text.setColor('#000000')
@@ -550,7 +537,7 @@ export class Scene extends Phaser.Scene {
     }
   }
 
-  removePlayer(id: string): void {
+  private removePlayer(id: string): void {
     this.gridEngine.getSprite(id)?.destroy()
     this.gridEngine.getContainer(id)?.destroy()
     this.gridEngine.removeCharacter(id)
@@ -558,7 +545,7 @@ export class Scene extends Phaser.Scene {
     delete this.players[id]
   }
 
-  movePlayer(id: string, coords: Coordinates, direction: Direction): void {
+  private movePlayer(id: string, coords: Coordinates, direction: Direction): void {
     this.gridEngine.moveTo(id, coords)
 
     this.interactionCloudBuiler.purgeUnnecessaryIcons(id)
@@ -566,20 +553,7 @@ export class Scene extends Phaser.Scene {
     this.players[id].direction = direction
   }
 
-  showTradeInvite(from: string): void {
-    toast.warn(TradeOfferPopup({ scene: this, from: from}), {
-      position: 'bottom-right',
-      autoClose: 8000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      toastId: from,
-    })
-  }
-
-  acceptTradeInvitation(senderId: string): void {
+  public acceptTradeInvitation(senderId: string): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -589,7 +563,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeMinorChange(ourSide: Equipment, otherSide: Equipment): void {
+  public changeTrade(ourSide: Equipment, otherSide: Equipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -603,7 +577,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeBid(ourSide: Equipment, otherSide: Equipment): void {
+  public placeTradeBid(ourSide: Equipment, otherSide: Equipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -619,14 +593,7 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow?.disableAcceptBtn()
   }
 
-  updateTradeDialog(ourSide: Equipment, otherSide: Equipment): void {
-    this.tradeWindow?.update(ourSide, otherSide)
-    this.tradeWindow?.enableAcceptBtn()
-    this.tradeWindow?.disableSendOfferBtn()
-    this.tradeWindow?.setUserTurn(true)
-  }
-
-  finishTrade(ourSide: Equipment, otherSide: Equipment): void {
+  public finalizeTrade(ourSide: Equipment, otherSide: Equipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -640,7 +607,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  cancelTrade(): void {
+  public cancelTrade(): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -651,7 +618,14 @@ export class Scene extends Phaser.Scene {
     this.otherPlayerId = undefined
   }
 
-  showBusyPopup(senderId: string, message: string): void {
+  private updateTradeDialog(ourSide: Equipment, otherSide: Equipment): void {
+    this.tradeWindow?.update(ourSide, otherSide)
+    this.tradeWindow?.enableAcceptBtn()
+    this.tradeWindow?.disableSendOfferBtn()
+    this.tradeWindow?.setUserTurn(true)
+  }
+
+  private showBusyPopup(senderId: string, message: string): void {
     toast.error(`${senderId} is already busy`, {
       position: 'top-center',
       autoClose: 5000,
@@ -663,8 +637,17 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
-    return keys.every((value) => value.isDown)
+  private showTradeInvitePopup(from: string): void {
+    toast.warn(TradeOfferPopup({ scene: this, from: from}), {
+      position: 'bottom-right',
+      autoClose: 8000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      toastId: from,
+    })
   }
 
   update(): void {
@@ -744,6 +727,10 @@ export class Scene extends Phaser.Scene {
       this.gridEngine.move(this.playerId, foundMapping.direction)
       this.interactionCloudBuiler.purgeUnnecessaryIcons(this.playerId)
     }
+  }
+
+  private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
+    return keys.every((value) => value.isDown)
   }
 
   destroy(): void {

@@ -24,5 +24,4 @@ export class ImageCropper {
     cropContainer.appendChild(im)
     return cropContainer
   }
-
 }
