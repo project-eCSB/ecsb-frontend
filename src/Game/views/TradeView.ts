@@ -139,7 +139,7 @@ export class TradeView {
     this.tradeBoxAccept.innerText = 'Accept'
     this.tradeBoxAccept.addEventListener('click', () => {
       if (this.isUserTurn) {
-        scene.finishTrade(this.youOffer, this.youGet)
+        scene.finalizeTrade(this.youOffer, this.youGet)
         this.close()
       }
     })
@@ -150,7 +150,7 @@ export class TradeView {
     this.tradeBoxSendOffer.innerText = 'Send Offer'
     this.tradeBoxSendOffer.addEventListener('click', () => {
       if (this.isUserTurn) {
-        scene.sendTradeBid(this.youOffer, this.youGet)
+        scene.placeTradeBid(this.youOffer, this.youGet)
         this.setUserTurn(false)
         this.resetBidIndicators()
         this.youOfferPrevious = JSON.parse(JSON.stringify(this.youOffer))
@@ -231,7 +231,7 @@ export class TradeView {
           }`
           resource.value += 1
 
-          this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
+          this.scene.changeTrade(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1) this.changesDone += 1
@@ -259,7 +259,7 @@ export class TradeView {
           }`
           resource.value -= 1
 
-          this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
+          this.scene.changeTrade(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1) this.changesDone += 1
@@ -331,7 +331,7 @@ export class TradeView {
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) + 1}`
         offer.money += 1
         
-        this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
+        this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.money === bid.money + 1) this.changesDone += 1
@@ -357,7 +357,7 @@ export class TradeView {
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) - 1}`
         offer.money -= 1
         
-        this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
+        this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.money === bid.money - 1) this.changesDone += 1
@@ -428,7 +428,7 @@ export class TradeView {
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) + 1}`
         offer.time += 1
         
-        this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
+        this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.time === bid.time + 1) this.changesDone += 1
@@ -454,7 +454,7 @@ export class TradeView {
         timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) - 1}`
         offer.time -= 1
         
-        this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
+        this.scene.changeTrade(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.time === bid.time - 1) this.changesDone += 1
