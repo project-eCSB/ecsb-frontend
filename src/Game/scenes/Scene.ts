@@ -17,7 +17,11 @@ import {type LoadingView} from '../views/LoadingView'
 import {parseChatMessage} from '../webSocketMessage/chat/MessageParser'
 import {MovementMessageType, sendMovementMessage,} from '../webSocketMessage/movement/MovementMessage'
 import {parseMovementMessage} from '../webSocketMessage/movement/MessageParser'
-import {sendTradeMessage, TradeMessageType} from '../webSocketMessage/chat/TradeMessageHandler'
+import {
+  IncomingTradeMessageType,
+  OutcomingTradeMessageType,
+  sendTradeMessage,
+} from '../webSocketMessage/chat/TradeMessageHandler'
 import {UserStatusMessageType} from '../webSocketMessage/chat/UserStatusMessage'
 import {NotificationMessageType} from '../webSocketMessage/chat/NotificationMessage'
 import {InteractionCloudBuilder} from '../tools/InteractionCloudBuilder'
@@ -393,26 +397,26 @@ export class Scene extends Phaser.Scene {
 
         if (!msg) return
         switch (msg.message.type) {
-          case TradeMessageType.ProposeTrade:
+          case IncomingTradeMessageType.TradeServerPropose:
             this.showTradeInvite(msg.senderId)
             break
-          case TradeMessageType.TradeServerStart:
+          case IncomingTradeMessageType.TradeServerStart:
             this.otherEquipment = msg.message.otherTrader
             this.otherPlayerId = msg.senderId
             this.createTradeWindow(msg.senderId, msg.message.myTurn)
             break
-          case TradeMessageType.TradeServerCancel:
+          case IncomingTradeMessageType.TradeServerCancel:
             this.tradeWindow?.close()
             this.otherEquipment = undefined
             this.otherPlayerId = undefined
             break
-          case TradeMessageType.TradeBid:
+          case IncomingTradeMessageType.TradeServerBid:
             this.updateTradeDialog(
               msg.message.tradeBid.senderRequest,
               msg.message.tradeBid.senderOffer,
             )
             break
-          case TradeMessageType.TradeServerFinish:
+          case IncomingTradeMessageType.TradeServerFinish:
             this.tradeWindow?.close()
             this.otherEquipment = undefined
             this.otherPlayerId = undefined
@@ -428,7 +432,7 @@ export class Scene extends Phaser.Scene {
               })
             break
           case UserStatusMessageType.UserBusy:
-            this.showBusyPopup(msg.senderId, msg.message.reason)
+            this.showBusyPopup(msg.message.reason)
             break
           case NotificationMessageType.NotificationTradeStart:
             this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
@@ -583,7 +587,7 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.ProposeTradeAck,
+        type: OutcomingTradeMessageType.ProposeTradeAck,
         proposalSenderId: senderId,
       },
     })
@@ -593,7 +597,7 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.TradeMinorChange,
+        type: OutcomingTradeMessageType.TradeMinorChange,
         tradeBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
@@ -607,7 +611,7 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.TradeBid,
+        type: OutcomingTradeMessageType.TradeBid,
         tradeBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
@@ -630,7 +634,7 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.TradeBidAck,
+        type: OutcomingTradeMessageType.TradeBidAck,
         finalBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
@@ -644,15 +648,15 @@ export class Scene extends Phaser.Scene {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
-        type: TradeMessageType.TradeCancel,
+        type: OutcomingTradeMessageType.TradeCancel,
       },
     })
     this.otherEquipment = undefined
     this.otherPlayerId = undefined
   }
 
-  showBusyPopup(senderId: string, message: string): void {
-    toast.error(`${senderId} is already busy`, {
+  showBusyPopup(message: string): void {
+    toast.error(`${message}`, {
       position: 'top-center',
       autoClose: 5000,
       hideProgressBar: true,
