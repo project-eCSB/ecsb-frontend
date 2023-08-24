@@ -217,7 +217,7 @@ export class WorkshopView {
     })
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     document.getElementById('workshop-container')?.remove()
-    this.scene.workshopView = null
+    this.scene.workshopView = undefined
     this.scene.movingEnabled = true
 
     this.scene.interactionView.setText('enter the workshop...')

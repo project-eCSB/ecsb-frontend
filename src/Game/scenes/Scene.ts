@@ -52,40 +52,47 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
 
 export class Scene extends Phaser.Scene {
   private readonly gridEngine!: GridEngine
+  // Player
   private readonly gameToken: string
   readonly playerId: PlayerId
   public readonly status: GameStatus
+  public equipment?: Equipment
+  public visibleEquipment?: Equipment
+  private otherEquipment?: Equipment
+  private otherPlayerId?: PlayerId
+  // Players
+  public players: Record<PlayerId, PlayerState>
+  public playersClasses!: Map<PlayerId, string>
+  public playerCloudMovement!: Map<PlayerId, boolean>
+  // Communication
+  private movementWs!: Websocket
+  public tradeWs!: Websocket
+  // Game
   public readonly settings: GameSettings
   private readonly lowTravels: Coordinates[]
   private readonly mediumTravels: Coordinates[]
   private readonly highTravels: Coordinates[]
   private readonly playerWorkshopsCoordinates: Coordinates[]
-  public playerCloudMovement!: Map<PlayerId, boolean>
   public playerWorkshopUnitPrice = 0
   public playerWorkshopResouseName = ''
   public playerWorkshopMaxProduction = 0
-  public readonly players: Record<PlayerId, PlayerState>
-  public playersClasses!: Map<PlayerId, string>
-  public actionTrade: string | null
-  public tradeWindow: TradeView | null
-  public equipmentView: EquipmentView | null
-  public workshopView: WorkshopView | null
+  // Views
+  public tradeView?: TradeView
+  public equipmentView?: EquipmentView 
+  public workshopView?: WorkshopView 
   public interactionView: InteractionView
-  public loadingView: LoadingView | null
-  public travelView: TravelView | null
-  public interactionCloudBuiler!: InteractionCloudBuilder
-  public contextMenuBuilder!: ContextMenuBuilder
-  public imageCropper!: ImageCropper
-  public movingEnabled: boolean
-  private movementWs!: Websocket
-  public tradeWs!: Websocket
-  public equipment?: Equipment
-  public visibleEquipment?: Equipment
-  private otherEquipment?: Equipment
-  private otherPlayerId?: PlayerId
+  public loadingView?: LoadingView
+  public travelView?: TravelView 
+  // URLs
   public characterUrl!: string
   public resourceUrl!: string
   public tileUrl!: string
+  // Helper
+  public contextMenuPlayerId?: PlayerId 
+  public movingEnabled: boolean
+  public interactionCloudBuiler!: InteractionCloudBuilder
+  public contextMenuBuilder!: ContextMenuBuilder
+  public imageCropper!: ImageCropper
 
   constructor(
     gameToken: string,
@@ -102,14 +109,14 @@ export class Scene extends Phaser.Scene {
     this.status = userStatus
     this.settings = settings
     this.players = {}
-    this.actionTrade = null
+    this.contextMenuPlayerId = undefined
     this.movingEnabled = true
-    this.tradeWindow = null
-    this.equipmentView = null
-    this.workshopView = null
+    this.tradeView = undefined
+    this.equipmentView = undefined
+    this.workshopView = undefined
     this.interactionView = new InteractionView(this)
-    this.loadingView = null
-    this.travelView = null
+    this.loadingView = undefined
+    this.travelView = undefined
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.contextMenuBuilder = new ContextMenuBuilder()
     this.imageCropper = new ImageCropper()
@@ -290,10 +297,10 @@ export class Scene extends Phaser.Scene {
           case TradeMessageType.TradeServerStart:
             this.otherEquipment = msg.message.otherTrader
             this.otherPlayerId = msg.senderId
-            this.showTradeWindow(msg.senderId, msg.message.myTurn)
+            this.showtradeView(msg.senderId, msg.message.myTurn)
             break
           case TradeMessageType.TradeServerCancel:
-            this.tradeWindow?.close()
+            this.tradeView?.close()
             this.otherEquipment = undefined
             this.otherPlayerId = undefined
             break
@@ -304,7 +311,7 @@ export class Scene extends Phaser.Scene {
             )
             break
           case TradeMessageType.TradeServerFinish:
-            this.tradeWindow?.close()
+            this.tradeView?.close()
             this.otherEquipment = undefined
             this.otherPlayerId = undefined
             gameService
@@ -420,13 +427,13 @@ export class Scene extends Phaser.Scene {
       (pointer: Phaser.Input.Pointer, gameObjects: Phaser.GameObjects.GameObject[]) => {
         if (gameObjects.length === 0) {
           window.document.getElementById('btns')?.remove()
-          this.actionTrade = null
+          this.contextMenuPlayerId = undefined
         }
       },
     )
   }
 
-  private loadPlayerEquipment = (): void => {
+  private readonly loadPlayerEquipment = (): void => {
     gameService
     .getPlayerEquipment()
     .then((res: PlayerEquipment) => {
@@ -440,7 +447,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  private setUpWindow = (): void => {
+  private readonly setUpWindow = (): void => {
     this.scale.resize(window.innerWidth, window.innerHeight)
 
     if (
@@ -468,8 +475,8 @@ export class Scene extends Phaser.Scene {
     } 
   }
 
-  private showTradeWindow = (targetId: string, isUserTurn: boolean): void => {
-    this.tradeWindow = new TradeView(
+  private readonly showtradeView = (targetId: string, isUserTurn: boolean): void => {
+    this.tradeView = new TradeView(
       this,
       this.visibleEquipment!,
       this.playerId,
@@ -477,7 +484,7 @@ export class Scene extends Phaser.Scene {
       targetId,
       isUserTurn,
     )
-    this.tradeWindow.show()
+    this.tradeView.show()
   }
 
   private addPlayer(id: string, coords: Coordinates, direction: Direction, characterClass: string): void {
@@ -494,7 +501,7 @@ export class Scene extends Phaser.Scene {
 
     sprite.setInteractive()
     sprite.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if ((!this.actionTrade || this.actionTrade !== id) && this.movingEnabled) {
+      if ((!this.contextMenuPlayerId || this.contextMenuPlayerId !== id) && this.movingEnabled) {
         const neighbor = this.players[id]
         const currPlayer = this.players[this.playerId]
         if (
@@ -507,7 +514,7 @@ export class Scene extends Phaser.Scene {
             this.cameras.main.scrollY + pointer.y,
             div,
           )
-          this.actionTrade = id
+          this.contextMenuPlayerId = id
         }
       }
     })
@@ -589,8 +596,8 @@ export class Scene extends Phaser.Scene {
         receiverId: this.otherPlayerId!,
       },
     })
-    this.tradeWindow?.disableSendOfferBtn()
-    this.tradeWindow?.disableAcceptBtn()
+    this.tradeView?.disableSendOfferBtn()
+    this.tradeView?.disableAcceptBtn()
   }
 
   public finalizeTrade(ourSide: Equipment, otherSide: Equipment): void {
@@ -619,10 +626,10 @@ export class Scene extends Phaser.Scene {
   }
 
   private updateTradeDialog(ourSide: Equipment, otherSide: Equipment): void {
-    this.tradeWindow?.update(ourSide, otherSide)
-    this.tradeWindow?.enableAcceptBtn()
-    this.tradeWindow?.disableSendOfferBtn()
-    this.tradeWindow?.setUserTurn(true)
+    this.tradeView?.update(ourSide, otherSide)
+    this.tradeView?.enableAcceptBtn()
+    this.tradeView?.disableSendOfferBtn()
+    this.tradeView?.setUserTurn(true)
   }
 
   private showBusyPopup(senderId: string, message: string): void {

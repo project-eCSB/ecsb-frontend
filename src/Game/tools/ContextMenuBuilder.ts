@@ -18,7 +18,7 @@ export class ContextMenuBuilder {
     buttonPartnership.appendChild(buttonPartnershipText)
     buttonPartnership.onclick = (e: Event) => {
       window.document.getElementById('btns')?.remove()
-      scene.actionTrade = null
+      scene.contextMenuPlayerId = undefined
     }
 
     const buttonTrade = document.createElement('button')
@@ -47,7 +47,7 @@ export class ContextMenuBuilder {
         draggable: false,
         progress: undefined,
       })
-      scene.actionTrade = null
+      scene.contextMenuPlayerId = undefined
     }
 
     div.appendChild(buttonPartnership)

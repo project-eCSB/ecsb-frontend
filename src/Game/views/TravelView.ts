@@ -207,7 +207,7 @@ export class TravelView {
     })
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     document.getElementById('travel-container')?.remove()
-    this.scene.travelView = null
+    this.scene.travelView = undefined
     this.scene.movingEnabled = true
 
     switch (this.travelType) {
