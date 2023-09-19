@@ -39,6 +39,11 @@ export interface GameResourceDto {
   value: number
 }
 
+export interface TradeEquipment {
+  money: number;
+  resources: GameResourceDto[];
+}
+
 export interface Equipment {
   money: number
   time: number

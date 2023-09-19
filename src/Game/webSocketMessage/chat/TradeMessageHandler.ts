@@ -1,9 +1,9 @@
 import {type Websocket} from 'websocket-ts'
-import {type Equipment} from '../../../services/game/Types'
+import {type TradeEquipment} from '../../../services/game/Types'
 
 export interface TradeBid {
-  senderOffer: Equipment
-  senderRequest: Equipment
+  senderOffer: TradeEquipment
+  senderRequest: TradeEquipment
 }
 
 export enum IncomingTradeMessageType {
@@ -27,7 +27,7 @@ export interface TradeServerStartMessage {
   message: {
     type: IncomingTradeMessageType.TradeServerStart
     myTurn: boolean
-    otherTrader: Equipment
+    otherTrader: TradeEquipment
     receiverId: string
   }
 }

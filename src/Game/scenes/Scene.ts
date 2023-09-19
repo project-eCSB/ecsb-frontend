@@ -3,7 +3,7 @@ import type {GridEngine, Position} from 'grid-engine'
 import {Direction} from 'grid-engine'
 import type {Websocket} from 'websocket-ts'
 import {WebsocketBuilder} from 'websocket-ts'
-import type {AssetConfig, Equipment, GameSettings, GameStatus, PlayerEquipment,} from '../../services/game/Types'
+import type {AssetConfig, Equipment, GameSettings, GameStatus, PlayerEquipment, TradeEquipment,} from '../../services/game/Types'
 import {CloudType, type Controls, type Coordinates, type PlayerId, type PlayerState,} from './Types'
 import {decodeGameToken} from '../../apis/apis'
 import {TradeView} from '../views/TradeView'
@@ -60,7 +60,6 @@ export class Scene extends Phaser.Scene {
   readonly playerId: PlayerId
   public readonly status: GameStatus
   public readonly settings: GameSettings
-  private readonly mapConfig: AssetConfig
   private readonly lowTravels: Coordinates[]
   private readonly mediumTravels: Coordinates[]
   private readonly highTravels: Coordinates[]
@@ -86,7 +85,7 @@ export class Scene extends Phaser.Scene {
   public tradeWs!: Websocket
   public equipment?: Equipment
   public visibleEquipment?: Equipment
-  private otherEquipment?: Equipment
+  private otherEquipment?: TradeEquipment
   private otherPlayerId?: PlayerId
   public characterUrl!: string
   public resourceUrl!: string
@@ -120,7 +119,6 @@ export class Scene extends Phaser.Scene {
     this.imageCropper = new ImageCropper()
     this.playerCloudMovement = new Map()
     this.playersClasses = new Map()
-    this.mapConfig = mapConfig
     this.lowTravels = mapConfig.lowLevelTravels
     this.mediumTravels = mapConfig.mediumLevelTravels
     this.highTravels = mapConfig.highLevelTravels
@@ -315,11 +313,11 @@ export class Scene extends Phaser.Scene {
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
     this.tradeWindow = new TradeView(
       this,
-      this.visibleEquipment!,
-      this.playerId,
-      this.otherEquipment!,
-      targetId,
       isUserTurn,
+      this.playerId,
+      this.visibleEquipment!,
+      targetId,
+      this.otherEquipment!,
     )
     this.tradeWindow.show()
   }
@@ -593,7 +591,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeMinorChange(ourSide: Equipment, otherSide: Equipment): void {
+  sendTradeMinorChange(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -607,7 +605,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeBid(ourSide: Equipment, otherSide: Equipment): void {
+  sendTradeBid(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
@@ -623,14 +621,14 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow?.disableAcceptBtn()
   }
 
-  updateTradeDialog(ourSide: Equipment, otherSide: Equipment): void {
+  updateTradeDialog(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     this.tradeWindow?.update(ourSide, otherSide)
     this.tradeWindow?.enableAcceptBtn()
     this.tradeWindow?.disableSendOfferBtn()
     this.tradeWindow?.setUserTurn(true)
   }
 
-  finishTrade(ourSide: Equipment, otherSide: Equipment): void {
+  finishTrade(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.tradeWs, {
       senderId: this.playerId,
       message: {
