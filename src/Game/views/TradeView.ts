@@ -1,19 +1,19 @@
 import { type Scene } from '../scenes/Scene'
-import { type Equipment } from '../../services/game/Types'
+import { type TradeEquipment } from '../../services/game/Types'
 import { CloudType } from '../scenes/Types'
 import { SPRITE_WIDTH, SPRITE_HEIGHT } from '../GameUtils'
 
 export class TradeView {
-  isUserTurn: boolean
   scene: Scene
+  isUserTurn: boolean
   currPlayerId: string
+  currPlayerEq: TradeEquipment
   otherPlayerId: string
-  currPlayer: Equipment
-  otherPlayer: Equipment
-  youOfferPrevious: Equipment
-  youGetPrevious: Equipment
-  youOffer: Equipment
-  youGet: Equipment
+  otherPlayerEq: TradeEquipment
+  youOffer: TradeEquipment
+  youGet: TradeEquipment
+  youOfferPrevious: TradeEquipment
+  youGetPrevious: TradeEquipment
   changesDone: number
   tradeBox: HTMLDivElement
   tradeBoxTitle: HTMLHeadingElement
@@ -31,37 +31,33 @@ export class TradeView {
 
   constructor(
     scene: Scene,
-    currPlayer: Equipment,
-    currPlayerId: string,
-    otherPlayer: Equipment,
-    otherPlayerId: string,
     isUserTurn: boolean,
+    currPlayerId: string,
+    currPlayerEq: TradeEquipment,
+    otherPlayerId: string,
+    otherPlayerEq: TradeEquipment,
   ) {
+    this.scene = scene
     this.isUserTurn = isUserTurn
     this.currPlayerId = currPlayerId
+    this.currPlayerEq = currPlayerEq
     this.otherPlayerId = otherPlayerId
-    this.scene = scene
-    this.currPlayer = currPlayer
-    this.otherPlayer = otherPlayer
+    this.otherPlayerEq = otherPlayerEq
     this.youOffer = {
-      time: 0,
       money: 0,
-      resources: currPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
+      resources: currPlayerEq.resources.map((resource) => ({ key: resource.key, value: 0 })),
     }
     this.youGet = {
-      time: 0,
       money: 0,
-      resources: otherPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
+      resources: otherPlayerEq.resources.map((resource) => ({ key: resource.key, value: 0 })),
     }
     this.youOfferPrevious = {
-      time: 0,
       money: 0,
-      resources: currPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
+      resources: currPlayerEq.resources.map((resource) => ({ key: resource.key, value: 0 })),
     }
     this.youGetPrevious = {
-      time: 0,
       money: 0,
-      resources: otherPlayer.resources.map((dto) => ({ key: dto.key, value: 0 })),
+      resources: otherPlayerEq.resources.map((resource) => ({ key: resource.key, value: 0 })),
     }
     this.changesDone = 69
 
@@ -87,7 +83,7 @@ export class TradeView {
     this.tradeBoxPlayerOfferEq = document.createElement('div')
     this.tradeBoxPlayerOfferEq.id = 'tradeBoxContentPlayerOfferEq'
 
-    this.fillEq(this.tradeBoxPlayerOfferEq, this.youOffer, this.currPlayer, true)
+    this.fillEq(this.tradeBoxPlayerOfferEq, this.youOffer, this.currPlayerEq, true)
     this.tradeBoxPlayer.appendChild(this.tradeBoxPlayerTitle)
     this.tradeBoxPlayer.appendChild(this.tradeBoxPlayerOfferEq)
 
@@ -100,7 +96,7 @@ export class TradeView {
     this.tradeBoxNeighborOfferEq = document.createElement('div')
     this.tradeBoxNeighborOfferEq.id = 'tradeBoxContentNeighborOfferEq'
 
-    this.fillEq(this.tradeBoxNeighborOfferEq, this.youGet, this.otherPlayer, false)
+    this.fillEq(this.tradeBoxNeighborOfferEq, this.youGet, this.otherPlayerEq, false)
     this.tradeBoxNeighbor.appendChild(this.tradeBoxNeighborTitle)
     this.tradeBoxNeighbor.appendChild(this.tradeBoxNeighborOfferEq)
 
@@ -186,8 +182,8 @@ export class TradeView {
 
   private fillEq(
     container: HTMLDivElement,
-    offer: Equipment,
-    realState: Equipment,
+    offer: TradeEquipment,
+    realState: TradeEquipment,
     playerEq: boolean,
   ): void {
     const bid = JSON.parse(JSON.stringify(offer))
@@ -391,106 +387,9 @@ export class TradeView {
     moneyItem.appendChild(bidIndicatorWrapperMoney)
 
     container.appendChild(moneyItem)
-
-    const timeItem = document.createElement('div')
-    const timeUpperBoundary = realState.time
-    const timeItemName = document.createElement('h5')
-    timeItemName.innerText = 'time'
-
-    const timeItemAmount = document.createElement('p')
-    timeItemAmount.innerText = `${offer.time}`
-
-    const downBidTime = document.createElement('i')
-    downBidTime.className = 'arrow downBid fa fa-arrow-down'
-    downBidTime.ariaHidden = 'true'
-    const stableBidTime = document.createElement('i')
-    stableBidTime.className = 'arrow stableBid fa fa-minus'
-    stableBidTime.ariaHidden = 'true'
-    const upBidTime = document.createElement('i')
-    upBidTime.className = 'arrow upBid fa fa-arrow-up'
-    upBidTime.ariaHidden = 'true'
-
-    this.updateBidIndicators(
-      (playerEq ? this.youOfferPrevious : this.youGetPrevious).time,
-      offer.time,
-      downBidTime,
-      stableBidTime,
-      upBidTime,
-    )
-
-    const timeItemBtnUp = document.createElement('button')
-    const plus2 = document.createElement('i')
-    plus2.className = 'fa fa-plus'
-    plus2.ariaHidden = 'true'
-    timeItemBtnUp.appendChild(plus2)
-    timeItemBtnUp.addEventListener('click', () => {
-      if (this.isUserTurn && timeUpperBoundary > offer.time) {
-        timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) + 1}`
-        offer.time += 1
-        
-        this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
-
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        if (offer.time === bid.time + 1) this.changesDone += 1
-        if (offer.time === bid.time) this.changesDone -= 1
-
-        if (this.changesDone !== 0){
-          this.enableSendOfferBtn()
-          this.disableAcceptBtn()
-        } else {
-          this.disableSendOfferBtn()
-          this.enableAcceptBtn()
-        }
-      }
-    })
-    const timeItemBtnUpDown = document.createElement('button')
-    const minus2 = document.createElement('i')
-    minus2.className = 'fa fa-minus'
-    minus2.ariaHidden = 'true'
-    timeItemBtnUpDown.appendChild(minus2)
-    timeItemBtnUpDown.addEventListener('click', () => {
-      if (this.isUserTurn && offer.time > 0) {
-        if (parseInt(timeItemAmount.innerText) === 0) return
-        timeItemAmount.innerText = `${parseInt(timeItemAmount.innerText) - 1}`
-        offer.time -= 1
-        
-        this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
-
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        if (offer.time === bid.time - 1) this.changesDone += 1
-        if (offer.time === bid.time) this.changesDone -= 1
-
-        if (this.changesDone !== 0){
-          this.enableSendOfferBtn()
-          this.disableAcceptBtn()
-        } else {
-          this.disableSendOfferBtn()
-          this.enableAcceptBtn()
-        }
-      }
-    })
-
-    const resourceWrapperTime = document.createElement('div')
-    resourceWrapperTime.id = 'resourceWrapper'
-    resourceWrapperTime.appendChild(timeItemName)
-    resourceWrapperTime.appendChild(timeItemAmount)
-    timeItem.appendChild(resourceWrapperTime)
-    const tradeButtonWrapperTime = document.createElement('div')
-    tradeButtonWrapperTime.id = 'tradeButtonWrapper'
-    tradeButtonWrapperTime.appendChild(timeItemBtnUp)
-    tradeButtonWrapperTime.appendChild(timeItemBtnUpDown)
-    timeItem.appendChild(tradeButtonWrapperTime)
-    const bidIndicatorWrapperTime = document.createElement('div')
-    bidIndicatorWrapperTime.id = 'bidIndicatorWrapper'
-    bidIndicatorWrapperTime.appendChild(downBidTime)
-    bidIndicatorWrapperTime.appendChild(stableBidTime)
-    bidIndicatorWrapperTime.appendChild(upBidTime)
-    timeItem.appendChild(bidIndicatorWrapperTime)
-
-    container.appendChild(timeItem)
   }
 
-  update(youOffer: Equipment, youGet: Equipment): void {
+  update(youOffer: TradeEquipment, youGet: TradeEquipment): void {
     this.youOffer = youOffer
     this.youGet = youGet
     this.changesDone = 0
@@ -498,13 +397,13 @@ export class TradeView {
     document.getElementById('tradeBoxContentPlayerOfferEq')?.remove()
     this.tradeBoxPlayerOfferEq = document.createElement('div')
     this.tradeBoxPlayerOfferEq.id = 'tradeBoxContentPlayerOfferEq'
-    this.fillEq(this.tradeBoxPlayerOfferEq, youOffer, this.currPlayer, true)
+    this.fillEq(this.tradeBoxPlayerOfferEq, youOffer, this.currPlayerEq, true)
     this.tradeBoxPlayer.appendChild(this.tradeBoxPlayerOfferEq)
 
     document.getElementById('tradeBoxContentNeighborOfferEq')?.remove()
     this.tradeBoxNeighborOfferEq = document.createElement('div')
     this.tradeBoxNeighborOfferEq.id = 'tradeBoxContentNeighborOfferEq'
-    this.fillEq(this.tradeBoxNeighborOfferEq, youGet, this.otherPlayer, false)
+    this.fillEq(this.tradeBoxNeighborOfferEq, youGet, this.otherPlayerEq, false)
     this.tradeBoxNeighbor.appendChild(this.tradeBoxNeighborOfferEq)
   }
 

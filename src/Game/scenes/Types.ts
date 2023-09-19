@@ -28,3 +28,4 @@ export interface PlayerState {
   direction: Direction
   sprite: Phaser.GameObjects.Sprite
 }
+
