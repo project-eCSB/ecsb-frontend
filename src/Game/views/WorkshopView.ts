@@ -1,5 +1,4 @@
 import gameService from '../../services/game/GameService'
-import { type PlayerEquipment } from '../../services/game/Types'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { WorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessage'
@@ -44,24 +43,36 @@ export class WorkshopView {
     this.workshopContentCost.id = 'workshop-content-cost'
 
     const pMoneyLabel = document.createElement('h4')
-    pMoneyLabel.innerText = `money: 0`
-    const pTimeLabel = document.createElement('h4')
-    pTimeLabel.innerText = `time: 0`
+    pMoneyLabel.innerText = 'money: '
+    const pMoneyInput = document.createElement('h4')
+    pMoneyInput.innerText = '0'
+    const pMoney = document.createElement('div')
+    pMoney.appendChild(pMoneyLabel)
+    pMoney.appendChild(pMoneyInput)
 
-    const costH = document.createElement('h2')
-    costH.innerText = `Cost:`
-    this.workshopContentCost.appendChild(costH)
-    const labelsDiv = document.createElement('div')
-    labelsDiv.appendChild(pMoneyLabel)
-    labelsDiv.appendChild(pTimeLabel)
-    this.workshopContentCost.appendChild(labelsDiv)
+    const pTimeLabel = document.createElement('h4')
+    pTimeLabel.innerText = 'time: '
+    const pTimeInput = document.createElement('h4')
+    pTimeInput.innerText = '0'
+    const pTime = document.createElement('div')
+    pTime.appendChild(pTimeLabel)
+    pTime.appendChild(pTimeInput)
+
+    const costHeader = document.createElement('h2')
+    costHeader.innerText = `Cost:`
+    this.workshopContentCost.appendChild(costHeader)
+
+    const costResources = document.createElement('div')
+    costResources.id = 'workshop-content-value-resources'
+    costResources.appendChild(pMoney)
+    costResources.appendChild(pTime)
+    this.workshopContentCost.appendChild(costResources)
 
     this.workshopContentValue = document.createElement('div')
     this.workshopContentValue.id = 'workshop-content-value'
 
     const pWantLabel = document.createElement('h2')
     pWantLabel.innerText = `Produce: `
-
     const pWantInput = document.createElement('h2')
     pWantInput.innerText = '0'
 
@@ -71,22 +82,25 @@ export class WorkshopView {
     iconPlus.ariaHidden = 'true'
 
     plusBtn.addEventListener('click', () => {
-      const value = parseInt(pWantInput.innerText)
-      pWantInput.innerText = `${value + 1}`
-
-      const moneyCost = parseInt(pWantInput.innerText) * this.scene.playerWorkshopUnitPrice
-      const timeCost = Math.ceil(
-        parseInt(pWantInput.innerText) / this.scene.playerWorkshopMaxProduction,
-      )
-
-      if (moneyCost > this.scene.equipment!.money || timeCost > this.scene.equipment!.time) {
+      const costTime = parseInt(pTimeInput.innerText) + 1
+      const costMoney = costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+      
+      if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
         this.disableSubmitBtn()
       } else {
         this.enableSubmitBtn()
       }
 
-      pMoneyLabel.innerText = `money: ${moneyCost}`
-      pTimeLabel.innerText = `time: ${timeCost}`
+      const resource = costTime * this.scene.playerWorkshopMaxProduction
+
+      pWantInput.innerText = `${resource}`
+      pMoneyInput.innerText = `${costMoney}`
+      pTimeInput.innerText = `${costTime}`
+
+      sendWorkshopMessage(this.scene.chatWs, {
+        type: WorkshopMessageType.WorkshopChange,
+        amount: resource
+      })
     })
 
     plusBtn.appendChild(iconPlus)
@@ -97,27 +111,29 @@ export class WorkshopView {
     iconMinus.ariaHidden = 'true'
 
     minusBtn.addEventListener('click', () => {
-      const value = parseInt(pWantInput.innerText)
-      if (value > 0) {
-        pWantInput.innerText = `${value - 1}`
-
-        const moneyCost = parseInt(pWantInput.innerText) * this.scene.playerWorkshopUnitPrice
-        const timeCost = Math.ceil(
-          parseInt(pWantInput.innerText) / this.scene.playerWorkshopMaxProduction,
-        )
-
-        if (moneyCost === 0) {
+      const costTime = parseInt(pTimeInput.innerText) - 1
+      if (costTime >= 0) {
+        const costMoney = costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+        if (costMoney === 0) {
           this.disableSubmitBtn()
         } else {
-          if (moneyCost > this.scene.equipment!.money || timeCost > this.scene.equipment!.time) {
+          if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
             this.disableSubmitBtn()
           } else {
             this.enableSubmitBtn()
           }
         }
 
-      pMoneyLabel.innerText = `money: ${moneyCost}`
-      pTimeLabel.innerText = `time: ${timeCost}`
+        const resource = costTime * this.scene.playerWorkshopMaxProduction
+
+        pWantInput.innerText = `${resource}`
+        pMoneyInput.innerText = `${costMoney}`
+        pTimeInput.innerText = `${costTime}`
+  
+        sendWorkshopMessage(this.scene.chatWs, {
+          type: WorkshopMessageType.WorkshopChange,
+          amount: resource
+        })
       }
     })
 
@@ -150,22 +166,8 @@ export class WorkshopView {
       gameService
         .produce(parseInt(pWantInput.innerText))
         .then(() => {
-          gameService
-            .getPlayerEquipment()
-            .then((res: PlayerEquipment) => {
-              this.scene.equipment = res.full
-              this.scene.visibleEquipment = res.shared
-              this.scene.loadingView?.close()
-
-              this.scene.equipmentView!.update()
-
-              this.close()
-            })
-            .catch((err) => {
-              console.error(err)
-              this.scene.loadingView?.close()
-              this.close()
-            })
+          this.close()
+          this.scene.loadingView?.close()
         })
         .catch((err) => {
           console.error(err)
@@ -202,7 +204,7 @@ export class WorkshopView {
   }
 
   show(): void {
-    sendWorkshopMessage(this.scene.tradeWs, {
+    sendWorkshopMessage(this.scene.chatWs, {
       type: WorkshopMessageType.WorkshopStart,
     })
     this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.WORK)
@@ -212,7 +214,7 @@ export class WorkshopView {
   }
 
   close(): void {
-    sendWorkshopMessage(this.scene.tradeWs, {
+    sendWorkshopMessage(this.scene.chatWs, {
       type: WorkshopMessageType.WorkshopStop,
     })
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)

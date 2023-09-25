@@ -3,7 +3,7 @@ import type {GridEngine, Position} from 'grid-engine'
 import {Direction} from 'grid-engine'
 import type {Websocket} from 'websocket-ts'
 import {WebsocketBuilder} from 'websocket-ts'
-import type {AssetConfig, Equipment, GameSettings, GameStatus, PlayerEquipment, TradeEquipment,} from '../../services/game/Types'
+import type {AssetConfig, Equipment, GameSettings, GameStatus, TradeEquipment,} from '../../services/game/Types'
 import {CloudType, type Controls, type Coordinates, type PlayerId, type PlayerState,} from './Types'
 import {decodeGameToken} from '../../apis/apis'
 import {TradeView} from '../views/TradeView'
@@ -42,6 +42,8 @@ import {
   TILES_ASSET_KEY
 } from '../GameUtils'
 import Key = Phaser.Input.Keyboard.Key;
+import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
+import { UserMessageType, sendUserMessage } from '../webSocketMessage/chat/UserMessage'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -82,11 +84,10 @@ export class Scene extends Phaser.Scene {
   public imageCropper!: ImageCropper
   public movingEnabled: boolean
   private movementWs!: Websocket
-  public tradeWs!: Websocket
+  public chatWs!: Websocket
   public equipment?: Equipment
-  public visibleEquipment?: Equipment
-  private otherEquipment?: TradeEquipment
-  private otherPlayerId?: PlayerId
+  public otherEquipment?: TradeEquipment
+  public otherPlayerId?: PlayerId
   public characterUrl!: string
   public resourceUrl!: string
   public tileUrl!: string
@@ -273,9 +274,8 @@ export class Scene extends Phaser.Scene {
 
     gameService
       .getPlayerEquipment()
-      .then((res: PlayerEquipment) => {
-        this.equipment = res.full
-        this.visibleEquipment = res.shared
+      .then((res: Equipment) => {
+        this.equipment = res
         this.equipmentView = new EquipmentView(this)
         this.equipmentView.show()
       })
@@ -315,7 +315,7 @@ export class Scene extends Phaser.Scene {
       this,
       isUserTurn,
       this.playerId,
-      this.visibleEquipment!,
+      this.equipment!,
       targetId,
       this.otherEquipment!,
     )
@@ -378,21 +378,21 @@ export class Scene extends Phaser.Scene {
   }
 
   configureChatWebSocket(): void {
-    this.tradeWs = new WebsocketBuilder(
+    this.chatWs = new WebsocketBuilder(
       `${VITE_ECSB_CHAT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
     )
       .onOpen((i, ev) => {
-        console.log('tradeWs opened')
+        console.log('chatWs opened')
       })
       .onClose((i, ev) => {
-        console.log('tradeWs closed')
+        console.log('chatWs closed')
       })
       .onError((i, ev) => {
-        console.error('tradeWs error')
+        console.error('chatWs error')
       })
       .onMessage((i, ev) => {
         const msg = parseChatMessage(ev.data)
-
+      
         if (!msg) return
         switch (msg.message.type) {
           case IncomingTradeMessageType.TradeServerPropose:
@@ -405,8 +405,6 @@ export class Scene extends Phaser.Scene {
             break
           case IncomingTradeMessageType.TradeServerCancel:
             this.tradeWindow?.close()
-            this.otherEquipment = undefined
-            this.otherPlayerId = undefined
             break
           case IncomingTradeMessageType.TradeServerBid:
             this.updateTradeDialog(
@@ -416,21 +414,19 @@ export class Scene extends Phaser.Scene {
             break
           case IncomingTradeMessageType.TradeServerFinish:
             this.tradeWindow?.close()
-            this.otherEquipment = undefined
-            this.otherPlayerId = undefined
-            gameService
-              .getPlayerEquipment()
-              .then((res: PlayerEquipment) => {
-                this.equipment = res.full
-                this.visibleEquipment = res.shared
-                this.equipmentView?.update()
-              })
-              .catch((err) => {
-                console.error('Error getting equipment:', err)
-              })
+            break
+          case IncomingTradeMessageType.TradeSecondPlayerEqupimentChange:
+            if (this.tradeWindow) {
+              this.otherEquipment = msg.message.secondPlayerEqupiment
+              this.tradeWindow.otherPlayerEq = msg.message.secondPlayerEqupiment
+            }
             break
           case UserStatusMessageType.UserBusy:
             this.showBusyPopup(msg.message.reason)
+            break
+          case EquipmentMessageType.EquipmentChange:
+            this.equipment = msg.message.playerEquipment
+            this.equipmentView?.update()
             break
           case NotificationMessageType.NotificationTradeStart:
             this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
@@ -510,6 +506,11 @@ export class Scene extends Phaser.Scene {
     sprite.setInteractive()
     sprite.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if ((!this.actionTrade || this.actionTrade !== id) && this.movingEnabled) {
+        sendUserMessage(this.chatWs, {
+          type: UserMessageType.UserClicked,
+          name: id
+        })
+
         const neighbor = this.players[id]
         const currPlayer = this.players[this.playerId]
         if (
@@ -582,7 +583,7 @@ export class Scene extends Phaser.Scene {
   }
 
   acceptTradeInvitation(senderId: string): void {
-    sendTradeMessage(this.tradeWs, {
+    sendTradeMessage(this.chatWs, {
       senderId: this.playerId,
       message: {
         type: OutcomingTradeMessageType.ProposeTradeAck,
@@ -592,7 +593,7 @@ export class Scene extends Phaser.Scene {
   }
 
   sendTradeMinorChange(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
-    sendTradeMessage(this.tradeWs, {
+    sendTradeMessage(this.chatWs, {
       senderId: this.playerId,
       message: {
         type: OutcomingTradeMessageType.TradeMinorChange,
@@ -606,7 +607,7 @@ export class Scene extends Phaser.Scene {
   }
 
   sendTradeBid(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
-    sendTradeMessage(this.tradeWs, {
+    sendTradeMessage(this.chatWs, {
       senderId: this.playerId,
       message: {
         type: OutcomingTradeMessageType.TradeBid,
@@ -629,7 +630,7 @@ export class Scene extends Phaser.Scene {
   }
 
   finishTrade(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
-    sendTradeMessage(this.tradeWs, {
+    sendTradeMessage(this.chatWs, {
       senderId: this.playerId,
       message: {
         type: OutcomingTradeMessageType.TradeBidAck,
@@ -643,7 +644,7 @@ export class Scene extends Phaser.Scene {
   }
 
   cancelTrade(): void {
-    sendTradeMessage(this.tradeWs, {
+    sendTradeMessage(this.chatWs, {
       senderId: this.playerId,
       message: {
         type: OutcomingTradeMessageType.TradeCancel,
@@ -750,7 +751,7 @@ export class Scene extends Phaser.Scene {
 
   destroy(): void {
     this.movementWs.close()
-    this.tradeWs.close()
+    this.chatWs.close()
     toast.dismiss()
   }
 }
