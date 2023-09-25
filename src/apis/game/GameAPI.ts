@@ -24,7 +24,7 @@ import type {
     UserGameStatusResponse,
 } from './Types'
 import {GameResponseError} from './Types'
-import {type PlayerEquipment} from '../../services/game/Types'
+import {type Equipment} from '../../services/game/Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAuthAndMenagementAPI
@@ -123,7 +123,7 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
     })
 }
 
-const getPlayerEquipment = async (): Promise<PlayerEquipment> => {
+const getPlayerEquipment = async (): Promise<Equipment> => {
   return await gameTokenSelfInteractionsAPI
     .get('/equipment')
     .then((response) => {

@@ -1,6 +1,5 @@
 import { toast } from 'react-toastify'
 import gameService from '../../services/game/GameService'
-import { type PlayerEquipment } from '../../services/game/Types'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { TravelMessageType, sendTravelMessage } from '../webSocketMessage/chat/TravelMessage'
@@ -78,9 +77,12 @@ export class TravelView {
           travelItemCheckbox.value = travelItem.value.name
           travelItemCheckbox.addEventListener('change', () => {
             this.selectedTravel = travelItemCheckbox.value
+            sendTravelMessage(this.scene.chatWs, {
+              type: TravelMessageType.TravelChange,
+              travelName: this.selectedTravel
+            })
             this.enableSubmitBtn()
           })
-
           travelItemHeader.appendChild(travelItemCheckbox)
           travelItemHeader.appendChild(travelItemTitle)
 
@@ -131,22 +133,8 @@ export class TravelView {
       gameService
         .travel(this.selectedTravel!)
         .then(() => {
-          gameService
-            .getPlayerEquipment()
-            .then((res: PlayerEquipment) => {
-              this.scene.equipment = res.full
-              this.scene.visibleEquipment = res.shared
-              this.scene.loadingView?.close()
-
-              this.scene.equipmentView!.update()
-
-              this.close()
-            })
-            .catch((err) => {
-              console.error(err)
-              this.scene.loadingView?.close()
-              this.close()
-            })
+          this.close()
+          this.scene.loadingView?.close()
         })
         .catch((err) => {
           toast.error(`Insufficient materials`, {
@@ -192,7 +180,7 @@ export class TravelView {
   }
 
   show(): void {
-    sendTravelMessage(this.scene.tradeWs, {
+    sendTravelMessage(this.scene.chatWs, {
       type: TravelMessageType.TravelStart,
     })
     this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
@@ -202,7 +190,7 @@ export class TravelView {
   }
 
   close(): void {
-    sendTravelMessage(this.scene.tradeWs, {
+    sendTravelMessage(this.scene.chatWs, {
       type: TravelMessageType.TravelStop,
     })
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)

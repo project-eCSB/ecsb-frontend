@@ -137,6 +137,7 @@ export class TradeView {
       if (this.isUserTurn) {
         scene.finishTrade(this.youOffer, this.youGet)
         this.close()
+        this.scene.loadingView?.close()
       }
     })
     this.disableAcceptBtn()
@@ -478,5 +479,7 @@ export class TradeView {
     document.getElementById('tradeBox')?.remove()
     this.scene.tradeWindow = null
     this.scene.movingEnabled = true
+    this.scene.otherEquipment = undefined
+    this.scene.otherPlayerId = undefined
   }
 }

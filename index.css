@@ -493,6 +493,11 @@
   background-color: #cfcfcf;
 }
 
+#workshop-content-value-resources > div {
+  display: flex;
+  gap: .5rem;
+}
+
 #workshop-content-cost h2 {
   font-size: x-large;
 }

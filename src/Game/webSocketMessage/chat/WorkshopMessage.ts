@@ -3,6 +3,7 @@ import { type Websocket } from 'websocket-ts'
 export enum WorkshopMessageType {
   WorkshopStart = 'workshop/start', // Signal opening workshop window
   WorkshopStop = 'workshop/stop', // Signal closing workshop window
+  WorkshopChange = 'workshop/change'
 }
 
 export interface WorkshopStartMessage {
@@ -13,7 +14,12 @@ export interface WorkshopStopMessage {
   type: WorkshopMessageType.WorkshopStop
 }
 
-export type WorkshopMessage = WorkshopStartMessage | WorkshopStopMessage
+export interface WorkshopChangeMessage {
+  type: WorkshopMessageType.WorkshopChange
+  amount: number
+}
+
+export type WorkshopMessage = WorkshopStartMessage | WorkshopStopMessage | WorkshopChangeMessage
 
 export const sendWorkshopMessage = (socket: Websocket, message: WorkshopMessage): void => {
   try {

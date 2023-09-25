@@ -49,8 +49,3 @@ export interface Equipment {
   time: number
   resources: GameResourceDto[]
 }
-
-export interface PlayerEquipment {
-  full: Equipment
-  shared: Equipment
-}

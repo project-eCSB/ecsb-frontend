@@ -16,7 +16,7 @@ import type {
   UserGameSettingsResponse,
   UserGameStatusResponse,
 } from '../../apis/game/Types'
-import type { AssetConfig, GameSettings, GameStatus, PlayerEquipment } from './Types'
+import type { AssetConfig, Equipment, GameSettings, GameStatus } from './Types'
 
 const createGame = async (
   classResourceRepresentation: ClassResourceRepresentation[],
@@ -101,10 +101,10 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
     })
 }
 
-const getPlayerEquipment = async (): Promise<PlayerEquipment> => {
+const getPlayerEquipment = async (): Promise<Equipment> => {
   return await gameAPI
     .getPlayerEquipment()
-    .then((res: PlayerEquipment) => {
+    .then((res: Equipment) => {
       return res
     })
     .catch((err: GameResponseError) => {

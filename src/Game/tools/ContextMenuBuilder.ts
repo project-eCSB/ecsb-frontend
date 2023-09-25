@@ -31,7 +31,7 @@ export class ContextMenuBuilder {
     buttonTrade.appendChild(buttonTradeText)
     buttonTrade.onclick = (e: Event) => {
       window.document.getElementById('btns')?.remove()
-      sendTradeMessage(scene.tradeWs, {
+      sendTradeMessage(scene.chatWs, {
         senderId: scene.playerId,
         message: {
           type: OutcomingTradeMessageType.ProposeTrade,

@@ -3,6 +3,7 @@ import { type Websocket } from 'websocket-ts'
 export enum TravelMessageType {
   TravelStart = 'travel/start', // Signal opening travel window
   TravelStop = 'travel/stop', // Signal closing travel window
+  TravelChange = 'travel/change'
 }
 
 export interface TravelStartMessage {
@@ -13,7 +14,12 @@ export interface TravelStopMessage {
   type: TravelMessageType.TravelStop
 }
 
-export type TravelMessage = TravelStartMessage | TravelStopMessage
+export interface TravelChangeMessage {
+  type: TravelMessageType.TravelChange
+  travelName: string
+}
+
+export type TravelMessage = TravelStartMessage | TravelStopMessage | TravelChangeMessage
 
 export const sendTravelMessage = (socket: Websocket, message: TravelMessage): void => {
   try {
