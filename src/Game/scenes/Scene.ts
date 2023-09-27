@@ -278,6 +278,7 @@ export class Scene extends Phaser.Scene {
     gameService
       .getPlayerEquipment()
       .then((eq: Equipment) => {
+        this.equipment = eq
         this.equipmentView = new EquipmentView(eq)
         this.equipmentView.show()
       })
