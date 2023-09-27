@@ -44,6 +44,7 @@ import {
 import Key = Phaser.Input.Keyboard.Key;
 import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
 import { UserMessageType, sendUserMessage } from '../webSocketMessage/chat/UserMessage'
+import { UserDataView } from '../views/UserDataView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -74,6 +75,7 @@ export class Scene extends Phaser.Scene {
   public playersClasses!: Map<PlayerId, string>
   public actionTrade: string | null
   public tradeWindow: TradeView | null
+  public userDataView: UserDataView | null
   public equipmentView: EquipmentView | null
   public workshopView: WorkshopView | null
   public interactionView: InteractionView
@@ -110,9 +112,10 @@ export class Scene extends Phaser.Scene {
     this.actionTrade = null
     this.movingEnabled = true
     this.tradeWindow = null
+    this.userDataView = null
     this.equipmentView = null
     this.workshopView = null
-    this.interactionView = new InteractionView(this)
+    this.interactionView = new InteractionView()
     this.loadingView = null
     this.travelView = null
     this.interactionCloudBuiler = new InteractionCloudBuilder()
@@ -274,14 +277,16 @@ export class Scene extends Phaser.Scene {
 
     gameService
       .getPlayerEquipment()
-      .then((res: Equipment) => {
-        this.equipment = res
-        this.equipmentView = new EquipmentView(this)
+      .then((eq: Equipment) => {
+        this.equipmentView = new EquipmentView(eq)
         this.equipmentView.show()
       })
       .catch((err) => {
         console.error(err)
       })
+
+    this.userDataView = new UserDataView(this.playerId ,this.status.className)
+    this.userDataView.show()
 
     this.scale.resize(window.innerWidth, window.innerHeight)
 
@@ -426,7 +431,7 @@ export class Scene extends Phaser.Scene {
             break
           case EquipmentMessageType.EquipmentChange:
             this.equipment = msg.message.playerEquipment
-            this.equipmentView?.update()
+            this.equipmentView?.update(msg.message.playerEquipment)
             break
           case NotificationMessageType.NotificationTradeStart:
             this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)

@@ -1,15 +1,12 @@
-import { type Scene } from '../scenes/Scene'
-
 export class InteractionView {
-  scene: Scene
+  public static readonly interactionBoxID = 'interactionBox';
+
   interaction: HTMLDivElement
   interactionText: HTMLParagraphElement
 
-  constructor(scene: Scene) {
-    this.scene = scene
-
+  constructor() {
     this.interaction = document.createElement('div')
-    this.interaction.id = 'interaction'
+    this.interaction.id = InteractionView.interactionBoxID
 
     const icon = document.createElement('i')
     icon.className = 'fa fa-question-circle'
@@ -21,7 +18,6 @@ export class InteractionView {
     this.interaction.appendChild(icon)
     this.interaction.appendChild(this.interactionText)
 
-    this.interaction.style.display = 'none'
     window.document.body.appendChild(this.interaction)
   }
 

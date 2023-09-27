@@ -61,9 +61,10 @@ export const stopGame = (gameData: GameData): void => {
   gameData.game.destroy(true)
   window.document.getElementById('btn')?.remove()
   window.document.getElementById('tradeBox')?.remove()
+  window.document.getElementById('userDataBox')?.remove()
   window.document.getElementById('equipmentBox')?.remove()
+  window.document.getElementById('interactionBox')?.remove()
   window.document.getElementById('requestBox')?.remove()
   window.document.getElementById('workshop-container')?.remove()
   window.document.getElementById('travel-container')?.remove()
-  window.document.getElementById('interaction')?.remove()
 }
