@@ -18,6 +18,7 @@ export class InteractionView {
     this.interaction.appendChild(icon)
     this.interaction.appendChild(this.interactionText)
 
+    this.interaction.style.display = 'none'
     window.document.body.appendChild(this.interaction)
   }
 
