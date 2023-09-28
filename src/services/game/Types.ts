@@ -40,8 +40,8 @@ export interface GameResourceDto {
 }
 
 export interface TradeEquipment {
-  money: number;
-  resources: GameResourceDto[];
+  money: number
+  resources: GameResourceDto[]
 }
 
 export interface Equipment {

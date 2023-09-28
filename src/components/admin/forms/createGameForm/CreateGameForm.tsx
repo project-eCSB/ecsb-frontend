@@ -445,7 +445,11 @@ const CreateGameForm = () => {
         if (!e || !e.target || !e.target.result || !createGameFormData.tileAssetFile) return
 
         await gameService
-          .uploadAsset(e.target.result as ArrayBuffer, createGameFormData.tileAssetFile.name, 'tile_asset_file')
+          .uploadAsset(
+            e.target.result as ArrayBuffer,
+            createGameFormData.tileAssetFile.name,
+            'tile_asset_file',
+          )
           .then(
             (assetId: number) => {
               if (showResultModal) return

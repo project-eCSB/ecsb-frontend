@@ -173,13 +173,13 @@ const getSavedAssets = async (fileType: string): Promise<SavedAsset[]> => {
 
 const getAsset = async (assetId: number): Promise<string> => {
   return await gameAPI
-  .getAsset({ assetId: assetId })
-  .then((response: AssetResponse) => {
-    return response.assetURL
-  })
-  .catch((err: GameResponseError) => {
-    throw new Error(err.message)
-  })
+    .getAsset({ assetId: assetId })
+    .then((response: AssetResponse) => {
+      return response.assetURL
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
 }
 
 const produce = async (quantity: number): Promise<boolean> => {
@@ -237,8 +237,8 @@ const gameService = {
   getAssetConfig,
   getSavedAssets,
   getAsset,
-  produce, 
-  travel, 
+  produce,
+  travel,
   increaseVisibleEquipmentSource,
   decreaseVisibleEquipmentSource,
 }

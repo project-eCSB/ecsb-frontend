@@ -17,7 +17,15 @@ export const startGame = (
   resourceURL: string,
   tileSetURL: string,
 ): GameData => {
-  const scene = new Scene(gameToken, userStatus, settings, mapConfig, characterURL, resourceURL, tileSetURL)
+  const scene = new Scene(
+    gameToken,
+    userStatus,
+    settings,
+    mapConfig,
+    characterURL,
+    resourceURL,
+    tileSetURL,
+  )
 
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
@@ -57,14 +65,18 @@ export const stopGame = (gameData: GameData): void => {
   gameData.scene.destroy()
   gameData.scene.sys.plugins.removeScenePlugin('gridEngine')
   gameData.scene.sys.game.destroy(true)
+
   gameData.game.plugins.removeScenePlugin('gridEngine')
   gameData.game.destroy(true)
+
   window.document.getElementById('btn')?.remove()
+
   window.document.getElementById('tradeBox')?.remove()
   window.document.getElementById('userDataBox')?.remove()
   window.document.getElementById('equipmentBox')?.remove()
   window.document.getElementById('interactionBox')?.remove()
   window.document.getElementById('requestBox')?.remove()
+
   window.document.getElementById('workshop-container')?.remove()
   window.document.getElementById('travel-container')?.remove()
 }

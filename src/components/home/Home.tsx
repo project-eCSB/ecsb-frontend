@@ -36,22 +36,22 @@ const Home = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-  
+
     setIsLoading(true)
     disableSubmitBtn()
 
     try {
       const authToken = getAuthToken()
-  
+
       if (authToken) {
-        const decodedAuthToken = decodeAuthToken(authToken);
-  
+        const decodedAuthToken = decodeAuthToken(authToken)
+
         const gameSession = await gameService.getGameSession(gameCode, decodedAuthToken.name)
         const gameSettings = await gameService.getUserGameSettings()
         const gameStatus = await gameService.getUserGameStatus()
 
         const gameToken = getGameToken()
-  
+
         if (!gameToken) {
           setError('Error getting game token')
         } else {
@@ -61,7 +61,15 @@ const Home = () => {
           const resourceURL = await gameService.getAsset(gameSettings.gameAssets.resourceAssetsId)
           const tileSetURL = await gameService.getAsset(gameSettings.gameAssets.tileAssetsId)
 
-          const gameData = startGame(gameToken, gameStatus, gameSettings, mapConfig, characterURL, resourceURL, tileSetURL)
+          const gameData = startGame(
+            gameToken,
+            gameStatus,
+            gameSettings,
+            mapConfig,
+            characterURL,
+            resourceURL,
+            tileSetURL,
+          )
 
           setGameData(gameData)
 
@@ -80,36 +88,36 @@ const Home = () => {
 
   return (
     <>
-    <div className='home-container'>
-      <HomeNavbar />
-      <div className='home-form-container'>
-        <form className='home-form' onSubmit={handleSubmit}>
-          <input
-            type='text'
-            id='gameCode'
-            name='gameCode'
-            placeholder='Enter game code'
-            value={gameCode}
-            onChange={handleInputChange}
-            maxLength={255}
-            required
-          />
-          {error && <span className='home-form-error'>{error}</span>}
-          <button
-            ref={submitBtnRef}
-            className={`${
-              submitBtnRef && submitBtnRef.current && submitBtnRef.current.disabled
-                ? 'disabled'
-                : ''
-            } home-form-btn-submit`}
-            type='submit'
-          >
-            JOIN THE GAME
-          </button>
-        </form>
+      <div className='home-container'>
+        <HomeNavbar />
+        <div className='home-form-container'>
+          <form className='home-form' onSubmit={handleSubmit}>
+            <input
+              type='text'
+              id='gameCode'
+              name='gameCode'
+              placeholder='Enter game code'
+              value={gameCode}
+              onChange={handleInputChange}
+              maxLength={255}
+              required
+            />
+            {error && <span className='home-form-error'>{error}</span>}
+            <button
+              ref={submitBtnRef}
+              className={`${
+                submitBtnRef && submitBtnRef.current && submitBtnRef.current.disabled
+                  ? 'disabled'
+                  : ''
+              } home-form-btn-submit`}
+              type='submit'
+            >
+              JOIN THE GAME
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
-    {isLoading && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
     </>
   )
 }

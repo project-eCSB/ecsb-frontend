@@ -1,4 +1,4 @@
-import { type Equipment } from "../../../services/game/Types"
+import { type Equipment } from '../../../services/game/Types'
 
 export enum EquipmentMessageType {
   EquipmentChange = 'equipment/change',
@@ -12,5 +12,4 @@ export interface EquipmentChangeMessage {
   }
 }
 
-export type EquipmentMessage =
-  | EquipmentChangeMessage
+export type EquipmentMessage = EquipmentChangeMessage

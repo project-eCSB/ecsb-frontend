@@ -1,4 +1,4 @@
-import {type Websocket} from 'websocket-ts'
+import { type Websocket } from 'websocket-ts'
 
 export enum UserStatusMessageType {
   UserBusy = 'userBusy',

@@ -1,33 +1,48 @@
 import * as Phaser from 'phaser'
-import type {GridEngine, Position} from 'grid-engine'
-import {Direction} from 'grid-engine'
-import type {Websocket} from 'websocket-ts'
-import {WebsocketBuilder} from 'websocket-ts'
-import type {AssetConfig, Equipment, GameSettings, GameStatus, TradeEquipment,} from '../../services/game/Types'
-import {CloudType, type Controls, type Coordinates, type PlayerId, type PlayerState,} from './Types'
-import {decodeGameToken} from '../../apis/apis'
-import {TradeView} from '../views/TradeView'
+import type { GridEngine, Position } from 'grid-engine'
+import { Direction } from 'grid-engine'
+import type { Websocket } from 'websocket-ts'
+import { WebsocketBuilder } from 'websocket-ts'
+import type {
+  AssetConfig,
+  Equipment,
+  GameSettings,
+  GameStatus,
+  TradeEquipment,
+} from '../../services/game/Types'
+import {
+  CloudType,
+  type Controls,
+  type Coordinates,
+  type PlayerId,
+  type PlayerState,
+} from './Types'
+import { decodeGameToken } from '../../apis/apis'
+import { TradeView } from '../views/TradeView'
 import gameService from '../../services/game/GameService'
-import {EquipmentView} from '../views/EquipmentView'
-import {toast} from 'react-toastify'
-import {TradeOfferPopup} from '../components/TradeOfferPopup'
-import {WorkshopView} from '../views/WorkshopView'
-import {InteractionView} from '../views/InteractionView'
-import {type LoadingView} from '../views/LoadingView'
-import {parseChatMessage} from '../webSocketMessage/chat/MessageParser'
-import {MovementMessageType, sendMovementMessage,} from '../webSocketMessage/movement/MovementMessage'
-import {parseMovementMessage} from '../webSocketMessage/movement/MessageParser'
+import { EquipmentView } from '../views/EquipmentView'
+import { toast } from 'react-toastify'
+import { TradeOfferPopup } from '../components/TradeOfferPopup'
+import { WorkshopView } from '../views/WorkshopView'
+import { InteractionView } from '../views/InteractionView'
+import { LoadingView } from '../views/LoadingView'
+import { parseChatMessage } from '../webSocketMessage/chat/MessageParser'
+import {
+  MovementMessageType,
+  sendMovementMessage,
+} from '../webSocketMessage/movement/MovementMessage'
+import { parseMovementMessage } from '../webSocketMessage/movement/MessageParser'
 import {
   IncomingTradeMessageType,
   OutcomingTradeMessageType,
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
-import {UserStatusMessageType} from '../webSocketMessage/chat/UserStatusMessage'
-import {NotificationMessageType} from '../webSocketMessage/chat/NotificationMessage'
-import {InteractionCloudBuilder} from '../tools/InteractionCloudBuilder'
-import {ContextMenuBuilder} from '../tools/ContextMenuBuilder'
-import {TravelType, TravelView} from '../views/TravelView'
-import {ImageCropper} from '../tools/ImageCropper'
+import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
+import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
+import { InteractionCloudBuilder } from '../tools/InteractionCloudBuilder'
+import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
+import { TravelType, TravelView } from '../views/TravelView'
+import { ImageCropper } from '../tools/ImageCropper'
 import {
   ALL_PLAYERS_DESC_OFFSET_TOP,
   CHARACTER_ASSET_KEY,
@@ -39,9 +54,9 @@ import {
   RANGE,
   SPRITE_HEIGHT,
   SPRITE_WIDTH,
-  TILES_ASSET_KEY
+  TILES_ASSET_KEY,
 } from '../GameUtils'
-import Key = Phaser.Input.Keyboard.Key;
+import Key = Phaser.Input.Keyboard.Key
 import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
 import { UserMessageType, sendUserMessage } from '../webSocketMessage/chat/UserMessage'
 import { UserDataView } from '../views/UserDataView'
@@ -49,7 +64,8 @@ import { UserDataView } from '../views/UserDataView'
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
-const VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
+const VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env
+  .VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -78,9 +94,9 @@ export class Scene extends Phaser.Scene {
   public userDataView: UserDataView | null
   public equipmentView: EquipmentView | null
   public workshopView: WorkshopView | null
-  public interactionView: InteractionView
-  public loadingView: LoadingView | null
   public travelView: TravelView | null
+  public interactionView: InteractionView
+  public loadingView: LoadingView
   public interactionCloudBuiler!: InteractionCloudBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public imageCropper!: ImageCropper
@@ -116,7 +132,7 @@ export class Scene extends Phaser.Scene {
     this.equipmentView = null
     this.workshopView = null
     this.interactionView = new InteractionView()
-    this.loadingView = null
+    this.loadingView = new LoadingView()
     this.travelView = null
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.contextMenuBuilder = new ContextMenuBuilder()
@@ -142,7 +158,10 @@ export class Scene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.tilemapTiledJSON(MAP_ASSET_KEY, `${VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL}/assets/${this.settings.gameAssets.mapAssetId}`)
+    this.load.tilemapTiledJSON(
+      MAP_ASSET_KEY,
+      `${VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL}/assets/${this.settings.gameAssets.mapAssetId}`,
+    )
     this.load.image(TILES_ASSET_KEY, this.tileUrl)
     this.load.spritesheet(CHARACTER_ASSET_KEY, this.characterUrl, {
       frameWidth: SPRITE_WIDTH,
@@ -176,11 +195,7 @@ export class Scene extends Phaser.Scene {
       cloudCityTilemap.heightInPixels * LAYER_SCALE,
     )
 
-    const container = this.add.container(0, 0, [
-      playerSprite,
-      text,
-      cloud,
-    ])
+    const container = this.add.container(0, 0, [playerSprite, text, cloud])
 
     this.cameras.main.startFollow(container, true)
     this.cameras.main.setFollowOffset(-playerSprite.width, -playerSprite.height)
@@ -286,7 +301,7 @@ export class Scene extends Phaser.Scene {
         console.error(err)
       })
 
-    this.userDataView = new UserDataView(this.playerId ,this.status.className)
+    this.userDataView = new UserDataView(this.playerId, this.status.className)
     this.userDataView.show()
 
     this.scale.resize(window.innerWidth, window.innerHeight)
@@ -299,21 +314,27 @@ export class Scene extends Phaser.Scene {
       this.interactionView.setText('enter the workshop...')
       this.interactionView.show()
     } else if (
-      this.lowTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+      this.lowTravels.some(
+        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
+      )
     ) {
       this.interactionView.setText('start a short journey...')
       this.interactionView.show()
     } else if (
-      this.mediumTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+      this.mediumTravels.some(
+        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
+      )
     ) {
       this.interactionView.setText('start a medium-distance journey...')
       this.interactionView.show()
     } else if (
-      this.highTravels.some((coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y)
+      this.highTravels.some(
+        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
+      )
     ) {
       this.interactionView.setText('start a long-distance journey...')
       this.interactionView.show()
-    } 
+    }
   }
 
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
@@ -398,7 +419,7 @@ export class Scene extends Phaser.Scene {
       })
       .onMessage((i, ev) => {
         const msg = parseChatMessage(ev.data)
-      
+
         if (!msg) return
         switch (msg.message.type) {
           case IncomingTradeMessageType.TradeServerPropose:
@@ -445,7 +466,7 @@ export class Scene extends Phaser.Scene {
             break
           case NotificationMessageType.NotificationTravelEnd:
             this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
-            break            
+            break
           case NotificationMessageType.NotificationTravelChoosingStart:
             this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
             break
@@ -459,11 +480,17 @@ export class Scene extends Phaser.Scene {
             this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
             break
           case NotificationMessageType.NotificationProductionStart:
-            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            this.interactionCloudBuiler.showInteractionCloud(
+              msg.message.playerId,
+              CloudType.PRODUCTION,
+            )
             this.playerCloudMovement.set(msg.message.playerId, true)
             break
           case NotificationMessageType.NotificationProductionEnd:
-            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+            this.interactionCloudBuiler.hideInteractionCloud(
+              msg.message.playerId,
+              CloudType.PRODUCTION,
+            )
             this.playerCloudMovement.set(msg.message.playerId, false)
             break
         }
@@ -514,7 +541,7 @@ export class Scene extends Phaser.Scene {
       if ((!this.actionTrade || this.actionTrade !== id) && this.movingEnabled) {
         sendUserMessage(this.chatWs, {
           type: UserMessageType.UserClicked,
-          name: id
+          name: id,
         })
 
         const neighbor = this.players[id]
@@ -533,11 +560,7 @@ export class Scene extends Phaser.Scene {
         }
       }
     })
-    const container = this.add.container(0, 0, [
-      sprite,
-      text,
-      cloud,
-    ])
+    const container = this.add.container(0, 0, [sprite, text, cloud])
 
     this.gridEngine.addCharacter({
       id: id,
@@ -576,7 +599,7 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    toast.warn(TradeOfferPopup({ scene: this, from: from}), {
+    toast.warn(TradeOfferPopup({ scene: this, from: from }), {
       position: 'bottom-right',
       autoClose: 8000,
       hideProgressBar: false,
