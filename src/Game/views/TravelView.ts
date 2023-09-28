@@ -3,7 +3,6 @@ import gameService from '../../services/game/GameService'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { TravelMessageType, sendTravelMessage } from '../webSocketMessage/chat/TravelMessage'
-import { LoadingView } from './LoadingView'
 
 export enum TravelType {
   LOW = 'low',
@@ -12,22 +11,22 @@ export enum TravelType {
 }
 
 export class TravelView {
-  scene: Scene
-  travelContainer: HTMLDivElement
-  travelBtnSubmit: HTMLButtonElement
-  travelBtnClose: HTMLButtonElement
-  travelType: TravelType
-  selectedTravel: string | null
+  private readonly scene: Scene
+  private readonly travelType: TravelType
+  private selectedTravel: string | null
+
+  private readonly travelContainer: HTMLDivElement
+  private readonly travelBtnSubmit: HTMLButtonElement
+  private readonly travelBtnClose: HTMLButtonElement
+
   constructor(scene: Scene, travelType: TravelType) {
     this.scene = scene
     this.travelType = travelType
     this.selectedTravel = null
 
-    // CONTAIENR
     this.travelContainer = document.createElement('div')
     this.travelContainer.id = 'travel-container'
 
-    // HEADER & TITLE
     const travelHeader = document.createElement('div')
     travelHeader.id = 'travel-header'
 
@@ -53,7 +52,6 @@ export class TravelView {
 
     travelHeader.appendChild(travelTitle)
 
-    // CONTENT
     const travelContent = document.createElement('div')
     travelContent.id = 'travel-content'
 
@@ -63,7 +61,6 @@ export class TravelView {
           const travelItemContainer = document.createElement('div')
           travelItemContainer.className = 'travel-content-item'
 
-          // ITEM HEADER
           const travelItemHeader = document.createElement('div')
           travelItemHeader.className = 'travel-content-item-header'
 
@@ -79,7 +76,7 @@ export class TravelView {
             this.selectedTravel = travelItemCheckbox.value
             sendTravelMessage(this.scene.chatWs, {
               type: TravelMessageType.TravelChange,
-              travelName: this.selectedTravel
+              travelName: this.selectedTravel,
             })
             this.enableSubmitBtn()
           })
@@ -88,7 +85,6 @@ export class TravelView {
 
           travelItemContainer.appendChild(travelItemHeader)
 
-          // ITEM CONTENT
           const travelItemCostMoney = document.createElement('p')
           travelItemCostMoney.className = 'travel-content-item-money'
           travelItemCostMoney.innerText = `Reward: ${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to} $`
@@ -118,7 +114,6 @@ export class TravelView {
       }
     })
 
-    // BUTTONS
     const travelButtons = document.createElement('div')
     travelButtons.id = 'travel-buttons'
 
@@ -127,16 +122,15 @@ export class TravelView {
     this.travelBtnSubmit.innerText = 'Travel'
     this.travelBtnSubmit.addEventListener('click', () => {
       this.disableSubmitBtn()
-      this.scene.loadingView = new LoadingView(this.scene)
+
       this.scene.loadingView.show()
 
       gameService
         .travel(this.selectedTravel!)
         .then(() => {
           this.close()
-          this.scene.loadingView?.close()
         })
-        .catch((err) => {
+        .catch(() => {
           toast.error(`Insufficient materials`, {
             position: 'top-center',
             autoClose: 5000,
@@ -146,9 +140,10 @@ export class TravelView {
             draggable: false,
             progress: undefined,
           })
-          console.error(err)
-          this.scene.loadingView?.close()
           this.enableSubmitBtn()
+        })
+        .finally(() => {
+          this.scene.loadingView.close()
         })
     })
 
@@ -169,17 +164,17 @@ export class TravelView {
     this.disableSubmitBtn()
   }
 
-  disableSubmitBtn(): void {
+  public disableSubmitBtn(): void {
     this.travelBtnSubmit.disabled = true
     this.travelBtnSubmit.style.visibility = 'hidden'
   }
 
-  enableSubmitBtn(): void {
+  public enableSubmitBtn(): void {
     this.travelBtnSubmit.disabled = false
     this.travelBtnSubmit.style.visibility = 'visible'
   }
 
-  show(): void {
+  public show(): void {
     sendTravelMessage(this.scene.chatWs, {
       type: TravelMessageType.TravelStart,
     })
@@ -189,7 +184,7 @@ export class TravelView {
     this.scene.movingEnabled = false
   }
 
-  close(): void {
+  public close(): void {
     sendTravelMessage(this.scene.chatWs, {
       type: TravelMessageType.TravelStop,
     })
@@ -203,12 +198,10 @@ export class TravelView {
         this.scene.interactionView.setText('start a short journey...')
         break
       case TravelType.MEDIUM:
-        this.scene.interactionView.setText('start a medium-distance journey...',
-        )
+        this.scene.interactionView.setText('start a medium-distance journey...')
         break
       case TravelType.HIGH:
-        this.scene.interactionView.setText('start a long-distance journey...',
-        )
+        this.scene.interactionView.setText('start a long-distance journey...')
         break
     }
 

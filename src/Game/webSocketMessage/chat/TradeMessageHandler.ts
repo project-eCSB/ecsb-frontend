@@ -1,5 +1,5 @@
-import {type Websocket} from 'websocket-ts'
-import {type Equipment, type TradeEquipment} from '../../../services/game/Types'
+import { type Websocket } from 'websocket-ts'
+import { type Equipment, type TradeEquipment } from '../../../services/game/Types'
 
 export interface TradeBid {
   senderOffer: TradeEquipment
@@ -66,12 +66,12 @@ export interface TradeSecondPlayerEqupimentChangeMessage {
 }
 
 export type IncomingTradeMessage =
-    | TradeServerProposeMessage
-    | TradeServerStartMessage
-    | TradeServerBidMessage
-    | TradeServerFinishMessage
-    | TradeServerCancelMessage
-    | TradeSecondPlayerEqupimentChangeMessage
+  | TradeServerProposeMessage
+  | TradeServerStartMessage
+  | TradeServerBidMessage
+  | TradeServerFinishMessage
+  | TradeServerCancelMessage
+  | TradeSecondPlayerEqupimentChangeMessage
 
 export enum OutcomingTradeMessageType {
   ProposeTrade = 'trade/propose_trade',
@@ -133,12 +133,12 @@ export interface TradeCancelMessage {
 }
 
 export type OutcomingTradeMessage =
-    | ProposeTradeMessage
-    | ProposeTradeAckMessage
-    | TradeBidMessage
-    | TradeFinishMessage
-    | TradeCancelMessage
-    | TradeMinorChangeMessage
+  | ProposeTradeMessage
+  | ProposeTradeAckMessage
+  | TradeBidMessage
+  | TradeFinishMessage
+  | TradeCancelMessage
+  | TradeMinorChangeMessage
 
 export const sendTradeMessage = (socket: Websocket, message: OutcomingTradeMessage): void => {
   try {

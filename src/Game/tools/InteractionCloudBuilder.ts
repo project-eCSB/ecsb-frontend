@@ -8,8 +8,12 @@ export class InteractionCloudBuilder {
     [CloudType.TRAVEL]: this.createCloudIcon('fa-map'),
     [CloudType.PRODUCTION]: this.createCloudIcon('fa-gavel'),
   }
-  
-  private readonly notMoveableIconTypes: CloudType[] = [CloudType.WORK, CloudType.TALK, CloudType.TRAVEL]
+
+  private readonly notMoveableIconTypes: CloudType[] = [
+    CloudType.WORK,
+    CloudType.TALK,
+    CloudType.TRAVEL,
+  ]
 
   private createCloudIcon(iconClassName: string): HTMLElement {
     const iconElement = document.createElement('i')
@@ -59,9 +63,8 @@ export class InteractionCloudBuilder {
   }
 
   purgeUnnecessaryIcons(playerId: string): void {
-    this.notMoveableIconTypes.forEach(cloudType => {
+    this.notMoveableIconTypes.forEach((cloudType) => {
       this.hideInteractionCloud(playerId, cloudType)
-    });
+    })
   }
-
 }

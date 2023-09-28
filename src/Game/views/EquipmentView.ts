@@ -1,10 +1,10 @@
-import { type Equipment } from "../../services/game/Types";
+import { type Equipment } from '../../services/game/Types'
 
 export class EquipmentView {
-  public static readonly equipmentBoxID = 'equipmentBox';
-  public static readonly equipmentBoxContentID = 'equipmentBoxContent';
+  public static readonly equipmentBoxID = 'equipmentBox'
+  public static readonly equipmentBoxContentID = 'equipmentBoxContent'
 
-  equipmentBox: HTMLDivElement
+  private readonly equipmentBox: HTMLDivElement
 
   constructor(eq: Equipment) {
     this.equipmentBox = document.createElement('div')
@@ -45,7 +45,7 @@ export class EquipmentView {
 
     moneyBox.appendChild(moneyBoxName)
     moneyBox.appendChild(moneyBoxValue)
-    
+
     equipmentBoxContent.appendChild(moneyBox)
 
     const timeBox = document.createElement('div')
@@ -64,7 +64,9 @@ export class EquipmentView {
   }
 
   public show(): void {
-    window.document.body.appendChild(this.equipmentBox)
+    if (!document.getElementById(EquipmentView.equipmentBoxID)) {
+      window.document.body.appendChild(this.equipmentBox)
+    }
   }
 
   public close(): void {

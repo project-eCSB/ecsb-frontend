@@ -54,7 +54,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
 
   const handleChangeItemPerWorkshop = (index: number, value: number) => {
     if (value < 1 || value > 1000000) return
-    
+
     const updatedResources = [...createGameFormData.classResources]
     updatedResources[index].itemPerWorkshop = value
     setCreateGameFormData((prevFormData) => ({

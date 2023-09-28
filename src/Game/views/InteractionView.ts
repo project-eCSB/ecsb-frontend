@@ -1,8 +1,8 @@
 export class InteractionView {
-  public static readonly interactionBoxID = 'interactionBox';
+  public static readonly interactionBoxID = 'interactionBox'
 
-  interaction: HTMLDivElement
-  interactionText: HTMLParagraphElement
+  private readonly interaction: HTMLDivElement
+  private readonly interactionText: HTMLParagraphElement
 
   constructor() {
     this.interaction = document.createElement('div')

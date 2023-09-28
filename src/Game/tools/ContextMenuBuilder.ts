@@ -1,6 +1,9 @@
-import {toast} from 'react-toastify'
-import {type Scene} from '../scenes/Scene'
-import {OutcomingTradeMessageType, sendTradeMessage} from '../webSocketMessage/chat/TradeMessageHandler'
+import { toast } from 'react-toastify'
+import { type Scene } from '../scenes/Scene'
+import {
+  OutcomingTradeMessageType,
+  sendTradeMessage,
+} from '../webSocketMessage/chat/TradeMessageHandler'
 
 export class ContextMenuBuilder {
   build(scene: Scene, id: string): HTMLDivElement {

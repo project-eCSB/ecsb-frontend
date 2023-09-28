@@ -4,8 +4,10 @@ import { CloudType } from '../scenes/Types'
 import { SPRITE_WIDTH, SPRITE_HEIGHT } from '../GameUtils'
 
 export class TradeView {
-  scene: Scene
-  isUserTurn: boolean
+  private readonly scene: Scene
+
+  private isUserTurn: boolean
+
   currPlayerId: string
   currPlayerEq: TradeEquipment
   otherPlayerId: string
@@ -14,20 +16,22 @@ export class TradeView {
   youGet: TradeEquipment
   youOfferPrevious: TradeEquipment
   youGetPrevious: TradeEquipment
-  changesDone: number
-  tradeBox: HTMLDivElement
-  tradeBoxTitle: HTMLHeadingElement
-  tradeBoxContent: HTMLDivElement
-  tradeBoxPlayer: HTMLDivElement
-  tradeBoxPlayerTitle: HTMLHeadingElement
-  tradeBoxPlayerOfferEq: HTMLDivElement
-  tradeBoxNeighbor: HTMLDivElement
-  tradeBoxNeighborTitle: HTMLHeadingElement
-  tradeBoxNeighborOfferEq: HTMLDivElement
-  tradeBoxButtons: HTMLDivElement
-  tradeBoxAccept: HTMLButtonElement
-  tradeBoxSendOffer: HTMLButtonElement
-  tradeBoxClose: HTMLButtonElement
+
+  private changesDone: number
+
+  private readonly tradeBox: HTMLDivElement
+  private readonly tradeBoxTitle: HTMLHeadingElement
+  private readonly tradeBoxContent: HTMLDivElement
+  private readonly tradeBoxPlayer: HTMLDivElement
+  private readonly tradeBoxPlayerTitle: HTMLHeadingElement
+  private tradeBoxPlayerOfferEq: HTMLDivElement
+  private readonly tradeBoxNeighbor: HTMLDivElement
+  private readonly tradeBoxNeighborTitle: HTMLHeadingElement
+  private tradeBoxNeighborOfferEq: HTMLDivElement
+  private readonly tradeBoxButtons: HTMLDivElement
+  private readonly tradeBoxAccept: HTMLButtonElement
+  private readonly tradeBoxSendOffer: HTMLButtonElement
+  private readonly tradeBoxClose: HTMLButtonElement
 
   constructor(
     scene: Scene,
@@ -113,9 +117,27 @@ export class TradeView {
     iconUp2.className = 'arrow fa fa-arrow-up'
     iconUp2.ariaHidden = 'true'
     iconUp2.id = 'notYou'
-    youDiv.appendChild(scene.imageCropper.crop(scene, currPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, this.scene.characterUrl, 4))
+    youDiv.appendChild(
+      scene.imageCropper.crop(
+        scene,
+        currPlayerId,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        this.scene.characterUrl,
+        4,
+      ),
+    )
     youDiv.appendChild(iconUp)
-    opponentDiv.appendChild(scene.imageCropper.crop(scene, otherPlayerId, SPRITE_WIDTH, SPRITE_HEIGHT, this.scene.characterUrl, 4))
+    opponentDiv.appendChild(
+      scene.imageCropper.crop(
+        scene,
+        otherPlayerId,
+        SPRITE_WIDTH,
+        SPRITE_HEIGHT,
+        this.scene.characterUrl,
+        4,
+      ),
+    )
     opponentDiv.appendChild(iconUp2)
 
     iconUp.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
@@ -137,7 +159,7 @@ export class TradeView {
       if (this.isUserTurn) {
         scene.finishTrade(this.youOffer, this.youGet)
         this.close()
-        this.scene.loadingView?.close()
+        this.scene.loadingView.close()
       }
     })
     this.disableAcceptBtn()
@@ -208,7 +230,9 @@ export class TradeView {
       upBid.ariaHidden = 'true'
 
       this.updateBidIndicators(
-        (playerEq ? this.youOfferPrevious : this.youGetPrevious).resources.find((item) => item.key === resource.key)!.value,
+        (playerEq ? this.youOfferPrevious : this.youGetPrevious).resources.find(
+          (item) => item.key === resource.key,
+        )!.value,
         resource.value,
         downBid,
         stableBid,
@@ -231,10 +255,12 @@ export class TradeView {
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1) this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value) this.changesDone -= 1
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1)
+            this.changesDone += 1
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value )
+            this.changesDone -= 1
 
-          if (this.changesDone !== 0){
+          if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
             this.disableAcceptBtn()
           } else {
@@ -259,10 +285,12 @@ export class TradeView {
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1) this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value) this.changesDone -= 1
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1)
+            this.changesDone += 1
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value)
+            this.changesDone -= 1
 
-          if (this.changesDone !== 0){
+          if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
             this.disableAcceptBtn()
           } else {
@@ -327,14 +355,14 @@ export class TradeView {
       if (this.isUserTurn && moneyUpperBoundary > offer.money) {
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) + 1}`
         offer.money += 1
-        
+
         this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.money === bid.money + 1) this.changesDone += 1
         if (offer.money === bid.money) this.changesDone -= 1
 
-        if (this.changesDone !== 0){
+        if (this.changesDone !== 0) {
           this.enableSendOfferBtn()
           this.disableAcceptBtn()
         } else {
@@ -353,14 +381,14 @@ export class TradeView {
         if (parseInt(moneyItemAmount.innerText) === 0) return
         moneyItemAmount.innerText = `${parseInt(moneyItemAmount.innerText) - 1}`
         offer.money -= 1
-        
+
         this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
 
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         if (offer.money === bid.money - 1) this.changesDone += 1
         if (offer.money === bid.money) this.changesDone -= 1
 
-        if (this.changesDone !== 0){
+        if (this.changesDone !== 0) {
           this.enableSendOfferBtn()
           this.disableAcceptBtn()
         } else {
@@ -413,9 +441,9 @@ export class TradeView {
     this.tradeBoxTitle.innerText = `Trade with ${this.otherPlayerId}`
 
     const you = document.getElementById('you')
-    if(you) you.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
+    if (you) you.style.visibility = this.isUserTurn ? 'visible' : 'hidden'
     const notYou = document.getElementById('notYou')
-    if(notYou) notYou.style.visibility = this.isUserTurn ? 'hidden' : 'visible'
+    if (notYou) notYou.style.visibility = this.isUserTurn ? 'hidden' : 'visible'
   }
 
   disableAcceptBtn(): void {
@@ -446,8 +474,14 @@ export class TradeView {
     element.style.display = 'inline'
   }
 
-  updateBidIndicators(oldValue: number, newValue: number, down: HTMLElement, stable: HTMLElement, up: HTMLElement): void {
-    if (oldValue > newValue){
+  updateBidIndicators(
+    oldValue: number,
+    newValue: number,
+    down: HTMLElement,
+    stable: HTMLElement,
+    up: HTMLElement,
+  ): void {
+    if (oldValue > newValue) {
       this.enableBidElement(down)
       this.disableBidElement(stable)
       this.disableBidElement(up)
@@ -463,9 +497,12 @@ export class TradeView {
   }
 
   resetBidIndicators(): void {
-    for(const element of document.getElementsByClassName('stableBid')) (element as HTMLElement).style.display = 'inline'
-    for(const element of document.getElementsByClassName('upBid')) (element as HTMLElement).style.display = 'none'
-    for(const element of document.getElementsByClassName('downBid')) (element as HTMLElement).style.display = 'none'
+    for (const element of document.getElementsByClassName('stableBid'))
+      (element as HTMLElement).style.display = 'inline'
+    for (const element of document.getElementsByClassName('upBid'))
+      (element as HTMLElement).style.display = 'none'
+    for (const element of document.getElementsByClassName('downBid'))
+      (element as HTMLElement).style.display = 'none'
   }
 
   show(): void {

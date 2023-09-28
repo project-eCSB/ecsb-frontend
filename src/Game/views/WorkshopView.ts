@@ -2,19 +2,19 @@ import gameService from '../../services/game/GameService'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { WorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessage'
-import { LoadingView } from './LoadingView'
 
 export class WorkshopView {
-  scene: Scene
-  workshopContainer: HTMLDivElement
-  workshopHeader: HTMLDivElement
-  workshopTitle: HTMLHeadingElement
-  workshopContent: HTMLDivElement
-  workshopContentValue: HTMLDivElement
-  workshopContentCost: HTMLDivElement
-  workshopButtons: HTMLDivElement
-  workshopBtnSubmit: HTMLButtonElement
-  workshopBtnClose: HTMLButtonElement
+  private readonly scene: Scene
+
+  private readonly workshopContainer: HTMLDivElement
+  private readonly workshopHeader: HTMLDivElement
+  private readonly workshopTitle: HTMLHeadingElement
+  private readonly workshopContent: HTMLDivElement
+  private readonly workshopContentValue: HTMLDivElement
+  private readonly workshopContentCost: HTMLDivElement
+  private readonly workshopButtons: HTMLDivElement
+  private readonly workshopBtnSubmit: HTMLButtonElement
+  private readonly workshopBtnClose: HTMLButtonElement
 
   constructor(scene: Scene) {
     this.scene = scene
@@ -83,8 +83,9 @@ export class WorkshopView {
 
     plusBtn.addEventListener('click', () => {
       const costTime = parseInt(pTimeInput.innerText) + 1
-      const costMoney = costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-      
+      const costMoney =
+        costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+
       if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
         this.disableSubmitBtn()
       } else {
@@ -99,7 +100,7 @@ export class WorkshopView {
 
       sendWorkshopMessage(this.scene.chatWs, {
         type: WorkshopMessageType.WorkshopChange,
-        amount: resource
+        amount: resource,
       })
     })
 
@@ -113,7 +114,8 @@ export class WorkshopView {
     minusBtn.addEventListener('click', () => {
       const costTime = parseInt(pTimeInput.innerText) - 1
       if (costTime >= 0) {
-        const costMoney = costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+        const costMoney =
+          costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
         if (costMoney === 0) {
           this.disableSubmitBtn()
         } else {
@@ -129,10 +131,10 @@ export class WorkshopView {
         pWantInput.innerText = `${resource}`
         pMoneyInput.innerText = `${costMoney}`
         pTimeInput.innerText = `${costTime}`
-  
+
         sendWorkshopMessage(this.scene.chatWs, {
           type: WorkshopMessageType.WorkshopChange,
-          amount: resource
+          amount: resource,
         })
       }
     })
@@ -160,19 +162,20 @@ export class WorkshopView {
     this.workshopBtnSubmit.innerText = 'Submit'
     this.workshopBtnSubmit.addEventListener('click', () => {
       this.disableSubmitBtn()
-      this.scene.loadingView = new LoadingView(this.scene)
+
       this.scene.loadingView.show()
 
       gameService
         .produce(parseInt(pWantInput.innerText))
         .then(() => {
           this.close()
-          this.scene.loadingView?.close()
         })
         .catch((err) => {
           console.error(err)
-          this.scene.loadingView?.close()
           this.enableSubmitBtn()
+        })
+        .finally(() => {
+          this.scene.loadingView.close()
         })
     })
 
@@ -193,17 +196,17 @@ export class WorkshopView {
     this.disableSubmitBtn()
   }
 
-  disableSubmitBtn(): void {
+  public disableSubmitBtn(): void {
     this.workshopBtnSubmit.disabled = true
     this.workshopBtnSubmit.style.visibility = 'hidden'
   }
 
-  enableSubmitBtn(): void {
+  public enableSubmitBtn(): void {
     this.workshopBtnSubmit.disabled = false
     this.workshopBtnSubmit.style.visibility = 'visible'
   }
 
-  show(): void {
+  public show(): void {
     sendWorkshopMessage(this.scene.chatWs, {
       type: WorkshopMessageType.WorkshopStart,
     })
@@ -213,7 +216,7 @@ export class WorkshopView {
     this.scene.movingEnabled = false
   }
 
-  close(): void {
+  public close(): void {
     sendWorkshopMessage(this.scene.chatWs, {
       type: WorkshopMessageType.WorkshopStop,
     })
