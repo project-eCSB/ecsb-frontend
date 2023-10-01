@@ -1,7 +1,8 @@
-import { toast } from 'react-toastify'
-import { type Scene } from '../../Game/scenes/Scene'
-import './TradeOfferPopup.css'
-import { RANGE } from '../GameUtils'
+import { toast } from 'react-toastify';
+import { type Scene } from '../../Game/scenes/Scene';
+import './TradeOfferPopup.css';
+import { ERROR_TIMEOUT, RANGE, TOAST_DISMISS_TIMEOUT } from '../GameUtils';
+import { ErrorView } from '../views/ErrorView';
 
 interface TradeProps {
   scene: Scene
@@ -22,16 +23,13 @@ export const TradeOfferPopup = (props: TradeProps) => {
 
   const handleAcceptTrade = () => {
     if (!isPlayerInRange()) {
-      toast.error(`${from} wants to trade with you, but you are too far`, {
-        position: 'top-center',
-        autoClose: 5000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        progress: undefined,
-      })
-      return
+      const errorMessage = new ErrorView();
+      errorMessage.setText(`${from} wants to trade with you, but you are too far`);
+      errorMessage.show();
+      setTimeout(() => {
+        errorMessage.close();
+      }, ERROR_TIMEOUT);
+      return;
     }
 
     if (!scene.movingEnabled) return
@@ -53,7 +51,7 @@ export const TradeOfferPopup = (props: TradeProps) => {
 
     setTimeout(() => {
       toast.dismiss(from)
-    }, 500)
+    }, TOAST_DISMISS_TIMEOUT)
     scene.acceptTradeInvitation(from)
   }
 
@@ -63,17 +61,21 @@ export const TradeOfferPopup = (props: TradeProps) => {
 
   return (
     <div className='container'>
-      <p>{from} wants to trade</p>
-      <div className='buttons-container'>
-        <button className='accept' id={`${from}-accept`} onClick={handleAcceptTrade}>
-          Accept
-        </button>
-        <button className='decline' id={`${from}-decline`} onClick={handleDeclineTrade}>
-          Decline
-        </button>
+      <p>{from} chce handlować</p>
+      <div className="buttons-container">
+        <div id='buttonWrapper'>
+          <button className="decisionButton" id={`${from}-accept`} onClick={handleAcceptTrade}>
+            Akceptuj
+          </button>
+        </div>
+        <div id='buttonWrapper'>
+          <button className="decisionButton" id={`${from}-decline`} onClick={handleDeclineTrade}>
+            Odrzuć
+          </button>
+        </div>
       </div>
       <h4 className='tag' id={`${from}-hiddenTag`}>
-        Accepted
+        Zaakceptowano
       </h4>
     </div>
   )

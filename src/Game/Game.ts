@@ -79,4 +79,10 @@ export const stopGame = (gameData: GameData): void => {
 
   window.document.getElementById('workshop-container')?.remove()
   window.document.getElementById('travel-container')?.remove()
+
+  window.document.getElementById('errorsAndInfo')?.remove()
+  gameData.scene.userDataView?.close()
+  gameData.scene.timeView?.close()
+  gameData.scene.settingsView?.close()
+  gameData.scene.statusAndCoopView?.close()
 }

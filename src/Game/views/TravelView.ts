@@ -1,8 +1,9 @@
-import { toast } from 'react-toastify'
 import gameService from '../../services/game/GameService'
+import { ERROR_TIMEOUT } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { TravelMessageType, sendTravelMessage } from '../webSocketMessage/chat/TravelMessage'
+import { ErrorView } from './ErrorView'
 
 export enum TravelType {
   LOW = 'low',
@@ -130,16 +131,15 @@ export class TravelView {
         .then(() => {
           this.close()
         })
-        .catch(() => {
-          toast.error(`Insufficient materials`, {
-            position: 'top-center',
-            autoClose: 5000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-          })
+        .catch((err) => {
+          const errorMessage = new ErrorView();
+          errorMessage.setText('Insufficient materials');
+          errorMessage.show();
+          setTimeout(() => {
+            errorMessage.close();
+          }, ERROR_TIMEOUT);
+          console.error(err)
+          this.scene.loadingView?.close()
           this.enableSubmitBtn()
         })
         .finally(() => {
