@@ -29,19 +29,25 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
               <strong>Class Name:</strong> {classDto.key}
             </p>
             <p>
-              <strong>Class Asset:</strong> {classDto.value.classAsset}
+              <strong>Class Asset Mapping:</strong> {classDto.value.classAsset}
             </p>
             <p>
-              <strong>Game Resource Name:</strong> {classDto.value.gameResourceName}
+              <strong>Resource Name:</strong> {classDto.value.gameResourceName}
             </p>
             <p>
-              <strong>Resource Asset:</strong> {classDto.value.resourceAsset}
+              <strong>Resource Asset Mapping:</strong> {classDto.value.resourceAsset}
             </p>
             <p>
-              <strong>Unit Price:</strong> {classDto.value.unitPrice}
+              <strong>Resource Unit Price:</strong> {classDto.value.unitPrice}
             </p>
             <p>
-              <strong>Max Production:</strong> {classDto.value.maxProduction}
+              <strong>Resource Max Production:</strong> {classDto.value.maxProduction}
+            </p>
+            <p>
+              <strong>Resource Buyout Price:</strong> {classDto.value.buyoutPrice}
+            </p>
+            <p>
+              <strong>Token Regeneration Time:</strong> {classDto.value.regenTime}
             </p>
           </div>
         ))}

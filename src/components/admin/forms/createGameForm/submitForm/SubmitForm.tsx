@@ -1,5 +1,5 @@
-import gameAPI from '../../../../../apis/game/GameAPI'
-import { type CreateGameRequest, type CreateGameResponse } from '../../../../../apis/game/Types'
+import { type CreateGameRequest } from '../../../../../apis/game/Types'
+import gameService from '../../../../../services/game/GameService'
 import { type ClassResource, type CreateGameFormData, type Travel } from '../CreateGameForm'
 import './SubmitForm.css'
 
@@ -21,11 +21,13 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       <>
         <div key={index} className='resource'>
           <p>Class Name: {resource.className}</p>
+          <p>Class Token Regeneration: {resource.classTokenRegeneration}</p>
           <p>Character Mapping: {resource.characterMapping}</p>
           <p>Item Name: {resource.itemName}</p>
           <p>Item Mapping: {resource.itemMapping}</p>
           <p>Cost Per Item: {resource.costPerItem}</p>
           <p>Item Per Workshop: {resource.itemPerWorkshop}</p>
+          <p>Item Buyout: {resource.itemBuyout}</p>
         </div>
         {index !== classResources.length - 1 && <hr />}
       </>
@@ -68,6 +70,9 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       tileAssetId: 0,
       characterAssetId: 0,
       resourceAssetsId: 0,
+      timeForGame: 0,
+      maxTimeAmount: 0,
+      walkingSpeed: 0,
     }
 
     transformedData.classResourceRepresentation = formData.classResources.map((classResource) => ({
@@ -76,8 +81,10 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         classAsset: classResource.characterMapping,
         gameResourceName: classResource.itemName,
         resourceAsset: classResource.itemMapping,
-        unitPrice: classResource.costPerItem,
         maxProduction: classResource.itemPerWorkshop,
+        unitPrice: classResource.costPerItem,
+        regenTime: classResource.classTokenRegeneration,
+        buyoutPrice: classResource.itemBuyout,
       },
     }))
 
@@ -120,6 +127,10 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     transformedData.characterAssetId = Number(formData.characterAssetsId)
     transformedData.resourceAssetsId = Number(formData.resourceAssetsId)
 
+    transformedData.timeForGame = formData.gameFullTime
+    transformedData.maxTimeAmount = 0
+    transformedData.walkingSpeed = formData.movingSpeed
+
     return transformedData
   }
 
@@ -138,19 +149,51 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     }
   }
 
+  const handleChangeGameFullTime = (value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        gameFullTime: 0,
+      }))
+      return
+    }
+
+    let parsedValue = parseInt(value)
+    if (parsedValue <= 0) {
+      parsedValue = 0 
+    }
+    if (parsedValue >= 60) {
+      parsedValue = 60
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      gameFullTime: parsedValue,
+    }))
+  }
+
   const handleSubmit = () => {
     setRequestInProgress(true)
 
-    gameAPI.createGame(transformFormData(createGameFormData)).then(
-      (response: CreateGameResponse) => {
+    const transformedData = transformFormData(createGameFormData)
+    gameService.createGame(
+      transformedData.classResourceRepresentation, 
+      transformedData.gameName,
+      transformedData.travels,
+      transformedData.mapAssetId,
+      transformedData.tileAssetId,
+      transformedData.characterAssetId,
+      transformedData.resourceAssetsId,
+      transformedData.timeForGame,
+      transformedData.maxTimeAmount,
+      transformedData.walkingSpeed,
+      ).then((gameSessionId: number) => {
         setRequestInProgress(false)
-        setAndShowResultModal(`Game created successfully! Game ID: ${response.gameSessionId}`)
-      },
-      (error: Error) => {
+        setAndShowResultModal(`Game created successfully! Game ID: ${gameSessionId}`)
+      }).catch((error: Error) => {
         setRequestInProgress(false)
         setAndShowResultModal(error.message)
-      },
-    )
+      })
   }
 
   return (
@@ -207,10 +250,22 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
           type='text'
         />
       </div>
+      <div id= 'game-submit-form-input-gamefulltime' className='game-submit-form-input'>
+        <label htmlFor=''>Game Full Time</label>
+        <input
+          min={1}
+          max={60}
+          value={createGameFormData.gameFullTime}
+          onChange={(e) => {
+            handleChangeGameFullTime(e.target.value)
+          }}
+          type='number'
+        />
+      </div>
       <div className='submit-form-button'>
         <button
-          disabled={createGameFormData.gameName.length < 3}
-          className={`${createGameFormData.gameName.length < 3 ? 'disabled' : ''}`}
+          disabled={createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1}
+          className={`${(createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1) ? 'disabled' : ''}`}
           onClick={() => {
             handleSubmit()
           }}

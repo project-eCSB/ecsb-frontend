@@ -88,6 +88,10 @@
   border: 1px solid #6f6c90;
 }
 
+#game-submit-form-input-gamefulltime > input {
+  width: 17%;
+}
+
 .game-submit-form .submit-form-button {
   width: 100%;
   display: flex;

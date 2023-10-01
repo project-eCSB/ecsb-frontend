@@ -6,8 +6,8 @@
   border: 1px solid #eff0f7;
   box-shadow: 0 5px 16px rgba(8, 15, 52, 0.06);
   border-radius: 35px;
-  max-width: 800px;
-  min-width: 700px;
+  min-width: 600px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 2rem;
 }

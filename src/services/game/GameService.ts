@@ -26,16 +26,22 @@ const createGame = async (
   tileAssetId: number,
   characterAssetId: number,
   resourceAssetsId: number,
+  timeForGame: number,
+  maxTimeAmount: number,
+  walkingSpeed: number,
 ): Promise<number> => {
   return await gameAPI
     .createGame({
+      travels,
       classResourceRepresentation,
       gameName,
-      travels,
       mapAssetId,
       tileAssetId,
       characterAssetId,
       resourceAssetsId,
+      timeForGame,
+      maxTimeAmount,
+      walkingSpeed,
     })
     .then((res: CreateGameResponse) => {
       return res.gameSessionId

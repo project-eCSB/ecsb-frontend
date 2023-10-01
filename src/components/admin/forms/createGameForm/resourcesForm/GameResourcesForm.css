@@ -1,94 +1,95 @@
-.game-details-form {
+#game-details-form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
-.game-details-form label {
-  font-weight: bold;
-  font-size: 1.3rem;
-}
-
-.game-details-form input {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+#game-details-form #main-title {
   width: 100%;
-}
-
-.game-details-form button {
-  padding: 10px;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.3rem;
-  width: 100%;
-  background-color: #4a3aff;
-}
-
-.game-details-form button:hover {
-  background-color: #3730a3;
-}
-
-.game-details-form button.disabled {
-  background-color: #a4a4a4;
-  cursor: not-allowed;
-}
-
-.class-representation-button-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 20px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-table th,
-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
-}
-
-.game-details-form .main-title {
-  width: 100%;
-  font-style: normal;
-  font-weight: 700;
   font-size: 1.5rem;
-  line-height: 35px;
-  color: #170f49;
-}
-
-.game-details-form .sub-title {
-  width: 100%;
   font-style: normal;
-  font-weight: 400;
-  font-size: 1rem;
-  line-height: 30px;
-  color: #6f6c90;
+  font-weight: bold;
+  color: black;
 }
 
-@media (max-width: 800px) {
-  .game-details-form {
-    padding: 10px;
-  }
+#game-details-form #sub-title {
+  width: 100%;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: normal;
+  color: #6f6c90;
+  margin-bottom: 20px;
+}
 
-  .game-details-form label {
-    font-size: 1.1rem;
-  }
+#game-details-form table {
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
 
-  .game-details-form input,
-  .game-details-form button {
-    font-size: 14px;
-  }
+#game-details-form table thead th:nth-child(1) {
+  width: 12%;
+}
+
+#game-details-form table thead th:nth-child(2) {
+  width: 10%;
+}
+
+#game-details-form table thead th:nth-child(3) {
+  width: 18%;
+}
+
+#game-details-form table thead th:nth-child(4) {
+  width: 10%;
+}
+
+#game-details-form table thead th:nth-child(5) {
+  width: 10%;
+}
+
+#game-details-form table thead th:nth-child(6) {
+  width: 10%;
+}
+
+#game-details-form table thead th:nth-child(7) {
+  width: 10%;
+}
+
+#game-details-form table thead th:nth-child(8) {
+  width: 10%;
+}
+
+#game-details-form table th,
+td {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+#game-details-form table input {
+  width: 100%;
+  font-size: 1rem;
+  margin: 0;
+}
+
+#game-details-form .input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+#game-details-form .input-container > label {
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: bold;
+  color: black;
+}
+
+#game-details-form .input-container > input {
+  font-size: 1rem;
+  font-style: normal;
+  color: black;
+  width: auto;
 }
