@@ -268,7 +268,7 @@ export class Scene extends Phaser.Scene {
             (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
           )
         ) {
-          this.interactionView.setText('rozpocząć wytwarzanie')
+          this.interactionView.setText('rozpocząć wytwarzanie...')
           this.interactionView.show()
         } else if (
           this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
@@ -747,9 +747,9 @@ export class Scene extends Phaser.Scene {
           (coords) =>
             this.players[this.playerId].coords.x === coords.x &&
             this.players[this.playerId].coords.y === coords.y,
-        )
-      ) {
-        this.workshopView = new WorkshopView(this)
+        ) && this.equipment
+      )  {
+        this.workshopView = new WorkshopView(this, this.resourceUrl, this.settings.classResourceRepresentation)
         this.workshopView.show()
 
         this.interactionView.close()

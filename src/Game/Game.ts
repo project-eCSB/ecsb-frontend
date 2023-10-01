@@ -77,7 +77,8 @@ export const stopGame = (gameData: GameData): void => {
   window.document.getElementById('interactionBox')?.remove()
   window.document.getElementById('requestBox')?.remove()
 
-  window.document.getElementById('workshop-container')?.remove()
+  window.document.getElementById('workshopBoxWrapper')?.remove()
+  window.document.getElementById('workshopSuccessBox')?.remove()
   window.document.getElementById('travel-container')?.remove()
 
   window.document.getElementById('errorsAndInfo')?.remove()

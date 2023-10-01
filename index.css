@@ -26,8 +26,45 @@
 #settings {
   padding: 0.5rem;
   padding-bottom: 0.3rem;
-  background-color: #EDB872;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
   border: none;
@@ -38,8 +75,45 @@
 #settingsActive {
   padding: 0.5rem;
   padding-bottom: 0.3rem;
-  background-color: #AB742B;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #ab742b;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
   border: none;
@@ -71,7 +145,8 @@
   filter: drop-shadow(-5px 6px #835211);
 }
 
-#settings > img, #settingsActive > img {
+#settings > img,
+#settingsActive > img {
   width: 2rem;
   height: 2rem;
 }
@@ -86,8 +161,45 @@
 
 #userDataBox {
   padding: 1.6rem;
-  background-color: #EDB872;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
 }
@@ -107,25 +219,65 @@
   top: calc(110px + 0.4rem);
 }
 
-#statusButtonWrapper, #coopButtonWrapper {
+#statusButtonWrapper,
+#coopButtonWrapper {
   filter: drop-shadow(-3px 4px #835211);
   transition: 0.2s all ease-in-out;
 }
 
-#statusButtonWrapperActive, #coopButtonWrapperActive {
+#statusButtonWrapperActive,
+#coopButtonWrapperActive {
   filter: none;
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#statusButton, #coopButton {
+#statusButton,
+#coopButton {
   width: 100px;
   margin: 0.5rem 0;
   margin-bottom: 1rem;
   padding: 0.2rem 0.5rem;
-  font-size: 1.0rem;
-  background-color: #EDB872;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  font-size: 1rem;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
   border: none;
@@ -137,14 +289,52 @@
   transition: 0.2s all ease-in-out;
 }
 
-#statusButtonActive, #coopButtonActive {
+#statusButtonActive,
+#coopButtonActive {
   width: 100px;
   margin: 0.5rem 0;
   margin-bottom: 1rem;
   padding: 0.2rem 0.5rem;
-  font-size: 1.0rem;
-  background-color: #AB742B;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  font-size: 1rem;
+  background-color: #ab742b;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
   border: none;
@@ -157,11 +347,13 @@
   transition: 0.2s ease-in-out;
 }
 
-#statusButtonWrapper:hover #statusButton, #coopButtonWrapper:hover #coopButton {
+#statusButtonWrapper:hover #statusButton,
+#coopButtonWrapper:hover #coopButton {
   transform: translate(2px, -2px);
 }
 
-#statusButtonWrapper:hover, #coopButtonWrapper:hover {
+#statusButtonWrapper:hover,
+#coopButtonWrapper:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
@@ -202,8 +394,45 @@
 }
 
 #adButton {
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
-  background-color: #F6DCB8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #f6dcb8;
   padding: 0.2rem 0.5rem;
   border: none;
   cursor: pointer;
@@ -211,8 +440,45 @@
 }
 
 #adButtonActive {
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
-  background-color: #AB742B;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #ab742b;
   padding: 0.2rem 0.5rem;
   border: none;
   cursor: pointer;
@@ -250,8 +516,45 @@
 }
 
 #coopAdWrapper > button {
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
-  background-color: #F6DCB8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #f6dcb8;
   padding: 0.2rem 0.5rem;
   border: none;
   cursor: pointer;
@@ -259,8 +562,45 @@
 }
 
 #coopAdWrapperActive > button {
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
-  background-color: #AB742B;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #ab742b;
   padding: 0.2rem 0.5rem;
   border: none;
   cursor: pointer;
@@ -291,8 +631,45 @@
   height: 100%;
   width: 100%;
   padding: 1.2rem;
-  background-color: #EDB872;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
   display: flex;
@@ -314,8 +691,45 @@
   height: 100%;
   width: 100%;
   padding: 1.2rem;
-  background-color: #EDB872;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   color: black;
   font-family: Rowdies;
   display: flex;
@@ -333,18 +747,55 @@
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#timeTokenBox > div > div > div{
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+#timeTokenBox > div > div > div {
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
   width: 2.3rem;
   height: 2.3rem;
-  background-color: #F6DCB8;
+  background-color: #f6dcb8;
 }
 
 #clock {
   height: 90%;
   width: 90%;
   border-radius: 50%;
-  background-image: conic-gradient(#EDB872 0%, 0, #677818);
+  background-image: conic-gradient(#edb872 0%, 0, #677818);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -354,7 +805,7 @@
   height: 90%;
   width: 90%;
   border-radius: 50%;
-  background-color: #EDB872;
+  background-color: #edb872;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -375,8 +826,45 @@
   left: -15px;
   padding: 1.2rem;
   padding-left: 2.3rem;
-  background-color: #EDB872;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
 }
 
 #equipmentBoxContent {
@@ -415,8 +903,45 @@
   padding: 0.5rem;
   font-size: 1.2rem;
   width: 42px;
-  background-color: #F6DCB8;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
 }
 
 /* InteractionViewBox */
@@ -428,13 +953,50 @@
 #interactionBox {
   width: 100%;
   color: black;
-  background-color: #E3C296;
+  background-color: #e3c296;
   padding: 1rem;
   border-radius: 2px;
   font-size: medium;
   display: flex;
   gap: 1rem;
-  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
 }
 
 #interaction i {
@@ -611,9 +1173,6 @@
 #tradeBoxButtons button {
   padding: 0.2rem;
   font-size: 1.2rem;
-}
-
-#tradeBoxButtons button:hover {
   cursor: pointer;
 }
 
@@ -763,104 +1322,1010 @@
 }
 
 /* WorkshopBox */
-#workshop-container {
+#workshopBoxWrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+#workshopBox {
+  min-width: 650px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  color: azure;
-  background-color: #524436;
-  opacity: 0.95;
+  color: black;
   padding: 1rem;
-  border-radius: 2px;
-  box-shadow: '0px 3px 10px black';
-  font-size: medium;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  border-radius: 1rem;
-}
-
-#workshop-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-#workshop-content-value {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.8rem;
-}
-
-#workshop-content-value-buttons {
-  display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
 }
 
-#workshop-content-value-buttons > button {
-  font-size: 1.5rem;
-  font-weight: 600;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  width: 1.5rem;
-  height: 1.5rem;
+#workshopBoxHeaderBoxWrapper {
+  position: relative;
 }
 
-#workshop-content-value-buttons > button:hover {
-  background-color: #cfcfcf;
-}
-
-#workshop-content-value-resources > div {
+#workshopBoxHeaderBox {
+  width: 100%;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1.5rem;
   display: flex;
-  gap: .5rem;
+  flex-direction: column;
+  align-items: center;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
 
-#workshop-content-cost h2 {
-  font-size: x-large;
+#workshopBoxHeaderBox h1 {
+  font-size: 2.3rem;
 }
 
-#workshop-content-cost h4 {
-  font-size: larger;
-}
-
-#workshop-buttons {
+#workshopBoxHeaderBox > div {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#workshopBoxHeaderBox > div > img {
+  width: 28px;
+  height: 28px;
+}
+
+#workshopBoxHeaderBox > div > h2 {
+  font-size: 1.4rem;
+}
+
+#workshopBoxMathBox {
+  padding: 0.8rem;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#workshopBoxContentBox {
+  height: 280px;
+  width: 100%;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#workshopBoxContentBox > hr {
+  border: 1px solid rgba(131, 82, 17, 0.7);
+}
+
+#workshopBoxContentBoxLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  flex-grow: 1;
+}
+
+#workshopBoxContentBoxRight {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#workshopBoxContentBoxCostBox {
+  height: 80px;
+  display: flex;
   justify-content: space-between;
 }
 
-#workshop-buttons button {
-  padding: 0.2rem;
-  font-size: medium;
-  color: white;
-  padding: 5px 10px;
-  border: 2px solid rgb(255, 255, 255);
-  border-radius: 8px;
-  font-weight: 600;
+#workshopBoxContentBoxCostBox > h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
 }
 
-#workshop-button-submit {
-  background-color: rgb(0, 180, 0);
+/* resources */
+#workshopBoxContentBoxCostBox > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 }
 
-#workshop-button-submit:hover {
-  background-color: rgb(0, 140, 0);
+/* resource */
+#workshopBoxContentBoxCostBox > div > div:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#workshopBoxContentBoxCostBox > div > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#workshopBoxContentBoxCostBox > div > div > div > h4 {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  width: 42px;
+  height: 42px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#pTime {
+  justify-self: flex-end;
+  width: 205px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+#pTime > div > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#pTime > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#workshopBoxContentBoxResultBox {
+  display: flex;
+  gap: 4rem;
+}
+
+#workshopBoxContentBoxResultBox > h1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.4rem;
+}
+
+#workshopBoxContentBoxResultBox > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+#workshopBoxContentBoxResultBox > div > span {
+  font-size: 1.4rem;
+}
+
+#workshopBoxContentBoxResultBox > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#workshopBoxContentBoxResultBox > div > div > h2 {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  width: 42px;
+  height: 42px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#workshopBoxContentBoxButtonsBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#workshopBoxContentBoxButtonsBox > button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  color: #edb872;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.workshopBoxContentBoxButtonsBoxButtonEnabled {
+  background-color: #835211;
   cursor: pointer;
 }
 
-#workshop-button-close {
-  background-color: rgb(180, 0, 0);
+.workshopBoxContentBoxButtonsBoxButtonDisabled {
+  background-color: #e9d3b7;
+  cursor: auto;
 }
 
-#workshop-button-close:hover {
-  background-color: rgb(140, 0, 0);
+/* SubmitButton */
+#workshopBoxSubmitButtonExtraWrapper {
+  width: 40%;
+  border: none;
+}
+
+#workshopBoxSubmitButtonWrapper {
+  width: 100%;
+  border: none;
+}
+
+.workshopBoxSubmitButtonExtraWrapperEnabled {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+.workshopBoxSubmitButtonExtraWrapperEnabled:hover {
+  filter: none;
+}
+
+.workshopBoxSubmitButtonExtraWrapperEnabledActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+.workshopBoxSubmitButtonWrapperEnabledActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+.workshopBoxSubmitButtonWrapperEnabled {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+.workshopBoxSubmitButtonWrapperEnabled:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+.workshopBoxSubmitButtonWrapperDisabled {
+  filter: drop-shadow(-3px 4px #3f382e);
+}
+
+.workshopBoxSubmitButtonWrapperDisabled:hover {
+  filter: drop-shadow(-3px 4px #3f382e);
+}
+
+#workshopBoxSubmitButton {
+  width: 100%;
+  padding: 0.5rem;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  font-size: 1.2rem;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+}
+
+.workshopBoxSubmitButtonExtraWrapperEnabled:hover .workshopBoxSubmitButtonEnabled {
   cursor: pointer;
+  transform: translate(2px, -2px);
+}
+
+.workshopBoxSubmitButtonEnabled {
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+}
+
+.workshopBoxSubmitButtonEnabledActive {
+  background-color: #ab742b;
+  color: #000;
+  transition: 0.2s all ease-in-out;
+  transform: translate(-5px, 6px);
+}
+
+.workshopBoxSubmitButtonDisabled {
+  background-color: #e9d3b7;
+  color: #787272;
+}
+
+.workshopBoxSubmitButtonDisabled:hover {
+  cursor: auto;
+  transform: none;
+}
+
+/* CloseButton */
+#workshopBoxCloseButton {
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 1rem;
+  z-index: 999999;
+  background-color: #d39f59;
+  filter: drop-shadow(-1px 2px rgb(48, 20, 1, 0.9));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#workshopBoxCloseButton:hover {
+  filter: none;
+  transform: translate(-1px, 2px);
+}
+
+/* WorkshopSuccessBox */
+#workshopSuccessBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+#workshopSuccessBoxTitleBox {
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#workshopSuccessBoxTitleBox h1 {
+  font-size: 2.3rem;
+}
+
+#workshopSuccessBoxTitleBox > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#workshopSuccessBoxTitleBox > div > img {
+  width: 28px;
+  height: 28px;
+}
+
+#workshopSuccessBoxTitleBox h2 {
+  font-size: 1.4rem;
+}
+
+#workshopSuccessBoxHeaderBox {
+  padding: 1.2rem;
+  background-color: #e3c296;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#workshopSuccessBoxHeaderBox > h1 {
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  font-size: 1.2rem;
+}
+
+#workshopSuccessBoxHeaderBox > img {
+  width: 20px;
+  height: 20px;
+}
+
+#workshopSuccessBoxContentBox {
+  display: flex;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  font-size: 1rem;
+  padding: 1rem 2rem 2rem 2rem;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#workshopSuccessBoxContentBox > * {
+  flex: 1;
+}
+
+#workshopSuccessBoxContentBoxIconWrapper img {
+  width: 100px;
+  height: 100px;
+  margin-top: 20px;
+}
+
+#workshopSuccessBoxContentBoxResultBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#workshopSuccessBoxContentBoxResultBoxResourcesBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#workshopSuccessBoxContentBoxResultBoxResourcesBox > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#workshopSuccessBoxContentBoxResultBoxResourcesBoxValue {
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 10px;
+}
+
+#workshopSuccessBoxContentBoxPlayerBox {
+  margin-left: 30px;
+  margin-top: 35px;
+}
+
+/* CloseButton */
+
+#workshopSuccessBoxCloseButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+  border: none;
+}
+
+#workshopSuccessBoxCloseButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#workshopSuccessBoxCloseButtonExtraWrapperActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+#workshopSuccessBoxCloseButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+#workshopSuccessBoxCloseButtonWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#workshopSuccessBoxCloseButtonWrapperActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+#workshopSuccessBoxCloseButton {
+  border: none;
+  padding: 0.8rem 1.6rem;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  font-size: 1.2rem;
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#workshopSuccessBoxCloseButtonExtraWrapper:hover #workshopSuccessBoxCloseButton {
+  cursor: pointer;
+  transform: translate(2px, -2px);
+}
+
+#workshopSuccessBoxCloseButton {
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+  cursor: pointer;
+}
+
+#workshopSuccessBoxCloseButton:hover {
+  transform: translate(-1px, 2px);
+}
+
+#workshopSuccessBoxCloseButtonActive {
+  background-color: #ab742b;
+  color: #000;
+  transition: 0.2s all ease-in-out;
+  transform: translate(-5px, 6px);
 }
 
 /* TravelBox */
@@ -900,20 +2365,20 @@
 
 #travel-button-submit {
   background-color: rgb(0, 180, 0);
+  cursor: pointer;
 }
 
 #travel-button-submit:hover {
   background-color: rgb(0, 140, 0);
-  cursor: pointer;
 }
 
 #travel-button-close {
   background-color: rgb(180, 0, 0);
+  cursor: pointer;
 }
 
 #travel-button-close:hover {
   background-color: rgb(140, 0, 0);
-  cursor: pointer;
 }
 
 #travel-content {

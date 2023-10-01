@@ -125,6 +125,7 @@ export class TradeView {
         this.scene.characterUrl,
         4,
         getPlayerMapping(scene.settings.classResourceRepresentation)(scene.playersClasses.get(currPlayerId)!),
+        false,
       ),
     )
     youDiv.appendChild(iconUp)
@@ -136,6 +137,7 @@ export class TradeView {
         this.scene.characterUrl,
         4,
         getPlayerMapping(scene.settings.classResourceRepresentation)(scene.playersClasses.get(otherPlayerId)!),
+        false,
       ),
     )
     opponentDiv.appendChild(iconUp2)
@@ -257,9 +259,8 @@ export class TradeView {
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1)
             this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value )
+          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value)
             this.changesDone -= 1
-
           if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
             this.disableAcceptBtn()
@@ -289,7 +290,6 @@ export class TradeView {
             this.changesDone += 1
           if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value)
             this.changesDone -= 1
-
           if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
             this.disableAcceptBtn()

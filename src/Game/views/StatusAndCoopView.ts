@@ -48,7 +48,8 @@ export class StatusAndCoopView {
           RESOURCE_ICON_SCALE,
           url,
           3,
-          getResourceMapping(resRepresentation)(element.key)
+          getResourceMapping(resRepresentation)(element.key),
+          false,
         ))
         buttonGiveWrapper.appendChild(buttonGive)
         const buttonReceiveWrapper = document.createElement('div')
@@ -74,7 +75,8 @@ export class StatusAndCoopView {
           RESOURCE_ICON_SCALE,
           url,
           3,
-          getResourceMapping(resRepresentation)(element.key)
+          getResourceMapping(resRepresentation)(element.key),
+          false,
         ))
         buttonReceiveWrapper.appendChild(buttonReceive)
         row.appendChild(buttonGiveWrapper)
