@@ -1,209 +1,404 @@
+import { type ClassResourceRepresentation } from '../../apis/game/Types'
 import gameService from '../../services/game/GameService'
+import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
+import { ImageCropper } from '../tools/ImageCropper'
 import { WorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessage'
+import { WorkshopSuccessView } from './WorkshopSuccessView'
 
 export class WorkshopView {
+  public static readonly workshopBoxWrapperID = 'workshopBoxWrapper'
+  public static readonly workshopBoxID = 'workshopBox'
+  public static readonly workshopBoxHeaderBoxWrapperID = 'workshopBoxHeaderBoxWrapper'
+  public static readonly workshopBoxHeaderBoxID = 'workshopBoxHeaderBox'
+  public static readonly workshopBoxMathBoxID = 'workshopBoxMathBox'
+  public static readonly workshopBoxContentBoxID = 'workshopBoxContentBox'
+  public static readonly workshopBoxContentBoxLeftID = 'workshopBoxContentBoxLeft'
+  public static readonly workshopBoxContentBoxRightID = 'workshopBoxContentBoxRight'
+  public static readonly workshopBoxContentBoxCostBoxID = 'workshopBoxContentBoxCostBox'
+  public static readonly workshopBoxContentBoxResultBoxID = 'workshopBoxContentBoxResultBox'
+  public static readonly workshopBoxContentBoxButtonsBoxID = 'workshopBoxContentBoxButtonsBox'
+  public static readonly workshopBoxCostBoxID = 'workshopBoxCostBox'
+  public static readonly workshopBoxSubmitButtonExtraWrapperID = 'workshopBoxSubmitButtonExtraWrapper'
+  public static readonly workshopBoxSubmitButtonWrapperID = 'workshopBoxSubmitButtonWrapper'
+  public static readonly workshopBoxSubmitButtonID = 'workshopBoxSubmitButton'
+  public static readonly workshopBoxCloseButtonID = 'workshopBoxCloseButton'
+
+  private readonly workshopBoxWrapper: HTMLDivElement
+  private readonly workshopBoxSubmitButtonExtraWrapper: HTMLDivElement
+  private readonly workshopBoxSubmitButtonWrapper: HTMLDivElement
+  private readonly workshopBoxSubmitButton: HTMLButtonElement
+  private readonly workshopBoxPlusButton: HTMLButtonElement
+  private readonly workshopBoxMinusButton: HTMLButtonElement
+
   private readonly scene: Scene
+  private readonly cropper: ImageCropper
+  private readonly resourceURL: string
+  private readonly resourceRepresentation: ClassResourceRepresentation[]
 
-  private readonly workshopContainer: HTMLDivElement
-  private readonly workshopHeader: HTMLDivElement
-  private readonly workshopTitle: HTMLHeadingElement
-  private readonly workshopContent: HTMLDivElement
-  private readonly workshopContentValue: HTMLDivElement
-  private readonly workshopContentCost: HTMLDivElement
-  private readonly workshopButtons: HTMLDivElement
-  private readonly workshopBtnSubmit: HTMLButtonElement
-  private readonly workshopBtnClose: HTMLButtonElement
-
-  constructor(scene: Scene) {
+  constructor(scene: Scene, resourceURL: string, resRepresentation: ClassResourceRepresentation[]) {
     this.scene = scene
+    this.resourceURL = resourceURL
+    this.resourceRepresentation = resRepresentation
+    this.cropper = new ImageCropper()
 
-    // CONTAIENR
-    this.workshopContainer = document.createElement('div')
-    this.workshopContainer.id = 'workshop-container'
+    let resourceName = ''
+    for (const classResource of this.scene.settings.classResourceRepresentation) {
+      if (classResource.key === this.scene.status.className) {
+        resourceName = classResource.value.gameResourceName
+      }
+    }
 
-    // TITLE
-    this.workshopHeader = document.createElement('div')
-    this.workshopHeader.id = 'workshop-header'
+    const itemIcon = this.cropper.crop(
+      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_SCALE,
+      this.resourceURL,
+      3,
+      getResourceMapping(this.resourceRepresentation)(resourceName),
+      false,
+    )
+    const itemIconReversed = this.cropper.crop(
+      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_SCALE,
+      this.resourceURL,
+      3,
+      getResourceMapping(this.resourceRepresentation)(resourceName),
+      true,
+    )
 
-    this.workshopTitle = document.createElement('h1')
-    this.workshopTitle.id = 'workshop-header-title'
-    this.workshopTitle.innerText = `${
-      this.scene.status.className.charAt(0).toUpperCase() + this.scene.status.className.slice(1)
-    } Workshop`
+    // Wrapper
+    this.workshopBoxWrapper = document.createElement('div')
+    this.workshopBoxWrapper.id = WorkshopView.workshopBoxWrapperID
 
-    this.workshopHeader.appendChild(this.workshopTitle)
+    // Container
+    const workshopBox = document.createElement('div')
+    workshopBox.id = WorkshopView.workshopBoxID
 
-    // CONTENT
-    this.workshopContent = document.createElement('div')
-    this.workshopContent.id = 'workshop-content'
+    // Header
+    const workshopBoxHeaderBoxWrapper = document.createElement('div')
+    workshopBoxHeaderBoxWrapper.id = WorkshopView.workshopBoxHeaderBoxWrapperID
 
-    this.workshopContentCost = document.createElement('div')
-    this.workshopContentCost.id = 'workshop-content-cost'
+    const workshopBoxHeaderBox = document.createElement('div')
+    workshopBoxHeaderBox.id = WorkshopView.workshopBoxHeaderBoxID
+    const workshopTitleHeader = document.createElement('h1')
+    workshopTitleHeader.innerText = 'WARSZTAT'
 
-    const pMoneyLabel = document.createElement('h4')
-    pMoneyLabel.innerText = 'money: '
+    const workshopTitleClassWrapper = document.createElement('div')
+
+    const workshopTitleClass = document.createElement('h2')
+    workshopTitleClass.innerText = `${this.scene.status.className.toUpperCase()}A`
+    const leftIcon = itemIconReversed.cloneNode(true)
+    const rightIcon = itemIcon.cloneNode(true)
+
+    workshopTitleClassWrapper.appendChild(leftIcon)
+    workshopTitleClassWrapper.appendChild(workshopTitleClass)
+    workshopTitleClassWrapper.appendChild(rightIcon)
+
+    workshopBoxHeaderBox.appendChild(workshopTitleHeader)
+    workshopBoxHeaderBox.appendChild(workshopTitleClassWrapper)
+
+    // Close button
+    const workshopBoxCloseButton = document.createElement('button')
+    workshopBoxCloseButton.id = WorkshopView.workshopBoxCloseButtonID
+    workshopBoxCloseButton.innerText = 'X'
+    workshopBoxCloseButton.addEventListener('click', () => {
+      this.close()
+      this.scene.workshopView = null
+      this.scene.movingEnabled = true
+
+      this.scene.interactionView.setText('rozpocząć wytwarzanie...')
+      this.scene.interactionView.show()
+      this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
+    })
+
+    workshopBoxHeaderBoxWrapper.appendChild(workshopBoxCloseButton)
+    workshopBoxHeaderBoxWrapper.appendChild(workshopBoxHeaderBox)
+
+    // Math
+    const workshopBoxMathBox = document.createElement('div')
+    workshopBoxMathBox.id = WorkshopView.workshopBoxMathBoxID
+
+    const resourceSpan = document.createElement('span')
+    resourceSpan.innerText = `${this.scene.playerWorkshopMaxProduction} ${resourceName} = `
+    const moneyIcon = document.createElement('img')
+    moneyIcon.src = '/assets/coinCustomIcon.png'
+    moneyIcon.style.width = '20px'
+    moneyIcon.style.height = '20px'
+    const timeIcon = document.createElement('img')
+    timeIcon.src = '/assets/timeCustomIcon.png'
+    timeIcon.style.width = '20px'
+    timeIcon.style.height = '20px'
+    const moneySpan = document.createElement('span')
+    moneySpan.innerText = `${this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction}`
+    const timeSpan = document.createElement('span')
+    timeSpan.innerText = `+ ${1}`
+
+    workshopBoxMathBox.appendChild(resourceSpan)
+    workshopBoxMathBox.appendChild(moneySpan)
+    workshopBoxMathBox.appendChild(moneyIcon)
+    workshopBoxMathBox.appendChild(timeSpan)
+    workshopBoxMathBox.appendChild(timeIcon)
+
+    // Content
+    const workshopBoxContentBox = document.createElement('div')
+    workshopBoxContentBox.id = WorkshopView.workshopBoxContentBoxID
+
+    // Left
+    const workshopBoxContentBoxLeft = document.createElement('div')
+    workshopBoxContentBoxLeft.id = WorkshopView.workshopBoxContentBoxLeftID
+
+    // Left - CostBox
+    const workshopBoxContentBoxCostBox = document.createElement('div')
+    workshopBoxContentBoxCostBox.id = WorkshopView.workshopBoxContentBoxCostBoxID
+
+    const pMoneyIcon = document.createElement('img')
+    pMoneyIcon.src = '/assets/coinCustomIcon.png'
+    pMoneyIcon.style.width = '38px'
+    pMoneyIcon.style.height = '38px'
+
+    const pMoneyInputWrapper = document.createElement('div')
     const pMoneyInput = document.createElement('h4')
     pMoneyInput.innerText = '0'
+    pMoneyInputWrapper.appendChild(pMoneyInput)
     const pMoney = document.createElement('div')
-    pMoney.appendChild(pMoneyLabel)
-    pMoney.appendChild(pMoneyInput)
+    pMoney.appendChild(pMoneyInputWrapper)
+    pMoney.appendChild(pMoneyIcon)
 
-    const pTimeLabel = document.createElement('h4')
-    pTimeLabel.innerText = 'time: '
-    const pTimeInput = document.createElement('h4')
-    pTimeInput.innerText = '0'
     const pTime = document.createElement('div')
-    pTime.appendChild(pTimeLabel)
-    pTime.appendChild(pTimeInput)
+    pTime.id = 'pTime'
 
     const costHeader = document.createElement('h2')
-    costHeader.innerText = `Cost:`
-    this.workshopContentCost.appendChild(costHeader)
-
+    costHeader.innerText = `Koszt`
     const costResources = document.createElement('div')
-    costResources.id = 'workshop-content-value-resources'
     costResources.appendChild(pMoney)
     costResources.appendChild(pTime)
-    this.workshopContentCost.appendChild(costResources)
 
-    this.workshopContentValue = document.createElement('div')
-    this.workshopContentValue.id = 'workshop-content-value'
+    workshopBoxContentBoxCostBox.appendChild(costHeader)
+    workshopBoxContentBoxCostBox.appendChild(costResources)
 
-    const pWantLabel = document.createElement('h2')
-    pWantLabel.innerText = `Produce: `
+    // Left - ResultBox
+    const workshopBoxContentBoxResultBox = document.createElement('div')
+    workshopBoxContentBoxResultBox.id = WorkshopView.workshopBoxContentBoxResultBoxID
+
+    const pWantLabel = document.createElement('h1')
+    pWantLabel.innerText = `Wyprodukujesz`
+
+    const pWantInputWrapper = document.createElement('div')
     const pWantInput = document.createElement('h2')
     pWantInput.innerText = '0'
+    pWantInputWrapper.appendChild(pWantInput)
 
-    const plusBtn = document.createElement('button')
+    workshopBoxContentBoxResultBox.appendChild(pWantLabel)
+
+    const inputWrapper = document.createElement('div')
+    inputWrapper.appendChild(itemIcon)
+    inputWrapper.appendChild(pWantInputWrapper)
+    workshopBoxContentBoxResultBox.appendChild(inputWrapper)
+
+    workshopBoxContentBoxLeft.appendChild(workshopBoxContentBoxCostBox)
+    workshopBoxContentBoxLeft.appendChild(workshopBoxContentBoxResultBox)
+
+    // Right
+    const workshopBoxContentBoxRight = document.createElement('div')
+    workshopBoxContentBoxRight.id = WorkshopView.workshopBoxContentBoxRightID
+
+    this.workshopBoxPlusButton = document.createElement('button')
     const iconPlus = document.createElement('i')
     iconPlus.className = 'fa fa-plus'
     iconPlus.ariaHidden = 'true'
 
-    plusBtn.addEventListener('click', () => {
-      const costTime = parseInt(pTimeInput.innerText) + 1
+    this.workshopBoxPlusButton.addEventListener('click', () => {
+      this.enableMinusButton()
+      this.enableSubmitBtn()
+
+      const costTime = pTime.children.length + 1
       const costMoney =
         costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-
-      if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
-        this.disableSubmitBtn()
-      } else {
-        this.enableSubmitBtn()
-      }
-
       const resource = costTime * this.scene.playerWorkshopMaxProduction
 
       pWantInput.innerText = `${resource}`
       pMoneyInput.innerText = `${costMoney}`
-      pTimeInput.innerText = `${costTime}`
+
+      const pTimeIconExtraWrapper = document.createElement('div')
+      const pTimeIconWrapper = document.createElement('div')
+      const pTimeIcon = document.createElement('img')
+      pTimeIcon.src = '/assets/timeCustomIcon.png'
+      pTimeIcon.style.width = '25px'
+      pTimeIcon.style.height = '25px'
+      pTimeIconWrapper.appendChild(pTimeIcon)
+      pTimeIconExtraWrapper.appendChild(pTimeIconWrapper)
+      pTime.appendChild(pTimeIconExtraWrapper)
 
       sendWorkshopMessage(this.scene.chatWs, {
         type: WorkshopMessageType.WorkshopChange,
         amount: resource,
       })
+
+      const costTimeMore = costTime + 1
+      const costMoneyMore =
+        costTimeMore * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+      if (
+        costMoneyMore > this.scene.equipment!.money ||
+        costTimeMore > this.scene.equipment!.time || 
+        costTimeMore === 11
+      ) {
+        this.disablePlusButton()
+        return
+      }
+      this.enablePlusButton()
     })
 
-    plusBtn.appendChild(iconPlus)
+    this.workshopBoxPlusButton.appendChild(iconPlus)
 
-    const minusBtn = document.createElement('button')
+    this.workshopBoxMinusButton = document.createElement('button')
     const iconMinus = document.createElement('i')
     iconMinus.className = 'fa fa-minus'
     iconMinus.ariaHidden = 'true'
 
-    minusBtn.addEventListener('click', () => {
-      const costTime = parseInt(pTimeInput.innerText) - 1
-      if (costTime >= 0) {
-        const costMoney =
-          costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-        if (costMoney === 0) {
-          this.disableSubmitBtn()
-        } else {
-          if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
-            this.disableSubmitBtn()
-          } else {
-            this.enableSubmitBtn()
-          }
-        }
+    this.workshopBoxMinusButton.addEventListener('click', () => {
+      this.enablePlusButton()
 
-        const resource = costTime * this.scene.playerWorkshopMaxProduction
+      const costTime = pTime.children.length - 1
+      const costMoney =
+        costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+      const resource = costTime * this.scene.playerWorkshopMaxProduction
 
-        pWantInput.innerText = `${resource}`
-        pMoneyInput.innerText = `${costMoney}`
-        pTimeInput.innerText = `${costTime}`
+      pWantInput.innerText = `${resource}`
+      pMoneyInput.innerText = `${costMoney}`
+      if (pTime.lastChild) {
+        pTime.removeChild(pTime.lastChild)
+      }
 
-        sendWorkshopMessage(this.scene.chatWs, {
-          type: WorkshopMessageType.WorkshopChange,
-          amount: resource,
-        })
+      sendWorkshopMessage(this.scene.chatWs, {
+        type: WorkshopMessageType.WorkshopChange,
+        amount: resource,
+      })
+
+      if (costTime === 0) {
+        this.disableSubmitBtn()
+      }
+
+      if (costTime - 1 < 0) {
+        this.disableMinusButton()
       }
     })
 
-    minusBtn.appendChild(iconMinus)
+    this.workshopBoxMinusButton.appendChild(iconMinus)
 
     const buttons = document.createElement('div')
-    buttons.id = 'workshop-content-value-buttons'
-    buttons.appendChild(plusBtn)
-    buttons.appendChild(minusBtn)
+    buttons.id = WorkshopView.workshopBoxContentBoxButtonsBoxID
+    buttons.appendChild(this.workshopBoxPlusButton)
+    buttons.appendChild(this.workshopBoxMinusButton)
 
-    this.workshopContentValue.appendChild(pWantLabel)
-    this.workshopContentValue.appendChild(pWantInput)
-    this.workshopContentValue.appendChild(buttons)
+    workshopBoxContentBoxRight.appendChild(buttons)
 
-    this.workshopContent.appendChild(this.workshopContentValue)
-    this.workshopContent.appendChild(this.workshopContentCost)
+    workshopBoxContentBox.appendChild(workshopBoxContentBoxLeft)
+    workshopBoxContentBox.appendChild(document.createElement('hr'))
+    workshopBoxContentBox.appendChild(workshopBoxContentBoxRight)
 
-    // BUTTONS
-    this.workshopButtons = document.createElement('div')
-    this.workshopButtons.id = 'workshop-buttons'
+    // Submit button
+    this.workshopBoxSubmitButtonExtraWrapper = document.createElement('div')
+    this.workshopBoxSubmitButtonExtraWrapper.id = WorkshopView.workshopBoxSubmitButtonExtraWrapperID
 
-    this.workshopBtnSubmit = document.createElement('button')
-    this.workshopBtnSubmit.id = 'workshop-button-submit'
-    this.workshopBtnSubmit.innerText = 'Submit'
-    this.workshopBtnSubmit.addEventListener('click', () => {
+    this.workshopBoxSubmitButtonWrapper = document.createElement('div')
+    this.workshopBoxSubmitButtonWrapper.id = WorkshopView.workshopBoxSubmitButtonWrapperID
+
+    this.workshopBoxSubmitButton = document.createElement('button')
+    this.workshopBoxSubmitButton.id = WorkshopView.workshopBoxSubmitButtonID
+    this.workshopBoxSubmitButton.innerText = 'Produkuj'
+    this.workshopBoxSubmitButton.addEventListener('click', () => {
       this.disableSubmitBtn()
 
       this.scene.loadingView.show()
+      this.workshopBoxSubmitButtonExtraWrapper.className = (this.workshopBoxSubmitButtonExtraWrapper.className === 'workshopBoxSubmitButtonExtraWrapperEnabledActive') ? 'workshopBoxSubmitButtonExtraWrapperEnabled' : 'workshopBoxSubmitButtonExtraWrapperEnabledActive'
+      this.workshopBoxSubmitButtonWrapper.className = (this.workshopBoxSubmitButtonWrapper.className === 'workshopBoxSubmitButtonWrapperEnabledActive') ? 'workshopBoxSubmitButtonWrapperEnabled' : 'workshopBoxSubmitButtonWrapperEnabledActive'
+      this.workshopBoxSubmitButton.className = (this.workshopBoxSubmitButtonWrapper.className === 'workshopBoxSubmitButtonEnabledActive') ? 'workshopBoxSubmitButtonEnabled' : 'workshopBoxSubmitButtonEnabledActive'
 
       gameService
         .produce(parseInt(pWantInput.innerText))
         .then(() => {
+          this.scene.loadingView.close()
           this.close()
+          const succesView = new WorkshopSuccessView(
+            this.scene.playerId,
+            this.scene.status.className,
+            parseInt(pWantInput.innerText),
+            itemIconReversed,
+            itemIcon,
+            () => {
+              this.scene.workshopView = null
+              this.scene.movingEnabled = true
+              this.scene.interactionView.setText('rozpocząć wytwarzanie...')
+              this.scene.interactionView.show()
+            },
+          )
+          succesView.show()
         })
         .catch((err) => {
+          this.scene.loadingView.close()
           console.error(err)
           this.enableSubmitBtn()
         })
-        .finally(() => {
-          this.scene.loadingView.close()
-        })
     })
 
-    this.workshopBtnClose = document.createElement('button')
-    this.workshopBtnClose.id = 'workshop-button-close'
-    this.workshopBtnClose.innerText = 'Close'
-    this.workshopBtnClose.addEventListener('click', () => {
-      this.close()
-    })
+    this.workshopBoxSubmitButtonWrapper.appendChild(this.workshopBoxSubmitButton)
 
-    this.workshopButtons.appendChild(this.workshopBtnSubmit)
-    this.workshopButtons.appendChild(this.workshopBtnClose)
+    this.workshopBoxSubmitButtonExtraWrapper.appendChild(this.workshopBoxSubmitButtonWrapper)
 
-    this.workshopContainer.appendChild(this.workshopHeader)
-    this.workshopContainer.appendChild(this.workshopContent)
-    this.workshopContainer.appendChild(this.workshopButtons)
+    workshopBox.appendChild(workshopBoxHeaderBoxWrapper)
+    workshopBox.appendChild(workshopBoxMathBox)
+    workshopBox.appendChild(workshopBoxContentBox)
+    workshopBox.appendChild(this.workshopBoxSubmitButtonExtraWrapper)
 
+    this.workshopBoxWrapper.appendChild(workshopBox)
+
+    const costTime = 1
+    const costMoney =
+      costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+    if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
+      this.disablePlusButton()
+    } else {
+      this.enablePlusButton()
+    }
+    this.disableMinusButton()
     this.disableSubmitBtn()
   }
 
-  public disableSubmitBtn(): void {
-    this.workshopBtnSubmit.disabled = true
-    this.workshopBtnSubmit.style.visibility = 'hidden'
+  private enablePlusButton(): void {
+    this.workshopBoxPlusButton.disabled = false
+    this.workshopBoxPlusButton.className = 'workshopBoxContentBoxButtonsBoxButtonEnabled'
   }
 
-  public enableSubmitBtn(): void {
-    this.workshopBtnSubmit.disabled = false
-    this.workshopBtnSubmit.style.visibility = 'visible'
+  private disablePlusButton(): void {
+    this.workshopBoxPlusButton.disabled = true
+    this.workshopBoxPlusButton.className = 'workshopBoxContentBoxButtonsBoxButtonDisabled'
+  }
+
+  private enableMinusButton(): void {
+    this.workshopBoxMinusButton.disabled = false
+    this.workshopBoxMinusButton.className = 'workshopBoxContentBoxButtonsBoxButtonEnabled'
+  }
+
+  private disableMinusButton(): void {
+    this.workshopBoxMinusButton.disabled = true
+    this.workshopBoxMinusButton.className = 'workshopBoxContentBoxButtonsBoxButtonDisabled'
+  }
+
+  private disableSubmitBtn(): void {
+    this.workshopBoxSubmitButton.disabled = true
+    this.workshopBoxSubmitButtonExtraWrapper.className = 'workshopBoxSubmitButtonExtraWrapperDisabled'
+    this.workshopBoxSubmitButtonWrapper.className = 'workshopBoxSubmitButtonWrapperDisabled'
+    this.workshopBoxSubmitButton.className = 'workshopBoxSubmitButtonDisabled'
+  }
+
+  private enableSubmitBtn(): void {
+    this.workshopBoxSubmitButton.disabled = false
+    this.workshopBoxSubmitButtonExtraWrapper.className = 'workshopBoxSubmitButtonExtraWrapperEnabled'
+    this.workshopBoxSubmitButtonWrapper.className = 'workshopBoxSubmitButtonWrapperEnabled'
+    this.workshopBoxSubmitButton.className = 'workshopBoxSubmitButtonEnabled'
   }
 
   public show(): void {
@@ -211,7 +406,7 @@ export class WorkshopView {
       type: WorkshopMessageType.WorkshopStart,
     })
     this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.WORK)
-    window.document.body.appendChild(this.workshopContainer)
+    window.document.body.appendChild(this.workshopBoxWrapper)
     this.scene.workshopView = this
     this.scene.movingEnabled = false
   }
@@ -220,12 +415,7 @@ export class WorkshopView {
     sendWorkshopMessage(this.scene.chatWs, {
       type: WorkshopMessageType.WorkshopStop,
     })
+    document.getElementById(WorkshopView.workshopBoxWrapperID)?.remove()
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
-    document.getElementById('workshop-container')?.remove()
-    this.scene.workshopView = null
-    this.scene.movingEnabled = true
-
-    this.scene.interactionView.setText('enter the workshop...')
-    this.scene.interactionView.show()
   }
 }

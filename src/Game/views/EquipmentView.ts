@@ -42,6 +42,7 @@ export class EquipmentView {
         this.resourceURL,
         3,
         getResourceMapping(this.resourceRepresentation)(item.key),
+        false,
       )
       const itemValueWrapper = document.createElement('div')
       const itemValue = document.createElement('p')
