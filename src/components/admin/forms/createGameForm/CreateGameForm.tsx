@@ -14,11 +14,13 @@ import MessageModal from './messageModal/MessageModal'
 
 export interface ClassResource {
   className: string
+  classTokenRegeneration: number
   characterMapping: number
   itemName: string
   itemMapping: number
   costPerItem: number
   itemPerWorkshop: number
+  itemBuyout: number
 }
 
 export interface ItemCost {
@@ -44,6 +46,7 @@ export interface CreateGameFormData {
   mediumTravels: Travel[]
   highTravels: Travel[]
   gameName: string
+  gameFullTime: number
   mapAssetId: number | null
   mapAssetName: string
   tileAssetId: number | null
@@ -52,6 +55,8 @@ export interface CreateGameFormData {
   characterAssetsName: string
   resourceAssetsId: number | null
   resourceAssetsName: string
+  movingSpeed: number
+  maxTimeAmount: number
 }
 
 export interface SavedAsset {
@@ -85,6 +90,7 @@ const CreateGameForm = () => {
     mediumTravels: [],
     highTravels: [],
     gameName: '',
+    gameFullTime: 0,
     mapAssetId: null,
     mapAssetName: '',
     tileAssetId: null,
@@ -93,6 +99,8 @@ const CreateGameForm = () => {
     characterAssetsName: '',
     resourceAssetsId: null,
     resourceAssetsName: '',
+    movingSpeed: 0,
+    maxTimeAmount: 0,
   })
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false)
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
@@ -159,6 +167,7 @@ const CreateGameForm = () => {
       mediumTravels: [],
       highTravels: [],
       gameName: '',
+      gameFullTime: 0,
       mapAssetId: null,
       mapAssetName: '',
       tileAssetId: null,
@@ -167,6 +176,8 @@ const CreateGameForm = () => {
       characterAssetsName: '',
       resourceAssetsId: null,
       resourceAssetsName: '',
+      movingSpeed: 0,
+      maxTimeAmount: 0,
     })
     setPage(1)
   }
@@ -289,6 +300,10 @@ const CreateGameForm = () => {
             return true
           }
 
+          if (classResource.classTokenRegeneration <= 0) {
+            return true
+          }
+
           if (itemNames.has(classResource.itemName) || classResource.itemName === '') {
             return true
           }
@@ -313,7 +328,20 @@ const CreateGameForm = () => {
           ) {
             return true
           }
+
+          if (classResource.itemBuyout <= 0) {
+            return true
+          }
         }
+
+        if (createGameFormData.movingSpeed <= 0) {
+          return true
+        }
+
+        if (createGameFormData.maxTimeAmount <= 0) {
+          return true
+        }
+
         return false
       case 3:
         if (
@@ -351,7 +379,7 @@ const CreateGameForm = () => {
 
         return false
       case 4:
-        return createGameFormData.gameName === ''
+        return createGameFormData.gameName === '' || createGameFormData.gameFullTime <= 0
       default:
         return true
     }
@@ -578,11 +606,13 @@ const CreateGameForm = () => {
           for (const resource in response.professionWorkshops) {
             classResources.push({
               className: resource,
+              classTokenRegeneration: 0,
               characterMapping: 0,
               itemName: '',
               itemMapping: 0,
               costPerItem: 0,
               itemPerWorkshop: 0,
+              itemBuyout: 0,
             })
           }
 

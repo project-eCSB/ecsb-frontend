@@ -10,6 +10,33 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
   createGameFormData,
   setCreateGameFormData,
 }) => {
+  const handleChangeClassTokenRegeneration = (index: number, value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        classResources: prevFormData.classResources.map((resource, i) => {
+          if (i === index) {
+            return {
+              ...resource,
+              classTokenRegeneration: 0,
+            }
+          }
+          return resource
+        }),
+      }))
+      return
+    }
+
+    const parsedValue = parseInt(value)
+
+    const updatedResources = [...createGameFormData.classResources]
+    updatedResources[index].classTokenRegeneration = parsedValue
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      classResources: updatedResources,
+    }))
+  }
+
   const handleChangeCharacterMapping = (index: number, value: number) => {
     if (value < 1 || value > createGameFormData.classResources.length) return
 
@@ -63,25 +90,101 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
     }))
   }
 
+  const handleChangeItemBuyout = (index: number, value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        classResources: prevFormData.classResources.map((resource, i) => {
+          if (i === index) {
+            return {
+              ...resource,
+              itemBuyout: 0,
+            }
+          }
+          return resource
+        }),
+      }))
+      return
+    }
+
+    const parsedValue = parseInt(value)
+
+    const updatedResources = [...createGameFormData.classResources]
+    updatedResources[index].itemBuyout = parsedValue
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      classResources: updatedResources,
+    }))
+  }
+
+  const handleChangeMovingSpeed = (value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        movingSpeed: 0,
+      }))
+      return
+    }
+
+    let parsedValue = parseInt(value)
+    if (parsedValue >= 100) {
+      parsedValue = 100
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      movingSpeed: parsedValue,
+    }))
+  }
+
+  const handleChangeTimeAmount = (prevValue: number, newValue: string) => {
+    if (newValue.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        maxTimeAmount: 0,
+      }))
+      return
+    }
+
+    let parsedNewValue = parseInt(newValue)
+    if (parsedNewValue % 2 !== 0) {
+      if (parsedNewValue > prevValue) {
+        parsedNewValue += 1
+      } else {
+        parsedNewValue -= 1
+      }
+    }
+    if (parsedNewValue >= 10) {
+      parsedNewValue = 10
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      maxTimeAmount: parsedNewValue,
+    }))
+  }
+
   return (
-    <div className='game-details-form'>
-      <h5 className='main-title'>Class representation</h5>
-      <h6 className='sub-title'>Enter details for each class resource</h6>
+    <div id='game-details-form'>
+      <h5 id='main-title'>Classes & Resources</h5>
+      <h6 id='sub-title'>Provide details for every class and the resources produced by each class</h6>
       <table>
         <thead>
           <tr>
             <th>Class Name</th>
             <th>Character Mapping</th>
-            <th>Item Name</th>
-            <th>Item Mapping</th>
-            <th>Cost per Item</th>
-            <th>Item per Workshop</th>
+            <th>Resource Name</th>
+            <th>Resource Mapping</th>
+            <th>Resource Unit Price</th>
+            <th>Resource Max Production</th>
+            <th>Resource Buyout Price</th>
+            <th>Token Regeneration Time</th>
           </tr>
         </thead>
         <tbody>
           {createGameFormData.classResources.map((resource, index) => (
             <tr key={index}>
-              <td>{resource.className}</td>
+              <td><span>{resource.className}</span></td>
               <td>
                 <input
                   min={1}
@@ -135,10 +238,56 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
                   }}
                 />
               </td>
+              <td>
+                <input
+                  min={1}
+                  max={60}
+                  type='number'
+                  value={resource.itemBuyout}
+                  onChange={(e) => {
+                    handleChangeItemBuyout(index, e.target.value)
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  min={1}
+                  max={60}
+                  type='number'
+                  value={resource.classTokenRegeneration}
+                  onChange={(e) => {
+                    handleChangeClassTokenRegeneration(index, e.target.value)
+                  }}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div className='input-container'>
+        <label htmlFor=''>Walking speed</label>
+        <input
+          min={0}
+          max={100}
+          value={createGameFormData.movingSpeed}
+          onChange={(e) => {
+            handleChangeMovingSpeed(e.target.value)
+          }}
+          type='number'
+        />
+      </div>
+      <div className='input-container'>
+        <label htmlFor=''>Maximum number of time slots</label>
+        <input
+          min={0}
+          max={100}
+          value={createGameFormData.maxTimeAmount}
+          onChange={(e) => {
+            handleChangeTimeAmount(createGameFormData.maxTimeAmount, e.target.value)
+          }}
+          type='number'
+        />
+      </div>
     </div>
   )
 }

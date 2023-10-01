@@ -4,8 +4,10 @@ export interface ClassResourceRepresentation {
     classAsset: number
     gameResourceName: string
     resourceAsset: number
-    unitPrice: number
     maxProduction: number
+    unitPrice: number
+    regenTime: number
+    buyoutPrice: number
   }
 }
 
@@ -28,13 +30,16 @@ export interface CreateGameRequestTravels {
 }
 
 export interface CreateGameRequest {
+  travels: CreateGameRequestTravels[]
   classResourceRepresentation: ClassResourceRepresentation[]
   gameName: string
-  travels: CreateGameRequestTravels[]
   mapAssetId: number
   tileAssetId: number
   characterAssetId: number
   resourceAssetsId: number
+  timeForGame: number
+  maxTimeAmount: number
+  walkingSpeed: number
 }
 
 export interface CreateGameResponse {
