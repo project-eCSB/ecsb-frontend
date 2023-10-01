@@ -21,12 +21,71 @@
   left: 15px;
 }
 
+/* Settings */
+
+#settings {
+  padding: 0.5rem;
+  padding-bottom: 0.3rem;
+  background-color: #EDB872;
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  color: black;
+  font-family: Rowdies;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+#settingsActive {
+  padding: 0.5rem;
+  padding-bottom: 0.3rem;
+  background-color: #AB742B;
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  color: black;
+  font-family: Rowdies;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+#settingsWrapper {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s ease-in-out;
+}
+
+#settingsWrapperActive {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: 0.2s ease-in-out;
+}
+
+#settingsWrapper:hover #settings {
+  transform: translate(2px, -2px);
+}
+
+#settingsWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#settings > img, #settingsActive > img {
+  width: 2rem;
+  height: 2rem;
+}
+
 /* UserDataBox */
-#userDataBox {
+#userDataBoxWrapper {
   position: fixed;
   top: 10px;
   left: 10px;
-  padding: 1.2rem;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#userDataBox {
+  padding: 1.6rem;
   background-color: #EDB872;
   clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
   color: black;
@@ -41,12 +100,281 @@
   font-size: 1.2rem;
 }
 
-/* EquipmentBox */
+/* Status and Coop */
+#statusAndCoopContainer {
+  position: fixed;
+  left: 15px;
+  top: calc(110px + 0.4rem);
+}
+
+#statusButtonWrapper, #coopButtonWrapper {
+  filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s all ease-in-out;
+}
+
+#statusButtonWrapperActive, #coopButtonWrapperActive {
+  filter: none;
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#statusButton, #coopButton {
+  width: 100px;
+  margin: 0.5rem 0;
+  margin-bottom: 1rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 1.0rem;
+  background-color: #EDB872;
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  color: black;
+  font-family: Rowdies;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s all ease-in-out;
+}
+
+#statusButtonActive, #coopButtonActive {
+  width: 100px;
+  margin: 0.5rem 0;
+  margin-bottom: 1rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 1.0rem;
+  background-color: #AB742B;
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  color: black;
+  font-family: Rowdies;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transform: translate(-3px, 4px);
+  transition: 0.2s ease-in-out;
+}
+
+#statusButtonWrapper:hover #statusButton, #coopButtonWrapper:hover #coopButton {
+  transform: translate(2px, -2px);
+}
+
+#statusButtonWrapper:hover, #coopButtonWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#advertisementContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#advertisementContainer button {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#advertisementContainer > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#adButtonWrapper {
+  margin: 0.2rem;
+  filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s ease-in-out;
+}
+
+#adButtonWrapperActive {
+  margin: 0.2rem;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: 0.2s ease-in-out;
+}
+
+#advertisementContainer > div:last-child {
+  margin-bottom: 1rem;
+}
+
+#adButton {
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #F6DCB8;
+  padding: 0.2rem 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+#adButtonActive {
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #AB742B;
+  padding: 0.2rem 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+#adButtonWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#adButtonWrapper:hover #adButton {
+  transform: translate(2px, -2px);
+}
+
+#advertisementContainer > div > div > button > img {
+  height: auto;
+  width: 2rem;
+  margin: 0.2rem;
+}
+
+#coopAdWrapper {
+  margin: 0.2rem;
+  filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s ease-in-out;
+}
+
+#coopAdWrapperActive {
+  margin: 0.2rem;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: 0.2s ease-in-out;
+}
+
+#coopAdWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#coopAdWrapper > button {
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #F6DCB8;
+  padding: 0.2rem 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+#coopAdWrapperActive > button {
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  background-color: #AB742B;
+  padding: 0.2rem 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+}
+
+#coopAdWrapper:hover button {
+  transform: translate(2px, -2px);
+}
+
+#coopAdWrapper > button > img {
+  height: auto;
+  width: 3rem;
+}
+
+/* TimeDataBox */
+#timeTokenBoxWrapper {
+  height: 9rem;
+  width: 18rem;
+  position: fixed;
+  right: 7.5rem;
+  bottom: -15px;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  z-index: 5;
+}
+
+#timeTokenBox {
+  height: 100%;
+  width: 100%;
+  padding: 1.2rem;
+  background-color: #EDB872;
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  color: black;
+  font-family: Rowdies;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+#timerBoxWrapper {
+  position: fixed;
+  right: -10px;
+  bottom: -15px;
+  height: 9rem;
+  width: 9rem;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  z-index: 10;
+}
+
+#timerBox {
+  height: 100%;
+  width: 100%;
+  padding: 1.2rem;
+  background-color: #EDB872;
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  color: black;
+  font-family: Rowdies;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#timeTokenBox > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+#timeTokenBox > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#timeTokenBox > div > div > div{
+  clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
+  width: 2.3rem;
+  height: 2.3rem;
+  background-color: #F6DCB8;
+}
+
+#clock {
+  height: 90%;
+  width: 90%;
+  border-radius: 50%;
+  background-image: conic-gradient(#EDB872 0%, 0, #677818);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#clock > div {
+  height: 90%;
+  width: 90%;
+  border-radius: 50%;
+  background-color: #EDB872;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#clock > div > span {
+  color: black;
+  font-family: Rowdies;
+  font-size: large;
+  display: block;
+}
+
+/* EquipmentDataBox */
 #equipmentBox {
   position: fixed;
-  bottom: -15px;
+  height: 9rem;
+  bottom: -18px;
   left: -15px;
-  padding: 1.5rem;
+  padding: 1.2rem;
+  padding-left: 2.3rem;
   background-color: #EDB872;
   clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
 }
@@ -57,7 +385,7 @@
   height: 100%;
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 2rem;
   justify-content: space-evenly;
   align-items: center;
   color: black;
@@ -76,23 +404,33 @@
   font-size: 1rem;
 }
 
-#equipmentBoxContent > div > p {
+#equipmentBoxContent > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#equipmentBoxContent > div > div > p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 0.5rem;
   font-size: 1.2rem;
+  width: 42px;
   background-color: #F6DCB8;
   clip-path: polygon(3.05% 90.00%,24.63% 92.01%,27.36% 88.02%,30.45% 93.05%,39.53% 93.09%,54.54% 95.18%,72.51% 95.37%,91.71% 94.74%,94.61% 93.11%,96.73% 91.49%,97.29% 88.24%,98.11% 82.00%,98.40% 64.77%,97.93% 49.30%,97.51% 29.37%,96.68% 9.50%,89.40% 9.64%,82.38% 8.28%,75.41% 7.56%,72.98% 14.11%,70.73% 7.23%,61.53% 6.45%,49.95% 5.90%,41.43% 4.81%,31.72% 5.61%,21.73% 5.22%,13.26% 5.44%,7.33% 6.88%,4.36% 7.76%,2.44% 11.26%,1.58% 18.28%,0.98% 27.79%,0.91% 39.31%,1.09% 51.32%,1.59% 62.10%,2.09% 76.88%);
 }
 
-/* InteractionBox */
+/* InteractionViewBox */
+#interactionBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  width: 350px;
+}
+
 #interactionBox {
-  position: fixed;
-  bottom: 110px;
-  left: 10px;
+  width: 100%;
   color: black;
-  background-color: #F6DCB8;
+  background-color: #E3C296;
   padding: 1rem;
   border-radius: 2px;
-  box-shadow: '0px 3px 10px black';
   font-size: medium;
   display: flex;
   gap: 1rem;
@@ -670,4 +1008,18 @@
   border-top: 10px solid #383636; /* Black */
   border-radius: 50%;
   animation: spinner 1.5s linear infinite;
+}
+
+#spinner-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+}
+
+#errorsAndInfo {
+  width: 45vw;
+  position: fixed;
+  bottom: 8.5rem;
+  left: 1rem;
 }

@@ -1,7 +1,7 @@
 import { type Scene } from '../scenes/Scene'
 import { type TradeEquipment } from '../../services/game/Types'
 import { CloudType } from '../scenes/Types'
-import { SPRITE_WIDTH, SPRITE_HEIGHT } from '../GameUtils'
+import { SPRITE_WIDTH, SPRITE_HEIGHT, getPlayerMapping } from '../GameUtils'
 
 export class TradeView {
   private readonly scene: Scene
@@ -119,23 +119,23 @@ export class TradeView {
     iconUp2.id = 'notYou'
     youDiv.appendChild(
       scene.imageCropper.crop(
-        scene,
-        currPlayerId,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
+        1,
         this.scene.characterUrl,
         4,
+        getPlayerMapping(scene.settings.classResourceRepresentation)(scene.playersClasses.get(currPlayerId)!),
       ),
     )
     youDiv.appendChild(iconUp)
     opponentDiv.appendChild(
       scene.imageCropper.crop(
-        scene,
-        otherPlayerId,
         SPRITE_WIDTH,
         SPRITE_HEIGHT,
+        1,
         this.scene.characterUrl,
         4,
+        getPlayerMapping(scene.settings.classResourceRepresentation)(scene.playersClasses.get(otherPlayerId)!),
       ),
     )
     opponentDiv.appendChild(iconUp2)

@@ -4,6 +4,7 @@ import {
   OutcomingTradeMessageType,
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
+import { TOAST_INVITE_MSG } from '../GameUtils'
 
 export class ContextMenuBuilder {
   build(scene: Scene, id: string): HTMLDivElement {
@@ -41,11 +42,12 @@ export class ContextMenuBuilder {
           proposalReceiverId: id,
         },
       })
-      toast.info('Trade invite sent', {
+      toast(TOAST_INVITE_MSG, {
         position: 'bottom-right',
         autoClose: 3000,
         hideProgressBar: true,
-        closeOnClick: false,
+        closeButton: false,
+        closeOnClick: true,
         pauseOnHover: true,
         draggable: false,
         progress: undefined,

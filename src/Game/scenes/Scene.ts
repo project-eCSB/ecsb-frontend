@@ -46,6 +46,7 @@ import { ImageCropper } from '../tools/ImageCropper'
 import {
   ALL_PLAYERS_DESC_OFFSET_TOP,
   CHARACTER_ASSET_KEY,
+  ERROR_TIMEOUT,
   getPlayerMapping,
   LAYER_SCALE,
   MAP_ASSET_KEY,
@@ -60,6 +61,10 @@ import Key = Phaser.Input.Keyboard.Key
 import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
 import { UserMessageType, sendUserMessage } from '../webSocketMessage/chat/UserMessage'
 import { UserDataView } from '../views/UserDataView'
+import { ErrorView } from '../views/ErrorView'
+import { TimeView } from '../views/TimeView'
+import { SettingsView } from '../views/SettingsView'
+import { StatusAndCoopView } from '../views/StatusAndCoopView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -91,7 +96,10 @@ export class Scene extends Phaser.Scene {
   public playersClasses!: Map<PlayerId, string>
   public actionTrade: string | null
   public tradeWindow: TradeView | null
-  public userDataView: UserDataView | null
+  public userDataView: UserDataView
+  public timeView: TimeView | null
+  public settingsView: SettingsView
+  public statusAndCoopView: StatusAndCoopView | null
   public equipmentView: EquipmentView | null
   public workshopView: WorkshopView | null
   public travelView: TravelView | null
@@ -128,7 +136,10 @@ export class Scene extends Phaser.Scene {
     this.actionTrade = null
     this.movingEnabled = true
     this.tradeWindow = null
-    this.userDataView = null
+    this.userDataView = new UserDataView(this.playerId, this.status.className)
+    this.timeView = null
+    this.settingsView = new SettingsView()
+    this.statusAndCoopView = null
     this.equipmentView = null
     this.workshopView = null
     this.interactionView = new InteractionView()
@@ -257,22 +268,22 @@ export class Scene extends Phaser.Scene {
             (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
           )
         ) {
-          this.interactionView.setText('enter the workshop...')
+          this.interactionView.setText('rozpocząć wytwarzanie')
           this.interactionView.show()
         } else if (
           this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView.setText('start a short journey...')
+          this.interactionView.setText('odbyć krótką podróż...')
           this.interactionView.show()
         } else if (
           this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView.setText('start a medium-distance journey...')
+          this.interactionView.setText('odbyć średnią podróż...')
           this.interactionView.show()
         } else if (
           this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView.setText('start a long-distance journey...')
+          this.interactionView.setText('odbyć długą podróż...')
           this.interactionView.show()
         } else {
           this.interactionView.close()
@@ -294,15 +305,26 @@ export class Scene extends Phaser.Scene {
       .getPlayerEquipment()
       .then((eq: Equipment) => {
         this.equipment = eq
-        this.equipmentView = new EquipmentView(eq)
+        this.equipmentView = new EquipmentView(eq, this.resourceUrl, this.settings.classResourceRepresentation)
         this.equipmentView.show()
+        this.statusAndCoopView = new StatusAndCoopView(eq, this.resourceUrl, this.settings.classResourceRepresentation)
+        this.statusAndCoopView.show()
       })
       .catch((err) => {
         console.error(err)
       })
 
-    this.userDataView = new UserDataView(this.playerId, this.status.className)
     this.userDataView.show()
+
+    this.timeView = new TimeView(5)
+    this.timeView.show()
+    this.timeView.startTimer(600)
+
+    const errorsAndInfo = document.createElement('div');
+    errorsAndInfo.id = 'errorsAndInfo'
+    window.document.body.appendChild(errorsAndInfo);
+
+    this.settingsView.show()
 
     this.scale.resize(window.innerWidth, window.innerHeight)
 
@@ -311,28 +333,28 @@ export class Scene extends Phaser.Scene {
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('enter the workshop...')
+      this.interactionView.setText('rozpocząć wytwarzanie...')
       this.interactionView.show()
     } else if (
       this.lowTravels.some(
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('start a short journey...')
+      this.interactionView.setText('odbyć krótką podróż...')
       this.interactionView.show()
     } else if (
       this.mediumTravels.some(
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('start a medium-distance journey...')
+      this.interactionView.setText('odbyć średnią podróż...')
       this.interactionView.show()
     } else if (
       this.highTravels.some(
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('start a long-distance journey...')
+      this.interactionView.setText('odbyć długą podróż...')
       this.interactionView.show()
     }
   }
@@ -599,11 +621,12 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    toast.warn(TradeOfferPopup({ scene: this, from: from }), {
+    toast(TradeOfferPopup({ scene: this, from: from}), {
       position: 'bottom-right',
       autoClose: 8000,
-      hideProgressBar: false,
+      hideProgressBar: true,
       closeOnClick: false,
+      closeButton: false,
       pauseOnHover: true,
       draggable: false,
       progress: undefined,
@@ -684,15 +707,12 @@ export class Scene extends Phaser.Scene {
   }
 
   showBusyPopup(message: string): void {
-    toast.error(`${message}`, {
-      position: 'top-center',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-    })
+    const errorMessage = new ErrorView();
+    errorMessage.setText(message);
+    errorMessage.show();
+    setTimeout(() => {
+      errorMessage.close();
+    }, ERROR_TIMEOUT);
   }
 
   private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {

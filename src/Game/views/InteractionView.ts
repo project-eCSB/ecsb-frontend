@@ -1,8 +1,11 @@
 export class InteractionView {
-  public static readonly interactionBoxID = 'interactionBox'
+  public static readonly interactionBoxID = 'interactionBox';
+  public static readonly interactionBoxWrapperID = 'interactionBoxWrapper';
 
-  private readonly interaction: HTMLDivElement
-  private readonly interactionText: HTMLParagraphElement
+  interaction: HTMLDivElement
+  interactionWrapper: HTMLDivElement
+  interactionText: HTMLParagraphElement
+  hidden: boolean
 
   constructor() {
     this.interaction = document.createElement('div')
@@ -11,6 +14,7 @@ export class InteractionView {
     const icon = document.createElement('i')
     icon.className = 'fa fa-question-circle'
     icon.ariaHidden = 'true'
+    icon.style.color = '#835211'
 
     this.interactionText = document.createElement('p')
     this.interactionText.id = 'interactionTitle'
@@ -18,19 +22,30 @@ export class InteractionView {
     this.interaction.appendChild(icon)
     this.interaction.appendChild(this.interactionText)
 
-    this.interaction.style.display = 'none'
-    window.document.body.appendChild(this.interaction)
+    this.interactionWrapper = document.createElement('div')
+    this.interactionWrapper.id = InteractionView.interactionBoxWrapperID
+    this.interactionWrapper.appendChild(this.interaction)
+
+    this.hidden = true
   }
 
   setText(text: string): void {
-    this.interactionText.innerHTML = `Press <strong>space</strong> to ${text}`
+    this.interactionText.innerHTML = `Wciśnij <strong>spacje</strong> by ${text}`
   }
 
   show(): void {
-    this.interaction.style.display = 'flex'
+    const container = document.getElementById('errorsAndInfo');
+    if (container) {
+      container.appendChild(this.interactionWrapper)
+      this.hidden = false
+    }
   }
 
   close(): void {
-    this.interaction.style.display = 'none'
+    const container = document.getElementById('errorsAndInfo');
+    if (container && !this.hidden) {
+      container.removeChild(this.interactionWrapper)
+      this.hidden = true
+    }
   }
 }
