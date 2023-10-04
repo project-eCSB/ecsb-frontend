@@ -64,12 +64,30 @@ export type IncomingTradeMessage =
   | TradeServerCancelMessage
 
 export enum OutcomingTradeMessageType {
+  TradeBuy = 'trade/buy',
+  TradeSell = 'trade/sell',
   ProposeTrade = 'trade/propose_trade',
   ProposeTradeAck = 'trade/propose_trade_ack',
   TradeMinorChange = 'trade/minor_change',
   TradeBid = 'trade/trade_bid',
   TradeBidAck = 'trade/trade_bid_ack',
   TradeCancel = 'trade/cancel_trade',
+}
+
+export interface TradeBuyMessage {
+  senderId: string
+  message: {
+    type: OutcomingTradeMessageType.TradeBuy
+    gameResourceName: string
+  }
+}
+
+export interface TradeSellMessage {
+  senderId: string
+  message: {
+    type: OutcomingTradeMessageType.TradeSell
+    gameResourceName: string
+  }
 }
 
 export interface ProposeTradeMessage {
@@ -123,6 +141,8 @@ export interface TradeCancelMessage {
 }
 
 export type OutcomingTradeMessage =
+  | TradeBuyMessage
+  | TradeSellMessage 
   | ProposeTradeMessage
   | ProposeTradeAckMessage
   | TradeBidMessage

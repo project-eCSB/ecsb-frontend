@@ -24,6 +24,10 @@ export const parseChatMessage = (
         return { senderId: parsed.senderId, message: parsed.message }
       case EquipmentMessageType.EquipmentChange:
         return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationAdvertisementBuy:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationAdvertisementSell:
+        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTradeStart:
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTradeEnd:
