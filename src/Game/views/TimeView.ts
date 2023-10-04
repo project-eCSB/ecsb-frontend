@@ -72,7 +72,7 @@ export class TimeView {
 
     private evaluateTimer(remaining: number, total: number): void {
         const clock = document.getElementById('clock')
-        if (clock) {
+        if (clock && remaining % 2 === 0) {
             clock.style.backgroundImage = `conic-gradient(#EDB872 ${(total - remaining) * 100 / total}%, 0, #677818)`
         }
         const remainingMinutes = Math.floor(remaining / 60)

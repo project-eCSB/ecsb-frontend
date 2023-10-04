@@ -1,7 +1,12 @@
 import { type ClassResourceRepresentation } from "../../apis/game/Types"
 import { type Equipment } from "../../services/game/Types"
 import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from "../GameUtils"
+import { type Scene } from "../scenes/Scene"
 import { ImageCropper } from "../tools/ImageCropper"
+import {
+  OutcomingTradeMessageType,
+  sendTradeMessage,
+} from '../webSocketMessage/chat/TradeMessageHandler'
 
 export class StatusAndCoopView {
     public static readonly statusButtonID = 'statusButton'
@@ -18,7 +23,7 @@ export class StatusAndCoopView {
     private readonly container: HTMLDivElement
     private readonly advertisementContainer: HTMLDivElement
   
-    constructor(equipment: Equipment, url: string, resRepresentation: ClassResourceRepresentation[]) {
+    constructor(equipment: Equipment, url: string, resRepresentation: ClassResourceRepresentation[], scene: Scene) {
       const cropper = new ImageCropper()
 
       this.advertisementContainer = document.createElement('div')
@@ -30,19 +35,10 @@ export class StatusAndCoopView {
         const buttonGive = document.createElement('button')
         buttonGive.className = 'adGive'
         buttonGive.id = 'adButton'
-        buttonGive.addEventListener('click', () => {
-          document.querySelectorAll('.adGive').forEach(el => {
-            if (el !== buttonGive) el.id = 'adButton'
-            if (el.parentElement !== buttonGiveWrapper) el.parentElement!.id = 'adButtonWrapper'
-          })
-          document.getElementsByClassName('adGive')
-          buttonGive.id = (buttonGive.id === 'adButtonActive') ? 'adButton' : 'adButtonActive'
-          buttonGiveWrapper.id = (buttonGiveWrapper.id === 'adButtonWrapperActive') ? 'adButtonWrapper' : 'adButtonWrapperActive'
-        })
         const giveImage = document.createElement('img')
         giveImage.src = '/assets/giveCustomIcon.png'
         buttonGive.appendChild(giveImage)
-        buttonGive.appendChild(cropper.crop(
+        const resourceGiveImg = cropper.crop(
           RESOURCE_ICON_WIDTH,
           RESOURCE_ICON_WIDTH,
           RESOURCE_ICON_SCALE,
@@ -50,26 +46,52 @@ export class StatusAndCoopView {
           3,
           getResourceMapping(resRepresentation)(element.key),
           false,
-        ))
+        )
+        buttonGive.appendChild(resourceGiveImg)
+        buttonGive.addEventListener('click', () => {
+          document.querySelectorAll('.adGive').forEach(el => {
+            if (el !== buttonGive) el.id = 'adButton'
+            if (el.parentElement !== buttonGiveWrapper) el.parentElement!.id = 'adButtonWrapper'
+          })
+          buttonGive.id = (buttonGive.id === 'adButtonActive') ? 'adButton' : 'adButtonActive'
+          buttonGiveWrapper.id = (buttonGiveWrapper.id === 'adButtonWrapperActive') ? 'adButtonWrapper' : 'adButtonWrapperActive'
+
+          document.querySelectorAll('.bubbleGive').forEach(el => { el.remove() })
+          if (buttonGive.id === 'adButtonActive') {
+            const bubble = document.createElement('div')
+            bubble.appendChild(giveImage.cloneNode(true))
+            bubble.appendChild(resourceGiveImg.cloneNode(true))
+            bubble.classList.add('bubbleGive')
+            scene.advertisementInfoBuilder.addBubble(bubble, scene.playerId)
+
+            sendTradeMessage(scene.chatWs, {
+              senderId: scene.playerId,
+              message: {
+                type: OutcomingTradeMessageType.TradeSell,
+                gameResourceName: element.key,
+              },
+            })
+          } else {
+            sendTradeMessage(scene.chatWs, {
+              senderId: scene.playerId,
+              message: {
+                type: OutcomingTradeMessageType.TradeSell,
+                gameResourceName: '',
+              },
+            })
+          }
+          scene.advertisementInfoBuilder.setMarginAndVisibility(scene.playerId)
+        })
         buttonGiveWrapper.appendChild(buttonGive)
         const buttonReceiveWrapper = document.createElement('div')
         buttonReceiveWrapper.id = 'adButtonWrapper'
         const buttonReceive = document.createElement('button')
         buttonReceive.className = 'adReceive'
         buttonReceive.id = 'adButton'
-        buttonReceive.addEventListener('click', () => {
-          document.querySelectorAll('.adReceive').forEach(el => {
-            if (el !== buttonReceive) el.id = 'adButton'
-            if (el.parentElement !== buttonReceiveWrapper) el.parentElement!.id = 'adButtonWrapper'
-          })
-          document.getElementsByClassName('adGive')
-          buttonReceive.id = (buttonReceive.id === 'adButtonActive') ? 'adButton' : 'adButtonActive'
-          buttonReceiveWrapper.id = (buttonReceiveWrapper.id === 'adButtonWrapperActive') ? 'adButtonWrapper' : 'adButtonWrapperActive'
-        })
         const receiveImage = document.createElement('img')
         receiveImage.src = '/assets/receiveCustomIcon.png'
         buttonReceive.appendChild(receiveImage)
-        buttonReceive.appendChild(cropper.crop(
+        const resourceReceiveImg = cropper.crop(
           RESOURCE_ICON_WIDTH,
           RESOURCE_ICON_WIDTH,
           RESOURCE_ICON_SCALE,
@@ -77,7 +99,42 @@ export class StatusAndCoopView {
           3,
           getResourceMapping(resRepresentation)(element.key),
           false,
-        ))
+        )
+        buttonReceive.appendChild(resourceReceiveImg)
+        buttonReceive.addEventListener('click', () => {
+          document.querySelectorAll('.adReceive').forEach(el => {
+            if (el !== buttonReceive) el.id = 'adButton'
+            if (el.parentElement !== buttonReceiveWrapper) el.parentElement!.id = 'adButtonWrapper'
+          })
+          buttonReceive.id = (buttonReceive.id === 'adButtonActive') ? 'adButton' : 'adButtonActive'
+          buttonReceiveWrapper.id = (buttonReceiveWrapper.id === 'adButtonWrapperActive') ? 'adButtonWrapper' : 'adButtonWrapperActive'
+
+          document.querySelectorAll('.bubbleReceive').forEach(el => { el.remove() })
+          if (buttonReceive.id === 'adButtonActive') {
+            const bubble = document.createElement('div')
+            bubble.appendChild(receiveImage.cloneNode(true))
+            bubble.appendChild(resourceReceiveImg.cloneNode(true))
+            bubble.classList.add('bubbleReceive')
+            scene.advertisementInfoBuilder.addBubble(bubble, scene.playerId)
+
+            sendTradeMessage(scene.chatWs, {
+              senderId: scene.playerId,
+              message: {
+                type: OutcomingTradeMessageType.TradeBuy,
+                gameResourceName: element.key,
+              },
+            })
+          } else {
+            sendTradeMessage(scene.chatWs, {
+              senderId: scene.playerId,
+              message: {
+                type: OutcomingTradeMessageType.TradeBuy,
+                gameResourceName: '',
+              },
+            })
+          }
+          scene.advertisementInfoBuilder.setMarginAndVisibility(scene.playerId)
+        })
         buttonReceiveWrapper.appendChild(buttonReceive)
         row.appendChild(buttonGiveWrapper)
         row.appendChild(buttonReceiveWrapper)
@@ -156,6 +213,5 @@ export class StatusAndCoopView {
     public close(): void {
       window.document.body.removeChild(this.container)
     }
-
 
 }

@@ -1,6 +1,8 @@
 import type {Websocket} from 'websocket-ts'
 
 export enum NotificationMessageType {
+  NotificationAdvertisementBuy = 'notification/buy', // One of the players wants to buy something
+  NotificationAdvertisementSell = 'notification/sell', // One of the players wants to sell something
   NotificationWorkshopChoosingStart = 'notification/choosing/workshop/start', // One of the players opened workshop window
   NotificationWorkshopChoosingStop = 'notification/choosing/workshop/stop', // One of the players closed workshop window
   NotificationProductionStart = 'notification/production/start', // One of the players started production
@@ -11,6 +13,22 @@ export enum NotificationMessageType {
   NotificationTravelEnd = 'notification/travel/end', // One of the players ended travel
   NotificationTradeStart = 'notification/trade/start', // One of the players opened trade window
   NotificationTradeEnd = 'notification/trade/end', // One of the players closed trade window
+}
+
+export interface NotificationAdvertisementBuyMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationAdvertisementBuy
+    gameResourceName: string
+  }
+}
+
+export interface NotificationAdvertisementSellMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationAdvertisementSell
+    gameResourceName: string
+  }
 }
 
 export interface NotificationTradeStartMessage {
@@ -94,6 +112,8 @@ export interface NotificationProductionEndMessage {
 }
 
 export type NotificationMessage =
+  | NotificationAdvertisementBuyMessage
+  | NotificationAdvertisementSellMessage
   | NotificationTradeStartMessage
   | NotificationTradeEndMessage
   | NotificationTravelStartMessage

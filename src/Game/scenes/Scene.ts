@@ -49,6 +49,7 @@ import {ErrorView} from '../views/ErrorView'
 import {TimeView} from '../views/TimeView'
 import {SettingsView} from '../views/SettingsView'
 import {StatusAndCoopView} from '../views/StatusAndCoopView'
+import {AdvertisementInfoBuilder} from '../tools/AdvertisementInfoBuilder'
 import Key = Phaser.Input.Keyboard.Key;
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
@@ -91,6 +92,7 @@ export class Scene extends Phaser.Scene {
   public interactionView: InteractionView
   public loadingView: LoadingView
   public interactionCloudBuiler!: InteractionCloudBuilder
+  public advertisementInfoBuilder!: AdvertisementInfoBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public imageCropper!: ImageCropper
   public movingEnabled: boolean
@@ -131,6 +133,7 @@ export class Scene extends Phaser.Scene {
     this.loadingView = new LoadingView()
     this.travelView = null
     this.interactionCloudBuiler = new InteractionCloudBuilder()
+    this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
     this.contextMenuBuilder = new ContextMenuBuilder()
     this.imageCropper = new ImageCropper()
     this.playerCloudMovement = new Map()
@@ -183,6 +186,8 @@ export class Scene extends Phaser.Scene {
     this.playersClasses.set(this.playerId, this.status.className)
 
     const cloud = this.interactionCloudBuiler.build(this, this.playerId)
+    const adBubble = this.advertisementInfoBuilder.build(this.playerId)
+    this.advertisementInfoBuilder.setMarginAndVisibility(this.playerId)
 
     this.cameras.main.setBounds(
       0,
@@ -191,7 +196,7 @@ export class Scene extends Phaser.Scene {
       cloudCityTilemap.heightInPixels * LAYER_SCALE,
     )
 
-    const container = this.add.container(0, 0, [playerSprite, text, cloud])
+    const container = this.add.container(0, 0, [playerSprite, text, cloud, adBubble])
 
     this.cameras.main.startFollow(container, true)
     this.cameras.main.setFollowOffset(-playerSprite.width, -playerSprite.height)
@@ -292,7 +297,7 @@ export class Scene extends Phaser.Scene {
         this.equipment = eq
         this.equipmentView = new EquipmentView(eq, this.resourceUrl, this.settings.classResourceRepresentation)
         this.equipmentView.show()
-        this.statusAndCoopView = new StatusAndCoopView(eq, this.resourceUrl, this.settings.classResourceRepresentation)
+        this.statusAndCoopView = new StatusAndCoopView(eq, this.resourceUrl, this.settings.classResourceRepresentation, this)
         this.statusAndCoopView.show()
       })
       .catch((err) => {
@@ -456,6 +461,14 @@ export class Scene extends Phaser.Scene {
             this.equipment = msg.message.playerEquipment
             this.equipmentView?.update(msg.message.playerEquipment)
             break
+          case NotificationMessageType.NotificationAdvertisementBuy:
+            this.advertisementInfoBuilder.addBubbleForResource(msg.message.gameResourceName, msg.senderId, true)
+            this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
+            break
+          case NotificationMessageType.NotificationAdvertisementSell:
+            this.advertisementInfoBuilder.addBubbleForResource(msg.message.gameResourceName, msg.senderId, false)
+            this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
+            break
           case NotificationMessageType.NotificationTradeStart:
             this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
             break
@@ -535,6 +548,8 @@ export class Scene extends Phaser.Scene {
     this.playersClasses.set(id, characterClass)
 
     const cloud = this.interactionCloudBuiler.build(this, id)
+    const adBubble = this.advertisementInfoBuilder.build(id)
+    this.advertisementInfoBuilder.setMarginAndVisibility(id)
     const div = this.contextMenuBuilder.build(this, id)
 
     sprite.setInteractive()
@@ -561,7 +576,7 @@ export class Scene extends Phaser.Scene {
         }
       }
     })
-    const container = this.add.container(0, 0, [sprite, text, cloud])
+    const container = this.add.container(0, 0, [sprite, text, cloud, adBubble])
 
     this.gridEngine.addCharacter({
       id: id,
