@@ -1,7 +1,7 @@
-import { type EquipmentMessage, EquipmentMessageType } from './EqupimentMessage'
-import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
-import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
-import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
+import {type EquipmentMessage, EquipmentMessageType} from './EqupimentMessage'
+import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
+import {type IncomingTradeMessage, IncomingTradeMessageType} from './TradeMessageHandler'
+import {type UserStatusMessage, UserStatusMessageType} from './UserStatusMessage'
 
 export const parseChatMessage = (
   message: string,
@@ -20,9 +20,7 @@ export const parseChatMessage = (
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingTradeMessageType.TradeServerFinish:
         return { senderId: parsed.senderId, message: parsed.message }
-      case IncomingTradeMessageType.TradeSecondPlayerEqupimentChange:
-        return { senderId: parsed.senderId, message: parsed.message }
-      case UserStatusMessageType.UserBusy:
+      case UserStatusMessageType.UserWarning:
         return { senderId: parsed.senderId, message: parsed.message }
       case EquipmentMessageType.EquipmentChange:
         return { senderId: parsed.senderId, message: parsed.message }
