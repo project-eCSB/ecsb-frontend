@@ -1,16 +1,16 @@
-import type { Websocket } from 'websocket-ts'
+import type {Websocket} from 'websocket-ts'
 
 export enum NotificationMessageType {
   NotificationWorkshopChoosingStart = 'notification/choosing/workshop/start', // One of the players opened workshop window
   NotificationWorkshopChoosingStop = 'notification/choosing/workshop/stop', // One of the players closed workshop window
-  NotificationProductionStart = 'notification/productionStart', // One of the players started production
-  NotificationProductionEnd = 'notification/productionEnd', // One of the players ended production
+  NotificationProductionStart = 'notification/production/start', // One of the players started production
+  NotificationProductionEnd = 'notification/production/end', // One of the players ended production
   NotificationTravelChoosingStart = 'notification/choosing/travel/start', // One of the players opened travel window
   NotificationTravelChoosingStop = 'notification/choosing/travel/stop', // One of the players closed travel window
-  NotificationTravelStart = 'notification/travelStart', // One of the players started travel
-  NotificationTravelEnd = 'notification/travelEnd', // One of the players ended travel
-  NotificationTradeStart = 'notification/tradeStart', // One of the players opened trade window
-  NotificationTradeEnd = 'notification/tradeEnd', // One of the players closed trade window
+  NotificationTravelStart = 'notification/travel/start', // One of the players started travel
+  NotificationTravelEnd = 'notification/travel/end', // One of the players ended travel
+  NotificationTradeStart = 'notification/trade/start', // One of the players opened trade window
+  NotificationTradeEnd = 'notification/trade/end', // One of the players closed trade window
 }
 
 export interface NotificationTradeStartMessage {

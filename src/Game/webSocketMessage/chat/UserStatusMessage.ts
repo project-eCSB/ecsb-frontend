@@ -1,13 +1,13 @@
-import { type Websocket } from 'websocket-ts'
+import {type Websocket} from 'websocket-ts'
 
 export enum UserStatusMessageType {
-  UserBusy = 'userBusy',
+  UserWarning = 'user_warning',
 }
 
 export interface UserBusyMessage {
   senderId: string
   message: {
-    type: UserStatusMessageType.UserBusy
+    type: UserStatusMessageType.UserWarning
     reason: string
     receiverId: string
   }

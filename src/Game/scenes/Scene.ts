@@ -1,48 +1,33 @@
 import * as Phaser from 'phaser'
-import type { GridEngine, Position } from 'grid-engine'
-import { Direction } from 'grid-engine'
-import type { Websocket } from 'websocket-ts'
-import { WebsocketBuilder } from 'websocket-ts'
-import type {
-  AssetConfig,
-  Equipment,
-  GameSettings,
-  GameStatus,
-  TradeEquipment,
-} from '../../services/game/Types'
-import {
-  CloudType,
-  type Controls,
-  type Coordinates,
-  type PlayerId,
-  type PlayerState,
-} from './Types'
-import { decodeGameToken } from '../../apis/apis'
-import { TradeView } from '../views/TradeView'
+import type {GridEngine, Position} from 'grid-engine'
+import {Direction} from 'grid-engine'
+import type {Websocket} from 'websocket-ts'
+import {WebsocketBuilder} from 'websocket-ts'
+import type {AssetConfig, Equipment, GameSettings, GameStatus, TradeEquipment,} from '../../services/game/Types'
+import {CloudType, type Controls, type Coordinates, type PlayerId, type PlayerState,} from './Types'
+import {decodeGameToken} from '../../apis/apis'
+import {TradeView} from '../views/TradeView'
 import gameService from '../../services/game/GameService'
-import { EquipmentView } from '../views/EquipmentView'
-import { toast } from 'react-toastify'
-import { TradeOfferPopup } from '../components/TradeOfferPopup'
-import { WorkshopView } from '../views/WorkshopView'
-import { InteractionView } from '../views/InteractionView'
-import { LoadingView } from '../views/LoadingView'
-import { parseChatMessage } from '../webSocketMessage/chat/MessageParser'
-import {
-  MovementMessageType,
-  sendMovementMessage,
-} from '../webSocketMessage/movement/MovementMessage'
-import { parseMovementMessage } from '../webSocketMessage/movement/MessageParser'
+import {EquipmentView} from '../views/EquipmentView'
+import {toast} from 'react-toastify'
+import {TradeOfferPopup} from '../components/TradeOfferPopup'
+import {WorkshopView} from '../views/WorkshopView'
+import {InteractionView} from '../views/InteractionView'
+import {LoadingView} from '../views/LoadingView'
+import {parseChatMessage} from '../webSocketMessage/chat/MessageParser'
+import {MovementMessageType, sendMovementMessage,} from '../webSocketMessage/movement/MovementMessage'
+import {parseMovementMessage} from '../webSocketMessage/movement/MessageParser'
 import {
   IncomingTradeMessageType,
   OutcomingTradeMessageType,
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
-import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
-import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
-import { InteractionCloudBuilder } from '../tools/InteractionCloudBuilder'
-import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
-import { TravelType, TravelView } from '../views/TravelView'
-import { ImageCropper } from '../tools/ImageCropper'
+import {UserStatusMessageType} from '../webSocketMessage/chat/UserStatusMessage'
+import {NotificationMessageType} from '../webSocketMessage/chat/NotificationMessage'
+import {InteractionCloudBuilder} from '../tools/InteractionCloudBuilder'
+import {ContextMenuBuilder} from '../tools/ContextMenuBuilder'
+import {TravelType, TravelView} from '../views/TravelView'
+import {ImageCropper} from '../tools/ImageCropper'
 import {
   ALL_PLAYERS_DESC_OFFSET_TOP,
   CHARACTER_ASSET_KEY,
@@ -57,14 +42,14 @@ import {
   SPRITE_WIDTH,
   TILES_ASSET_KEY,
 } from '../GameUtils'
-import Key = Phaser.Input.Keyboard.Key
-import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
-import { UserMessageType, sendUserMessage } from '../webSocketMessage/chat/UserMessage'
-import { UserDataView } from '../views/UserDataView'
-import { ErrorView } from '../views/ErrorView'
-import { TimeView } from '../views/TimeView'
-import { SettingsView } from '../views/SettingsView'
-import { StatusAndCoopView } from '../views/StatusAndCoopView'
+import {EquipmentMessageType} from '../webSocketMessage/chat/EqupimentMessage'
+import {sendUserMessage, UserMessageType} from '../webSocketMessage/chat/UserMessage'
+import {UserDataView} from '../views/UserDataView'
+import {ErrorView} from '../views/ErrorView'
+import {TimeView} from '../views/TimeView'
+import {SettingsView} from '../views/SettingsView'
+import {StatusAndCoopView} from '../views/StatusAndCoopView'
+import Key = Phaser.Input.Keyboard.Key;
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -464,13 +449,7 @@ export class Scene extends Phaser.Scene {
           case IncomingTradeMessageType.TradeServerFinish:
             this.tradeWindow?.close()
             break
-          case IncomingTradeMessageType.TradeSecondPlayerEqupimentChange:
-            if (this.tradeWindow) {
-              this.otherEquipment = msg.message.secondPlayerEqupiment
-              this.tradeWindow.otherPlayerEq = msg.message.secondPlayerEqupiment
-            }
-            break
-          case UserStatusMessageType.UserBusy:
+          case UserStatusMessageType.UserWarning:
             this.showBusyPopup(msg.message.reason)
             break
           case EquipmentMessageType.EquipmentChange:
