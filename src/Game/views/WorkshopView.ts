@@ -121,8 +121,20 @@ export class WorkshopView {
     const workshopBoxMathBox = document.createElement('div')
     workshopBoxMathBox.id = WorkshopView.workshopBoxMathBoxID
 
-    const resourceSpan = document.createElement('span')
-    resourceSpan.innerText = `${this.scene.playerWorkshopMaxProduction} ${resourceName} = `
+    const resourceAmountElement = document.createElement('span')
+    resourceAmountElement.innerText = `${this.scene.playerWorkshopMaxProduction}`
+    const resourceIconElement = this.cropper.crop(
+      20,
+      20,
+      1,
+      this.resourceURL,
+      3,
+      getResourceMapping(this.resourceRepresentation)(resourceName),
+      false,
+    )
+    const equalsElement  = document.createElement('span')
+    equalsElement .innerText = ' = '
+
     const moneyIcon = document.createElement('img')
     moneyIcon.src = '/assets/coinCustomIcon.png'
     moneyIcon.style.width = '20px'
@@ -136,7 +148,9 @@ export class WorkshopView {
     const timeSpan = document.createElement('span')
     timeSpan.innerText = `+ ${1}`
 
-    workshopBoxMathBox.appendChild(resourceSpan)
+    workshopBoxMathBox.appendChild(resourceAmountElement)
+    workshopBoxMathBox.appendChild(resourceIconElement)
+    workshopBoxMathBox.appendChild(equalsElement )
     workshopBoxMathBox.appendChild(moneySpan)
     workshopBoxMathBox.appendChild(moneyIcon)
     workshopBoxMathBox.appendChild(timeSpan)
