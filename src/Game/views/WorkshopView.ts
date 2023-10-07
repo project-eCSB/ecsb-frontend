@@ -132,8 +132,8 @@ export class WorkshopView {
       getResourceMapping(this.resourceRepresentation)(resourceName),
       false,
     )
-    const equalsElement  = document.createElement('span')
-    equalsElement .innerText = ' = '
+    const equalsElement = document.createElement('span')
+    equalsElement.innerText = ' = '
 
     const moneyIcon = document.createElement('img')
     moneyIcon.src = '/assets/coinCustomIcon.png'
@@ -144,13 +144,15 @@ export class WorkshopView {
     timeIcon.style.width = '20px'
     timeIcon.style.height = '20px'
     const moneySpan = document.createElement('span')
-    moneySpan.innerText = `${this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction}`
+    moneySpan.innerText = `${
+      this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction
+    }`
     const timeSpan = document.createElement('span')
     timeSpan.innerText = `+ ${1}`
 
     workshopBoxMathBox.appendChild(resourceAmountElement)
     workshopBoxMathBox.appendChild(resourceIconElement)
-    workshopBoxMathBox.appendChild(equalsElement )
+    workshopBoxMathBox.appendChild(equalsElement)
     workshopBoxMathBox.appendChild(moneySpan)
     workshopBoxMathBox.appendChild(moneyIcon)
     workshopBoxMathBox.appendChild(timeSpan)
@@ -256,7 +258,7 @@ export class WorkshopView {
         costTimeMore * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
       if (
         costMoneyMore > this.scene.equipment!.money ||
-        costTimeMore > this.scene.equipment!.time || 
+        costTimeMore > this.scene.equipment!.time ||
         costTimeMore === 11
       ) {
         this.disablePlusButton()
@@ -327,9 +329,20 @@ export class WorkshopView {
       this.disableSubmitBtn()
 
       this.scene.loadingView.show()
-      this.workshopBoxSubmitButtonExtraWrapper.className = (this.workshopBoxSubmitButtonExtraWrapper.className === 'workshopBoxSubmitButtonExtraWrapperEnabledActive') ? 'workshopBoxSubmitButtonExtraWrapperEnabled' : 'workshopBoxSubmitButtonExtraWrapperEnabledActive'
-      this.workshopBoxSubmitButtonWrapper.className = (this.workshopBoxSubmitButtonWrapper.className === 'workshopBoxSubmitButtonWrapperEnabledActive') ? 'workshopBoxSubmitButtonWrapperEnabled' : 'workshopBoxSubmitButtonWrapperEnabledActive'
-      this.workshopBoxSubmitButton.className = (this.workshopBoxSubmitButtonWrapper.className === 'workshopBoxSubmitButtonEnabledActive') ? 'workshopBoxSubmitButtonEnabled' : 'workshopBoxSubmitButtonEnabledActive'
+      this.workshopBoxSubmitButtonExtraWrapper.className =
+        this.workshopBoxSubmitButtonExtraWrapper.className ===
+        'workshopBoxSubmitButtonExtraWrapperEnabledActive'
+          ? 'workshopBoxSubmitButtonExtraWrapperEnabled'
+          : 'workshopBoxSubmitButtonExtraWrapperEnabledActive'
+      this.workshopBoxSubmitButtonWrapper.className =
+        this.workshopBoxSubmitButtonWrapper.className ===
+        'workshopBoxSubmitButtonWrapperEnabledActive'
+          ? 'workshopBoxSubmitButtonWrapperEnabled'
+          : 'workshopBoxSubmitButtonWrapperEnabledActive'
+      this.workshopBoxSubmitButton.className =
+        this.workshopBoxSubmitButtonWrapper.className === 'workshopBoxSubmitButtonEnabledActive'
+          ? 'workshopBoxSubmitButtonEnabled'
+          : 'workshopBoxSubmitButtonEnabledActive'
 
       gameService
         .produce(parseInt(pWantInput.innerText))
@@ -403,14 +416,16 @@ export class WorkshopView {
 
   private disableSubmitBtn(): void {
     this.workshopBoxSubmitButton.disabled = true
-    this.workshopBoxSubmitButtonExtraWrapper.className = 'workshopBoxSubmitButtonExtraWrapperDisabled'
+    this.workshopBoxSubmitButtonExtraWrapper.className =
+      'workshopBoxSubmitButtonExtraWrapperDisabled'
     this.workshopBoxSubmitButtonWrapper.className = 'workshopBoxSubmitButtonWrapperDisabled'
     this.workshopBoxSubmitButton.className = 'workshopBoxSubmitButtonDisabled'
   }
 
   private enableSubmitBtn(): void {
     this.workshopBoxSubmitButton.disabled = false
-    this.workshopBoxSubmitButtonExtraWrapper.className = 'workshopBoxSubmitButtonExtraWrapperEnabled'
+    this.workshopBoxSubmitButtonExtraWrapper.className =
+      'workshopBoxSubmitButtonExtraWrapperEnabled'
     this.workshopBoxSubmitButtonWrapper.className = 'workshopBoxSubmitButtonWrapperEnabled'
     this.workshopBoxSubmitButton.className = 'workshopBoxSubmitButtonEnabled'
   }

@@ -132,12 +132,12 @@ export class TravelView {
           this.close()
         })
         .catch((err) => {
-          const errorMessage = new ErrorView();
-          errorMessage.setText('Insufficient materials');
-          errorMessage.show();
+          const errorMessage = new ErrorView()
+          errorMessage.setText('Insufficient materials')
+          errorMessage.show()
           setTimeout(() => {
-            errorMessage.close();
-          }, ERROR_TIMEOUT);
+            errorMessage.close()
+          }, ERROR_TIMEOUT)
           console.error(err)
           this.scene.loadingView?.close()
           this.enableSubmitBtn()
@@ -195,13 +195,13 @@ export class TravelView {
 
     switch (this.travelType) {
       case TravelType.LOW:
-        this.scene.interactionView.setText('start a short journey...')
+        this.scene.interactionView.setText('odbyć krótką podróż...')
         break
       case TravelType.MEDIUM:
-        this.scene.interactionView.setText('start a medium-distance journey...')
+        this.scene.interactionView.setText('odbyć średnią podróż...')
         break
       case TravelType.HIGH:
-        this.scene.interactionView.setText('start a long-distance journey...')
+        this.scene.interactionView.setText('odbyć długą podróż...')
         break
     }
 

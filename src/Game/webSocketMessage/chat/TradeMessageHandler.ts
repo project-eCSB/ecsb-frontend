@@ -1,5 +1,5 @@
-import {type Websocket} from 'websocket-ts'
-import {type TradeEquipment} from '../../../services/game/Types'
+import { type Websocket } from 'websocket-ts'
+import { type TradeEquipment } from '../../../services/game/Types'
 
 export interface TradeBid {
   senderOffer: TradeEquipment
@@ -142,7 +142,7 @@ export interface TradeCancelMessage {
 
 export type OutcomingTradeMessage =
   | TradeBuyMessage
-  | TradeSellMessage 
+  | TradeSellMessage
   | ProposeTradeMessage
   | ProposeTradeAckMessage
   | TradeBidMessage

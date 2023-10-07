@@ -68,7 +68,7 @@ export class EquipmentView {
     moneyValueWrapper.appendChild(moneyBoxValue)
     moneyBox.appendChild(moneyBoxicon)
     moneyBox.appendChild(moneyValueWrapper)
-    
+
     equipmentBoxContent.appendChild(moneyBox)
 
     const timeBox = document.createElement('div')

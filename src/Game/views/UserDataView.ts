@@ -1,6 +1,6 @@
 export class UserDataView {
-  public static readonly userDataBoxID = 'userDataBox';
-  public static readonly userDataBoxWrapperID = 'userDataBoxWrapper';
+  public static readonly userDataBoxID = 'userDataBox'
+  public static readonly userDataBoxWrapperID = 'userDataBoxWrapper'
 
   private readonly userDataBox: HTMLDivElement
   private readonly userName: HTMLHeadingElement
@@ -16,10 +16,10 @@ export class UserDataView {
 
     this.userClassName = document.createElement('h2')
     this.userClassName.innerText = userClassName
-          
+
     this.userDataBox.appendChild(this.userName)
     this.userDataBox.appendChild(this.userClassName)
-          
+
     this.userDataBoxWrapper = document.createElement('div')
     this.userDataBoxWrapper.id = UserDataView.userDataBoxWrapperID
     this.userDataBoxWrapper.appendChild(this.userDataBox)
@@ -33,4 +33,3 @@ export class UserDataView {
     window.document.body.removeChild(this.userDataBoxWrapper)
   }
 }
-

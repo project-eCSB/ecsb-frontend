@@ -1,6 +1,6 @@
 export class ErrorView {
-  public static readonly interactionBoxID = 'interactionBox';
-  public static readonly interactionBoxWrapperID = 'interactionBoxWrapper';
+  public static readonly interactionBoxID = 'interactionBox'
+  public static readonly interactionBoxWrapperID = 'interactionBoxWrapper'
 
   error: HTMLDivElement
   errorWrapper: HTMLDivElement
@@ -31,14 +31,14 @@ export class ErrorView {
   }
 
   show(): void {
-    const container = document.getElementById('errorsAndInfo');
+    const container = document.getElementById('errorsAndInfo')
     if (container) {
       container.appendChild(this.errorWrapper)
     }
   }
 
   close(): void {
-    const container = document.getElementById('errorsAndInfo');
+    const container = document.getElementById('errorsAndInfo')
     if (container) {
       container.removeChild(this.errorWrapper)
     }

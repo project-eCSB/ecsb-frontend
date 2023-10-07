@@ -124,7 +124,9 @@ export class TradeView {
         1,
         this.scene.characterUrl,
         4,
-        getPlayerMapping(scene.settings.classResourceRepresentation)(scene.playersClasses.get(currPlayerId)!),
+        getPlayerMapping(scene.settings.classResourceRepresentation)(
+          scene.playersClasses.get(currPlayerId)!,
+        ),
         false,
       ),
     )
@@ -136,7 +138,9 @@ export class TradeView {
         1,
         this.scene.characterUrl,
         4,
-        getPlayerMapping(scene.settings.classResourceRepresentation)(scene.playersClasses.get(otherPlayerId)!),
+        getPlayerMapping(scene.settings.classResourceRepresentation)(
+          scene.playersClasses.get(otherPlayerId)!,
+        ),
         false,
       ),
     )

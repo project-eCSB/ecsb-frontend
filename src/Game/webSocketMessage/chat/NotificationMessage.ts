@@ -1,4 +1,4 @@
-import type {Websocket} from 'websocket-ts'
+import type { Websocket } from 'websocket-ts'
 
 export enum NotificationMessageType {
   NotificationAdvertisementBuy = 'notification/buy', // One of the players wants to buy something

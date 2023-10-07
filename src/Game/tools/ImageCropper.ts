@@ -14,7 +14,15 @@ export class ImageCropper {
     return cropContainer
   }
 
-  private createImage(path: string, width: number, height: number, scale: number, columns: number, resourceIndex: number, reversed: boolean): HTMLImageElement {
+  private createImage(
+    path: string,
+    width: number,
+    height: number,
+    scale: number,
+    columns: number,
+    resourceIndex: number,
+    reversed: boolean,
+  ): HTMLImageElement {
     const image = document.createElement('img')
     image.src = path
     image.style.height = 'auto'

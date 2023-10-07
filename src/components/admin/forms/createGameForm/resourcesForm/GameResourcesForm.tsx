@@ -167,7 +167,9 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
   return (
     <div id='game-details-form'>
       <h5 id='main-title'>Classes & Resources</h5>
-      <h6 id='sub-title'>Provide details for every class and the resources produced by each class</h6>
+      <h6 id='sub-title'>
+        Provide details for every class and the resources produced by each class
+      </h6>
       <table>
         <thead>
           <tr>
@@ -184,7 +186,9 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
         <tbody>
           {createGameFormData.classResources.map((resource, index) => (
             <tr key={index}>
-              <td><span>{resource.className}</span></td>
+              <td>
+                <span>{resource.className}</span>
+              </td>
               <td>
                 <input
                   min={1}
