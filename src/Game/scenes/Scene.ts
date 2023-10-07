@@ -816,7 +816,7 @@ export class Scene extends Phaser.Scene {
             this.players[this.playerId].coords.y === coords.y,
         )
       ) {
-        this.travelView = new TravelView(this, TravelType.LOW)
+        this.travelView = new TravelView(this, TravelType.LOW, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
 
         this.interactionView.close()
@@ -827,7 +827,7 @@ export class Scene extends Phaser.Scene {
             this.players[this.playerId].coords.y === coords.y,
         )
       ) {
-        this.travelView = new TravelView(this, TravelType.MEDIUM)
+        this.travelView = new TravelView(this, TravelType.MEDIUM, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
 
         this.interactionView.close()
@@ -838,7 +838,7 @@ export class Scene extends Phaser.Scene {
             this.players[this.playerId].coords.y === coords.y,
         )
       ) {
-        this.travelView = new TravelView(this, TravelType.HIGH)
+        this.travelView = new TravelView(this, TravelType.HIGH, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
 
         this.interactionView.close()
