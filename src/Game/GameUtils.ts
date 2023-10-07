@@ -23,7 +23,8 @@ export const getPlayerMapping =
 export const getResourceMapping =
   (initialResourceMapping: ClassResourceRepresentation[]) =>
   (resourceName: string): number =>
-    initialResourceMapping.find((dto) => dto.value.gameResourceName === resourceName)?.value.resourceAsset ?? 0
+    initialResourceMapping.find((dto) => dto.value.gameResourceName === resourceName)?.value
+      .resourceAsset ?? 0
 
 // OTHER
 export const TOAST_INVITE_MSG = 'Wysłano zaproszenie do handlu'

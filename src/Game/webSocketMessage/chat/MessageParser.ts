@@ -1,7 +1,7 @@
-import {type EquipmentMessage, EquipmentMessageType} from './EqupimentMessage'
-import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
-import {type IncomingTradeMessage, IncomingTradeMessageType} from './TradeMessageHandler'
-import {type UserStatusMessage, UserStatusMessageType} from './UserStatusMessage'
+import { type EquipmentMessage, EquipmentMessageType } from './EqupimentMessage'
+import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
+import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
+import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
 
 export const parseChatMessage = (
   message: string,

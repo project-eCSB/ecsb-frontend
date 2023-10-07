@@ -1,6 +1,6 @@
 export class InteractionView {
-  public static readonly interactionBoxID = 'interactionBox';
-  public static readonly interactionBoxWrapperID = 'interactionBoxWrapper';
+  public static readonly interactionBoxID = 'interactionBox'
+  public static readonly interactionBoxWrapperID = 'interactionBoxWrapper'
 
   interaction: HTMLDivElement
   interactionWrapper: HTMLDivElement
@@ -34,7 +34,7 @@ export class InteractionView {
   }
 
   show(): void {
-    const container = document.getElementById('errorsAndInfo');
+    const container = document.getElementById('errorsAndInfo')
     if (container) {
       container.appendChild(this.interactionWrapper)
       this.hidden = false
@@ -42,7 +42,7 @@ export class InteractionView {
   }
 
   close(): void {
-    const container = document.getElementById('errorsAndInfo');
+    const container = document.getElementById('errorsAndInfo')
     if (container && !this.hidden) {
       container.removeChild(this.interactionWrapper)
       this.hidden = true

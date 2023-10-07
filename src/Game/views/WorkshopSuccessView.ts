@@ -111,17 +111,29 @@ export class WorkshopSuccessView {
 
     // Close button
     const workshopSuccessBoxCloseButtonExtraWrapper = document.createElement('div')
-    workshopSuccessBoxCloseButtonExtraWrapper.id = WorkshopSuccessView.workshopSuccessBoxCloseButtonExtraWrapperID
+    workshopSuccessBoxCloseButtonExtraWrapper.id =
+      WorkshopSuccessView.workshopSuccessBoxCloseButtonExtraWrapperID
 
     const workshopSuccessBoxCloseButtonWrapper = document.createElement('div')
-    workshopSuccessBoxCloseButtonWrapper.id = WorkshopSuccessView.workshopSuccessBoxCloseButtonWrapperID
+    workshopSuccessBoxCloseButtonWrapper.id =
+      WorkshopSuccessView.workshopSuccessBoxCloseButtonWrapperID
     const workshopSuccessBoxCloseButton = document.createElement('button')
     workshopSuccessBoxCloseButton.id = WorkshopSuccessView.workshopSuccessBoxCloseButtonID
     workshopSuccessBoxCloseButton.innerText = 'OK'
     workshopSuccessBoxCloseButton.addEventListener('click', () => {
-      workshopSuccessBoxCloseButtonExtraWrapper.id = (workshopSuccessBoxCloseButtonExtraWrapper.id === 'workshopSuccessBoxCloseButtonExtraWrapperActive') ? 'workshopSuccessBoxCloseButtonExtraWrapper' : 'workshopSuccessBoxCloseButtonExtraWrapperActive'
-      workshopSuccessBoxCloseButtonWrapper.id = (workshopSuccessBoxCloseButtonWrapper.id === 'workshopSuccessBoxCloseButtonWrapperActive') ? 'workshopSuccessBoxCloseButtonWrapper' : 'workshopSuccessBoxCloseButtonWrapperActive'
-      workshopSuccessBoxCloseButton.id = (workshopSuccessBoxCloseButton.id === 'workshopSuccessBoxCloseButtonActive') ? 'workshopSuccessBoxCloseButton' : 'workshopSuccessBoxCloseButtonActive'
+      workshopSuccessBoxCloseButtonExtraWrapper.id =
+        workshopSuccessBoxCloseButtonExtraWrapper.id ===
+        'workshopSuccessBoxCloseButtonExtraWrapperActive'
+          ? 'workshopSuccessBoxCloseButtonExtraWrapper'
+          : 'workshopSuccessBoxCloseButtonExtraWrapperActive'
+      workshopSuccessBoxCloseButtonWrapper.id =
+        workshopSuccessBoxCloseButtonWrapper.id === 'workshopSuccessBoxCloseButtonWrapperActive'
+          ? 'workshopSuccessBoxCloseButtonWrapper'
+          : 'workshopSuccessBoxCloseButtonWrapperActive'
+      workshopSuccessBoxCloseButton.id =
+        workshopSuccessBoxCloseButton.id === 'workshopSuccessBoxCloseButtonActive'
+          ? 'workshopSuccessBoxCloseButton'
+          : 'workshopSuccessBoxCloseButtonActive'
 
       this.close()
     })

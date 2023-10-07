@@ -160,7 +160,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
 
     let parsedValue = parseInt(value)
     if (parsedValue <= 0) {
-      parsedValue = 0 
+      parsedValue = 0
     }
     if (parsedValue >= 60) {
       parsedValue = 60
@@ -176,21 +176,24 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     setRequestInProgress(true)
 
     const transformedData = transformFormData(createGameFormData)
-    gameService.createGame(
-      transformedData.classResourceRepresentation, 
-      transformedData.gameName,
-      transformedData.travels,
-      transformedData.mapAssetId,
-      transformedData.tileAssetId,
-      transformedData.characterAssetId,
-      transformedData.resourceAssetsId,
-      transformedData.timeForGame,
-      transformedData.maxTimeAmount,
-      transformedData.walkingSpeed,
-      ).then((gameSessionId: number) => {
+    gameService
+      .createGame(
+        transformedData.classResourceRepresentation,
+        transformedData.gameName,
+        transformedData.travels,
+        transformedData.mapAssetId,
+        transformedData.tileAssetId,
+        transformedData.characterAssetId,
+        transformedData.resourceAssetsId,
+        transformedData.timeForGame,
+        transformedData.maxTimeAmount,
+        transformedData.walkingSpeed,
+      )
+      .then((gameSessionId: number) => {
         setRequestInProgress(false)
         setAndShowResultModal(`Game created successfully! Game ID: ${gameSessionId}`)
-      }).catch((error: Error) => {
+      })
+      .catch((error: Error) => {
         setRequestInProgress(false)
         setAndShowResultModal(error.message)
       })
@@ -250,7 +253,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
           type='text'
         />
       </div>
-      <div id= 'game-submit-form-input-gamefulltime' className='game-submit-form-input'>
+      <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
         <label htmlFor=''>Game Full Time</label>
         <input
           min={1}
@@ -265,7 +268,11 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       <div className='submit-form-button'>
         <button
           disabled={createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1}
-          className={`${(createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1) ? 'disabled' : ''}`}
+          className={`${
+            createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1
+              ? 'disabled'
+              : ''
+          }`}
           onClick={() => {
             handleSubmit()
           }}

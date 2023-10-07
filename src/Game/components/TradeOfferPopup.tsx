@@ -1,8 +1,8 @@
-import { toast } from 'react-toastify';
-import { type Scene } from '../../Game/scenes/Scene';
-import './TradeOfferPopup.css';
-import { ERROR_TIMEOUT, RANGE, TOAST_DISMISS_TIMEOUT } from '../GameUtils';
-import { ErrorView } from '../views/ErrorView';
+import { toast } from 'react-toastify'
+import { type Scene } from '../../Game/scenes/Scene'
+import './TradeOfferPopup.css'
+import { ERROR_TIMEOUT, RANGE, TOAST_DISMISS_TIMEOUT } from '../GameUtils'
+import { ErrorView } from '../views/ErrorView'
 
 interface TradeProps {
   scene: Scene
@@ -23,13 +23,13 @@ export const TradeOfferPopup = (props: TradeProps) => {
 
   const handleAcceptTrade = () => {
     if (!isPlayerInRange()) {
-      const errorMessage = new ErrorView();
-      errorMessage.setText(`${from} wants to trade with you, but you are too far`);
-      errorMessage.show();
+      const errorMessage = new ErrorView()
+      errorMessage.setText(`${from} wants to trade with you, but you are too far`)
+      errorMessage.show()
       setTimeout(() => {
-        errorMessage.close();
-      }, ERROR_TIMEOUT);
-      return;
+        errorMessage.close()
+      }, ERROR_TIMEOUT)
+      return
     }
 
     if (!scene.movingEnabled) return
@@ -62,14 +62,14 @@ export const TradeOfferPopup = (props: TradeProps) => {
   return (
     <div className='container'>
       <p>{from} chce handlować</p>
-      <div className="buttons-container">
+      <div className='buttons-container'>
         <div id='buttonWrapper'>
-          <button className="decisionButton" id={`${from}-accept`} onClick={handleAcceptTrade}>
+          <button className='decisionButton' id={`${from}-accept`} onClick={handleAcceptTrade}>
             Akceptuj
           </button>
         </div>
         <div id='buttonWrapper'>
-          <button className="decisionButton" id={`${from}-decline`} onClick={handleDeclineTrade}>
+          <button className='decisionButton' id={`${from}-decline`} onClick={handleDeclineTrade}>
             Odrzuć
           </button>
         </div>

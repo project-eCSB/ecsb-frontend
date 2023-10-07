@@ -1,33 +1,48 @@
 import * as Phaser from 'phaser'
-import type {GridEngine, Position} from 'grid-engine'
-import {Direction} from 'grid-engine'
-import type {Websocket} from 'websocket-ts'
-import {WebsocketBuilder} from 'websocket-ts'
-import type {AssetConfig, Equipment, GameSettings, GameStatus, TradeEquipment,} from '../../services/game/Types'
-import {CloudType, type Controls, type Coordinates, type PlayerId, type PlayerState,} from './Types'
-import {decodeGameToken} from '../../apis/apis'
-import {TradeView} from '../views/TradeView'
+import type { GridEngine, Position } from 'grid-engine'
+import { Direction } from 'grid-engine'
+import type { Websocket } from 'websocket-ts'
+import { WebsocketBuilder } from 'websocket-ts'
+import type {
+  AssetConfig,
+  Equipment,
+  GameSettings,
+  GameStatus,
+  TradeEquipment,
+} from '../../services/game/Types'
+import {
+  CloudType,
+  type Controls,
+  type Coordinates,
+  type PlayerId,
+  type PlayerState,
+} from './Types'
+import { decodeGameToken } from '../../apis/apis'
+import { TradeView } from '../views/TradeView'
 import gameService from '../../services/game/GameService'
-import {EquipmentView} from '../views/EquipmentView'
-import {toast} from 'react-toastify'
-import {TradeOfferPopup} from '../components/TradeOfferPopup'
-import {WorkshopView} from '../views/WorkshopView'
-import {InteractionView} from '../views/InteractionView'
-import {LoadingView} from '../views/LoadingView'
-import {parseChatMessage} from '../webSocketMessage/chat/MessageParser'
-import {MovementMessageType, sendMovementMessage,} from '../webSocketMessage/movement/MovementMessage'
-import {parseMovementMessage} from '../webSocketMessage/movement/MessageParser'
+import { EquipmentView } from '../views/EquipmentView'
+import { toast } from 'react-toastify'
+import { TradeOfferPopup } from '../components/TradeOfferPopup'
+import { WorkshopView } from '../views/WorkshopView'
+import { InteractionView } from '../views/InteractionView'
+import { LoadingView } from '../views/LoadingView'
+import { parseChatMessage } from '../webSocketMessage/chat/MessageParser'
+import {
+  MovementMessageType,
+  sendMovementMessage,
+} from '../webSocketMessage/movement/MovementMessage'
+import { parseMovementMessage } from '../webSocketMessage/movement/MessageParser'
 import {
   IncomingTradeMessageType,
   OutcomingTradeMessageType,
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
-import {UserStatusMessageType} from '../webSocketMessage/chat/UserStatusMessage'
-import {NotificationMessageType} from '../webSocketMessage/chat/NotificationMessage'
-import {InteractionCloudBuilder} from '../tools/InteractionCloudBuilder'
-import {ContextMenuBuilder} from '../tools/ContextMenuBuilder'
-import {TravelType, TravelView} from '../views/TravelView'
-import {ImageCropper} from '../tools/ImageCropper'
+import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
+import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
+import { InteractionCloudBuilder } from '../tools/InteractionCloudBuilder'
+import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
+import { TravelType, TravelView } from '../views/TravelView'
+import { ImageCropper } from '../tools/ImageCropper'
 import {
   ALL_PLAYERS_DESC_OFFSET_TOP,
   CHARACTER_ASSET_KEY,
@@ -42,15 +57,15 @@ import {
   SPRITE_WIDTH,
   TILES_ASSET_KEY,
 } from '../GameUtils'
-import {EquipmentMessageType} from '../webSocketMessage/chat/EqupimentMessage'
-import {sendUserMessage, UserMessageType} from '../webSocketMessage/chat/UserMessage'
-import {UserDataView} from '../views/UserDataView'
-import {ErrorView} from '../views/ErrorView'
-import {TimeView} from '../views/TimeView'
-import {SettingsView} from '../views/SettingsView'
-import {StatusAndCoopView} from '../views/StatusAndCoopView'
-import {AdvertisementInfoBuilder} from '../tools/AdvertisementInfoBuilder'
-import Key = Phaser.Input.Keyboard.Key;
+import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
+import { sendUserMessage, UserMessageType } from '../webSocketMessage/chat/UserMessage'
+import { UserDataView } from '../views/UserDataView'
+import { ErrorView } from '../views/ErrorView'
+import { TimeView } from '../views/TimeView'
+import { SettingsView } from '../views/SettingsView'
+import { StatusAndCoopView } from '../views/StatusAndCoopView'
+import { AdvertisementInfoBuilder } from '../tools/AdvertisementInfoBuilder'
+import Key = Phaser.Input.Keyboard.Key
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -295,9 +310,18 @@ export class Scene extends Phaser.Scene {
       .getPlayerEquipment()
       .then((eq: Equipment) => {
         this.equipment = eq
-        this.equipmentView = new EquipmentView(eq, this.resourceUrl, this.settings.classResourceRepresentation)
+        this.equipmentView = new EquipmentView(
+          eq,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+        )
         this.equipmentView.show()
-        this.statusAndCoopView = new StatusAndCoopView(eq, this.resourceUrl, this.settings.classResourceRepresentation, this)
+        this.statusAndCoopView = new StatusAndCoopView(
+          eq,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+          this,
+        )
         this.statusAndCoopView.show()
       })
       .catch((err) => {
@@ -310,9 +334,9 @@ export class Scene extends Phaser.Scene {
     this.timeView.show()
     this.timeView.startTimer(600)
 
-    const errorsAndInfo = document.createElement('div');
+    const errorsAndInfo = document.createElement('div')
     errorsAndInfo.id = 'errorsAndInfo'
-    window.document.body.appendChild(errorsAndInfo);
+    window.document.body.appendChild(errorsAndInfo)
 
     this.settingsView.show()
 
@@ -462,11 +486,19 @@ export class Scene extends Phaser.Scene {
             this.equipmentView?.update(msg.message.playerEquipment)
             break
           case NotificationMessageType.NotificationAdvertisementBuy:
-            this.advertisementInfoBuilder.addBubbleForResource(msg.message.gameResourceName, msg.senderId, true)
+            this.advertisementInfoBuilder.addBubbleForResource(
+              msg.message.gameResourceName,
+              msg.senderId,
+              true,
+            )
             this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
             break
           case NotificationMessageType.NotificationAdvertisementSell:
-            this.advertisementInfoBuilder.addBubbleForResource(msg.message.gameResourceName, msg.senderId, false)
+            this.advertisementInfoBuilder.addBubbleForResource(
+              msg.message.gameResourceName,
+              msg.senderId,
+              false,
+            )
             this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
             break
           case NotificationMessageType.NotificationTradeStart:
@@ -615,7 +647,7 @@ export class Scene extends Phaser.Scene {
   }
 
   showTradeInvite(from: string): void {
-    toast(TradeOfferPopup({ scene: this, from: from}), {
+    toast(TradeOfferPopup({ scene: this, from: from }), {
       position: 'bottom-right',
       autoClose: 8000,
       hideProgressBar: true,
@@ -701,12 +733,12 @@ export class Scene extends Phaser.Scene {
   }
 
   showBusyPopup(message: string): void {
-    const errorMessage = new ErrorView();
-    errorMessage.setText(message);
-    errorMessage.show();
+    const errorMessage = new ErrorView()
+    errorMessage.setText(message)
+    errorMessage.show()
     setTimeout(() => {
-      errorMessage.close();
-    }, ERROR_TIMEOUT);
+      errorMessage.close()
+    }, ERROR_TIMEOUT)
   }
 
   private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
@@ -741,9 +773,14 @@ export class Scene extends Phaser.Scene {
           (coords) =>
             this.players[this.playerId].coords.x === coords.x &&
             this.players[this.playerId].coords.y === coords.y,
-        ) && this.equipment
-      )  {
-        this.workshopView = new WorkshopView(this, this.resourceUrl, this.settings.classResourceRepresentation)
+        ) &&
+        this.equipment
+      ) {
+        this.workshopView = new WorkshopView(
+          this,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+        )
         this.workshopView.show()
 
         this.interactionView.close()
