@@ -66,6 +66,7 @@ import { SettingsView } from '../views/SettingsView'
 import { StatusAndCoopView } from '../views/StatusAndCoopView'
 import { AdvertisementInfoBuilder } from '../tools/AdvertisementInfoBuilder'
 import Key = Phaser.Input.Keyboard.Key
+import { TimeMessageType, sendTimeMessage } from '../webSocketMessage/chat/TimeMessage'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -446,6 +447,10 @@ export class Scene extends Phaser.Scene {
     )
       .onOpen((i, ev) => {
         console.log('chatWs opened')
+
+        sendTimeMessage(this.chatWs, {
+          type: TimeMessageType.SyncRequest,
+        })
       })
       .onClose((i, ev) => {
         console.log('chatWs closed')
@@ -538,6 +543,26 @@ export class Scene extends Phaser.Scene {
               CloudType.PRODUCTION,
             )
             this.playerCloudMovement.set(msg.message.playerId, false)
+            break
+          case TimeMessageType.SyncResponse:
+            console.log("SYNC_RESPONSE=", msg.message)
+            // TODO: Handle
+            break
+          case TimeMessageType.End:
+            console.log("END=", msg.message)
+            // TODO: Handle
+            break
+          case TimeMessageType.Remaining:
+            // TODO: Handle
+            console.log("REMAINING=", msg.message)
+            break
+          case TimeMessageType.SessionRegen:
+            // TODO: Handle
+            console.log("SESSION_REGEN=", msg.message)  
+            break
+          case TimeMessageType.PlayerRegen:
+            // TODO: Handle
+            console.log("PLAYER_REGEN=", msg.message)                
             break
         }
       })

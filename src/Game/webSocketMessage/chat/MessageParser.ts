@@ -1,11 +1,12 @@
 import { type EquipmentMessage, EquipmentMessageType } from './EqupimentMessage'
 import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
+import { type TimeMessage, TimeMessageType } from './TimeMessage'
 import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
 import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
 
 export const parseChatMessage = (
   message: string,
-): IncomingTradeMessage | NotificationMessage | UserStatusMessage | EquipmentMessage | null => {
+): IncomingTradeMessage | NotificationMessage | UserStatusMessage | EquipmentMessage | TimeMessage | null => {
   try {
     const parsed = JSON.parse(message)
 
@@ -48,6 +49,16 @@ export const parseChatMessage = (
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationProductionEnd:
         return { senderId: parsed.senderId, message: parsed.message }
+      case TimeMessageType.SyncResponse:
+        return { senderId: parsed.senderId, message: parsed.message}
+      case TimeMessageType.End:
+        return { senderId: parsed.senderId, message: parsed.message}
+      case TimeMessageType.Remaining:
+        return { senderId: parsed.senderId, message: parsed.message}       
+      case TimeMessageType.SessionRegen:
+        return { senderId: parsed.senderId, message: parsed.message}
+      case TimeMessageType.PlayerRegen:
+        return { senderId: parsed.senderId, message: parsed.message}   
       default:
         console.error(
           `Unrecognized message type: ${(parsed as { message: { type: string } }).message.type}`,
