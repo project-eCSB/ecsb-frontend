@@ -1,8 +1,8 @@
 import type { Websocket } from 'websocket-ts'
 
 interface TimeState {
-  actual: number;
-  max: number;
+  actual: number
+  max: number
 }
 
 export enum TimeMessageType {
@@ -11,47 +11,39 @@ export enum TimeMessageType {
   End = 'time/end',
   Remaining = 'time/remaining',
   PlayerRegen = 'time/player_regen',
-  SessionRegen = 'time/session_regen'
 }
 
 export interface TimeSyncResponseMessage {
   senderId: string
   message: {
-      type: TimeMessageType.SyncResponse
-      timeLeftSeconds: number
-      timeTokens: Record<number, TimeState>;
+    type: TimeMessageType.SyncResponse
+    timeForGame: number
+    timeLeftSeconds: number
+    timeTokens: { key: number; value: TimeState }[]
   }
 }
 
 export interface TimeEndMessage {
   senderId: string
   message: {
-      type: TimeMessageType.End
+    type: TimeMessageType.End
   }
 }
 
 export interface TimeRemainingMessage {
   senderId: string
   message: {
-      type: TimeMessageType.Remaining
-      timeLeftSeconds: number
-  }
-}
-
-export interface TimeSessionRegenMessage {
-  senderId: string
-  message: {
-      type: TimeMessageType.SessionRegen
-      tokens: Record<number, Record<number, TimeState>>;
+    type: TimeMessageType.Remaining
+    timeLeftSeconds: number
   }
 }
 
 export interface TimePlayerRegenMessage {
   senderId: string
   message: {
-      type: TimeMessageType.PlayerRegen
-      playerId: string
-      tokens: Record<number, TimeState>;
+    type: TimeMessageType.PlayerRegen
+    playerId: string
+    tokens: { key: number; value: TimeState }[]
   }
 }
 
@@ -59,7 +51,6 @@ export type TimeMessage =
   | TimeSyncResponseMessage
   | TimeEndMessage
   | TimeRemainingMessage
-  | TimeSessionRegenMessage
   | TimePlayerRegenMessage
 
 export interface TimeSyncRequestMessage {

@@ -71,18 +71,6 @@ export class EquipmentView {
 
     equipmentBoxContent.appendChild(moneyBox)
 
-    const timeBox = document.createElement('div')
-
-    const timeBoxName = document.createElement('h1')
-    timeBoxName.innerText = 'time'
-    const timeBoxValue = document.createElement('p')
-    timeBoxValue.innerText = eq.time.toString()
-
-    timeBox.appendChild(timeBoxName)
-    timeBox.appendChild(timeBoxValue)
-
-    equipmentBoxContent.appendChild(timeBox)
-
     this.equipmentBox.appendChild(equipmentBoxContent)
   }
 

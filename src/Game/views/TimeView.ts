@@ -12,8 +12,18 @@ export class TimeView {
   timerBoxWrapper: HTMLDivElement
   clock: HTMLDivElement
   time: HTMLSpanElement
+  remaining: number
+  total: number
+  tokens: boolean[]
 
-  constructor(columns: number) {
+  constructor(columns: number, remaining: number, total: number) {
+    this.remaining = remaining
+    this.total = total
+    this.tokens = []
+    for (let i = 0; i < columns * 2; i++) {
+      this.tokens.push(true)
+    }
+
     this.timeTokenBox = document.createElement('div')
     this.timeTokenBox.id = TimeView.timeTokenBoxID
 
@@ -33,6 +43,8 @@ export class TimeView {
       const token2Wrapper = document.createElement('div')
       token2Wrapper.appendChild(token2)
 
+      token1.appendChild(document.createElement('div')) // ---
+      token2.appendChild(document.createElement('div')) // ---
       col.appendChild(token1Wrapper)
       col.appendChild(token2Wrapper)
       this.timeTokenBox.appendChild(col)
@@ -65,34 +77,77 @@ export class TimeView {
     window.document.body.removeChild(this.timerBoxWrapper)
   }
 
-  startTimer(seconds: number): void {
+  startTimer(): void {
     this.timerBox.appendChild(this.clock)
-    this.evaluateTimer(seconds, seconds)
+    this.evaluateTimer()
   }
 
-  private evaluateTimer(remaining: number, total: number): void {
+  private evaluateTimer(): void {
     const clock = document.getElementById('clock')
-    if (clock && remaining % 2 === 0) {
+    if (clock) {
       clock.style.backgroundImage = `conic-gradient(#EDB872 ${
-        ((total - remaining) * 100) / total
+        ((this.total - this.remaining) * 100) / this.total
       }%, 0, #677818)`
     }
-    const remainingMinutes = Math.floor(remaining / 60)
+    const remainingMinutes = Math.floor(this.remaining / 60)
     let remainingMinutesString = remainingMinutes.toString()
     if (remainingMinutes < 10) {
       remainingMinutesString = '0' + remainingMinutesString
     }
-    const remainingSeconds = remaining % 60
+    const remainingSeconds = this.remaining % 60
     let remainingSecondsString = remainingSeconds.toString()
     if (remainingSeconds < 10) {
       remainingSecondsString = '0' + remainingSecondsString
     }
     this.time.textContent = `${remainingMinutesString}:${remainingSecondsString}`
-    if (remaining === 0) {
+    if (this.remaining <= 0) {
       return
     }
+    this.remaining = this.remaining - 1
+
     setTimeout(() => {
-      this.evaluateTimer(remaining - 1, total)
+      this.evaluateTimer()
     }, ONE_SECOND)
+  }
+
+  endTimer(): void {
+    this.remaining = 0
+  }
+
+  setTimerWithTotal(remaining: number, total: number): void {
+    this.remaining = remaining
+    this.total = total
+  }
+
+  setTimer(remaining: number): void {
+    this.remaining = remaining
+  }
+
+  setTimeToken(tokenID: number, actual: number, max: number): void {
+    if (actual !== max) {
+      this.tokens[tokenID] = false
+    } else {
+      this.tokens[tokenID] = true
+    }
+
+    const row = Math.floor(tokenID / 5) + 1
+    const column = (tokenID % 5) + 1
+
+    const token = document.getElementById(`timeToken-${column}-${row}`)
+    if (token?.getElementsByTagName('div')) {
+      token.getElementsByTagName('div')[0].style.backgroundImage = `conic-gradient(#677818 ${
+        (actual * 100) / max
+      }%, 0, #000000)`
+    }
+  }
+
+  getAvailableTokens(): number {
+    let available = 0
+    this.tokens.forEach((el) => {
+      if (el) {
+        available = available + 1
+      }
+    })
+    return available
   }
 }

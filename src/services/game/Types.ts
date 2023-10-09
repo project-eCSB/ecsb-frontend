@@ -6,6 +6,8 @@ import {
 } from '../../apis/game/Types'
 
 export interface GameSettings {
+  timeForGame: number
+  walkingSpeed: number
   classResourceRepresentation: ClassResourceRepresentation[]
   travels: GameSettingsTravels[]
   gameSessionId: number

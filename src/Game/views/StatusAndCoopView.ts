@@ -64,9 +64,7 @@ export class StatusAndCoopView {
             ? 'adButtonWrapper'
             : 'adButtonWrapperActive'
 
-        document.querySelectorAll('.bubbleGive').forEach((el) => {
-          el.remove()
-        })
+        scene.advertisementInfoBuilder.cleanBubblesForPlayer(scene.playerId, false)
         if (buttonGive.id === 'adButtonActive') {
           const bubble = document.createElement('div')
           bubble.appendChild(giveImage.cloneNode(true))
@@ -122,9 +120,7 @@ export class StatusAndCoopView {
             ? 'adButtonWrapper'
             : 'adButtonWrapperActive'
 
-        document.querySelectorAll('.bubbleReceive').forEach((el) => {
-          el.remove()
-        })
+        scene.advertisementInfoBuilder.cleanBubblesForPlayer(scene.playerId, true)
         if (buttonReceive.id === 'adButtonActive') {
           const bubble = document.createElement('div')
           bubble.appendChild(receiveImage.cloneNode(true))
@@ -179,6 +175,11 @@ export class StatusAndCoopView {
         this.statusButtonWrapper.id === 'statusButtonWrapperActive'
           ? 'statusButtonWrapper'
           : 'statusButtonWrapperActive'
+
+      if (this.statusButton.id === 'statusButtonActive') {
+        this.coopButton.id = 'coopButton'
+        this.coopButtonWrapper.id = 'coopButtonWrapper'
+      }
     })
     this.statusButton.id = StatusAndCoopView.statusButtonID
     const spanStatus = document.createElement('span')
@@ -191,6 +192,10 @@ export class StatusAndCoopView {
         iconStatus.className === 'fa fa-caret-up' ? 'fa fa-caret-down' : 'fa fa-caret-up'
       this.advertisementContainer.style.display =
         this.advertisementContainer.style.display === 'none' ? 'block' : 'none'
+
+      if (iconStatus.className === 'fa fa-caret-up') {
+        iconCoop.className = 'fa fa-caret-down'
+      }
     })
     this.statusButton.appendChild(spanStatus)
     this.statusButton.appendChild(iconStatus)
@@ -206,6 +211,11 @@ export class StatusAndCoopView {
         this.coopButtonWrapper.id === 'coopButtonWrapperActive'
           ? 'coopButtonWrapper'
           : 'coopButtonWrapperActive'
+
+      if (this.coopButton.id === 'coopButtonActive') {
+        this.statusButton.id = 'statusButton'
+        this.statusButtonWrapper.id = 'statusButtonWrapper'
+      }
     })
     this.coopButton.id = StatusAndCoopView.coopButtonID
     const spanCoop = document.createElement('span')
@@ -216,6 +226,11 @@ export class StatusAndCoopView {
     this.coopButton.addEventListener('click', () => {
       iconCoop.className =
         iconCoop.className === 'fa fa-caret-up' ? 'fa fa-caret-down' : 'fa fa-caret-up'
+
+      if (iconCoop.className === 'fa fa-caret-up') {
+        iconStatus.className = 'fa fa-caret-down'
+        this.advertisementContainer.style.display = 'none'
+      }
     })
     this.coopButton.appendChild(spanCoop)
     this.coopButton.appendChild(iconCoop)

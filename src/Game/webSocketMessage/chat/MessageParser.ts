@@ -6,7 +6,13 @@ import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessa
 
 export const parseChatMessage = (
   message: string,
-): IncomingTradeMessage | NotificationMessage | UserStatusMessage | EquipmentMessage | TimeMessage | null => {
+):
+  | IncomingTradeMessage
+  | NotificationMessage
+  | UserStatusMessage
+  | EquipmentMessage
+  | TimeMessage
+  | null => {
   try {
     const parsed = JSON.parse(message)
 
@@ -50,15 +56,13 @@ export const parseChatMessage = (
       case NotificationMessageType.NotificationProductionEnd:
         return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.SyncResponse:
-        return { senderId: parsed.senderId, message: parsed.message}
+        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.End:
-        return { senderId: parsed.senderId, message: parsed.message}
+        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.Remaining:
-        return { senderId: parsed.senderId, message: parsed.message}       
-      case TimeMessageType.SessionRegen:
-        return { senderId: parsed.senderId, message: parsed.message}
+        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.PlayerRegen:
-        return { senderId: parsed.senderId, message: parsed.message}   
+        return { senderId: parsed.senderId, message: parsed.message }
       default:
         console.error(
           `Unrecognized message type: ${(parsed as { message: { type: string } }).message.type}`,

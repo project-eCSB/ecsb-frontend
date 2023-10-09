@@ -1,8 +1,9 @@
-import type {AxiosInstance} from 'axios'
+import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
 
-const AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
+const AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env
+  .VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
 const SELF_INTERACTIONS_API_URL: string = import.meta.env.VITE_ECSB_HTTP_SELF_INTERACTIONS_API_URL
 const AUTH_TOKEN_KEY = 'auth-token'
 const GAME_TOKEN_KEY = 'game-token'
@@ -59,7 +60,7 @@ export const authTokenAuthAndMenagementAPI: AxiosInstance = axios.create({
   baseURL: AUTH_AND_MENAGEMENT_API_URL,
   headers: {
     'Content-type': 'application/json',
-    'Authorization': `Bearer ${getAuthToken()}` || '',
+    Authorization: `Bearer ${getAuthToken()}` || '',
   },
 })
 
@@ -67,7 +68,7 @@ export const gameTokenSelfInteractionsAPI: AxiosInstance = axios.create({
   baseURL: SELF_INTERACTIONS_API_URL,
   headers: {
     'Content-type': 'application/json',
-    'Authorization': `Bearer ${getGameToken()}` || '',
+    Authorization: `Bearer ${getGameToken()}` || '',
   },
 })
 
@@ -75,6 +76,6 @@ export const gameTokenAPI: AxiosInstance = axios.create({
   baseURL: AUTH_AND_MENAGEMENT_API_URL,
   headers: {
     'Content-type': 'application/json',
-    'Authorization': `Bearer ${getGameToken()}` || '',
+    Authorization: `Bearer ${getGameToken()}` || '',
   },
 })

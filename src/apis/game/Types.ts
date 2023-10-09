@@ -79,6 +79,8 @@ export interface GameSettingsTravels {
 }
 
 export interface AdminGameSettingsResponse {
+  timeForGame: number
+  walkingSpeed: number
   classResourceRepresentation: ClassResourceRepresentation[]
   travels: GameSettingsTravels[]
   gameSessionId: number
@@ -93,6 +95,8 @@ export interface AdminGameSettingsResponse {
 }
 
 export interface UserGameSettingsResponse {
+  timeForGame: number
+  walkingSpeed: number
   classResourceRepresentation: ClassResourceRepresentation[]
   travels: GameSettingsTravels[]
   gameSessionId: number
