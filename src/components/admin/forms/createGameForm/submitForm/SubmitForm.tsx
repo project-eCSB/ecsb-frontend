@@ -73,6 +73,8 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       timeForGame: 0,
       maxTimeAmount: 0,
       walkingSpeed: 0,
+      interactionRadius: 0,
+      defaultMoney: 0,
     }
 
     transformedData.classResourceRepresentation = formData.classResources.map((classResource) => ({
@@ -83,7 +85,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         resourceAsset: classResource.itemMapping,
         maxProduction: classResource.itemPerWorkshop,
         unitPrice: classResource.costPerItem,
-        regenTime: classResource.classTokenRegeneration,
+        regenTime: classResource.classTokenRegeneration * 1000,
         buyoutPrice: classResource.itemBuyout,
       },
     }))
@@ -127,9 +129,11 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     transformedData.characterAssetId = Number(formData.characterAssetsId)
     transformedData.resourceAssetsId = Number(formData.resourceAssetsId)
 
-    transformedData.timeForGame = formData.gameFullTime
-    transformedData.maxTimeAmount = 0
+    transformedData.timeForGame = formData.gameFullTime * 1000
+    transformedData.maxTimeAmount = formData.maxTimeAmount
     transformedData.walkingSpeed = formData.movingSpeed
+    transformedData.interactionRadius = formData.interactionRadius
+    transformedData.defaultMoney = formData.interactionRadius
 
     return transformedData
   }
@@ -188,6 +192,8 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         transformedData.timeForGame,
         transformedData.maxTimeAmount,
         transformedData.walkingSpeed,
+        transformedData.interactionRadius,
+        transformedData.defaultMoney,
       )
       .then((gameSessionId: number) => {
         setRequestInProgress(false)
@@ -254,7 +260,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         />
       </div>
       <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
-        <label htmlFor=''>Game Full Time</label>
+        <label htmlFor=''>Game Full Time (in seconds)</label>
         <input
           min={1}
           max={60}
