@@ -127,8 +127,8 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
     }
 
     let parsedValue = parseInt(value)
-    if (parsedValue >= 100) {
-      parsedValue = 100
+    if (parsedValue >= 1000000) {
+      parsedValue = 1000000
     }
 
     setCreateGameFormData((prevFormData) => ({
@@ -163,6 +163,46 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
       maxTimeAmount: parsedNewValue,
     }))
   }
+  
+  const handleChangeInteractionRadius = (value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        interactionRadius: 0,
+      }))
+      return
+    }
+
+    let parsedValue = parseInt(value)
+    if (parsedValue >= 1000000) {
+      parsedValue = 1000000
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      interactionRadius: parsedValue,
+    }))
+  }
+
+  const handleChangeDefaultMoney = (value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        defaultMoney: 0,
+      }))
+      return
+    }
+
+    let parsedValue = parseInt(value)
+    if (parsedValue >= 1000000) {
+      parsedValue = 1000000
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      defaultMoney: parsedValue,
+    }))
+  }  
 
   return (
     <div id='game-details-form'>
@@ -180,7 +220,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
             <th>Resource Unit Price</th>
             <th>Resource Max Production</th>
             <th>Resource Buyout Price</th>
-            <th>Token Regeneration Time</th>
+            <th>Token Regeneration Time (in seconds)</th>
           </tr>
         </thead>
         <tbody>
@@ -269,28 +309,56 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
         </tbody>
       </table>
       <div className='input-container'>
-        <label htmlFor=''>Walking speed</label>
-        <input
-          min={0}
-          max={100}
-          value={createGameFormData.movingSpeed}
-          onChange={(e) => {
-            handleChangeMovingSpeed(e.target.value)
-          }}
-          type='number'
-        />
+        <div>
+          <label htmlFor=''>Walking speed</label>
+          <input
+            min={0}
+            max={1000000}
+            value={createGameFormData.movingSpeed}
+            onChange={(e) => {
+              handleChangeMovingSpeed(e.target.value)
+            }}
+            type='number'
+          />
+        </div>
+        <div>
+        <label htmlFor=''>Interaction radius</label>
+          <input
+            min={0}
+            max={1000000}
+            value={createGameFormData.interactionRadius}
+            onChange={(e) => {
+              handleChangeInteractionRadius(e.target.value)
+            }}
+            type='number'
+          />
+        </div>
       </div>
       <div className='input-container'>
-        <label htmlFor=''>Maximum number of time slots</label>
-        <input
-          min={0}
-          max={100}
-          value={createGameFormData.maxTimeAmount}
-          onChange={(e) => {
-            handleChangeTimeAmount(createGameFormData.maxTimeAmount, e.target.value)
-          }}
-          type='number'
-        />
+        <div>
+          <label htmlFor=''>Default money</label>
+          <input
+            min={0}
+            max={1000000}
+            value={createGameFormData.defaultMoney}
+            onChange={(e) => {
+              handleChangeDefaultMoney(e.target.value)
+            }}
+            type='number'
+          />
+        </div>
+        <div>
+          <label htmlFor=''>Maximum number of time slots</label>
+          <input
+            min={0}
+            max={100}
+            value={createGameFormData.maxTimeAmount}
+            onChange={(e) => {
+              handleChangeTimeAmount(createGameFormData.maxTimeAmount, e.target.value)
+            }}
+            type='number'
+          />
+        </div>
       </div>
     </div>
   )

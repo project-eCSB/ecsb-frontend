@@ -57,6 +57,8 @@ export interface CreateGameFormData {
   resourceAssetsName: string
   movingSpeed: number
   maxTimeAmount: number
+  interactionRadius: number 
+  defaultMoney: number
 }
 
 export interface SavedAsset {
@@ -101,6 +103,8 @@ const CreateGameForm = () => {
     resourceAssetsName: '',
     movingSpeed: 0,
     maxTimeAmount: 0,
+    interactionRadius: 0,
+    defaultMoney: 0,
   })
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false)
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
@@ -178,6 +182,8 @@ const CreateGameForm = () => {
       resourceAssetsName: '',
       movingSpeed: 0,
       maxTimeAmount: 0,
+      interactionRadius: 0,
+      defaultMoney: 0,
     })
     setPage(1)
   }
@@ -339,6 +345,14 @@ const CreateGameForm = () => {
         }
 
         if (createGameFormData.maxTimeAmount <= 0) {
+          return true
+        }
+
+        if (createGameFormData.interactionRadius <= 0) {
+          return true 
+        }
+
+        if (createGameFormData.defaultMoney < 0) {
           return true
         }
 

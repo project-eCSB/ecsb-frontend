@@ -40,6 +40,8 @@ export interface CreateGameRequest {
   timeForGame: number
   maxTimeAmount: number
   walkingSpeed: number
+  interactionRadius: number 
+  defaultMoney: number
 }
 
 export interface CreateGameResponse {

@@ -75,19 +75,25 @@ td {
 
 #game-details-form .input-container {
   display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+#game-details-form .input-container > div {
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
 }
 
-#game-details-form .input-container > label {
+#game-details-form .input-container > div > label {
   font-size: 1rem;
   font-style: normal;
   font-weight: bold;
   color: black;
 }
 
-#game-details-form .input-container > input {
+#game-details-form .input-container > div > input {
   font-size: 1rem;
   font-style: normal;
   color: black;
