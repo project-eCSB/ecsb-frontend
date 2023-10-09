@@ -1961,6 +1961,10 @@
   z-index: 9999;
 }
 
+#workshopSuccessBoxTitleBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
 #workshopSuccessBoxTitleBox {
   background-color: #edb872;
   clip-path: polygon(
@@ -2032,6 +2036,10 @@
   font-size: 1.4rem;
 }
 
+#workshopSuccessBoxHeaderBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
 #workshopSuccessBoxHeaderBox {
   padding: 1.2rem;
   background-color: #e3c296;
@@ -2093,15 +2101,18 @@
   height: 20px;
 }
 
+#workshopSuccessBoxContentBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
 #workshopSuccessBoxContentBox {
-  display: flex;
   font-family: Rowdies;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   border: none;
   font-size: 1rem;
-  padding: 1rem 2rem 2rem 2rem;
+  padding: 3rem;
   background-color: #edb872;
   clip-path: polygon(
     3.05% 90%,
@@ -2218,8 +2229,7 @@
 }
 
 #workshopSuccessBoxContentBoxPlayerBox {
-  margin-left: 30px;
-  margin-top: 35px;
+  margin-left: 20px;
 }
 
 /* CloseButton */

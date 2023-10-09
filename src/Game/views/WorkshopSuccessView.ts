@@ -2,9 +2,11 @@ export class WorkshopSuccessView {
   private readonly onClose: () => void
 
   public static readonly workshopSuccessBoxID = 'workshopSuccessBox'
-  public static readonly workshopSuccessBoxTitleWrapperID = 'workshopSuccessBoxTitleWrapper'
+  public static readonly workshopSuccessBoxTitleWrapperID = 'workshopSuccessBoxTitleBoxWrapper'
   public static readonly workshopSuccessBoxTitleBoxID = 'workshopSuccessBoxTitleBox'
+  public static readonly workshopSuccessBoxHeaderBoxWrapperID = 'workshopSuccessBoxHeaderBoxWrapper'  
   public static readonly workshopSuccessBoxHeaderBoxID = 'workshopSuccessBoxHeaderBox'
+  public static readonly workshopSuccessBoxContentBoxWrapperID = 'workshopSuccessBoxContentBoxWrapper'
   public static readonly workshopSuccessBoxContentBoxID = 'workshopSuccessBoxContentBox'
   public static readonly workshopSuccessBoxContentBoxIconWrapperID = 'workshopSuccessBoxContentBoxIconWrapper'
   public static readonly workshopSuccessBoxContentBoxResultBoxID = 'workshopSuccessBoxContentBoxResultBox'
@@ -55,6 +57,9 @@ export class WorkshopSuccessView {
     workshopBoxTitleBoxWrapper.appendChild(workshopBoxTitleBox)
 
     // Header
+    const workshopSuccessBoxHeaderBoxWrapper = document.createElement('div')
+    workshopSuccessBoxHeaderBoxWrapper.id = WorkshopSuccessView.workshopSuccessBoxHeaderBoxWrapperID
+
     const workshopSuccessBoxHeaderBox = document.createElement('div')
     workshopSuccessBoxHeaderBox.id = WorkshopSuccessView.workshopSuccessBoxHeaderBoxID
     const workshopSuccessBoxHeaderBoxTitle = document.createElement('h1')
@@ -68,18 +73,14 @@ export class WorkshopSuccessView {
     workshopSuccessBoxHeaderBox.appendChild(workshopSuccessBoxHeaderBoxTitle)
     workshopSuccessBoxHeaderBox.appendChild(rightSuccessIcon)
 
+    workshopSuccessBoxHeaderBoxWrapper.appendChild(workshopSuccessBoxHeaderBox)
+
     // Content
+    const workshopSuccessBoxContentBoxWrapper = document.createElement('div')
+    workshopSuccessBoxContentBoxWrapper.id = WorkshopSuccessView.workshopSuccessBoxContentBoxWrapperID
+
     const workshopSuccessBoxContentBox = document.createElement('div')
     workshopSuccessBoxContentBox.id = WorkshopSuccessView.workshopSuccessBoxContentBoxID
-
-    const workshopIconWrapper = document.createElement('div')
-    workshopIconWrapper.id = WorkshopSuccessView.workshopSuccessBoxContentBoxIconWrapperID
-    const workshopIcon = document.createElement('img')
-    workshopIcon.src = '/assets/workshopCustomIcon.png'
-    workshopIconWrapper.appendChild(workshopIcon)
-
-    const resultBox = document.createElement('div')
-    resultBox.id = WorkshopSuccessView.workshopSuccessBoxContentBoxResultBoxID
 
     const resultResources = document.createElement('div')
     resultResources.id = WorkshopSuccessView.workshopSuccessBoxContentBoxResultBoxResourcesBoxID
@@ -96,8 +97,6 @@ export class WorkshopSuccessView {
 
     const transferIcon = document.createElement('img')
     transferIcon.src = '/assets/arrow.svg'
-    resultBox.appendChild(resultResources)
-    resultBox.appendChild(transferIcon)
 
     const playerBox = document.createElement('div')
     playerBox.id = WorkshopSuccessView.workshopSuccessBoxContentBoxPlayerBoxID
@@ -105,9 +104,11 @@ export class WorkshopSuccessView {
     playerName.innerText = `Gracz ${userName}`
     playerBox.appendChild(playerName)
 
-    workshopSuccessBoxContentBox.appendChild(workshopIconWrapper)
-    workshopSuccessBoxContentBox.appendChild(resultBox)
+    workshopSuccessBoxContentBox.appendChild(resultResources)
+    workshopSuccessBoxContentBox.appendChild(transferIcon)
     workshopSuccessBoxContentBox.appendChild(playerBox)
+
+    workshopSuccessBoxContentBoxWrapper.appendChild(workshopSuccessBoxContentBox)
 
     // Close button
     const workshopSuccessBoxCloseButtonExtraWrapper = document.createElement('div')
@@ -141,8 +142,8 @@ export class WorkshopSuccessView {
     workshopSuccessBoxCloseButtonExtraWrapper.appendChild(workshopSuccessBoxCloseButtonWrapper)
 
     this.workshopSuccessBox.appendChild(workshopBoxTitleBoxWrapper)
-    this.workshopSuccessBox.appendChild(workshopSuccessBoxHeaderBox)
-    this.workshopSuccessBox.appendChild(workshopSuccessBoxContentBox)
+    this.workshopSuccessBox.appendChild(workshopSuccessBoxHeaderBoxWrapper)
+    this.workshopSuccessBox.appendChild(workshopSuccessBoxContentBoxWrapper)
     this.workshopSuccessBox.appendChild(workshopSuccessBoxCloseButtonExtraWrapper)
   }
 
