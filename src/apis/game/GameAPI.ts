@@ -77,6 +77,20 @@ const getAdminGameSettings = async (
     })
 }
 
+const getAdminGameLogs = async (data: AdminGameSettingsRequest): Promise<string> => {
+  return await authTokenAuthAndMenagementAPI
+    .get(`/getLogs/${data.gameSessionId}`)
+    .then((response) => {
+      if (response.status !== 200) {
+        console.error(response.status)
+      }
+      return response.data
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+}
+
 const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> => {
   return await authTokenAuthAndMenagementAPI
     .post('/getGameToken', data)
@@ -357,6 +371,7 @@ const travel = async (data: TravelRequest): Promise<TravelResponse> => {
 const gameAPI = {
   createGame,
   getAdminGameSettings,
+  getAdminGameLogs,
   getGameToken,
   getPlayerEquipment,
   getUserGameSettings,

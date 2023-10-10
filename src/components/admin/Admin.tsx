@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import authService from '../../services/auth/AuthService'
 import CreateGameForm from './forms/createGameForm/CreateGameForm'
 import './Admin.css'
+import GetGameLogsForm from './forms/getGameLogsForm/GetGameLogsForm'
 
 enum FormType {
   CreateGame,
   GetGameSettings,
+  GetGameLogs,
 }
 
 const Admin = () => {
@@ -15,6 +17,7 @@ const Admin = () => {
   const [form, setForm] = useState<FormType | null>(null)
   const btnCreateGame = useRef<HTMLButtonElement>(null)
   const btnGetGameSettings = useRef<HTMLButtonElement>(null)
+  const btnGetGameLogs = useRef<HTMLButtonElement>(null)
 
   const handleLogOut = () => {
     authService.logout()
@@ -45,6 +48,16 @@ const Admin = () => {
           >
             Get Game Settings
           </button>
+          <button
+            ref={btnGetGameLogs}
+            onClick={() => {
+              setForm(FormType.GetGameLogs)
+            }}
+            className={`${form === FormType.GetGameLogs ? 'disabled' : ''}`}
+            disabled={form === FormType.GetGameLogs}
+          >
+            Get Game Logs
+          </button>
         </div>
         <div className='admin-container-navbar-buttons'>
           <button
@@ -66,6 +79,7 @@ const Admin = () => {
       <div className='admin-container-form'>
         {form === FormType.CreateGame && <CreateGameForm />}
         {form === FormType.GetGameSettings && <GetGameSettingsForm />}
+        {form === FormType.GetGameLogs && <GetGameLogsForm />}
       </div>
     </div>
   )

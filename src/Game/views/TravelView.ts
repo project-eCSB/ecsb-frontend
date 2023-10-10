@@ -35,7 +35,6 @@ export class TravelView {
   private static readonly travelBoxPlanButtonID = 'travelBoxPlanButton'
   private static readonly travelBoxTravelButtonID = 'travelBoxTravelButton'
 
-
   private readonly travelBoxWrapper: HTMLDivElement
 
   private readonly travelBoxHeaderWrapper: HTMLDivElement
@@ -53,7 +52,12 @@ export class TravelView {
   private readonly travelBoxTravelButtonWrapper: HTMLDivElement
   private readonly travelBoxTravelButton: HTMLButtonElement
 
-  constructor(scene: Scene, travelType: TravelType, resourceURL: string, resourceRepresentation: ClassResourceRepresentation[]) {
+  constructor(
+    scene: Scene,
+    travelType: TravelType,
+    resourceURL: string,
+    resourceRepresentation: ClassResourceRepresentation[],
+  ) {
     this.scene = scene
     this.travelType = travelType
     this.selectedTravel = null
@@ -183,7 +187,7 @@ export class TravelView {
           travelItemContentLeft.className = 'travelBoxContentItemContentLeft'
 
           const travelItemContentLeftHeader = document.createElement('h3')
-          travelItemContentLeftHeader.innerText = "Koszt:"
+          travelItemContentLeftHeader.innerText = 'Koszt:'
           travelItemContentLeft.appendChild(travelItemContentLeftHeader)
 
           // ZEGARKI
@@ -201,11 +205,11 @@ export class TravelView {
             travelItemContentTimes.appendChild(timeIconExtraWrapper)
           }
           travelItemContentLeft.appendChild(travelItemContentTimes)
-          
+
           const travelItemContentResources = document.createElement('div')
           travelItemContentResources.className = 'travelBoxContentItemContentLeftResources'
           travelItem.value.resources.forEach((resource) => {
-            if (resource.value !==0) {
+            if (resource.value !== 0) {
               const itemContainer = document.createElement('div')
 
               const itemIconWrapper = document.createElement('div')
@@ -220,13 +224,13 @@ export class TravelView {
               )
               itemIconWrapper.appendChild(itemIcon)
               itemContainer.appendChild(itemIconWrapper)
-  
+
               const itemValueWrapper = document.createElement('div')
               const itemValue = document.createElement('h4')
               itemValue.innerText = `${resource.value}`
               itemValueWrapper.appendChild(itemValue)
               itemContainer.appendChild(itemValueWrapper)
-  
+
               travelItemContentResources.appendChild(itemContainer)
             }
           })
@@ -237,7 +241,7 @@ export class TravelView {
           travelItemContentRight.className = 'travelBoxContentItemContentRight'
 
           const travelItemContentRightHeader = document.createElement('h3')
-          travelItemContentRightHeader.innerText = "Zysk:"
+          travelItemContentRightHeader.innerText = 'Zysk:'
           travelItemContentRight.appendChild(travelItemContentRightHeader)
 
           const travelItemContentRightResult = document.createElement('div')
@@ -283,22 +287,21 @@ export class TravelView {
     this.travelBoxPlanButton.innerText = 'ZAPLANUJ'
     this.travelBoxPlanButton.addEventListener('click', () => {
       this.travelBoxPlanButtonExtraWrapper.className =
-      this.travelBoxPlanButtonExtraWrapper.className ===
-      'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
-        ? 'travelBoxButtonsContainerButtonExtraWrapperEnabled'
-        : 'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
+        this.travelBoxPlanButtonExtraWrapper.className ===
+        'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
+          ? 'travelBoxButtonsContainerButtonExtraWrapperEnabled'
+          : 'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
 
       this.travelBoxPlanButtonWrapper.className =
-      this.travelBoxPlanButtonWrapper.className ===
-      'travelBoxButtonsContainerButtonWrapperEnabledActive'
-        ? 'travelBoxButtonsContainerButtonWrapperEnabled'
-        : 'travelBoxButtonsContainerButtonWrapperEnabledActive'
+        this.travelBoxPlanButtonWrapper.className ===
+        'travelBoxButtonsContainerButtonWrapperEnabledActive'
+          ? 'travelBoxButtonsContainerButtonWrapperEnabled'
+          : 'travelBoxButtonsContainerButtonWrapperEnabledActive'
 
       this.travelBoxPlanButton.className =
-      this.travelBoxPlanButton.className === 
-      'travelBoxButtonsContainerButtonEnabledActive'
-        ? 'travelBoxButtonsContainerButtonEnabled'
-        : 'travelBoxButtonsContainerButtonEnabledActive'
+        this.travelBoxPlanButton.className === 'travelBoxButtonsContainerButtonEnabledActive'
+          ? 'travelBoxButtonsContainerButtonEnabled'
+          : 'travelBoxButtonsContainerButtonEnabledActive'
 
       this.close()
     })
@@ -316,22 +319,21 @@ export class TravelView {
       this.scene.loadingView.show()
 
       this.travelBoxTravelButtonExtraWrapper.className =
-      this.travelBoxTravelButtonExtraWrapper.className ===
-      'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
-        ? 'travelBoxButtonsContainerButtonExtraWrapperEnabled'
-        : 'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
+        this.travelBoxTravelButtonExtraWrapper.className ===
+        'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
+          ? 'travelBoxButtonsContainerButtonExtraWrapperEnabled'
+          : 'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
 
       this.travelBoxTravelButtonWrapper.className =
-      this.travelBoxTravelButtonWrapper.className ===
-      'travelBoxButtonsContainerButtonWrapperEnabledActive'
-        ? 'travelBoxButtonsContainerButtonWrapperEnabled'
-        : 'travelBoxButtonsContainerButtonWrapperEnabledActive'
+        this.travelBoxTravelButtonWrapper.className ===
+        'travelBoxButtonsContainerButtonWrapperEnabledActive'
+          ? 'travelBoxButtonsContainerButtonWrapperEnabled'
+          : 'travelBoxButtonsContainerButtonWrapperEnabledActive'
 
       this.travelBoxTravelButton.className =
-      this.travelBoxTravelButton.className === 
-      'travelBoxButtonsContainerButtonEnabledActive'
-        ? 'travelBoxButtonsContainerButtonEnabled'
-        : 'travelBoxButtonsContainerButtonEnabledActive'
+        this.travelBoxTravelButton.className === 'travelBoxButtonsContainerButtonEnabledActive'
+          ? 'travelBoxButtonsContainerButtonEnabled'
+          : 'travelBoxButtonsContainerButtonEnabledActive'
 
       gameService
         .travel(this.selectedTravel!)

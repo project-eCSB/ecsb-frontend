@@ -20,7 +20,8 @@ export class WorkshopView {
   public static readonly workshopBoxContentBoxResultBoxID = 'workshopBoxContentBoxResultBox'
   public static readonly workshopBoxContentBoxButtonsBoxID = 'workshopBoxContentBoxButtonsBox'
   public static readonly workshopBoxCostBoxID = 'workshopBoxCostBox'
-  public static readonly workshopBoxSubmitButtonExtraWrapperID = 'workshopBoxSubmitButtonExtraWrapper'
+  public static readonly workshopBoxSubmitButtonExtraWrapperID =
+    'workshopBoxSubmitButtonExtraWrapper'
   public static readonly workshopBoxSubmitButtonWrapperID = 'workshopBoxSubmitButtonWrapper'
   public static readonly workshopBoxSubmitButtonID = 'workshopBoxSubmitButton'
   public static readonly workshopBoxCloseButtonID = 'workshopBoxCloseButton'

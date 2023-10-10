@@ -260,8 +260,10 @@ export class TradeView {
 
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
 
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1)
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1
+          )
             this.changesDone += 1
           if (
             resource.value ===
