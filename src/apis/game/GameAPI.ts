@@ -1,30 +1,30 @@
-import {authTokenAuthAndMenagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI} from '../apis'
+import { authTokenAuthAndMenagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI } from '../apis'
 import type {
-    AdminGameSettingsRequest,
-    AdminGameSettingsResponse,
-    AssetConfigRequest,
-    AssetConfigResponse,
-    AssetRequest,
-    AssetResponse,
-    CreateGameRequest,
-    CreateGameResponse,
-    DecreaseVisibleEquipmentSourceRequest,
-    GameTokenRequest,
-    GameTokenResponse,
-    IncreaseVisibleEquipmentSourceRequest,
-    ProductionRequest,
-    ProductionResponse,
-    SavedAssetsRequest,
-    SavedAssetsResponse,
-    TravelRequest,
-    TravelResponse,
-    UploadAssetRequest,
-    UploadAssetResponse,
-    UserGameSettingsResponse,
-    UserGameStatusResponse,
+  AdminGameSettingsRequest,
+  AdminGameSettingsResponse,
+  AssetConfigRequest,
+  AssetConfigResponse,
+  AssetRequest,
+  AssetResponse,
+  CreateGameRequest,
+  CreateGameResponse,
+  DecreaseVisibleEquipmentSourceRequest,
+  GameTokenRequest,
+  GameTokenResponse,
+  IncreaseVisibleEquipmentSourceRequest,
+  ProductionRequest,
+  ProductionResponse,
+  SavedAssetsRequest,
+  SavedAssetsResponse,
+  TravelRequest,
+  TravelResponse,
+  UploadAssetRequest,
+  UploadAssetResponse,
+  UserGameSettingsResponse,
+  UserGameStatusResponse,
 } from './Types'
-import {GameResponseError} from './Types'
-import {type Equipment} from '../../services/game/Types'
+import { GameResponseError } from './Types'
+import { type Equipment } from '../../services/game/Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAuthAndMenagementAPI
@@ -58,6 +58,8 @@ const getAdminGameSettings = async (
       }
 
       return {
+        timeForGame: response.data.timeForGame,
+        walkingSpeed: response.data.walkingSpeed,
         classResourceRepresentation: response.data.classResourceRepresentation,
         travels: response.data.travels,
         gameSessionId: response.data.gameSessionId,
@@ -106,6 +108,8 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
       }
 
       return {
+        timeForGame: response.data.timeForGame,
+        walkingSpeed: response.data.walkingSpeed,
         classResourceRepresentation: response.data.classResourceRepresentation,
         travels: response.data.travels,
         gameSessionId: response.data.gameSessionId,
@@ -142,7 +146,9 @@ const getPlayerEquipment = async (): Promise<Equipment> => {
     })
 }
 
-const increaseVisibleEquipmentSource = async (data: IncreaseVisibleEquipmentSourceRequest): Promise<null> => {
+const increaseVisibleEquipmentSource = async (
+  data: IncreaseVisibleEquipmentSourceRequest,
+): Promise<null> => {
   return await gameTokenSelfInteractionsAPI
     .put(`/visibleEquipment/${data.resourceName}/increase`)
     .then((response) => {
@@ -161,7 +167,9 @@ const increaseVisibleEquipmentSource = async (data: IncreaseVisibleEquipmentSour
     })
 }
 
-const decreaseVisibleEquipmentSource = async (data: DecreaseVisibleEquipmentSourceRequest): Promise<null> => {
+const decreaseVisibleEquipmentSource = async (
+  data: DecreaseVisibleEquipmentSourceRequest,
+): Promise<null> => {
   return await gameTokenSelfInteractionsAPI
     .put(`/visibleEquipment/${data.resourceName}/decrease`)
     .then((response) => {
@@ -214,8 +222,8 @@ const uploadAsset = async (
       {
         headers: {
           'Content-Type': 'application/octet-stream',
-        }
-      }
+        },
+      },
     )
     .then((response) => {
       if (response.status !== 200) {
@@ -279,23 +287,20 @@ const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsR
 
 const getAsset = async (request: AssetRequest): Promise<AssetResponse> => {
   return await authTokenAuthAndMenagementAPI
-  .get(`/assets/${request.assetId}`, { responseType: 'arraybuffer' })
-  .then((response) => {
-    if (response.status !== 200) {
-      throw new GameResponseError(response.status, response.data)
-    }
+    .get(`/assets/${request.assetId}`, { responseType: 'arraybuffer' })
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
 
-    const blob = new Blob(
-      [response.data], 
-      { type: response.headers['content-type'] }
-    )
-    const url = URL.createObjectURL(blob)
+      const blob = new Blob([response.data], { type: response.headers['content-type'] })
+      const url = URL.createObjectURL(blob)
 
-    return {
-      assetURL: url
-    }
-  })
-  .catch((error) => {
+      return {
+        assetURL: url,
+      }
+    })
+    .catch((error) => {
       if (error.response) {
         throw new GameResponseError(error.response.status, error.response.data)
       } else {

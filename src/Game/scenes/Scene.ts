@@ -50,7 +50,6 @@ import {
   getPlayerMapping,
   LAYER_SCALE,
   MAP_ASSET_KEY,
-  MOVEMENT_SPEED,
   PLAYER_DESC_OFFSET_LEFT,
   RANGE,
   SPRITE_HEIGHT,
@@ -226,7 +225,7 @@ export class Scene extends Phaser.Scene {
           walkingAnimationMapping: getPlayerMapping(this.settings.classResourceRepresentation)(
             this.status.className,
           ),
-          speed: MOVEMENT_SPEED,
+          speed: this.settings.walkingSpeed,
           startPosition: this.status.coords,
           collides: true,
         },
@@ -330,10 +329,6 @@ export class Scene extends Phaser.Scene {
       })
 
     this.userDataView.show()
-
-    this.timeView = new TimeView(5)
-    this.timeView.show()
-    this.timeView.startTimer(600)
 
     const errorsAndInfo = document.createElement('div')
     errorsAndInfo.id = 'errorsAndInfo'
@@ -545,24 +540,28 @@ export class Scene extends Phaser.Scene {
             this.playerCloudMovement.set(msg.message.playerId, false)
             break
           case TimeMessageType.SyncResponse:
-            console.log("SYNC_RESPONSE=", msg.message)
-            // TODO: Handle
+            this.timeView = new TimeView(
+              Math.floor(Object.keys(msg.message.timeTokens).length / 2),
+              Math.floor(msg.message.timeLeftSeconds / 1000),
+              Math.floor(this.settings.timeForGame / 1000),
+            )
+            this.timeView.show()
+            this.timeView.startTimer()
+            msg.message.timeTokens.forEach((el) => {
+              this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
+            })
             break
           case TimeMessageType.End:
-            console.log("END=", msg.message)
+            console.log('END=', msg.message)
             // TODO: Handle
             break
           case TimeMessageType.Remaining:
-            // TODO: Handle
-            console.log("REMAINING=", msg.message)
-            break
-          case TimeMessageType.SessionRegen:
-            // TODO: Handle
-            console.log("SESSION_REGEN=", msg.message)  
+            this.timeView?.setTimer(Math.floor(msg.message.timeLeftSeconds / 1000))
             break
           case TimeMessageType.PlayerRegen:
-            // TODO: Handle
-            console.log("PLAYER_REGEN=", msg.message)                
+            msg.message.tokens.forEach((el) => {
+              this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
+            })
             break
         }
       })
@@ -643,7 +642,7 @@ export class Scene extends Phaser.Scene {
       walkingAnimationMapping: getPlayerMapping(this.settings.classResourceRepresentation)(
         characterClass,
       ),
-      speed: MOVEMENT_SPEED,
+      speed: this.settings.walkingSpeed,
       startPosition: coords,
       collides: false,
     })
@@ -779,6 +778,7 @@ export class Scene extends Phaser.Scene {
       left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
       right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
       action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+      advancedView: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
     }
 
     const moveMapping: Array<{ keys: Key[]; direction: Direction }> = [
@@ -847,6 +847,12 @@ export class Scene extends Phaser.Scene {
       return
     }
 
+    if (controls.advancedView.isDown || this.settingsView.permanentAdsSetting()) {
+      this.advertisementInfoBuilder.show()
+    } else {
+      this.advertisementInfoBuilder.hide()
+    }
+
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))
     if (foundMapping) {
       this.gridEngine.move(this.playerId, foundMapping.direction)
@@ -855,6 +861,7 @@ export class Scene extends Phaser.Scene {
   }
 
   destroy(): void {
+    this.timeView?.endTimer()
     this.movementWs.close()
     this.chatWs.close()
     toast.dismiss()

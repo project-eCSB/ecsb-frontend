@@ -7,6 +7,7 @@ export interface Controls {
   left: Key
   right: Key
   action: Key
+  advancedView: Key
 }
 
 export enum CloudType {

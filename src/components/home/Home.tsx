@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router'
 import type { NavigateFunction } from 'react-router'
 import { useRef, useState } from 'react'
 import gameService from '../../services/game/GameService'
-import { decodeAuthToken, getAuthToken, getGameToken } from '../../apis/apis'
+import { getAuthToken, getGameToken } from '../../apis/apis'
 import './Home.css'
 import HomeNavbar from './HomeNavbar'
 import { useGameStore } from '../../store/GameStore'
@@ -14,12 +14,17 @@ const Home = () => {
 
   const { setGameData } = useGameStore()
   const [gameCode, setGameCode] = useState<string>('')
+  const [username, setUsername] = useState<string>('')
   const [error, setError] = useState<string>('')
   const submitBtnRef = useRef<HTMLButtonElement | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGameCode(event.target.value)
+  }
+
+  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(event.target.value)
   }
 
   const enableSubmitBtn = (): void => {
@@ -44,9 +49,7 @@ const Home = () => {
       const authToken = getAuthToken()
 
       if (authToken) {
-        const decodedAuthToken = decodeAuthToken(authToken)
-
-        const gameSession = await gameService.getGameSession(gameCode, decodedAuthToken.name)
+        const gameSession = await gameService.getGameSession(gameCode, username)
         const gameSettings = await gameService.getUserGameSettings()
         const gameStatus = await gameService.getUserGameStatus()
 
@@ -92,6 +95,16 @@ const Home = () => {
         <HomeNavbar />
         <div className='home-form-container'>
           <form className='home-form' onSubmit={handleSubmit}>
+            <input
+              type='text'
+              id='username'
+              name='username'
+              placeholder='Enter username'
+              value={username}
+              onChange={handleUsernameChange}
+              maxLength={255}
+              required
+            />
             <input
               type='text'
               id='gameCode'

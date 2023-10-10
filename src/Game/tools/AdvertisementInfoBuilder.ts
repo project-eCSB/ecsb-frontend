@@ -16,7 +16,7 @@ export class AdvertisementInfoBuilder {
     adBubble.className = 'adBubble'
     adBubble.id = `bubble-${playerId}`
     const adBubbleWrapper = document.createElement('div')
-    adBubbleWrapper.className = 'adBubbleWrapper'
+    adBubbleWrapper.className = 'adBubbleWrapper hidden'
     adBubbleWrapper.appendChild(adBubble)
 
     return this.scene.add.dom(25, 15, adBubbleWrapper)
@@ -43,8 +43,6 @@ export class AdvertisementInfoBuilder {
   addBubbleForResource(resourceName: string, playerId: string, buying: boolean): void {
     const bubbleContainer = document.getElementById(`bubble-${playerId}`)
     if (!bubbleContainer) return
-
-    console.log(bubbleContainer.id)
 
     if (buying) {
       bubbleContainer.querySelectorAll('.bubbleReceive').forEach((el) => {
@@ -81,5 +79,37 @@ export class AdvertisementInfoBuilder {
     div.appendChild(iconImg)
     div.appendChild(resourceImg)
     bubbleContainer.appendChild(div)
+  }
+
+  cleanBubblesForPlayer(playerId: string, buying: boolean): void {
+    if (buying) {
+      document
+        .getElementById(`bubble-${playerId}`)
+        ?.querySelectorAll('.bubbleReceive')
+        .forEach((el) => {
+          el.remove()
+        })
+    } else {
+      document
+        .getElementById(`bubble-${playerId}`)
+        ?.querySelectorAll('.bubbleGive')
+        .forEach((el) => {
+          el.remove()
+        })
+    }
+  }
+
+  show(): void {
+    document.querySelectorAll('.adBubbleWrapper').forEach((el) => {
+      el.classList.remove('hidden')
+      el.classList.add('visible')
+    })
+  }
+
+  hide(): void {
+    document.querySelectorAll('.adBubbleWrapper').forEach((el) => {
+      el.classList.remove('visible')
+      el.classList.add('hidden')
+    })
   }
 }

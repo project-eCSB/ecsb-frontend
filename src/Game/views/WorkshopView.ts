@@ -258,7 +258,7 @@ export class WorkshopView {
         costTimeMore * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
       if (
         costMoneyMore > this.scene.equipment!.money ||
-        costTimeMore > this.scene.equipment!.time ||
+        costTimeMore > this.scene.timeView!.getAvailableTokens() ||
         costTimeMore === 11
       ) {
         this.disablePlusButton()
@@ -385,7 +385,10 @@ export class WorkshopView {
     const costTime = 1
     const costMoney =
       costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-    if (costMoney > this.scene.equipment!.money || costTime > this.scene.equipment!.time) {
+    if (
+      costMoney > this.scene.equipment!.money ||
+      costTime > this.scene.timeView!.getAvailableTokens()
+    ) {
       this.disablePlusButton()
     } else {
       this.enablePlusButton()

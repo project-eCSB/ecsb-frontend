@@ -56,6 +56,8 @@ const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings
     .getAdminGameSettings({ gameSessionId })
     .then((res: AdminGameSettingsResponse) => {
       const gameSettings: GameSettings = {
+        timeForGame: res.timeForGame,
+        walkingSpeed: res.walkingSpeed,
         classResourceRepresentation: res.classResourceRepresentation,
         travels: res.travels,
         gameSessionId: res.gameSessionId,
@@ -92,6 +94,8 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
     .getUserGameSettings()
     .then((res: UserGameSettingsResponse) => {
       const gameSettings: GameSettings = {
+        timeForGame: res.timeForGame,
+        walkingSpeed: res.walkingSpeed,
         classResourceRepresentation: res.classResourceRepresentation,
         travels: res.travels,
         gameSessionId: res.gameSessionId,

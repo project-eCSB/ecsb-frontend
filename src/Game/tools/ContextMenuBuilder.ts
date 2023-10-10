@@ -7,33 +7,28 @@ import {
 import { TOAST_INVITE_MSG } from '../GameUtils'
 
 export class ContextMenuBuilder {
+  private static readonly buttonPartnershipWrapperID = 'buttonPartnershipWrapper'
+  private static readonly buttonTradeWrapperID = 'buttonTradeWrapper'
+
   build(scene: Scene, id: string): HTMLDivElement {
     const div = document.createElement('div')
     div.id = 'btns'
     div.style.backgroundColor = 'transparent'
 
     const buttonPartnership = document.createElement('button')
-    const buttonPartnershipText = document.createElement('p')
-    const iconPartnership = document.createElement('i')
-    iconPartnership.className = 'fa fa-handshake-o'
-    iconPartnership.ariaHidden = 'true'
-    buttonPartnershipText.innerText = 'Company'
-    buttonPartnership.appendChild(iconPartnership)
-    buttonPartnership.appendChild(buttonPartnershipText)
-    buttonPartnership.onclick = (e: Event) => {
+    const imgPartnership = document.createElement('img')
+    imgPartnership.src = '/assets/coopCustomIcon.png'
+    buttonPartnership.appendChild(imgPartnership)
+    buttonPartnership.onclick = (_: Event) => {
       window.document.getElementById('btns')?.remove()
       scene.actionTrade = null
     }
 
     const buttonTrade = document.createElement('button')
-    const buttonTradeText = document.createElement('p')
-    const iconTrade = document.createElement('i')
-    iconTrade.className = 'fa fa-exchange'
-    iconTrade.ariaHidden = 'true'
-    buttonTradeText.innerText = 'Trade'
-    buttonTrade.appendChild(iconTrade)
-    buttonTrade.appendChild(buttonTradeText)
-    buttonTrade.onclick = (e: Event) => {
+    const imgTrade = document.createElement('img')
+    imgTrade.src = '/assets/coopCustomIcon.png'
+    buttonTrade.appendChild(imgTrade)
+    buttonTrade.onclick = (_: Event) => {
       window.document.getElementById('btns')?.remove()
       sendTradeMessage(scene.chatWs, {
         senderId: scene.playerId,
@@ -55,8 +50,14 @@ export class ContextMenuBuilder {
       scene.actionTrade = null
     }
 
-    div.appendChild(buttonPartnership)
-    div.appendChild(buttonTrade)
+    const buttonPartnershipWrapper = document.createElement('div')
+    buttonPartnershipWrapper.id = ContextMenuBuilder.buttonPartnershipWrapperID
+    buttonPartnershipWrapper.appendChild(buttonPartnership)
+    const buttonTradeWrapper = document.createElement('div')
+    buttonTradeWrapper.id = ContextMenuBuilder.buttonTradeWrapperID
+    buttonTradeWrapper.appendChild(buttonTrade)
+    div.appendChild(buttonPartnershipWrapper)
+    div.appendChild(buttonTradeWrapper)
 
     return div
   }

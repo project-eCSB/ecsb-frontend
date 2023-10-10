@@ -263,7 +263,10 @@ export class TradeView {
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value + 1)
             this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value)
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value
+          )
             this.changesDone -= 1
           if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
@@ -290,9 +293,15 @@ export class TradeView {
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
 
           // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1)
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value - 1
+          )
             this.changesDone += 1
-          if (resource.value === bid.resources.find((item: { key: string }) => item.key === resource.key)!.value)
+          if (
+            resource.value ===
+            bid.resources.find((item: { key: string }) => item.key === resource.key)!.value
+          )
             this.changesDone -= 1
           if (this.changesDone !== 0) {
             this.enableSendOfferBtn()
