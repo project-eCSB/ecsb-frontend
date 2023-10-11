@@ -33,7 +33,6 @@ export class WorkshopView {
   private readonly workshopBoxPlusButton: HTMLButtonElement
   private readonly workshopBoxMinusButton: HTMLButtonElement
 
-  
   private readonly pTime: HTMLDivElement
 
   private readonly scene: Scene

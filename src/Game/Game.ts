@@ -71,7 +71,7 @@ export const stopGame = (gameData: GameData): void => {
 
   window.document.getElementById('btn')?.remove()
 
-  window.document.getElementById('tradeBox')?.remove()
+  window.document.getElementById('tradeBoxWrapper')?.remove()
   window.document.getElementById('userDataBox')?.remove()
   window.document.getElementById('equipmentBox')?.remove()
   window.document.getElementById('interactionBox')?.remove()

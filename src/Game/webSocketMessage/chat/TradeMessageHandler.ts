@@ -27,7 +27,6 @@ export interface TradeServerStartMessage {
   message: {
     type: IncomingTradeMessageType.TradeServerStart
     myTurn: boolean
-    otherTrader: TradeEquipment
     receiverId: string
   }
 }

@@ -216,12 +216,12 @@
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-} 
+}
 
 #settingsContainer > div > label {
   font-size: medium;
   margin: 0;
-} 
+}
 
 #leaveButtonWrapper {
   filter: drop-shadow(-3px 4px #835211);
@@ -1206,250 +1206,804 @@
 }
 
 /* TradeBox */
-#tradeBox {
-  width: 65vw;
-  height: 65vh;
+#tradeBoxWrapper {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #524436;
-  opacity: 0.95;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 2rem;
-  color: azure;
-  padding: 0.5rem 0;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 
-#tradeBoxTitle {
+#tradeBoxHeaderWrapper {
+  position: relative;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  margin-top: 15px;
+}
+
+#tradeBoxHeader {
   width: 100%;
-  height: 10%;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#tradeBoxHeader > h1 {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+#tradeBoxHeader > div:first-child,
+#tradeBoxHeader > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#tradeBoxHeader > div:first-child {
+  margin-right: 8px;
+}
+
+#tradeBoxCloseButton {
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 1rem;
+  z-index: 999999;
+  background-color: #d39f59;
+  filter: drop-shadow(-1px 2px rgb(48, 20, 1, 0.9));
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
+  cursor: pointer;
 }
 
+#tradeBoxCloseButton:hover {
+  filter: none;
+  transform: translate(-1px, 2px);
+}
+
+/* TradeBoxContent */
 #tradeBoxContent {
-  width: 100%;
-  height: 80%;
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
   gap: 1rem;
-  padding: 1rem;
 }
 
-#tradeBoxContentPlayer {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: #362b21;
-  border-radius: 1rem;
-  border: 3px solid rgba(31, 25, 19, 0.8);
+#tradeBoxContentLeftExtraWrapper,
+#tradeBoxContentRightExtraWrapper {
+  position: relative;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#tradeBoxContentPlayer > h2 {
-  width: 100%;
-  height: 10%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#tradeBoxContentLeftWrapper,
+#tradeBoxContentRightWrapper {
+  position: relative;
+  width: 350px;
+  height: 475px;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
 }
 
-#tradeBoxContentPlayer h5,
-#tradeBoxContentPlayer p {
-  font-size: 1.1rem;
+#tradeBoxContent > div:nth-child(2) {
+  height: 410px;
+  width: 150px;
 }
 
-#tradeBoxContentPlayerOfferEq {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
+#tradeBoxContentLeftWrapperTitleExtraWrapper,
+#tradeBoxContentRightWrapperTitleExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  position: absolute;
+  top: 5px;
+  left: 30px;
 }
 
-#tradeBoxContentPlayerOfferEq > div {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 0.1rem;
+#tradeBoxContentLeftWrapperTitleWrapper,
+#tradeBoxContentRightWrapperTitleWrapper {
+  background-color: #e3c296;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
 }
 
-#tradeBoxContentNeighbor {
-  width: 50%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background-color: #362b21;
-  border-radius: 1rem;
-  border: 3px solid rgba(31, 25, 19, 0.8);
-}
-
-#tradeBoxContentNeighbor > h2 {
-  width: 100%;
-  height: 10%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#tradeBoxContentNeighbor h5,
-#tradeBoxContentNeighbor p {
-  font-size: 1.1rem;
-}
-
-#tradeBoxContentNeighborOfferEq {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-}
-
-#tradeBoxContentNeighborOfferEq > div {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 0.1rem;
-}
-
-#tradeBoxButtons {
-  width: 100%;
-  height: 10%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
-#tradeBoxButtons button {
-  padding: 0.2rem;
+#tradeBoxContentLeftWrapperTitle,
+#tradeBoxContentRightWrapperTitle {
+  padding: 0.7rem 1rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
   font-size: 1.2rem;
-  cursor: pointer;
+  text-align: center;
 }
 
-#resourceWrapper {
-  display: flex;
-  justify-content: space-between;
-  width: 50%;
-}
-
-#tradeButtonWrapper {
-  display: flex;
-  justify-content: center;
-  width: 40%;
-}
-
-#tradeButtonWrapper > button {
-  font-size: 1.5rem;
-  font-weight: 600;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-#tradeButtonWrapper > button:hover {
-  background-color: #cfcfcf;
-}
-
-#tradeButtonWrapper > button:first-child {
-  margin-right: 0.5rem;
-}
-
-#bidIndicatorWrapper {
-  display: flex;
-  justify-content: center;
-  width: 10%;
-}
-
-.upBid {
-  color: rgb(0, 180, 0);
-}
-
-.stableBid {
-  color: rgb(180, 180, 0);
-}
-
-.downBid {
-  color: rgb(180, 0, 0);
-}
-
-.arrow-container {
+#tradeBoxContentLeft,
+#tradeBoxContentRight {
+  height: 100%;
+  padding: 35px 35px 50px 35px;
   display: flex;
   flex-direction: column;
+}
+
+#tradeBoxContentLeft > h3,
+#tradeBoxContentRight > h3 {
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-size: 1rem;
+  margin-top: 27px;
+  margin-bottom: 3px;
+}
+
+#tradeBoxContentLeft > hr,
+#tradeBoxContentRight > hr {
+  border: 1px solid rgba(131, 82, 17, 0.7);
+  margin-bottom: 3px;
+}
+
+#tradeBoxContentLeft,
+#tradeBoxContentRight {
+  scrollbar-width: thin;
+  scrollbar-color: #e3c296 #835211;
+}
+
+/* Works on Chrome, Edge, and Safari */
+#tradeBoxContentLeft ::-webkit-scrollbar,
+#tradeBoxContentRight ::-webkit-scrollbar {
+  width: 14px;
+}
+
+#tradeBoxContentLeft ::-webkit-scrollbar-track-piece,
+#tradeBoxContentRight ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #edb872;
+  border-width: 1px 6px 1px 6px;
+  border-style: solid;
+}
+
+#tradeBoxContentLeft ::-webkit-scrollbar-thumb,
+#tradeBoxContentRight ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 4px 1px 4px;
+}
+
+#tradeBoxContentLeftResources,
+#tradeBoxContentRightResources {
+  display: flex;
+  flex-direction: column;
+  height: 215px;
+  justify-content: space-around;
+  overflow-y: auto;
+}
+
+#tradeBoxContentLeftResources > div,
+#tradeBoxContentRightResources > div {
+  padding: 0 20px;
+  display: flex;
+  gap: 50px;
+}
+
+#tradeBoxContentLeftResources > div > div:first-child,
+#tradeBoxContentRightResources > div > div:first-child {
+  display: flex;
+  justify-content: center;
   align-items: center;
-  transform: scale(2);
-  margin: 1rem;
 }
 
-.arrow-container i {
-  margin-top: 0.5rem;
+#tradeBoxContentLeftResources > div > div:first-child > div,
+#tradeBoxContentRightResources > div > div:first-child > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#tradeBoxAcceptBtn {
-  background-color: rgb(0, 180, 0);
-  border-radius: 8px;
-  border: 2px solid rgb(255, 255, 255);
+#tradeBoxContentLeftResources > div > div:last-child,
+#tradeBoxContentRightResources > div > div:last-child {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+#tradeBoxContentLeftResources > div > div:last-child > div,
+#tradeBoxContentRightResources > div > div:last-child > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeBoxContentLeftResources > div > div:last-child > div > h4,
+#tradeBoxContentRightResources > div > div:last-child > div > h4 {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  width: 42px;
+  height: 42px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#tradeBoxContentLeftResources > div > div:last-child > button,
+#tradeBoxContentRightResources > div > div:last-child > button {
+  border: none;
+  border-radius: 50%;
+  color: #edb872;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+}
+
+.tradeBoxResourceButtonEnabled {
+  background-color: #835211;
+  cursor: pointer;
+}
+
+.tradeBoxResourceButtonDisabled {
+  background-color: #867c6e;
+}
+
+#tradeBoxContentRightResultExtraWrapper,
+#tradeBoxContentLeftResultExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  width: 100%;
+  height: 115px;
+}
+
+#tradeBoxContentRightResultWrapper,
+#tradeBoxContentLeftResultWrapper {
+  padding: 8px 20px 12px 20px;
+  width: 100%;
+  height: 100%;
+  background-color: #e3c296;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#tradeBoxContentRightResult,
+#tradeBoxContentLeftResult {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  column-gap: 32px;
+  row-gap: 5px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+}
+
+#tradeBoxContentRightResult > div,
+#tradeBoxContentLeftResult > div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+#tradeBoxContentRightResult > div > div:first-child,
+#tradeBoxContentLeftResult > div > div:first-child {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeBoxContentRightResult > div > div:nth-child(2),
+#tradeBoxContentLeftResult > div > div:nth-child(2) {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeBoxContentRightResult > div > div:nth-child(2) > h4,
+#tradeBoxContentLeftResult > div > div:nth-child(2) > h4 {
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  width: 35px;
+  height: 35px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#tradeBoxContentLeftResultExtraWrapper,
+#tradeBoxContentRightResultExtraWrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #e3c296 #835211;
+}
+
+/* Works on Chrome, Edge, and Safari */
+#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar,
+#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar {
+  width: 12px;
+}
+
+#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar-track-piece,
+#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #e3c296;
+  border-width: 1px 5px 1px 5px;
+  border-style: solid;
+}
+
+#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar-thumb,
+#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 3px 1px 3px;
+}
+
+#tradeBoxContentMiddle {
+  display: flex;
+  gap: 2rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.tradeBoxContentResultExclamationMark {
+  color: red;
+  font-size: 1rem;
+  font-family: Rowdies;
+  font-style: normal;
   font-weight: 600;
-  padding: 5px 10px;
-  width: 15%;
-  color: azure;
+  line-height: normal;
+  text-align: center;
 }
 
-#tradeBoxAcceptBtn:hover {
-  background-color: rgb(0, 140, 0);
+#userTurnWrapper {
+  margin-top: 20px;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#tradeBoxSendOfferBtn {
-  background-color: rgb(180, 180, 0);
-  border-radius: 8px;
-  border: 2px solid rgb(255, 255, 255);
-  font-weight: 600;
-  padding: 5px 10px;
-  width: 15%;
-  color: azure;
+#userTurnWrapper > h2 {
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 0.7rem 1rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
-#tradeBoxSendOfferBtn:hover {
-  background-color: rgb(140, 140, 0);
+#userTurnUserTurn {
+  background-color: #bfe50e;
 }
 
-#tradeBoxCloseBtn {
-  background-color: rgb(180, 0, 0);
-  border-radius: 8px;
-  border: 2px solid rgb(255, 255, 255);
-  font-weight: 600;
-  padding: 5px 10px;
-  width: 15%;
-  color: azure;
+#userTurnNotUserTurn {
+  background-color: #ff9801;
 }
 
-#tradeBoxCloseBtn:hover {
-  background-color: rgb(140, 0, 0);
+#middleArrows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 20px;
+}
+
+#tradeBoxProposeButton,
+#tradeBoxAcceptButton {
+  width: 100%;
+  padding: 0.5rem;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  font-size: 1.2rem;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+}
+
+.tradeBoxMiddleButtonExtraWrapperEnabled {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+.tradeBoxMiddleButtonExtraWrapperEnabled:hover {
+  filter: none;
+}
+
+.tradeBoxMiddleButtonExtraWrapperEnabledActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+.tradeBoxMiddleButtonWrapperEnabledActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+.tradeBoxMiddleButtonWrapperEnabled {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+.tradeBoxMiddleButtonWrapperEnabled:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+.tradeBoxMiddleButtonWrapperDisabled {
+  filter: drop-shadow(-3px 4px #3f382e);
+}
+
+.tradeBoxMiddleButtonWrapperDisabled:hover {
+  filter: drop-shadow(-3px 4px #3f382e);
+}
+
+.tradeBoxMiddleButtonExtraWrapperEnabled:hover .tradeBoxMiddleButtonEnabled {
+  cursor: pointer;
+  transform: translate(2px, -2px);
+}
+
+.tradeBoxMiddleButtonEnabled {
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+}
+
+.tradeBoxMiddleButtonEnabledActive {
+  background-color: #ab742b;
+  color: #000;
+  transition: 0.2s all ease-in-out;
+  transform: translate(-5px, 6px);
+}
+
+.tradeBoxMiddleButtonDisabled {
+  background-color: #e9d3b7;
+  color: #787272;
+}
+
+.tradeBoxMiddleButtonDisabled:hover {
+  cursor: auto;
+  transform: none;
 }
 
 /* ContextMenu */
 
-#buttonPartnershipWrapper, #buttonTradeWrapper {
+#buttonPartnershipWrapper,
+#buttonTradeWrapper {
   transform: translate(-60%, 0);
   filter: drop-shadow(-3px 4px #835211);
   transition: 0.2s all ease-in-out;
 }
 
-#buttonPartnershipWrapper{
+#buttonPartnershipWrapper {
   transform: translate(-60%, 50%);
 }
 
@@ -1457,7 +2011,8 @@
   transform: translate(60%, -50%);
 }
 
-#buttonPartnershipWrapper > button, #buttonTradeWrapper > button {
+#buttonPartnershipWrapper > button,
+#buttonTradeWrapper > button {
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -1503,12 +2058,427 @@
   border: none;
 }
 
-#buttonPartnershipWrapper:hover, #buttonTradeWrapper:hover {
+#buttonPartnershipWrapper:hover,
+#buttonTradeWrapper:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
-#buttonPartnershipWrapper:hover > button, #buttonTradeWrapper:hover > button {
+#buttonPartnershipWrapper:hover > button,
+#buttonTradeWrapper:hover > button {
   transform: translate(2px, -2px);
+}
+
+/* TradeSuccessBox */
+#tradeSuccessBox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+/* TradeSuccessBox - Header */
+#tradeSuccessBoxHeaderWrapper {
+  position: relative;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeSuccessBoxHeader {
+  width: 100%;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #000;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#tradeSuccessBoxHeader > h1 {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+#tradeSuccessBoxHeader > div:first-child,
+#tradeSuccessBoxHeader > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#tradeSuccessBoxHeader > div:first-child {
+  margin-right: 8px;
+}
+
+/* TradeSuccessBox - Information */
+#tradeSuccessBoxInformationBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeSuccessBoxInformationBox {
+  padding: 1.2rem;
+  background-color: #e3c296;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#tradeSuccessBoxInformationBox > h1 {
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  font-size: 1.2rem;
+}
+
+/* TradeSuccessBox - Content */
+#tradeSuccessBoxContentBoxExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeSuccessBoxContentBoxWrapper {
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#tradeSuccessBoxContentBox {
+  padding: 30px 50px;
+  display: flex;
+  gap: 20px;
+}
+
+#tradeSuccessBoxContentBox > h2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-size: 1.2rem;
+}
+
+#tradeSuccessBoxContentBoxResourcesBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+#tradeSuccessBoxContentBoxResourcesBox > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#tradeSuccessBoxContentBoxResourcesCurrPlayer,
+#tradeSuccessBoxContentBoxResourcesOtherPlayer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 350px;
+}
+
+#tradeSuccessBoxContentBoxResourcesCurrPlayer > div,
+#tradeSuccessBoxContentBoxResourcesOtherPlayer > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+#tradeSuccessBoxContentBoxResourcesCurrPlayer > div > div,
+#tradeSuccessBoxContentBoxResourcesOtherPlayer > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#tradeSuccessBoxContentBoxResourcesCurrPlayer > div > div > h4,
+#tradeSuccessBoxContentBoxResourcesOtherPlayer > div > div > h4 {
+  text-align: center;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  width: 42px;
+  height: 42px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-size: 1.2rem;
+}
+
+/* TradeSuccessBox - Ok button */
+#tradeSuccessBoxOkButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+  border: none;
+}
+
+#tradeSuccessBoxOkButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#tradeSuccessBoxOkButtonExtraWrapperActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+#tradeSuccessBoxOkButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+#tradeSuccessBoxOkButtonWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#tradeSuccessBoxOkButtonWrapperActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+#tradeSuccessBoxOkButton {
+  border: none;
+  padding: 0.8rem 1.6rem;
+  font-family: Rowdies;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  font-size: 1.2rem;
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#tradeSuccessBoxOkButtonExtraWrapper:hover #tradeSuccessBoxOkButton {
+  cursor: pointer;
+  transform: translate(2px, -2px);
+}
+
+#tradeSuccessBoxOkButton {
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+  cursor: pointer;
+}
+
+#tradeSuccessBoxOkButton:hover {
+  transform: translate(-1px, 2px);
+}
+
+#tradeSuccessBoxOkButtonActive {
+  background-color: #ab742b;
+  color: #000;
+  transition: 0.2s all ease-in-out;
+  transform: translate(-5px, 6px);
 }
 
 /* WorkshopBox */
@@ -2706,22 +3676,22 @@
 /* Works on Firefox */
 #travelBoxContent {
   scrollbar-width: thin;
-  scrollbar-color: #E3C296 #835211;
+  scrollbar-color: #e3c296 #835211;
 }
 
 /* Works on Chrome, Edge, and Safari */
-::-webkit-scrollbar {
+#travelBoxContent ::-webkit-scrollbar {
   width: 20px;
 }
 
-::-webkit-scrollbar-track-piece {
+#travelBoxContent ::-webkit-scrollbar-track-piece {
   background-color: #835211;
   border-color: #edb872;
   border-width: 1px 9px 1px 9px;
   border-style: solid;
 }
 
-::-webkit-scrollbar-thumb {
+#travelBoxContent ::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: #835211;
   border-color: #835211;
@@ -2735,7 +3705,7 @@
 
 .travelBoxContentItem {
   padding: 3rem 2rem;
-  background-color: #E3C296;
+  background-color: #e3c296;
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -2779,20 +3749,20 @@
   gap: 0.5rem;
 }
 
-input[type=radio] {
+input[type='radio'] {
   cursor: pointer;
   margin: 0;
   width: 17px;
   height: 17px;
   appearance: none;
   padding: 1px;
-  background-color: #F6DCB8;
-  border: 2px solid #F6DCB8;
+  background-color: #f6dcb8;
+  border: 2px solid #f6dcb8;
   outline: 2px solid #835211;
-  border-radius:50%;
+  border-radius: 50%;
 }
 
-input[type=radio]:checked {
+input[type='radio']:checked {
   background-color: #835211;
 }
 
@@ -2802,7 +3772,7 @@ input[type=radio]:checked {
 
 .travelBoxContentItemHeader {
   display: flex;
-  justify-content: flex-start; 
+  justify-content: flex-start;
   align-items: center;
   gap: 0.5rem;
 }
@@ -2972,7 +3942,7 @@ input[type=radio]:checked {
 .travelBoxContentItemContentRight > div > div > h4 {
   height: 38px;
   padding: 0.5rem;
-  background-color: #F6DCB8;
+  background-color: #f6dcb8;
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -3225,8 +4195,39 @@ input[type=radio]:checked {
 }
 
 .adBubble {
-  clip-path: polygon(2.17% 6.34%,0.62% 21.03%,0.35% 40.00%,0.72% 61.46%,1.33% 74.81%,3.62% 84.50%,8.27% 99.90%,11.59% 82.60%,14.01% 78.88%,17.46% 78.79%,25.69% 79.09%,27.55% 75.01%,30.48% 79.67%,49.45% 81.29%,65.67% 81.50%,80.29% 81.14%,93.91% 80.07%,96.90% 78.64%,98.39% 75.08%,98.86% 69.36%,99.30% 50.17%,98.69% 29.41%,97.46% 6.89%,88.50% 4.81%,76.58% 4.88%,74.75% 8.53%,73.08% 4.58%,63.50% 4.32%,39.67% 4.76%,18.83% 5.47%);
-  background-color: #F6DCB8;
+  clip-path: polygon(
+    2.17% 6.34%,
+    0.62% 21.03%,
+    0.35% 40%,
+    0.72% 61.46%,
+    1.33% 74.81%,
+    3.62% 84.5%,
+    8.27% 99.9%,
+    11.59% 82.6%,
+    14.01% 78.88%,
+    17.46% 78.79%,
+    25.69% 79.09%,
+    27.55% 75.01%,
+    30.48% 79.67%,
+    49.45% 81.29%,
+    65.67% 81.5%,
+    80.29% 81.14%,
+    93.91% 80.07%,
+    96.9% 78.64%,
+    98.39% 75.08%,
+    98.86% 69.36%,
+    99.3% 50.17%,
+    98.69% 29.41%,
+    97.46% 6.89%,
+    88.5% 4.81%,
+    76.58% 4.88%,
+    74.75% 8.53%,
+    73.08% 4.58%,
+    63.5% 4.32%,
+    39.67% 4.76%,
+    18.83% 5.47%
+  );
+  background-color: #f6dcb8;
   transform: translateY(-100%);
   padding: 0.5rem 0;
 }
@@ -3262,15 +4263,15 @@ input[type=radio]:checked {
   visibility: hidden;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   appearance: none;
-  background-color: #F6DCB8;
-  border: 2px solid #F6DCB8;
+  background-color: #f6dcb8;
+  border: 2px solid #f6dcb8;
   outline: 2px solid #835211;
   padding: 7px;
   margin: 0;
 }
 
-input[type="checkbox"]:checked {
+input[type='checkbox']:checked {
   background-color: #835211;
 }
