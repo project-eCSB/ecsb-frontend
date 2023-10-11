@@ -4,17 +4,25 @@ export class WorkshopSuccessView {
   public static readonly workshopSuccessBoxID = 'workshopSuccessBox'
   public static readonly workshopSuccessBoxTitleWrapperID = 'workshopSuccessBoxTitleBoxWrapper'
   public static readonly workshopSuccessBoxTitleBoxID = 'workshopSuccessBoxTitleBox'
-  public static readonly workshopSuccessBoxHeaderBoxWrapperID = 'workshopSuccessBoxHeaderBoxWrapper'  
+  public static readonly workshopSuccessBoxHeaderBoxWrapperID = 'workshopSuccessBoxHeaderBoxWrapper'
   public static readonly workshopSuccessBoxHeaderBoxID = 'workshopSuccessBoxHeaderBox'
-  public static readonly workshopSuccessBoxContentBoxWrapperID = 'workshopSuccessBoxContentBoxWrapper'
+  public static readonly workshopSuccessBoxContentBoxWrapperID =
+    'workshopSuccessBoxContentBoxWrapper'
   public static readonly workshopSuccessBoxContentBoxID = 'workshopSuccessBoxContentBox'
-  public static readonly workshopSuccessBoxContentBoxIconWrapperID = 'workshopSuccessBoxContentBoxIconWrapper'
-  public static readonly workshopSuccessBoxContentBoxResultBoxID = 'workshopSuccessBoxContentBoxResultBox'
-  public static readonly workshopSuccessBoxContentBoxResultBoxResourcesBoxID = 'workshopSuccessBoxContentBoxResultBoxResourcesBox'
-  public static readonly workshopSuccessBoxContentBoxResultBoxResourcesBoxValueID = 'workshopSuccessBoxContentBoxResultBoxResourcesBoxValue'
-  public static readonly workshopSuccessBoxContentBoxPlayerBoxID = 'workshopSuccessBoxContentBoxPlayerBox'
-  public static readonly workshopSuccessBoxCloseButtonExtraWrapperID = 'workshopSuccessBoxCloseButtonExtraWrapper'
-  public static readonly workshopSuccessBoxCloseButtonWrapperID = 'workshopSuccessBoxCloseButtonWrapper'
+  public static readonly workshopSuccessBoxContentBoxIconWrapperID =
+    'workshopSuccessBoxContentBoxIconWrapper'
+  public static readonly workshopSuccessBoxContentBoxResultBoxID =
+    'workshopSuccessBoxContentBoxResultBox'
+  public static readonly workshopSuccessBoxContentBoxResultBoxResourcesBoxID =
+    'workshopSuccessBoxContentBoxResultBoxResourcesBox'
+  public static readonly workshopSuccessBoxContentBoxResultBoxResourcesBoxValueID =
+    'workshopSuccessBoxContentBoxResultBoxResourcesBoxValue'
+  public static readonly workshopSuccessBoxContentBoxPlayerBoxID =
+    'workshopSuccessBoxContentBoxPlayerBox'
+  public static readonly workshopSuccessBoxCloseButtonExtraWrapperID =
+    'workshopSuccessBoxCloseButtonExtraWrapper'
+  public static readonly workshopSuccessBoxCloseButtonWrapperID =
+    'workshopSuccessBoxCloseButtonWrapper'
   public static readonly workshopSuccessBoxCloseButtonID = 'workshopSuccessBoxCloseButton'
 
   private readonly workshopSuccessBox: HTMLDivElement
@@ -77,7 +85,8 @@ export class WorkshopSuccessView {
 
     // Content
     const workshopSuccessBoxContentBoxWrapper = document.createElement('div')
-    workshopSuccessBoxContentBoxWrapper.id = WorkshopSuccessView.workshopSuccessBoxContentBoxWrapperID
+    workshopSuccessBoxContentBoxWrapper.id =
+      WorkshopSuccessView.workshopSuccessBoxContentBoxWrapperID
 
     const workshopSuccessBoxContentBox = document.createElement('div')
     workshopSuccessBoxContentBox.id = WorkshopSuccessView.workshopSuccessBoxContentBoxID

@@ -77,6 +77,30 @@ const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings
     })
 }
 
+const getAdminGameLogs = async (gameSessionId: number): Promise<string> => {
+  return await gameAPI
+    .getAdminGameLogs({ gameSessionId })
+    .then((res: any) => {
+      const fields = Object.keys(res[0])
+      const replacer = function (_key: any, value: any): any {
+        return value === null ? '' : value
+      }
+      let csv = res.map(function (row: { [x: string]: any }) {
+        return fields
+          .map(function (fieldName) {
+            return JSON.stringify(row[fieldName], replacer)
+          })
+          .join(',')
+      })
+      csv.unshift(fields.join(','))
+      csv = csv.join('\r\n')
+      return csv
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+}
+
 const getGameSession = async (gameCode: string, playerId: string): Promise<number> => {
   return await gameAPI
     .getGameToken({ gameCode, playerId })
@@ -243,6 +267,7 @@ const decreaseVisibleEquipmentSource = async (resourceName: string): Promise<nul
 const gameService = {
   createGame,
   getAdminGameSettings,
+  getAdminGameLogs,
   getUserGameSettings,
   getGameSession,
   getPlayerEquipment,

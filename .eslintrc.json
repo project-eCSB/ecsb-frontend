@@ -59,6 +59,8 @@
         "@typescript-eslint/array-type": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "object-shorthand": "off"
+        "object-shorthand": "off",
+        "@typescript-eslint/restrict-plus-operands": "off",
+        "@typescript-eslint/lines-between-class-members": "off"
     }
 }

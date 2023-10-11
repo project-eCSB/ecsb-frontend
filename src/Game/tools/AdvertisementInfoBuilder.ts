@@ -17,6 +17,7 @@ export class AdvertisementInfoBuilder {
     adBubble.id = `bubble-${playerId}`
     const adBubbleWrapper = document.createElement('div')
     adBubbleWrapper.className = 'adBubbleWrapper hidden'
+    adBubbleWrapper.id = playerId
     adBubbleWrapper.appendChild(adBubble)
 
     return this.scene.add.dom(25, 15, adBubbleWrapper)
@@ -99,10 +100,15 @@ export class AdvertisementInfoBuilder {
     }
   }
 
-  show(): void {
+  showIfCloudNotVisible(): void {
     document.querySelectorAll('.adBubbleWrapper').forEach((el) => {
-      el.classList.remove('hidden')
-      el.classList.add('visible')
+      if (!this.scene.interactionCloudBuiler.isVisible(el.id)) {
+        el.classList.remove('hidden')
+        el.classList.add('visible')
+      } else {
+        el.classList.remove('visible')
+        el.classList.add('hidden')
+      }
     })
   }
 

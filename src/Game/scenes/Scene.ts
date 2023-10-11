@@ -770,8 +770,6 @@ export class Scene extends Phaser.Scene {
   }
 
   update(): void {
-    if (!this.movingEnabled) return
-
     const controls: Controls = {
       up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
       down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
@@ -780,6 +778,14 @@ export class Scene extends Phaser.Scene {
       action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
       advancedView: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
     }
+
+    if (controls.advancedView.isDown || this.settingsView.permanentAdsSetting()) {
+      this.advertisementInfoBuilder.showIfCloudNotVisible()
+    } else {
+      this.advertisementInfoBuilder.hide()
+    }
+
+    if (!this.movingEnabled) return
 
     const moveMapping: Array<{ keys: Key[]; direction: Direction }> = [
       { keys: [controls.left, controls.up], direction: Direction.UP_LEFT },
@@ -816,7 +822,12 @@ export class Scene extends Phaser.Scene {
             this.players[this.playerId].coords.y === coords.y,
         )
       ) {
-        this.travelView = new TravelView(this, TravelType.LOW, this.resourceUrl, this.settings.classResourceRepresentation)
+        this.travelView = new TravelView(
+          this,
+          TravelType.LOW,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+        )
         this.travelView.show()
 
         this.interactionView.close()
@@ -827,7 +838,12 @@ export class Scene extends Phaser.Scene {
             this.players[this.playerId].coords.y === coords.y,
         )
       ) {
-        this.travelView = new TravelView(this, TravelType.MEDIUM, this.resourceUrl, this.settings.classResourceRepresentation)
+        this.travelView = new TravelView(
+          this,
+          TravelType.MEDIUM,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+        )
         this.travelView.show()
 
         this.interactionView.close()
@@ -838,19 +854,18 @@ export class Scene extends Phaser.Scene {
             this.players[this.playerId].coords.y === coords.y,
         )
       ) {
-        this.travelView = new TravelView(this, TravelType.HIGH, this.resourceUrl, this.settings.classResourceRepresentation)
+        this.travelView = new TravelView(
+          this,
+          TravelType.HIGH,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+        )
         this.travelView.show()
 
         this.interactionView.close()
       }
 
       return
-    }
-
-    if (controls.advancedView.isDown || this.settingsView.permanentAdsSetting()) {
-      this.advertisementInfoBuilder.show()
-    } else {
-      this.advertisementInfoBuilder.hide()
     }
 
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))

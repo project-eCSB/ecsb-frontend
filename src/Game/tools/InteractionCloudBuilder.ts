@@ -67,4 +67,12 @@ export class InteractionCloudBuilder {
       this.hideInteractionCloud(playerId, cloudType)
     })
   }
+
+  isVisible(playerId: string): boolean {
+    const cloud = document.getElementById(`cloud-${playerId}`)
+    if (!cloud) {
+      return false
+    }
+    return cloud.style.visibility !== 'hidden'
+  }
 }
