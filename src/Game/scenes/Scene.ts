@@ -5,6 +5,7 @@ import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
 import type {
   AssetConfig,
+  EndGameStatus,
   Equipment,
   GameSettings,
   GameStatus,
@@ -67,6 +68,7 @@ import { StatusAndCoopView } from '../views/StatusAndCoopView'
 import { AdvertisementInfoBuilder } from '../tools/AdvertisementInfoBuilder'
 import Key = Phaser.Input.Keyboard.Key
 import { TimeMessageType, sendTimeMessage } from '../webSocketMessage/chat/TimeMessage'
+import { LeaderboardView } from '../views/LeaderboardView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -140,7 +142,7 @@ export class Scene extends Phaser.Scene {
     this.settings = settings
     this.players = {}
     this.actionTrade = null
-    this.movingEnabled = true
+    this.movingEnabled = false
     this.tradeWindow = null
     this.userDataView = new UserDataView(this.playerId, this.status.className)
     this.timeView = null
@@ -473,6 +475,8 @@ export class Scene extends Phaser.Scene {
         if (!msg) return
 
         if (msg.message.type === TimeMessageType.SyncResponse) {
+          this.movingEnabled = true
+
           this.timeView = new TimeView(
             Math.floor(Object.keys(msg.message.timeTokens).length / 2),
             Math.floor(msg.message.timeLeftSeconds / 1000),
@@ -581,8 +585,16 @@ export class Scene extends Phaser.Scene {
         this.playerCloudMovement.set(msg.message.playerId, false)
         break
       case TimeMessageType.End:
-        console.log('END=', msg.message)
-        // TODO: Handle
+        gameService
+          .getPlayerResults()
+          .then((leaderboard: EndGameStatus) => {
+            this.movingEnabled = false
+            const leaderboardView = new LeaderboardView(leaderboard, this.playerId)
+            leaderboardView.show()
+          })
+          .catch((err) => {
+            console.error(err)
+          })
         break
       case TimeMessageType.Remaining:
         this.timeView?.setTimer(Math.floor(msg.message.timeLeftSeconds / 1000))

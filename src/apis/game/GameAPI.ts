@@ -24,7 +24,7 @@ import type {
   UserGameStatusResponse,
 } from './Types'
 import { GameResponseError } from './Types'
-import { type Equipment } from '../../services/game/Types'
+import type { EndGameStatus, Equipment } from '../../services/game/Types'
 
 const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
   return await authTokenAuthAndMenagementAPI
@@ -171,6 +171,25 @@ const increaseVisibleEquipmentSource = async (
       }
 
       return null
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const getPlayerResults = async (): Promise<EndGameStatus> => {
+  return await gameTokenAPI
+    .get('/results')
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return response.data
     })
     .catch((error) => {
       if (error.response) {
@@ -374,6 +393,7 @@ const gameAPI = {
   getAdminGameLogs,
   getGameToken,
   getPlayerEquipment,
+  getPlayerResults,
   getUserGameSettings,
   getUserGameStatus,
   uploadAsset,

@@ -51,3 +51,13 @@ export interface Equipment {
   time: number
   resources: GameResourceDto[]
 }
+
+export interface PlayerResultDto {
+  playerId: string
+  money: number
+}
+
+export interface EndGameStatus {
+  gameSessionName: string
+  playersLeaderboard: PlayerResultDto[]
+}
