@@ -87,20 +87,17 @@ export class TravelView {
     switch (travelType) {
       case TravelType.LOW:
         sideTitle = 'BLISKIE'
-        timeIcon.style.width = '71px'
-        timeIcon.style.height = '31px'
+        timeIcon.style.width = '61px'
         timeIcon.src = '/assets/shortRouteCustomIcon.png'
         break
       case TravelType.MEDIUM:
         sideTitle = 'ŚREDNIE'
-        timeIcon.style.width = '71px'
-        timeIcon.style.height = '51px'
+        timeIcon.style.width = '61px'
         timeIcon.src = '/assets/mediumRouteCustomIcon.png'
         break
       case TravelType.HIGH:
         sideTitle = 'DALEKIE'
-        timeIcon.style.width = '71px'
-        timeIcon.style.height = '71px'
+        timeIcon.style.width = '51px'
         timeIcon.src = '/assets/longRouteCustomIcon.png'
         break
       default:
@@ -111,8 +108,7 @@ export class TravelView {
 
     const trainIcon = document.createElement('img')
     trainIcon.src = '/assets/trainCustomIcon.png'
-    trainIcon.style.width = '71px'
-    trainIcon.style.height = '61px'
+    trainIcon.style.width = '56px'
 
     const titlesWrapper = document.createElement('div')
     titlesWrapper.appendChild(travelBoxHeaderMainTitle)
