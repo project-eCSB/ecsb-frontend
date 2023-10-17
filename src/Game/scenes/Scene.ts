@@ -26,8 +26,9 @@ import { TradeOfferPopup } from '../components/TradeOfferPopup'
 import { WorkshopView } from '../views/WorkshopView'
 import { InteractionView } from '../views/InteractionView'
 import { LoadingView } from '../views/LoadingView'
-import { parseChatMessage } from '../webSocketMessage/chat/MessageParser'
+import { type ChatMessage, parseChatMessage } from '../webSocketMessage/chat/MessageParser'
 import {
+  type MovementMessage,
   MovementMessageType,
   sendMovementMessage,
 } from '../webSocketMessage/movement/MovementMessage'
@@ -119,6 +120,10 @@ export class Scene extends Phaser.Scene {
   public characterUrl!: string
   public resourceUrl!: string
   public tileUrl!: string
+  private receivedTimeSync = false
+  private receivedPlayerSync = false
+  private readonly movementQueue: MovementMessage[] = []
+  private readonly chatQueue: ChatMessage[] = []
 
   constructor(
     gameToken: string,
@@ -400,40 +405,50 @@ export class Scene extends Phaser.Scene {
       })
       .onMessage((i, ev) => {
         const msg = parseMovementMessage(ev.data)
+        if (!msg) return
 
-        if (!msg) {
-          return
-        }
+        if (msg.type === MovementMessageType.PlayerSyncing) {
+          msg.players.forEach((playerWithClass) => {
+            const player = playerWithClass.playerPosition
+            if (player.id !== this.playerId) {
+              this.addPlayer(player.id, player.coords, player.direction, playerWithClass.className)
+            }
+          })
 
-        switch (msg.type) {
-          case MovementMessageType.PlayerAdded:
-            this.addPlayer(msg.id, msg.coords, msg.direction, msg.className)
-            break
-          case MovementMessageType.PlayerMoved:
-            this.movePlayer(msg.id, msg.coords, msg.direction)
-            break
-          case MovementMessageType.PlayerRemoved:
-            this.removePlayer(msg.id)
-            break
-          case MovementMessageType.PlayerSyncing:
-            msg.players.forEach((playerWithClass) => {
-              const player = playerWithClass.playerPosition
-              if (player.id !== this.playerId) {
-                this.addPlayer(
-                  player.id,
-                  player.coords,
-                  player.direction,
-                  playerWithClass.className,
-                )
-              }
-            })
-            break
+          while (this.movementQueue.length > 0) {
+            const msg = this.movementQueue.shift()
+            if (!msg) return
+
+            this.handleMovementMessage(msg)
+          }
+          this.receivedPlayerSync = true
+        } else {
+          if (!this.receivedTimeSync || !this.receivedPlayerSync) {
+            this.movementQueue.push(msg)
+            return
+          }
+
+          this.handleMovementMessage(msg)
         }
       })
       .onRetry((i, ev) => {
         console.log('retry')
       })
       .build()
+  }
+
+  handleMovementMessage(msg: MovementMessage): void {
+    switch (msg.type) {
+      case MovementMessageType.PlayerAdded:
+        this.addPlayer(msg.id, msg.coords, msg.direction, msg.className)
+        break
+      case MovementMessageType.PlayerMoved:
+        this.movePlayer(msg.id, msg.coords, msg.direction)
+        break
+      case MovementMessageType.PlayerRemoved:
+        this.removePlayer(msg.id)
+        break
+    }
   }
 
   configureChatWebSocket(): void {
@@ -455,120 +470,130 @@ export class Scene extends Phaser.Scene {
       })
       .onMessage((i, ev) => {
         const msg = parseChatMessage(ev.data)
-
         if (!msg) return
-        switch (msg.message.type) {
-          case IncomingTradeMessageType.TradeServerPropose:
-            this.showTradeInvite(msg.senderId)
-            break
-          case IncomingTradeMessageType.TradeServerStart:
-            this.otherEquipment = msg.message.otherTrader
-            this.otherPlayerId = msg.senderId
-            this.createTradeWindow(msg.senderId, msg.message.myTurn)
-            break
-          case IncomingTradeMessageType.TradeServerCancel:
-            this.tradeWindow?.close()
-            break
-          case IncomingTradeMessageType.TradeServerBid:
-            this.updateTradeDialog(
-              msg.message.tradeBid.senderRequest,
-              msg.message.tradeBid.senderOffer,
-            )
-            break
-          case IncomingTradeMessageType.TradeServerFinish:
-            this.tradeWindow?.close()
-            break
-          case UserStatusMessageType.UserWarning:
-            this.showBusyPopup(msg.message.reason)
-            break
-          case EquipmentMessageType.EquipmentChange:
-            this.equipment = msg.message.playerEquipment
-            this.equipmentView?.update(msg.message.playerEquipment)
-            break
-          case NotificationMessageType.NotificationAdvertisementBuy:
-            this.advertisementInfoBuilder.addBubbleForResource(
-              msg.message.gameResourceName,
-              msg.senderId,
-              true,
-            )
-            this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
-            break
-          case NotificationMessageType.NotificationAdvertisementSell:
-            this.advertisementInfoBuilder.addBubbleForResource(
-              msg.message.gameResourceName,
-              msg.senderId,
-              false,
-            )
-            this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
-            break
-          case NotificationMessageType.NotificationTradeStart:
-            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
-            break
-          case NotificationMessageType.NotificationTradeEnd:
-            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TALK)
-            break
-          case NotificationMessageType.NotificationTravelStart:
-            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
-            break
-          case NotificationMessageType.NotificationTravelEnd:
-            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
-            break
-          case NotificationMessageType.NotificationTravelChoosingStart:
-            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
-            break
-          case NotificationMessageType.NotificationTravelChoosingStop:
-            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
-            break
-          case NotificationMessageType.NotificationWorkshopChoosingStart:
-            this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.WORK)
-            break
-          case NotificationMessageType.NotificationWorkshopChoosingStop:
-            this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
-            break
-          case NotificationMessageType.NotificationProductionStart:
-            this.interactionCloudBuiler.showInteractionCloud(
-              msg.message.playerId,
-              CloudType.PRODUCTION,
-            )
-            this.playerCloudMovement.set(msg.message.playerId, true)
-            break
-          case NotificationMessageType.NotificationProductionEnd:
-            this.interactionCloudBuiler.hideInteractionCloud(
-              msg.message.playerId,
-              CloudType.PRODUCTION,
-            )
-            this.playerCloudMovement.set(msg.message.playerId, false)
-            break
-          case TimeMessageType.SyncResponse:
-            this.timeView = new TimeView(
-              Math.floor(Object.keys(msg.message.timeTokens).length / 2),
-              Math.floor(msg.message.timeLeftSeconds / 1000),
-              Math.floor(this.settings.timeForGame / 1000),
-            )
-            this.timeView.show()
-            this.timeView.startTimer()
-            msg.message.timeTokens.forEach((el) => {
-              this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
-            })
-            break
-          case TimeMessageType.End:
-            console.log('END=', msg.message)
-            // TODO: Handle
-            break
-          case TimeMessageType.Remaining:
-            this.timeView?.setTimer(Math.floor(msg.message.timeLeftSeconds / 1000))
-            break
-          case TimeMessageType.PlayerRegen:
-            msg.message.tokens.forEach((el) => {
-              this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
-            })
-            break
+
+        if (msg.message.type === TimeMessageType.SyncResponse) {
+          this.timeView = new TimeView(
+            Math.floor(Object.keys(msg.message.timeTokens).length / 2),
+            Math.floor(msg.message.timeLeftSeconds / 1000),
+            Math.floor(this.settings.timeForGame / 1000),
+          )
+          this.timeView.show()
+          this.timeView.startTimer()
+          msg.message.timeTokens.forEach((el) => {
+            this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
+          })
+
+          while (this.chatQueue.length > 0) {
+            const msg = this.chatQueue.shift()
+            if (!msg) return
+
+            this.handleChatMessage(msg)
+          }
+
+          this.receivedTimeSync = true
+        } else {
+          if (!this.receivedTimeSync || !this.receivedPlayerSync) {
+            this.chatQueue.push(msg)
+            return
+          }
+
+          this.handleChatMessage(msg)
         }
       })
       .onRetry((i, ev) => {
         console.log('retry')
       })
       .build()
+  }
+
+  handleChatMessage(msg: ChatMessage): void {
+    switch (msg.message.type) {
+      case IncomingTradeMessageType.TradeServerPropose:
+        this.showTradeInvite(msg.senderId)
+        break
+      case IncomingTradeMessageType.TradeServerStart:
+        this.otherEquipment = msg.message.otherTrader
+        this.otherPlayerId = msg.senderId
+        this.createTradeWindow(msg.senderId, msg.message.myTurn)
+        break
+      case IncomingTradeMessageType.TradeServerCancel:
+        this.tradeWindow?.close()
+        break
+      case IncomingTradeMessageType.TradeServerBid:
+        this.updateTradeDialog(msg.message.tradeBid.senderRequest, msg.message.tradeBid.senderOffer)
+        break
+      case IncomingTradeMessageType.TradeServerFinish:
+        this.tradeWindow?.close()
+        break
+      case UserStatusMessageType.UserWarning:
+        this.showBusyPopup(msg.message.reason)
+        break
+      case EquipmentMessageType.EquipmentChange:
+        this.equipment = msg.message.playerEquipment
+        this.equipmentView?.update(msg.message.playerEquipment)
+        break
+      case NotificationMessageType.NotificationAdvertisementBuy:
+        this.advertisementInfoBuilder.addBubbleForResource(
+          msg.message.gameResourceName,
+          msg.senderId,
+          true,
+        )
+        this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
+        break
+      case NotificationMessageType.NotificationAdvertisementSell:
+        this.advertisementInfoBuilder.addBubbleForResource(
+          msg.message.gameResourceName,
+          msg.senderId,
+          false,
+        )
+        this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
+        break
+      case NotificationMessageType.NotificationTradeStart:
+        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
+        break
+      case NotificationMessageType.NotificationTradeEnd:
+        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TALK)
+        break
+      case NotificationMessageType.NotificationTravelStart:
+        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        break
+      case NotificationMessageType.NotificationTravelEnd:
+        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        break
+      case NotificationMessageType.NotificationTravelChoosingStart:
+        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        break
+      case NotificationMessageType.NotificationTravelChoosingStop:
+        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        break
+      case NotificationMessageType.NotificationWorkshopChoosingStart:
+        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.WORK)
+        break
+      case NotificationMessageType.NotificationWorkshopChoosingStop:
+        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
+        break
+      case NotificationMessageType.NotificationProductionStart:
+        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+        this.playerCloudMovement.set(msg.message.playerId, true)
+        break
+      case NotificationMessageType.NotificationProductionEnd:
+        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
+        this.playerCloudMovement.set(msg.message.playerId, false)
+        break
+      case TimeMessageType.End:
+        console.log('END=', msg.message)
+        // TODO: Handle
+        break
+      case TimeMessageType.Remaining:
+        this.timeView?.setTimer(Math.floor(msg.message.timeLeftSeconds / 1000))
+        break
+      case TimeMessageType.PlayerRegen:
+        msg.message.tokens.forEach((el) => {
+          this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
+        })
+        break
+    }
   }
 
   getDirection = (startPosition: Position, endPosition: Position): Direction => {

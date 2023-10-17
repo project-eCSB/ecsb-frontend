@@ -57,7 +57,7 @@ export interface CreateGameFormData {
   resourceAssetsName: string
   movingSpeed: number
   maxTimeAmount: number
-  interactionRadius: number 
+  interactionRadius: number
   defaultMoney: number
 }
 
@@ -349,7 +349,7 @@ const CreateGameForm = () => {
         }
 
         if (createGameFormData.interactionRadius <= 0) {
-          return true 
+          return true
         }
 
         if (createGameFormData.defaultMoney < 0) {
