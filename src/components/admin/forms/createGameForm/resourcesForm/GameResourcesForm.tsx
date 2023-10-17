@@ -163,7 +163,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
       maxTimeAmount: parsedNewValue,
     }))
   }
-  
+
   const handleChangeInteractionRadius = (value: string) => {
     if (value.length === 0) {
       setCreateGameFormData((prevFormData) => ({
@@ -202,7 +202,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
       ...prevFormData,
       defaultMoney: parsedValue,
     }))
-  }  
+  }
 
   return (
     <div id='game-details-form'>
@@ -322,7 +322,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
           />
         </div>
         <div>
-        <label htmlFor=''>Interaction radius</label>
+          <label htmlFor=''>Interaction radius</label>
           <input
             min={0}
             max={1000000}

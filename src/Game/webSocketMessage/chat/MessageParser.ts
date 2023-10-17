@@ -4,15 +4,14 @@ import { type TimeMessage, TimeMessageType } from './TimeMessage'
 import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
 import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
 
-export const parseChatMessage = (
-  message: string,
-):
+export type ChatMessage =
   | IncomingTradeMessage
   | NotificationMessage
   | UserStatusMessage
   | EquipmentMessage
   | TimeMessage
-  | null => {
+
+export const parseChatMessage = (message: string): ChatMessage | null => {
   try {
     const parsed = JSON.parse(message)
 
