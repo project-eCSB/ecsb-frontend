@@ -2538,7 +2538,6 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.1rem;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 9999;
@@ -2548,6 +2547,7 @@
 #travelBoxHeaderWrapper {
   position: relative;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transform: translateY(10px);
 }
 
 #travelBoxHeader {
@@ -2619,11 +2619,11 @@
 }
 
 #travelBoxHeader h1 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
 }
 
 #travelBoxHeader h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 /* TravelBox - Content */
@@ -2672,7 +2672,7 @@
     1.59% 62.1%,
     2.09% 76.88%
   );
-  padding: 60px;
+  padding: 50px 50px 40px 50px;
 }
 
 #travelBoxContent {
@@ -3019,6 +3019,7 @@ input[type=radio]:checked {
   justify-content: center;
   align-items: center;
   gap: 2rem;
+  transform: translateY(-10px);
 }
 
 .travelBoxButtonsContainerButtonExtraWrapperEnabled {
