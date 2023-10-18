@@ -16,6 +16,8 @@ export class ContextMenuBuilder {
     div.style.backgroundColor = 'transparent'
 
     const buttonPartnership = document.createElement('button')
+    buttonPartnership.style.width = '69px'
+    buttonPartnership.style.height = '61px'
     const imgPartnership = document.createElement('img')
     imgPartnership.src = '/assets/coopCustomIcon.png'
     buttonPartnership.appendChild(imgPartnership)
@@ -25,8 +27,10 @@ export class ContextMenuBuilder {
     }
 
     const buttonTrade = document.createElement('button')
+    buttonTrade.style.width = '69px'
+    buttonTrade.style.height = '61px'
     const imgTrade = document.createElement('img')
-    imgTrade.src = '/assets/coopCustomIcon.png'
+    imgTrade.src = '/assets/tradeCustomIcon.png'
     buttonTrade.appendChild(imgTrade)
     buttonTrade.onclick = (_: Event) => {
       window.document.getElementById('btns')?.remove()
