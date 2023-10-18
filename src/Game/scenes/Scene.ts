@@ -592,6 +592,7 @@ export class Scene extends Phaser.Scene {
         msg.message.tokens.forEach((el) => {
           this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
         })
+        this.workshopView?.onTimeTokensChange()
         break
     }
   }
