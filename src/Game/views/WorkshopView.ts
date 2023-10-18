@@ -33,6 +33,9 @@ export class WorkshopView {
   private readonly workshopBoxPlusButton: HTMLButtonElement
   private readonly workshopBoxMinusButton: HTMLButtonElement
 
+  
+  private readonly pTime: HTMLDivElement
+
   private readonly scene: Scene
   private readonly cropper: ImageCropper
   private readonly resourceURL: string
@@ -184,14 +187,14 @@ export class WorkshopView {
     pMoney.appendChild(pMoneyInputWrapper)
     pMoney.appendChild(pMoneyIcon)
 
-    const pTime = document.createElement('div')
-    pTime.id = 'pTime'
+    this.pTime = document.createElement('div')
+    this.pTime.id = 'pTime'
 
     const costHeader = document.createElement('h2')
     costHeader.innerText = `Koszt`
     const costResources = document.createElement('div')
     costResources.appendChild(pMoney)
-    costResources.appendChild(pTime)
+    costResources.appendChild(this.pTime)
 
     workshopBoxContentBoxCostBox.appendChild(costHeader)
     workshopBoxContentBoxCostBox.appendChild(costResources)
@@ -231,7 +234,7 @@ export class WorkshopView {
       this.enableMinusButton()
       this.enableSubmitBtn()
 
-      const costTime = pTime.children.length + 1
+      const costTime = this.pTime.children.length + 1
       const costMoney =
         costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
       const resource = costTime * this.scene.playerWorkshopMaxProduction
@@ -247,7 +250,7 @@ export class WorkshopView {
       pTimeIcon.style.height = '25px'
       pTimeIconWrapper.appendChild(pTimeIcon)
       pTimeIconExtraWrapper.appendChild(pTimeIconWrapper)
-      pTime.appendChild(pTimeIconExtraWrapper)
+      this.pTime.appendChild(pTimeIconExtraWrapper)
 
       sendWorkshopMessage(this.scene.chatWs, {
         type: WorkshopMessageType.WorkshopChange,
@@ -278,15 +281,15 @@ export class WorkshopView {
     this.workshopBoxMinusButton.addEventListener('click', () => {
       this.enablePlusButton()
 
-      const costTime = pTime.children.length - 1
+      const costTime = this.pTime.children.length - 1
       const costMoney =
         costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
       const resource = costTime * this.scene.playerWorkshopMaxProduction
 
       pWantInput.innerText = `${resource}`
       pMoneyInput.innerText = `${costMoney}`
-      if (pTime.lastChild) {
-        pTime.removeChild(pTime.lastChild)
+      if (this.pTime.lastChild) {
+        this.pTime.removeChild(this.pTime.lastChild)
       }
 
       sendWorkshopMessage(this.scene.chatWs, {
@@ -398,6 +401,28 @@ export class WorkshopView {
     this.disableSubmitBtn()
   }
 
+  public onTimeTokensChange(): void {
+    const currentCostTime = this.pTime.children.length
+
+    const nextCostTime = currentCostTime + 1
+    const nextCostMoney =
+      nextCostTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+    if (
+      nextCostMoney > this.scene.equipment!.money ||
+      nextCostTime > this.scene.timeView!.getAvailableTokens() ||
+      nextCostTime === 11
+    ) {
+      this.disablePlusButton()
+      return
+    }
+    this.enablePlusButton()
+
+    const prevCostTime = currentCostTime - 1
+    if (prevCostTime < 0) {
+      this.disableMinusButton()
+    }
+  }
+
   private enablePlusButton(): void {
     this.workshopBoxPlusButton.disabled = false
     this.workshopBoxPlusButton.className = 'workshopBoxContentBoxButtonsBoxButtonEnabled'
@@ -450,5 +475,6 @@ export class WorkshopView {
     })
     document.getElementById(WorkshopView.workshopBoxWrapperID)?.remove()
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
+    this.scene.workshopView = null
   }
 }
