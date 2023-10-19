@@ -116,10 +116,14 @@ export class TravelView {
 
     const closeButton = document.createElement('button')
     closeButton.id = TravelView.travelBoxCloseButtonID
-    closeButton.innerText = 'X'
     closeButton.addEventListener('click', () => {
       this.close()
     })
+    const XIcon = document.createElement('i')
+    XIcon.className = 'fa fa-times'
+    XIcon.ariaHidden = 'true'
+    XIcon.style.color = 'black'
+    closeButton.appendChild(XIcon)
 
     this.travelBoxHeader.appendChild(trainIcon)
     this.travelBoxHeader.appendChild(titlesWrapper)
