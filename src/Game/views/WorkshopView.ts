@@ -104,7 +104,6 @@ export class WorkshopView {
     // Close button
     const workshopBoxCloseButton = document.createElement('button')
     workshopBoxCloseButton.id = WorkshopView.workshopBoxCloseButtonID
-    workshopBoxCloseButton.innerText = 'X'
     workshopBoxCloseButton.addEventListener('click', () => {
       this.close()
       this.scene.workshopView = null
@@ -114,6 +113,11 @@ export class WorkshopView {
       this.scene.interactionView.show()
       this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     })
+    const XIcon = document.createElement('i')
+    XIcon.className = 'fa fa-times'
+    XIcon.ariaHidden = 'true'
+    XIcon.style.color = 'black'
+    workshopBoxCloseButton.appendChild(XIcon)
 
     workshopBoxHeaderBoxWrapper.appendChild(workshopBoxCloseButton)
     workshopBoxHeaderBoxWrapper.appendChild(workshopBoxHeaderBox)
