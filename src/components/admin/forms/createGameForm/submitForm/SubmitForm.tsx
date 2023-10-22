@@ -133,7 +133,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     transformedData.maxTimeAmount = formData.maxTimeAmount
     transformedData.walkingSpeed = formData.movingSpeed
     transformedData.interactionRadius = formData.interactionRadius
-    transformedData.defaultMoney = formData.interactionRadius
+    transformedData.defaultMoney = formData.defaultMoney
 
     return transformedData
   }
