@@ -284,8 +284,6 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
               </td>
               <td>
                 <input
-                  min={1}
-                  max={60}
                   type='number'
                   value={resource.itemBuyout}
                   onChange={(e) => {

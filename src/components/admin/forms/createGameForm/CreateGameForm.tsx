@@ -334,10 +334,6 @@ const CreateGameForm = () => {
           ) {
             return true
           }
-
-          if (classResource.itemBuyout <= 0) {
-            return true
-          }
         }
 
         if (createGameFormData.movingSpeed <= 0) {
