@@ -93,9 +93,9 @@ export class TradeSuccessView {
     tradeSuccessBoxContentBox.id = 'tradeSuccessBoxContentBox'
 
     const currentUserId = document.createElement('h2')
-    currentUserId.innerText = `Gracz ${currPlayerId}`
+    currentUserId.innerText = currPlayerId
     const otherUserId = document.createElement('h2')
-    otherUserId.innerText = `Gracz ${otherPlayerId}`
+    otherUserId.innerText = otherPlayerId
 
     const resourcesBox = document.createElement('div')
     resourcesBox.id = 'tradeSuccessBoxContentBoxResourcesBox'

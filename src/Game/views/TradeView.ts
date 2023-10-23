@@ -362,7 +362,7 @@ export class TradeView {
       playerId.length > TradeView.maxPlayerIdLength
         ? playerId.slice(0, TradeView.maxPlayerIdLength) + '...'
         : playerId
-    userName.innerText = `Gracz ${truncatedPlayerId}`
+    userName.innerText = truncatedPlayerId
     container.appendChild(userName)
 
     const lineSeparator = document.createElement('hr')
@@ -836,7 +836,7 @@ export class TradeView {
       playerId.length > TradeView.maxPlayerIdLength
         ? playerId.slice(0, TradeView.maxPlayerIdLength) + '...'
         : playerId
-    userName.innerText = `Gracz ${truncatedPlayerId}`
+    userName.innerText = truncatedPlayerId
     container.appendChild(userName)
 
     const lineSeparator = document.createElement('hr')
