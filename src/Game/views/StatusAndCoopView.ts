@@ -151,20 +151,6 @@ export class StatusAndCoopView {
       row.appendChild(buttonReceiveWrapper)
       this.advertisementContainer.appendChild(row)
     })
-    const coopAdvertisementWrapper = document.createElement('div')
-    coopAdvertisementWrapper.id = 'coopAdWrapper'
-    const coopAdvertisementButton = document.createElement('button')
-    coopAdvertisementButton.addEventListener('click', () => {
-      coopAdvertisementWrapper.id =
-        coopAdvertisementWrapper.id === 'coopAdWrapperActive'
-          ? 'coopAdWrapper'
-          : 'coopAdWrapperActive'
-    })
-    const coopAdvertisementImage = document.createElement('img')
-    coopAdvertisementImage.src = '/assets/coopCustomIcon.png'
-    coopAdvertisementButton.appendChild(coopAdvertisementImage)
-    coopAdvertisementWrapper.appendChild(coopAdvertisementButton)
-    this.advertisementContainer.appendChild(coopAdvertisementWrapper)
     this.advertisementContainer.style.display = 'none'
 
     this.statusButton = document.createElement('button')
