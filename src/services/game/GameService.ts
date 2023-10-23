@@ -6,7 +6,7 @@ import type {
   AssetResponse,
   ClassResourceRepresentation,
   CreateGameRequestTravels,
-  CreateGameResponse,
+  NewGameResponse,
   GameTokenResponse,
   ProductionResponse,
   SavedAsset,
@@ -49,7 +49,7 @@ const createGame = async (
       defaultMoney,
       maxPlayerAmount,
     })
-    .then((res: CreateGameResponse) => {
+    .then((res: NewGameResponse) => {
       return res.gameSessionId
     })
     .catch((err: GameResponseError) => {
@@ -107,6 +107,21 @@ const startGame = async (gameSessionId: number): Promise<void> => {
   await gameAPI
     .startGame({ gameSessionId })
     .then()
+    .catch((err) => {
+      if (err.response) {
+        throw new GameResponseError(err.response.status, err.response.data)
+      } else {
+        throw new GameResponseError(0, err.message)
+      }
+    })
+}
+
+const copyGame = async (gameSessionId: number, gameName: string): Promise<number> => {
+  return await gameAPI
+    .copyGame({ gameSessionId, gameName })
+    .then((res: NewGameResponse) => {
+      return res.gameSessionId
+    })
     .catch((err) => {
       if (err.response) {
         throw new GameResponseError(err.response.status, err.response.data)
@@ -293,6 +308,7 @@ const decreaseVisibleEquipmentSource = async (resourceName: string): Promise<nul
 const gameService = {
   createGame,
   startGame,
+  copyGame,
   getAdminGameSettings,
   getAdminGameLogs,
   getUserGameSettings,

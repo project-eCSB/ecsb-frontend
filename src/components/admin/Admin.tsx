@@ -6,12 +6,14 @@ import CreateGameForm from './forms/createGameForm/CreateGameForm'
 import './Admin.css'
 import GetGameLogsForm from './forms/getGameLogsForm/GetGameLogsForm'
 import StartGameForm from './forms/startGameForm/StartGameForm'
+import CopyGameForm from './forms/copyGameForm/copyGameForm'
 
 enum FormType {
   CreateGame,
   GetGameSettings,
   GetGameLogs,
   StartGame,
+  CopyGame,
 }
 
 const Admin = () => {
@@ -21,6 +23,7 @@ const Admin = () => {
   const btnGetGameSettings = useRef<HTMLButtonElement>(null)
   const btnGetGameLogs = useRef<HTMLButtonElement>(null)
   const btnStartGame = useRef<HTMLButtonElement>(null)
+  const btnCopyGame = useRef<HTMLButtonElement>(null)
 
   const handleLogOut = () => {
     authService.logout()
@@ -71,6 +74,16 @@ const Admin = () => {
           >
             Start Game
           </button>
+          <button
+            ref={btnCopyGame}
+            onClick={() => {
+              setForm(FormType.CopyGame)
+            }}
+            className={`${form === FormType.CopyGame ? 'disabled' : ''}`}
+            disabled={form === FormType.CopyGame}
+          >
+            Copy Game
+          </button>
         </div>
         <div className='admin-container-navbar-buttons'>
           <button
@@ -94,6 +107,7 @@ const Admin = () => {
         {form === FormType.GetGameSettings && <GetGameSettingsForm />}
         {form === FormType.GetGameLogs && <GetGameLogsForm />}
         {form === FormType.StartGame && <StartGameForm />}
+        {form === FormType.CopyGame && <CopyGameForm />}
       </div>
     </div>
   )

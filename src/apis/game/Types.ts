@@ -45,12 +45,17 @@ export interface CreateGameRequest {
   defaultMoney: number
 }
 
-export interface CreateGameResponse {
+export interface NewGameResponse {
   gameSessionId: number
 }
 
 export interface AdminGameSettingsRequest {
   gameSessionId: number
+}
+
+export interface copyGameRequest {
+  gameSessionId: number,
+  gameName: string
 }
 
 export interface GameAssets {
