@@ -6,10 +6,6 @@
   padding: 0.8rem 0.4rem;
 }
 
-.container p {
-  font-family: Rowdies;
-}
-
 .buttons-container {
   display: flex;
   width: 80%;
@@ -70,7 +66,6 @@
   padding: 5px 10px;
   width: 100%;
   cursor: pointer;
-  font-family: Rowdies;
   border: none;
 }
 
@@ -82,5 +77,4 @@
   margin: 5px;
   display: none;
   font-style: italic;
-  font-family: Rowdies;
 }
