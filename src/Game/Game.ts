@@ -82,6 +82,8 @@ export const stopGame = (gameData: GameData): void => {
   window.document.getElementById('travelBoxWrapper')?.remove()
 
   window.document.getElementById('errorsAndInfo')?.remove()
+  window.document.getElementById('leaderboard')?.remove()
+
   gameData.scene.userDataView?.close()
   gameData.scene.timeView?.close()
   gameData.scene.settingsView?.close()

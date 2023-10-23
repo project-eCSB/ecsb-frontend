@@ -4148,6 +4148,315 @@ input[type='radio']:checked {
   left: 1rem;
 }
 
+/* Leaderboard */
+#leaderboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+}
+
+#leaderboardHeaderBoxWrapper{
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#leaderboardHeaderBox{
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #EDB872;
+  padding: 1.3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+#leaderboardTitleBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+#leaderboardTitleBox > img{
+  width: 80px;
+}
+
+#leaderboardContentBoxWrapper{
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  width: 600px;
+  height: 50%;
+  min-height: 350px;
+}
+
+#leaderboardContentBox{
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #EDB872;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  height: 100%;
+}
+
+#leaderboardContentBox > div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 90%;
+  overflow-y: scroll;
+  gap: 0.3rem;
+}
+
+#leaderboardContentBox ::-webkit-scrollbar {
+  width: 14px;
+}
+
+#leaderboardContentBox ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #edb872;
+  border-width: 1px 6px 1px 6px;
+  border-style: solid;
+}
+
+#leaderboardContentBox ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 4px 1px 4px;
+}
+
+#leaderboardContentBox > div > div{
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  width: 90%;
+}
+
+#leaderboardContentBox > div > div > div{
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #E3C296;
+  padding: 1.3rem 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: xx-large;
+}
+
+#leaderboardContentBox > div > div > div > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#playerPositionTOP3 {
+  width: 40px;
+}
+
+#playerPosition {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: #677818;
+  text-align: center;
+  padding-top: 2px;
+  font-size: x-large;
+  color: #835211;
+  background-color: #DEAC6A;
+}
+
+#leaderboardButton{
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  background-color: #EDB872;
+  font-size: x-large;
+  padding: 0.5rem 2rem;
+  cursor: pointer;
+  transition: 0.2s all ease-in-out;
+}
+
+#leaderboardButtonGlow:hover #leaderboardButton{
+  transform: translate(2px, -2px);
+}
+
+#leaderboardButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+#leaderboardButtonGlow:hover > #leaderboardButtonWrapper {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#leaderboardButtonGlow {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+#leaderboardButtonGlow:hover {
+  filter: none;
+}
+
 /* adBubble */
 
 .adBubbleWrapper {

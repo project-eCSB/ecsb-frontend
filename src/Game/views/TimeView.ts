@@ -130,8 +130,8 @@ export class TimeView {
       this.tokens[tokenID] = true
     }
 
-    const row = Math.floor(tokenID / 5) + 1
-    const column = (tokenID % 5) + 1
+    const row = Math.floor(tokenID / Math.floor(this.tokens.length / 2)) + 1
+    const column = (tokenID % Math.floor(this.tokens.length / 2)) + 1
 
     const token = document.getElementById(`timeToken-${column}-${row}`)
     if (token?.getElementsByTagName('div')) {

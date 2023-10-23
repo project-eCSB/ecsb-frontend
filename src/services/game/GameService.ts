@@ -16,7 +16,7 @@ import type {
   UserGameSettingsResponse,
   UserGameStatusResponse,
 } from '../../apis/game/Types'
-import type { AssetConfig, Equipment, GameSettings, GameStatus } from './Types'
+import type { AssetConfig, EndGameStatus, Equipment, GameSettings, GameStatus } from './Types'
 
 const createGame = async (
   classResourceRepresentation: ClassResourceRepresentation[],
@@ -150,6 +150,17 @@ const getPlayerEquipment = async (): Promise<Equipment> => {
     })
 }
 
+const getPlayerResults = async (): Promise<EndGameStatus> => {
+  return await gameAPI
+    .getPlayerResults()
+    .then((res: EndGameStatus) => {
+      return res
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
 const getUserGameStatus = async (): Promise<GameStatus> => {
   return await gameAPI
     .getUserGameStatus()
@@ -271,6 +282,7 @@ const gameService = {
   getUserGameSettings,
   getGameSession,
   getPlayerEquipment,
+  getPlayerResults,
   getUserGameStatus,
   uploadAsset,
   getAssetConfig,
