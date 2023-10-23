@@ -938,10 +938,45 @@
 }
 
 #timeTokenBox > div > div > div > div {
-  width: 60%;
-  height: 60%;
+  border: 2px solid #000000;
+  width: 70%;
+  height: 70%;
   border-radius: 50%;
-  background-image: conic-gradient(#677818 0%, 0, #000000);
+  background-image: conic-gradient(#ffffff 0%, 0, #E49045);
+}
+
+#timeTokenBox > div > div > div > div > span:first-child{
+  display: block;
+  position: relative;
+  left: calc(50% - 2px);
+  top: calc(50% - 2px);
+  width: 4px;
+  height: 4px;
+  background-color: #000000;
+  border-radius: 4px;
+}
+
+#timeTokenBox > div > div > div > div > span:nth-child(2){
+  display: block;
+  position: relative;
+  left: calc(50% - 1px);
+  top: calc(50% - 4px - 8px);
+  width: 2px;
+  height: 8px;
+  background-color: #000000;
+  border-radius: 2px;
+}
+
+#timeTokenBox > div > div > div > div > span:last-child{
+  display: block;
+  position: relative;
+  rotate: 135deg;
+  left: calc(50% + 2px);
+  top: calc(-2px);
+  width: 2px;
+  height: 8px;
+  background-color: #000000;
+  border-radius: 2px;
 }
 
 /*  */
@@ -971,7 +1006,6 @@
   font-size: large;
   display: block;
 }
-
 /* EquipmentDataBox */
 #equipmentBox {
   position: fixed;
