@@ -5,11 +5,13 @@ import authService from '../../services/auth/AuthService'
 import CreateGameForm from './forms/createGameForm/CreateGameForm'
 import './Admin.css'
 import GetGameLogsForm from './forms/getGameLogsForm/GetGameLogsForm'
+import StartGameForm from './forms/startGameForm/StartGameForm'
 
 enum FormType {
   CreateGame,
   GetGameSettings,
   GetGameLogs,
+  StartGame,
 }
 
 const Admin = () => {
@@ -18,6 +20,7 @@ const Admin = () => {
   const btnCreateGame = useRef<HTMLButtonElement>(null)
   const btnGetGameSettings = useRef<HTMLButtonElement>(null)
   const btnGetGameLogs = useRef<HTMLButtonElement>(null)
+  const btnStartGame = useRef<HTMLButtonElement>(null)
 
   const handleLogOut = () => {
     authService.logout()
@@ -58,6 +61,16 @@ const Admin = () => {
           >
             Get Game Logs
           </button>
+          <button
+            ref={btnStartGame}
+            onClick={() => {
+              setForm(FormType.StartGame)
+            }}
+            className={`${form === FormType.StartGame ? 'disabled' : ''}`}
+            disabled={form === FormType.StartGame}
+          >
+            Start Game
+          </button>
         </div>
         <div className='admin-container-navbar-buttons'>
           <button
@@ -80,6 +93,7 @@ const Admin = () => {
         {form === FormType.CreateGame && <CreateGameForm />}
         {form === FormType.GetGameSettings && <GetGameSettingsForm />}
         {form === FormType.GetGameLogs && <GetGameLogsForm />}
+        {form === FormType.StartGame && <StartGameForm />}
       </div>
     </div>
   )

@@ -38,6 +38,7 @@ export interface CreateGameRequest {
   characterAssetId: number
   resourceAssetsId: number
   timeForGame: number
+  maxPlayerAmount: number
   maxTimeAmount: number
   walkingSpeed: number
   interactionRadius: number

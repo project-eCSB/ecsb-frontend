@@ -71,6 +71,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       characterAssetId: 0,
       resourceAssetsId: 0,
       timeForGame: 0,
+      maxPlayerAmount: 0,
       maxTimeAmount: 0,
       walkingSpeed: 0,
       interactionRadius: 0,
@@ -129,7 +130,8 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     transformedData.characterAssetId = Number(formData.characterAssetsId)
     transformedData.resourceAssetsId = Number(formData.resourceAssetsId)
 
-    transformedData.timeForGame = formData.gameFullTime * 1000
+    transformedData.timeForGame = formData.gameFullTime * 1000 * 60
+    transformedData.maxPlayerAmount = formData.maxPlayerAmount
     transformedData.maxTimeAmount = formData.maxTimeAmount
     transformedData.walkingSpeed = formData.movingSpeed
     transformedData.interactionRadius = formData.interactionRadius
@@ -176,6 +178,29 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     }))
   }
 
+  const handleChangeNumberOfPlayers = (value: string) => {
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        numberOfPlayers: 0,
+      }))
+      return
+    }
+
+    let parsedValue = parseInt(value)
+    if (parsedValue <= 0) {
+      parsedValue = 0
+    }
+    if (parsedValue >= 30) {
+      parsedValue = 30
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      numberOfPlayers: parsedValue,
+    }))
+  }
+
   const handleSubmit = () => {
     setRequestInProgress(true)
 
@@ -194,6 +219,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         transformedData.walkingSpeed,
         transformedData.interactionRadius,
         transformedData.defaultMoney,
+        transformedData.maxPlayerAmount,
       )
       .then((gameSessionId: number) => {
         setRequestInProgress(false)
@@ -260,13 +286,25 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         />
       </div>
       <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
-        <label htmlFor=''>Game Full Time (in seconds)</label>
+        <label htmlFor=''>Game Full Time (in minutes)</label>
         <input
           min={1}
           max={60}
           value={createGameFormData.gameFullTime}
           onChange={(e) => {
             handleChangeGameFullTime(e.target.value)
+          }}
+          type='number'
+        />
+      </div>
+      <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
+        <label htmlFor=''>Number of players</label>
+        <input
+          min={1}
+          max={30}
+          value={createGameFormData.maxPlayerAmount}
+          onChange={(e) => {
+            handleChangeNumberOfPlayers(e.target.value)
           }}
           type='number'
         />
