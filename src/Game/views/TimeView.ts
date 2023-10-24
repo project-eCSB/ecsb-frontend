@@ -43,8 +43,17 @@ export class TimeView {
       const token2Wrapper = document.createElement('div')
       token2Wrapper.appendChild(token2)
 
-      token1.appendChild(document.createElement('div')) // ---
-      token2.appendChild(document.createElement('div')) // ---
+      const tokenClockFace1 = document.createElement('div')
+      tokenClockFace1.appendChild(document.createElement('span'))
+      tokenClockFace1.appendChild(document.createElement('span'))
+      tokenClockFace1.appendChild(document.createElement('span'))
+      const tokenClockFace2 = document.createElement('div')
+      tokenClockFace2.appendChild(document.createElement('span'))
+      tokenClockFace2.appendChild(document.createElement('span'))
+      tokenClockFace2.appendChild(document.createElement('span'))
+
+      token1.appendChild(tokenClockFace1)
+      token2.appendChild(tokenClockFace2)
       col.appendChild(token1Wrapper)
       col.appendChild(token2Wrapper)
       this.timeTokenBox.appendChild(col)
@@ -135,9 +144,9 @@ export class TimeView {
 
     const token = document.getElementById(`timeToken-${column}-${row}`)
     if (token?.getElementsByTagName('div')) {
-      token.getElementsByTagName('div')[0].style.backgroundImage = `conic-gradient(#677818 ${
+      token.getElementsByTagName('div')[0].style.backgroundImage = `conic-gradient(#ffffff ${
         (actual * 100) / max
-      }%, 0, #000000)`
+      }%, 0, #E49045)`
     }
   }
 
