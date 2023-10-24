@@ -110,7 +110,7 @@ export class WorkshopSuccessView {
     const playerBox = document.createElement('div')
     playerBox.id = WorkshopSuccessView.workshopSuccessBoxContentBoxPlayerBoxID
     const playerName = document.createElement('p')
-    playerName.innerText = `Gracz ${userName}`
+    playerName.innerText = userName
     playerBox.appendChild(playerName)
 
     workshopSuccessBoxContentBox.appendChild(resultResources)
