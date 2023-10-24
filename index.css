@@ -2297,6 +2297,8 @@
 #tradeSuccessBoxContentBoxResourcesCurrPlayer > div > div,
 #tradeSuccessBoxContentBoxResourcesOtherPlayer > div > div {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  display: flex;
+  justify-content: center;
 }
 
 #tradeSuccessBoxContentBoxResourcesCurrPlayer > div > div > h4,
