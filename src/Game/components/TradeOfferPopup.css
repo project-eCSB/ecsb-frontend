@@ -17,6 +17,14 @@
   margin-top: 0.4rem;
 }
 
+.buttons-container > div:first-child > button {
+  background-color: #52B236;
+}
+
+.buttons-container > div:last-child > button {
+  background-color: #D74A4A;
+}
+
 #buttonWrapper {
   filter: drop-shadow(-3px 4px #835211);
   width: 40%;
@@ -66,7 +74,6 @@
     1.59% 62.1%,
     2.09% 76.88%
   );
-  background-color: #f6dcb8;
   padding: 5px 10px;
   width: 100%;
   cursor: pointer;

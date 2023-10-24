@@ -69,10 +69,14 @@ import { AdvertisementInfoBuilder } from '../tools/AdvertisementInfoBuilder'
 import Key = Phaser.Input.Keyboard.Key
 import { TimeMessageType, sendTimeMessage } from '../webSocketMessage/chat/TimeMessage'
 import { LeaderboardView } from '../views/LeaderboardView'
+import { parseLobbyMessage } from '../webSocketMessage/lobby/MessageParser'
+import { LobbyMessageType } from '../webSocketMessage/lobby/LobbyMessage'
+import { LobbyView } from '../views/LobbyView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
+const VITE_ECSB_LOBBY_WS_API_URL: string = import.meta.env.VITE_ECSB_LOBBY_WS_API_URL as string
 const VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env
   .VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
 
@@ -109,11 +113,13 @@ export class Scene extends Phaser.Scene {
   public travelView: TravelView | null
   public interactionView: InteractionView
   public loadingView: LoadingView
+  public lobbyView: LobbyView | null
   public interactionCloudBuiler!: InteractionCloudBuilder
   public advertisementInfoBuilder!: AdvertisementInfoBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public imageCropper!: ImageCropper
   public movingEnabled: boolean
+  private lobbyWs!: Websocket
   private movementWs!: Websocket
   public chatWs!: Websocket
   public equipment?: Equipment
@@ -146,12 +152,13 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow = null
     this.userDataView = new UserDataView(this.playerId, this.status.className)
     this.timeView = null
-    this.settingsView = new SettingsView()
+    this.settingsView = new SettingsView(() => {this.destroy()})
     this.statusAndCoopView = null
     this.equipmentView = null
     this.workshopView = null
     this.interactionView = new InteractionView()
     this.loadingView = new LoadingView()
+    this.lobbyView = null
     this.travelView = null
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
@@ -246,8 +253,7 @@ export class Scene extends Phaser.Scene {
     }
     this.gridEngine.create(cloudCityTilemap, gridEngineConfig)
 
-    this.configureMovementWebSocket()
-    this.configureChatWebSocket()
+    this.configureLobbyWebSocket()
 
     this.gridEngine.positionChangeStarted().subscribe(({ charId, exitTile, enterTile }) => {
       if (charId === this.playerId) {
@@ -388,6 +394,60 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow.show()
   }
 
+  configureLobbyWebSocket(): void {
+    this.lobbyWs = new WebsocketBuilder(
+      `${VITE_ECSB_LOBBY_WS_API_URL}/ws?gameToken=${this.gameToken}`,
+    )
+      .onOpen((i, ev) => {
+        console.log('lobbyWs opened')
+      })
+      .onClose((i, ev) => {
+        console.log('lobbyWs closed')
+      })
+      .onError((i, ev) => {
+        console.error('lobbyWs error')
+      })
+      .onMessage((i, ev) => {
+        const msg = parseLobbyMessage(ev.data)
+        if (!msg) return
+
+        switch (msg.type) {
+          case LobbyMessageType.LobbyChange:
+            if (!this.lobbyView) {
+              this.lobbyView = new LobbyView(msg.playersAmount.amount, msg.playersAmount.needed)
+              this.lobbyView.show()
+            } else {
+              this.lobbyView.update(msg.playersAmount.amount, msg.playersAmount.needed)
+              this.lobbyView.show()
+            }
+            break
+          case LobbyMessageType.LobbyStart:
+            this.configureMovementWebSocket()
+            this.configureChatWebSocket()
+            this.lobbyView?.close()
+            this.lobbyWs.close()
+            break
+          case LobbyMessageType.LobbyEnd:
+            this.lobbyView?.close()
+            gameService
+              .getPlayerResults()
+              .then((leaderboard: EndGameStatus) => {
+                this.movingEnabled = false
+                const leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
+                leaderboardView.show()
+              })
+              .catch((err) => {
+                console.error(err)
+              })
+            break
+        }
+      })
+      .onRetry((i, ev) => {
+        console.log('retry')
+      })
+      .build()
+  }
+
   configureMovementWebSocket(): void {
     this.movementWs = new WebsocketBuilder(
       `${VITE_ECSB_MOVEMENT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
@@ -410,6 +470,8 @@ export class Scene extends Phaser.Scene {
         if (!msg) return
 
         if (msg.type === MovementMessageType.PlayerSyncing) {
+          const playerIdsFromSync = msg.players.map((x) => x.playerPosition.id)
+
           msg.players.forEach((playerWithClass) => {
             const player = playerWithClass.playerPosition
             if (player.id !== this.playerId) {
@@ -419,7 +481,7 @@ export class Scene extends Phaser.Scene {
 
           while (this.movementQueue.length > 0) {
             const msg = this.movementQueue.shift()
-            if (!msg) return
+            if (!msg || (msg.type === MovementMessageType.PlayerAdded && playerIdsFromSync.includes(msg.id))) continue
 
             this.handleMovementMessage(msg)
           }
@@ -458,6 +520,7 @@ export class Scene extends Phaser.Scene {
       `${VITE_ECSB_CHAT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
     )
       .onOpen((i, ev) => {
+        this.loadingView.show()
         console.log('chatWs opened')
 
         sendTimeMessage(this.chatWs, {
@@ -475,6 +538,7 @@ export class Scene extends Phaser.Scene {
         if (!msg) return
 
         if (msg.message.type === TimeMessageType.SyncResponse) {
+          this.loadingView.close()
           this.movingEnabled = true
 
           this.timeView = new TimeView(
@@ -589,7 +653,7 @@ export class Scene extends Phaser.Scene {
           .getPlayerResults()
           .then((leaderboard: EndGameStatus) => {
             this.movingEnabled = false
-            const leaderboardView = new LeaderboardView(leaderboard, this.playerId)
+            const leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
             leaderboardView.show()
           })
           .catch((err) => {
@@ -914,8 +978,9 @@ export class Scene extends Phaser.Scene {
 
   destroy(): void {
     this.timeView?.endTimer()
-    this.movementWs.close()
-    this.chatWs.close()
+    this.lobbyWs?.close()
+    this.movementWs?.close()
+    this.chatWs?.close()
     toast.dismiss()
   }
 }
