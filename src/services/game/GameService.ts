@@ -7,7 +7,6 @@ import type {
   ClassResourceRepresentation,
   CreateGameRequestTravels,
   CreateGameResponse,
-  GameResponseError,
   GameTokenResponse,
   ProductionResponse,
   SavedAsset,
@@ -16,6 +15,7 @@ import type {
   UserGameSettingsResponse,
   UserGameStatusResponse,
 } from '../../apis/game/Types'
+import { GameResponseError } from '../../apis/game/Types'
 import type { AssetConfig, EndGameStatus, Equipment, GameSettings, GameStatus } from './Types'
 
 const createGame = async (
@@ -31,6 +31,7 @@ const createGame = async (
   walkingSpeed: number,
   interactionRadius: number,
   defaultMoney: number,
+  maxPlayerAmount: number,
 ): Promise<number> => {
   return await gameAPI
     .createGame({
@@ -46,6 +47,7 @@ const createGame = async (
       walkingSpeed,
       interactionRadius,
       defaultMoney,
+      maxPlayerAmount,
     })
     .then((res: CreateGameResponse) => {
       return res.gameSessionId
@@ -98,6 +100,19 @@ const getAdminGameLogs = async (gameSessionId: number): Promise<string> => {
     })
     .catch((err) => {
       console.error(err)
+    })
+}
+
+const startGame = async (gameSessionId: number): Promise<void> => {
+  await gameAPI
+    .startGame({ gameSessionId })
+    .then()
+    .catch((err) => {
+      if (err.response) {
+        throw new GameResponseError(err.response.status, err.response.data)
+      } else {
+        throw new GameResponseError(0, err.message)
+      }
     })
 }
 
@@ -277,6 +292,7 @@ const decreaseVisibleEquipmentSource = async (resourceName: string): Promise<nul
 
 const gameService = {
   createGame,
+  startGame,
   getAdminGameSettings,
   getAdminGameLogs,
   getUserGameSettings,

@@ -47,6 +47,7 @@ export interface CreateGameFormData {
   highTravels: Travel[]
   gameName: string
   gameFullTime: number
+  maxPlayerAmount: number
   mapAssetId: number | null
   mapAssetName: string
   tileAssetId: number | null
@@ -93,6 +94,7 @@ const CreateGameForm = () => {
     highTravels: [],
     gameName: '',
     gameFullTime: 0,
+    maxPlayerAmount: 0,
     mapAssetId: null,
     mapAssetName: '',
     tileAssetId: null,
@@ -172,6 +174,7 @@ const CreateGameForm = () => {
       highTravels: [],
       gameName: '',
       gameFullTime: 0,
+      maxPlayerAmount: 0,
       mapAssetId: null,
       mapAssetName: '',
       tileAssetId: null,
