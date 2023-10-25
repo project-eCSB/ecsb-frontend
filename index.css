@@ -2520,6 +2520,10 @@
   gap: 0.5rem;
 }
 
+#workshopBoxHeaderBoxExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
 #workshopBoxHeaderBoxWrapper {
   position: relative;
 }
@@ -2595,6 +2599,10 @@
   font-size: 1.4rem;
 }
 
+#workshopBoxMathBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+} 
+
 #workshopBoxMathBox {
   padding: 0.8rem;
   background-color: #f6dcb8;
@@ -2646,8 +2654,12 @@
   gap: 0.3rem;
 }
 
+#workshopBoxContentBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
 #workshopBoxContentBox {
-  height: 280px;
+  height: 250px;
   width: 100%;
   background-color: #edb872;
   clip-path: polygon(
@@ -2705,7 +2717,7 @@
 #workshopBoxContentBoxLeft {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
   flex-grow: 1;
 }
 
@@ -2726,6 +2738,7 @@
   justify-content: center;
   align-items: center;
   font-size: 1.4rem;
+  margin-right: 35px;
 }
 
 /* resources */
@@ -2742,6 +2755,12 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+}
+
+#workshopBoxContentBoxCostBox > div > div:first-child > div:nth-child(2) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #workshopBoxContentBoxCostBox > div > div > div {
@@ -2856,7 +2875,6 @@
 
 #workshopBoxContentBoxResultBox {
   display: flex;
-  gap: 4rem;
 }
 
 #workshopBoxContentBoxResultBox > h1 {
@@ -2864,6 +2882,7 @@
   justify-content: center;
   align-items: center;
   font-size: 1.4rem;
+  margin-right: 35px;
 }
 
 #workshopBoxContentBoxResultBox > div {
@@ -3316,6 +3335,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 20px;
 }
 
 #workshopSuccessBoxContentBox > * {
@@ -3387,10 +3407,6 @@
     2.09% 76.88%
   );
   padding: 10px;
-}
-
-#workshopSuccessBoxContentBoxPlayerBox {
-  margin-left: 20px;
 }
 
 /* CloseButton */

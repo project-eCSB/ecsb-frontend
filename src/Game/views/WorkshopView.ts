@@ -10,9 +10,12 @@ import { WorkshopSuccessView } from './WorkshopSuccessView'
 export class WorkshopView {
   public static readonly workshopBoxWrapperID = 'workshopBoxWrapper'
   public static readonly workshopBoxID = 'workshopBox'
+  public static readonly workshopBoxHeaderBoxExtraWrapperID = 'workshopBoxHeaderBoxExtraWrapper'
   public static readonly workshopBoxHeaderBoxWrapperID = 'workshopBoxHeaderBoxWrapper'
   public static readonly workshopBoxHeaderBoxID = 'workshopBoxHeaderBox'
+  public static readonly workshopBoxMathBoxWrapperID = 'workshopBoxMathBoxWrapper'
   public static readonly workshopBoxMathBoxID = 'workshopBoxMathBox'
+  public static readonly workshopBoxContentBoxWrapperID = 'workshopBoxContentBoxWrapper'
   public static readonly workshopBoxContentBoxID = 'workshopBoxContentBox'
   public static readonly workshopBoxContentBoxLeftID = 'workshopBoxContentBoxLeft'
   public static readonly workshopBoxContentBoxRightID = 'workshopBoxContentBoxRight'
@@ -81,6 +84,9 @@ export class WorkshopView {
     workshopBox.id = WorkshopView.workshopBoxID
 
     // Header
+    const workshopBoxHeaderBoxExtraWrapper = document.createElement('div')
+    workshopBoxHeaderBoxExtraWrapper.id = WorkshopView.workshopBoxHeaderBoxExtraWrapperID
+
     const workshopBoxHeaderBoxWrapper = document.createElement('div')
     workshopBoxHeaderBoxWrapper.id = WorkshopView.workshopBoxHeaderBoxWrapperID
 
@@ -123,8 +129,12 @@ export class WorkshopView {
 
     workshopBoxHeaderBoxWrapper.appendChild(workshopBoxCloseButton)
     workshopBoxHeaderBoxWrapper.appendChild(workshopBoxHeaderBox)
+    workshopBoxHeaderBoxExtraWrapper.appendChild(workshopBoxHeaderBoxWrapper)
 
     // Math
+    const workshopBoxMathBoxWrapper = document.createElement('div')
+    workshopBoxMathBoxWrapper.id = WorkshopView.workshopBoxMathBoxWrapperID
+
     const workshopBoxMathBox = document.createElement('div')
     workshopBoxMathBox.id = WorkshopView.workshopBoxMathBoxID
 
@@ -165,7 +175,12 @@ export class WorkshopView {
     workshopBoxMathBox.appendChild(timeSpan)
     workshopBoxMathBox.appendChild(timeIcon)
 
+    workshopBoxMathBoxWrapper.appendChild(workshopBoxMathBox)
+
     // Content
+    const workshopBoxContentBoxWrapper = document.createElement('div')
+    workshopBoxContentBoxWrapper.id = WorkshopView.workshopBoxContentBoxWrapperID
+
     const workshopBoxContentBox = document.createElement('div')
     workshopBoxContentBox.id = WorkshopView.workshopBoxContentBoxID
 
@@ -177,10 +192,12 @@ export class WorkshopView {
     const workshopBoxContentBoxCostBox = document.createElement('div')
     workshopBoxContentBoxCostBox.id = WorkshopView.workshopBoxContentBoxCostBoxID
 
+    const pMoneyIconWrapper = document.createElement('div')
     const pMoneyIcon = document.createElement('img')
     pMoneyIcon.src = '/assets/coinCustomIcon.png'
     pMoneyIcon.style.width = '38px'
     pMoneyIcon.style.height = '38px'
+    pMoneyIconWrapper.appendChild(pMoneyIcon)
 
     const pMoneyInputWrapper = document.createElement('div')
     const pMoneyInput = document.createElement('h4')
@@ -188,7 +205,7 @@ export class WorkshopView {
     pMoneyInputWrapper.appendChild(pMoneyInput)
     const pMoney = document.createElement('div')
     pMoney.appendChild(pMoneyInputWrapper)
-    pMoney.appendChild(pMoneyIcon)
+    pMoney.appendChild(pMoneyIconWrapper)
 
     this.pTime = document.createElement('div')
     this.pTime.id = 'pTime'
@@ -322,6 +339,8 @@ export class WorkshopView {
     workshopBoxContentBox.appendChild(document.createElement('hr'))
     workshopBoxContentBox.appendChild(workshopBoxContentBoxRight)
 
+    workshopBoxContentBoxWrapper.appendChild(workshopBoxContentBox)
+
     // Submit button
     this.workshopBoxSubmitButtonExtraWrapper = document.createElement('div')
     this.workshopBoxSubmitButtonExtraWrapper.id = WorkshopView.workshopBoxSubmitButtonExtraWrapperID
@@ -382,9 +401,9 @@ export class WorkshopView {
 
     this.workshopBoxSubmitButtonExtraWrapper.appendChild(this.workshopBoxSubmitButtonWrapper)
 
-    workshopBox.appendChild(workshopBoxHeaderBoxWrapper)
-    workshopBox.appendChild(workshopBoxMathBox)
-    workshopBox.appendChild(workshopBoxContentBox)
+    workshopBox.appendChild(workshopBoxHeaderBoxExtraWrapper)
+    workshopBox.appendChild(workshopBoxMathBoxWrapper)
+    workshopBox.appendChild(workshopBoxContentBoxWrapper)
     workshopBox.appendChild(this.workshopBoxSubmitButtonExtraWrapper)
 
     this.workshopBoxWrapper.appendChild(workshopBox)
