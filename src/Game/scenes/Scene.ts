@@ -468,32 +468,7 @@ export class Scene extends Phaser.Scene {
       .onMessage((i, ev) => {
         const msg = parseMovementMessage(ev.data)
         if (!msg) return
-
-        if (msg.type === MovementMessageType.PlayerSyncing) {
-          const playerIdsFromSync = msg.players.map((x) => x.playerPosition.id)
-
-          msg.players.forEach((playerWithClass) => {
-            const player = playerWithClass.playerPosition
-            if (player.id !== this.playerId) {
-              this.addPlayer(player.id, player.coords, player.direction, playerWithClass.className)
-            }
-          })
-
-          while (this.movementQueue.length > 0) {
-            const msg = this.movementQueue.shift()
-            if (!msg || (msg.type === MovementMessageType.PlayerAdded && playerIdsFromSync.includes(msg.id))) continue
-
-            this.handleMovementMessage(msg)
-          }
-          this.receivedPlayerSync = true
-        } else {
-          if (!this.receivedTimeSync || !this.receivedPlayerSync) {
-            this.movementQueue.push(msg)
-            return
-          }
-
-          this.handleMovementMessage(msg)
-        }
+        this.handleMovementMessage(msg)
       })
       .onRetry((i, ev) => {
         console.log('retry')
@@ -503,14 +478,28 @@ export class Scene extends Phaser.Scene {
 
   handleMovementMessage(msg: MovementMessage): void {
     switch (msg.type) {
+      case MovementMessageType.PlayerSyncing:
+        msg.players.forEach(player => {
+          if (!Object.keys(this.players).includes(player.playerPosition.id)){
+            this.addPlayer(player.playerPosition.id, player.playerPosition.coords, player.playerPosition.direction, player.className)
+          }
+        })
+        this.receivedPlayerSync = true
+        break
       case MovementMessageType.PlayerAdded:
-        this.addPlayer(msg.id, msg.coords, msg.direction, msg.className)
+        if (!Object.keys(this.players).includes(msg.id)){
+          this.addPlayer(msg.id, msg.coords, msg.direction, msg.className)
+        }
         break
       case MovementMessageType.PlayerMoved:
-        this.movePlayer(msg.id, msg.coords, msg.direction)
+        if (Object.keys(this.players).includes(msg.id)){
+          this.movePlayer(msg.id, msg.coords, msg.direction)
+        }
         break
       case MovementMessageType.PlayerRemoved:
-        this.removePlayer(msg.id)
+        if (Object.keys(this.players).includes(msg.id)){
+          this.removePlayer(msg.id)
+        }
         break
     }
   }
@@ -649,6 +638,9 @@ export class Scene extends Phaser.Scene {
         this.playerCloudMovement.set(msg.message.playerId, false)
         break
       case TimeMessageType.End:
+        this.chatWs.close()
+        this.movementWs.close()
+
         gameService
           .getPlayerResults()
           .then((leaderboard: EndGameStatus) => {
