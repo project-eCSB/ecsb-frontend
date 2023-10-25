@@ -190,7 +190,6 @@ export class TravelView {
           travelItemContentLeftHeader.innerText = 'Koszt:'
           travelItemContentLeft.appendChild(travelItemContentLeftHeader)
 
-          // ZEGARKI
           const travelItemContentTimes = document.createElement('div')
           travelItemContentTimes.className = 'travelBoxContentItemContentLeftTimes'
           for (let i = 0; i < travelItem.value.time!; i++) {
