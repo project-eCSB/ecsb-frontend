@@ -7,7 +7,7 @@ import type {
   AssetRequest,
   AssetResponse,
   CreateGameRequest,
-  CreateGameResponse,
+  NewGameResponse,
   DecreaseVisibleEquipmentSourceRequest,
   GameTokenRequest,
   GameTokenResponse,
@@ -22,11 +22,12 @@ import type {
   UploadAssetResponse,
   UserGameSettingsResponse,
   UserGameStatusResponse,
+  copyGameRequest,
 } from './Types'
 import { GameResponseError } from './Types'
 import type { EndGameStatus, Equipment } from '../../services/game/Types'
 
-const createGame = async (data: CreateGameRequest): Promise<CreateGameResponse> => {
+const createGame = async (data: CreateGameRequest): Promise<NewGameResponse> => {
   return await authTokenAuthAndMenagementAPI
     .post('/admin/createGame', data)
     .then((response) => {
@@ -85,6 +86,29 @@ const startGame = async (
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
+      }
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
+const copyGame = async (
+  data: copyGameRequest,
+): Promise<NewGameResponse> => {
+  return await authTokenAuthAndMenagementAPI
+    .post(`/admin/copyGame/${data.gameSessionId}?gameName=${data.gameName}`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return {
+        gameSessionId: response.data,
       }
     })
     .catch((error) => {
@@ -409,6 +433,7 @@ const travel = async (data: TravelRequest): Promise<TravelResponse> => {
 const gameAPI = {
   createGame,
   startGame,
+  copyGame,
   getAdminGameSettings,
   getAdminGameLogs,
   getGameToken,
