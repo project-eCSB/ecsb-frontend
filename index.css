@@ -942,10 +942,10 @@
   width: 70%;
   height: 70%;
   border-radius: 50%;
-  background-image: conic-gradient(#ffffff 0%, 0, #E49045);
+  background-image: conic-gradient(#ffffff 0%, 0, #e49045);
 }
 
-#timeTokenBox > div > div > div > div > span:first-child{
+#timeTokenBox > div > div > div > div > span:first-child {
   display: block;
   position: relative;
   left: calc(50% - 2px);
@@ -956,7 +956,7 @@
   border-radius: 4px;
 }
 
-#timeTokenBox > div > div > div > div > span:nth-child(2){
+#timeTokenBox > div > div > div > div > span:nth-child(2) {
   display: block;
   position: relative;
   left: calc(50% - 1px);
@@ -967,7 +967,7 @@
   border-radius: 2px;
 }
 
-#timeTokenBox > div > div > div > div > span:last-child{
+#timeTokenBox > div > div > div > div > span:last-child {
   display: block;
   position: relative;
   rotate: 135deg;
@@ -3641,17 +3641,42 @@
     1.59% 62.1%,
     2.09% 76.88%
   );
-  padding: 50px 50px 40px 50px;
+  padding: 45px 50px 35px 50px;
+}
+
+/* Works on Firefox */
+#travelBoxContentWrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #e3c296 #835211;
+}
+
+/* Works on Chrome, Edge, and Safari */
+#travelBoxContentWrapper ::-webkit-scrollbar {
+  width: 20px;
+}
+
+#travelBoxContentWrapper ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #edb872;
+  border-width: 1px 9px 1px 9px;
+  border-style: solid;
+}
+
+#travelBoxContentWrapper ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 7px 1px 7px;
 }
 
 #travelBoxContent {
   max-width: 1320px;
-  height: 340px;
+  height: 330px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1rem;
   color: #000;
   font-style: normal;
   font-weight: 400;
@@ -3669,32 +3694,6 @@
   #travelBoxContent {
     max-width: 450px;
   }
-}
-
-/* Works on Firefox */
-#travelBoxContent {
-  scrollbar-width: thin;
-  scrollbar-color: #e3c296 #835211;
-}
-
-/* Works on Chrome, Edge, and Safari */
-#travelBoxContent ::-webkit-scrollbar {
-  width: 20px;
-}
-
-#travelBoxContent ::-webkit-scrollbar-track-piece {
-  background-color: #835211;
-  border-color: #edb872;
-  border-width: 1px 9px 1px 9px;
-  border-style: solid;
-}
-
-#travelBoxContent ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: #835211;
-  border-color: #835211;
-  border-style: solid;
-  border-width: 1px 7px 1px 7px;
 }
 
 .travelBoxContentItemWrapper {
@@ -3744,7 +3743,7 @@
   );
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 2px;
 }
 
 input[type='radio'] {
@@ -3782,13 +3781,13 @@ input[type='radio']:checked {
 .travelBoxContentItemContent {
   width: 355px;
   display: flex;
-  gap: 3rem;
+  justify-content: space-between;
 }
 
 .travelBoxContentItemContentLeft {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 5px;
 }
 
 .travelBoxContentItemContentLeftTimes {
@@ -3850,7 +3849,7 @@ input[type='radio']:checked {
 }
 
 .travelBoxContentItemContentLeftResources {
-  gap: 0.5rem;
+  gap: 5px;
   width: 160px;
   display: flex;
   flex-wrap: wrap;
@@ -4200,11 +4199,11 @@ input[type='radio']:checked {
   z-index: 10000;
 }
 
-#leaderboardHeaderBoxWrapper{
+#leaderboardHeaderBoxWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#leaderboardHeaderBox{
+#leaderboardHeaderBox {
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -4243,7 +4242,7 @@ input[type='radio']:checked {
     1.59% 62.1%,
     2.09% 76.88%
   );
-  background-color: #EDB872;
+  background-color: #edb872;
   padding: 1.3rem 2rem;
   display: flex;
   flex-direction: column;
@@ -4252,25 +4251,25 @@ input[type='radio']:checked {
   gap: 0.3rem;
 }
 
-#leaderboardTitleBox{
+#leaderboardTitleBox {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1rem;
 }
 
-#leaderboardTitleBox > img{
+#leaderboardTitleBox > img {
   width: 80px;
 }
 
-#leaderboardContentBoxWrapper{
+#leaderboardContentBoxWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
   width: 600px;
   height: 50%;
   min-height: 350px;
 }
 
-#leaderboardContentBox{
+#leaderboardContentBox {
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -4309,7 +4308,7 @@ input[type='radio']:checked {
     1.59% 62.1%,
     2.09% 76.88%
   );
-  background-color: #EDB872;
+  background-color: #edb872;
   padding: 4rem 2rem;
   display: flex;
   flex-direction: column;
@@ -4319,7 +4318,7 @@ input[type='radio']:checked {
   height: 100%;
 }
 
-#leaderboardContentBox > div{
+#leaderboardContentBox > div {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4348,12 +4347,12 @@ input[type='radio']:checked {
   border-width: 1px 4px 1px 4px;
 }
 
-#leaderboardContentBox > div > div{
+#leaderboardContentBox > div > div {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
   width: 90%;
 }
 
-#leaderboardContentBox > div > div > div{
+#leaderboardContentBox > div > div > div {
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -4392,7 +4391,7 @@ input[type='radio']:checked {
     1.59% 62.1%,
     2.09% 76.88%
   );
-  background-color: #E3C296;
+  background-color: #e3c296;
   padding: 1.3rem 2rem;
   display: flex;
   flex-direction: row;
@@ -4401,7 +4400,7 @@ input[type='radio']:checked {
   font-size: xx-large;
 }
 
-#leaderboardContentBox > div > div > div > div{
+#leaderboardContentBox > div > div > div > div {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -4422,10 +4421,10 @@ input[type='radio']:checked {
   padding-top: 2px;
   font-size: x-large;
   color: #835211;
-  background-color: #DEAC6A;
+  background-color: #deac6a;
 }
 
-#leaderboardButton{
+#leaderboardButton {
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -4464,14 +4463,14 @@ input[type='radio']:checked {
     1.59% 62.1%,
     2.09% 76.88%
   );
-  background-color: #EDB872;
+  background-color: #edb872;
   font-size: x-large;
   padding: 0.5rem 2rem;
   cursor: pointer;
   transition: 0.2s all ease-in-out;
 }
 
-#leaderboardButtonGlow:hover #leaderboardButton{
+#leaderboardButtonGlow:hover #leaderboardButton {
   transform: translate(2px, -2px);
 }
 
