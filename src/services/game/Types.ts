@@ -1,6 +1,6 @@
 import {
-  type Coordinate,
   type ClassResourceRepresentation,
+  type Coordinate,
   type GameAssets,
   type GameSettingsTravels,
 } from '../../apis/game/Types'
@@ -46,6 +46,16 @@ export interface TradeEquipment {
   resources: GameResourceDto[]
 }
 
+export interface CoopEquipment {
+  money: AmountDiff
+  resources: ResourceDiff[]
+}
+
+export interface CoopEquipmentDto {
+  key: string
+  value: CoopEquipment
+}
+
 export interface Equipment {
   money: number
   time: number
@@ -60,4 +70,14 @@ export interface PlayerResultDto {
 export interface EndGameStatus {
   gameSessionName: string
   playersLeaderboard: PlayerResultDto[]
+}
+
+export interface ResourceDiff {
+  key: string
+  value: AmountDiff
+}
+
+export interface AmountDiff {
+  amount: number
+  needed: number
 }
