@@ -1,8 +1,9 @@
-import { type EquipmentMessage, EquipmentMessageType } from './EqupimentMessage'
-import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
-import { type TimeMessage, TimeMessageType } from './TimeMessage'
-import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
-import { type UserStatusMessage, UserStatusMessageType } from './UserStatusMessage'
+import {type EquipmentMessage, EquipmentMessageType} from './EqupimentMessage'
+import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
+import {type TimeMessage, TimeMessageType} from './TimeMessage'
+import {type IncomingTradeMessage, IncomingTradeMessageType} from './TradeMessageHandler'
+import {type UserStatusMessage, UserStatusMessageType} from './UserStatusMessage'
+import {type IncomingCoopMessage, IncomingCoopMessageType} from './CoopMessageHandler';
 
 export type ChatMessage =
   | IncomingTradeMessage
@@ -10,6 +11,7 @@ export type ChatMessage =
   | UserStatusMessage
   | EquipmentMessage
   | TimeMessage
+  | IncomingCoopMessage
 
 export const parseChatMessage = (message: string): ChatMessage | null => {
   try {
@@ -25,6 +27,30 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
       case IncomingTradeMessageType.TradeServerCancel:
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingTradeMessageType.TradeServerFinish:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopStartPlanning:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopJoinPlanning:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopProposeCompany:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopStartNegotiation:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopNegotiationBid:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopFinishNegotiation:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopResourceChange:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopWaitForTravel:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopGoToTravel:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopTravelCompleted:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopCancel:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopCancelPlanning:
         return { senderId: parsed.senderId, message: parsed.message }
       case UserStatusMessageType.UserWarning:
         return { senderId: parsed.senderId, message: parsed.message }

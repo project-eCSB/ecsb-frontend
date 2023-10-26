@@ -1,4 +1,4 @@
-import type { Websocket } from 'websocket-ts'
+import type {Websocket} from 'websocket-ts'
 
 export enum NotificationMessageType {
   NotificationAdvertisementBuy = 'notification/buy', // One of the players wants to buy something
@@ -13,6 +13,10 @@ export enum NotificationMessageType {
   NotificationTravelEnd = 'notification/travel/end', // One of the players ended travel
   NotificationTradeStart = 'notification/trade/start', // One of the players opened trade window
   NotificationTradeEnd = 'notification/trade/end', // One of the players closed trade window
+  NotificationAdvertiseCoop = 'notification/coop/advertise/start',
+  NotificationStopAdvertiseCoop = 'notification/coop/advertise/stop',
+  NotificationStartNegotiation = 'notification/coop/decide/start',
+  NotificationStopNegotiation = 'notification/coop/decide/stop',
 }
 
 export interface NotificationAdvertisementBuyMessage {
@@ -111,6 +115,38 @@ export interface NotificationProductionEndMessage {
   }
 }
 
+export interface NotificationAdvertiseCoopMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationAdvertiseCoop
+    ownerId: string
+  }
+}
+
+export interface NotificationStopAdvertiseMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationStopAdvertiseCoop
+    ownerId: string
+  }
+}
+
+export interface NotificationStartNegotiationMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationStartNegotiation
+    playerId: string
+  }
+}
+
+export interface NotificationStopNegotiationMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationStopNegotiation
+    playerId: string
+  }
+}
+
 export type NotificationMessage =
   | NotificationAdvertisementBuyMessage
   | NotificationAdvertisementSellMessage
@@ -124,6 +160,10 @@ export type NotificationMessage =
   | NotificationWorkshopChoosingStopMessage
   | NotificationProductionStartMessage
   | NotificationProductionEndMessage
+  | NotificationAdvertiseCoopMessage
+  | NotificationStopAdvertiseMessage
+  | NotificationStartNegotiationMessage
+  | NotificationStopNegotiationMessage
 
 export const sendNotificationMessage = (socket: Websocket, message: NotificationMessage): void => {
   try {
