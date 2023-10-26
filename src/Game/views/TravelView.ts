@@ -341,7 +341,7 @@ export class TravelView {
         })
         .catch((err) => {
           const errorMessage = new ErrorView()
-          errorMessage.setText('Insufficient materials')
+          errorMessage.setText('Niewystarczająca ilość zasobów')
           errorMessage.show()
           setTimeout(() => {
             errorMessage.close()
