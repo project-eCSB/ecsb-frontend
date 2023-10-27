@@ -16,9 +16,9 @@ export class StatusAndCoopView {
   public static readonly statusAndCoopConatinerID = 'statusAndCoopContainer'
   public static readonly advertisementContainerID = 'advertisementContainer'
 
-  private readonly statusButton: HTMLButtonElement
+  private readonly statusButton: HTMLDivElement
   private readonly statusButtonWrapper: HTMLDivElement
-  private readonly coopButton: HTMLButtonElement
+  private readonly coopButton: HTMLDivElement
   private readonly coopButtonWrapper: HTMLDivElement
   private readonly container: HTMLDivElement
   private readonly advertisementContainer: HTMLDivElement
@@ -35,9 +35,10 @@ export class StatusAndCoopView {
     this.advertisementContainer.id = StatusAndCoopView.advertisementContainerID
     equipment.resources.forEach((element) => {
       const row = document.createElement('div')
+      row.className = 'advertisementContainerRow'
       const buttonGiveWrapper = document.createElement('div')
       buttonGiveWrapper.id = 'adButtonWrapper'
-      const buttonGive = document.createElement('button')
+      const buttonGive = document.createElement('div')
       buttonGive.className = 'adGive'
       buttonGive.id = 'adButton'
       const giveImage = document.createElement('img')
@@ -93,7 +94,7 @@ export class StatusAndCoopView {
       buttonGiveWrapper.appendChild(buttonGive)
       const buttonReceiveWrapper = document.createElement('div')
       buttonReceiveWrapper.id = 'adButtonWrapper'
-      const buttonReceive = document.createElement('button')
+      const buttonReceive = document.createElement('div')
       buttonReceive.className = 'adReceive'
       buttonReceive.id = 'adButton'
       const receiveImage = document.createElement('img')
@@ -153,7 +154,7 @@ export class StatusAndCoopView {
     })
     this.advertisementContainer.style.display = 'none'
 
-    this.statusButton = document.createElement('button')
+    this.statusButton = document.createElement('div')
     this.statusButton.addEventListener('click', () => {
       this.statusButton.id =
         this.statusButton.id === 'statusButtonActive' ? 'statusButton' : 'statusButtonActive'
@@ -189,7 +190,7 @@ export class StatusAndCoopView {
     this.statusButtonWrapper = document.createElement('div')
     this.statusButtonWrapper.id = StatusAndCoopView.statusButtonWrapperID
 
-    this.coopButton = document.createElement('button')
+    this.coopButton = document.createElement('div')
     this.coopButton.addEventListener('click', () => {
       this.coopButton.id =
         this.coopButton.id === 'coopButtonActive' ? 'coopButton' : 'coopButtonActive'

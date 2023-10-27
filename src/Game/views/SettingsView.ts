@@ -5,7 +5,7 @@ export class SettingsView {
   public static readonly settingsContainerWrapperID = 'settingsContainerWrapper'
   public static readonly leaveButtonWrapperID = 'leaveButtonWrapper'
 
-  settings: HTMLButtonElement
+  settings: HTMLDivElement
   settingsWrapper: HTMLDivElement
   settingsContainer: HTMLDivElement
   settingsContainerWrapper: HTMLDivElement
@@ -16,7 +16,7 @@ export class SettingsView {
     const image = document.createElement('img')
     image.src = '/assets/settingsCustomIcon.png'
 
-    this.settings = document.createElement('button')
+    this.settings = document.createElement('div')
     this.settings.addEventListener('click', () => {
       this.settingsContainerWrapper.style.right =
         this.settingsContainerWrapper.style.right === '10px' ? '-400px' : '10px'

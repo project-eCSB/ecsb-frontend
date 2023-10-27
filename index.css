@@ -493,7 +493,8 @@
   justify-content: space-around;
 }
 
-#advertisementContainer button {
+.adGive,
+.adReceive {
   height: 60px;
   display: flex;
   flex-direction: row;
@@ -501,7 +502,7 @@
   align-items: center;
 }
 
-#advertisementContainer > div {
+.advertisementContainerRow {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
