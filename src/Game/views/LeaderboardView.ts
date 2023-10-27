@@ -14,7 +14,7 @@ export class LeaderboardView {
 
   private readonly leaderboard: HTMLDivElement
 
-  constructor(status: EndGameStatus, playerId: string) {
+  constructor(status: EndGameStatus, playerId: string, destroy: () => void) {
     this.leaderboard = document.createElement('div')
     this.leaderboard.id = LeaderboardView.leaderboardID
 
@@ -126,6 +126,7 @@ export class LeaderboardView {
     leaderboardButtonWrapper.appendChild(leaderboardButton)
     leaderboardButton.innerText = 'Zakończ'
     leaderboardButton.addEventListener('click', () => {
+      destroy()
       window.location.href = '/home'
     })
 

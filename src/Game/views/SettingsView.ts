@@ -12,7 +12,7 @@ export class SettingsView {
 
   permanentAds: HTMLInputElement
 
-  constructor() {
+  constructor(destroy: () => void) {
     const image = document.createElement('img')
     image.src = '/assets/settingsCustomIcon.png'
 
@@ -49,6 +49,7 @@ export class SettingsView {
     const leaveButton = document.createElement('button')
     leaveButton.innerHTML = 'Opuść grę'
     leaveButton.addEventListener('click', () => {
+      destroy()
       window.location.href = '/home'
     })
     const leaveButtonWrapper = document.createElement('div')

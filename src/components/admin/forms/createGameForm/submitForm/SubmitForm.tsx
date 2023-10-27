@@ -182,7 +182,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     if (value.length === 0) {
       setCreateGameFormData((prevFormData) => ({
         ...prevFormData,
-        numberOfPlayers: 0,
+        maxPlayerAmount: 0,
       }))
       return
     }
@@ -197,7 +197,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
 
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
-      numberOfPlayers: parsedValue,
+      maxPlayerAmount: parsedValue,
     }))
   }
 
