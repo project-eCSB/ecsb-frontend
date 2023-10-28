@@ -31,3 +31,4 @@ export const TOAST_DISMISS_TIMEOUT = 500
 export const ERROR_TIMEOUT = 5000
 export const ONE_SECOND = 1000
 export const RESOURCE_ICON_SCALE = 0.22222 // 0.(2)
+export const TIMEOUT_OFFSET = 300

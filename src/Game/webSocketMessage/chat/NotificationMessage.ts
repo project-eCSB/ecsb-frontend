@@ -15,6 +15,7 @@ export enum NotificationMessageType {
   NotificationStopAdvertiseCoop = 'notification/coop/advertise/stop',
   NotificationStartNegotiation = 'notification/coop/decide/start',
   NotificationStopNegotiation = 'notification/coop/decide/stop',
+  QueueProcessed = 'queue/processed',
 }
 
 export interface NotificationAdvertisementBuyMessage {
@@ -145,6 +146,16 @@ export interface NotificationStopNegotiationMessage {
   }
 }
 
+export interface QueueProcessedMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.QueueProcessed
+    context: string
+    money: number | null
+    resources: { key: string; value: number }[] | null
+  }
+}
+
 export type NotificationMessage =
   | NotificationAdvertisementBuyMessage
   | NotificationAdvertisementSellMessage
@@ -162,3 +173,4 @@ export type NotificationMessage =
   | NotificationStopAdvertiseMessage
   | NotificationStartNegotiationMessage
   | NotificationStopNegotiationMessage
+  | QueueProcessedMessage

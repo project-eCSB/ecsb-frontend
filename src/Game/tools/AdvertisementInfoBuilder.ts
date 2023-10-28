@@ -62,7 +62,7 @@ export class AdvertisementInfoBuilder {
       RESOURCE_ICON_WIDTH,
       RESOURCE_ICON_SCALE,
       this.scene.resourceUrl,
-      3,
+      this.scene.settings.classResourceRepresentation.length,
       getResourceMapping(this.scene.settings.classResourceRepresentation)(resourceName),
       false,
     )

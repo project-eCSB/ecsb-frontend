@@ -381,7 +381,7 @@ export class TradeView {
         25,
         1,
         this.resourceURL,
-        3,
+        this.resourceRepresentation.length,
         getResourceMapping(this.resourceRepresentation)(resource.key),
         false,
       )
@@ -745,7 +745,7 @@ export class TradeView {
         25,
         1,
         this.resourceURL,
-        3,
+        this.resourceRepresentation.length,
         getResourceMapping(this.resourceRepresentation)(resource.key),
         false,
       )
@@ -860,7 +860,7 @@ export class TradeView {
         25,
         1,
         this.resourceURL,
-        3,
+        this.resourceRepresentation.length,
         getResourceMapping(this.resourceRepresentation)(resource.key),
         false,
       )
@@ -1219,7 +1219,7 @@ export class TradeView {
         25,
         1,
         this.resourceURL,
-        3,
+        this.resourceRepresentation.length,
         getResourceMapping(this.resourceRepresentation)(resource.key),
         false,
       )

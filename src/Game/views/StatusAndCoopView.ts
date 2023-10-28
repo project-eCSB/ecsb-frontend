@@ -49,7 +49,7 @@ export class StatusAndCoopView {
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE,
         url,
-        3,
+        resRepresentation.length,
         getResourceMapping(resRepresentation)(element.key),
         false,
       )
@@ -99,7 +99,7 @@ export class StatusAndCoopView {
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE,
         url,
-        3,
+        resRepresentation.length,
         getResourceMapping(resRepresentation)(element.key),
         false,
       )

@@ -171,7 +171,7 @@ export enum OutcomingCoopMessageType {
     CancelCoop = 'coop/cancel_coop',
     CancelPlanning = 'coop/cancel_planning',
     StartPlanningTravel = 'coop/start_planning_travel',
-    StartSimpleTravel = 'coop/start_simple_travel',
+    StartSimpleTravel = 'coop/start_simple_travel', // done
 }
 
 export interface StartPlanningMessage {

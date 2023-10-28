@@ -40,7 +40,7 @@ export class EquipmentView {
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE,
         this.resourceURL,
-        3,
+        this.resourceRepresentation.length,
         getResourceMapping(this.resourceRepresentation)(item.key),
         false,
       )
