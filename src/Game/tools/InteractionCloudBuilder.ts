@@ -3,10 +3,10 @@ import { CloudType } from '../scenes/Types'
 
 export class InteractionCloudBuilder {
   private readonly icons: Record<CloudType, HTMLElement> = {
-    [CloudType.WORK]: this.createCloudIcon('fa-gavel'),
-    [CloudType.TALK]: this.createCloudIcon('fa-commenting'),
-    [CloudType.TRAVEL]: this.createCloudIcon('fa-map'),
-    [CloudType.PRODUCTION]: this.createCloudIcon('fa-gavel'),
+    [CloudType.WORK]: this.createCloudIcon('/assets/workshopCloudCustomIcon.png'),
+    [CloudType.TALK]: this.createCloudIcon('/assets/tradeCloudCustomIcon.png'),
+    [CloudType.TRAVEL]: this.createCloudIcon('/assets/travelCloudCustomIcon.png'),
+    [CloudType.PRODUCTION]: this.createCloudIcon('/assets/workshopCloudCustomIcon.png'),
   }
 
   private readonly notMoveableIconTypes: CloudType[] = [
@@ -15,50 +15,49 @@ export class InteractionCloudBuilder {
     CloudType.TRAVEL,
   ]
 
-  private createCloudIcon(iconClassName: string): HTMLElement {
-    const iconElement = document.createElement('i')
-    iconElement.className = `fa ${iconClassName}`
-    iconElement.ariaHidden = 'true'
+  private createCloudIcon(path: string): HTMLElement {
+    const iconElement = document.createElement('img')
+    iconElement.src = path
     return iconElement
   }
 
   build(scene: Scene, playerId: string): Phaser.GameObjects.DOMElement {
-    const cloud = document.createElement('div')
-    cloud.className = 'actionCloud'
-    cloud.id = `cloud-${playerId}`
+    const cloudContainer = document.createElement('div')
+    cloudContainer.id = `cloud-${playerId}`
+    cloudContainer.className = 'actionCloudContainer'
 
-    const cloudSymbol = scene.add.dom(13, -5, cloud)
+    const cloudSymbol = scene.add.dom(0, 0, cloudContainer)
     return cloudSymbol
   }
 
   showInteractionCloud(playerId: string, cloudType: CloudType): void {
-    const cloud = document.getElementById(`cloud-${playerId}`)
-    if (!cloud) return
+    const cloudContainer = document.getElementById(`cloud-${playerId}`)
+    if (!cloudContainer) return
 
     this.clearInteractionCloud(playerId)
     const cloudIcon = this.icons[cloudType].cloneNode(false) as HTMLElement
     cloudIcon.id = `${cloudType}-${playerId}`
-    cloud.appendChild(cloudIcon)
-    cloud.style.visibility = 'visible'
+    cloudContainer.appendChild(cloudIcon)
+    cloudContainer.style.visibility = 'visible'
   }
 
   hideInteractionCloud(playerId: string, cloudType: CloudType): void {
-    const cloud = document.getElementById(`cloud-${playerId}`)
-    if (cloud) {
+    const cloudContainer = document.getElementById(`cloud-${playerId}`)
+    if (cloudContainer) {
       document.getElementById(`${cloudType}-${playerId}`)?.remove()
 
-      if (cloud.childNodes.length === 0) {
-        cloud.style.visibility = 'hidden'
+      if (cloudContainer.childNodes.length === 0) {
+        cloudContainer.style.visibility = 'hidden'
       }
     }
   }
 
   clearInteractionCloud(playerId: string): void {
-    const cloud = document.getElementById(`cloud-${playerId}`)
-    if (!cloud) return
+    const cloudContainer = document.getElementById(`cloud-${playerId}`)
+    if (!cloudContainer) return
 
-    while (cloud.firstChild) {
-      cloud.removeChild(cloud.firstChild)
+    while (cloudContainer.firstChild) {
+      cloudContainer.removeChild(cloudContainer.firstChild)
     }
   }
 
@@ -69,10 +68,10 @@ export class InteractionCloudBuilder {
   }
 
   isVisible(playerId: string): boolean {
-    const cloud = document.getElementById(`cloud-${playerId}`)
-    if (!cloud) {
+    const cloudContainer = document.getElementById(`cloud-${playerId}`)
+    if (!cloudContainer) {
       return false
     }
-    return cloud.style.visibility !== 'hidden'
+    return cloudContainer.style.visibility !== 'hidden'
   }
 }
