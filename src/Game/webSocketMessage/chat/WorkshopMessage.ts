@@ -1,9 +1,9 @@
 import { type Websocket } from 'websocket-ts'
 
 export enum WorkshopMessageType {
-  WorkshopStart = 'workshop/start', // Signal opening workshop window
-  WorkshopStop = 'workshop/stop', // Signal closing workshop window
-  WorkshopChange = 'workshop/change',
+  WorkshopStart = 'workshop/choosing/start', // Signal opening workshop window
+  WorkshopStop = 'workshop/choosing/stop', // Signal closing workshop window
+  WorkshopChange = 'workshop/choosing/change',
 }
 
 export interface WorkshopStartMessage {
