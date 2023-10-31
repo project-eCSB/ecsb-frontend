@@ -371,7 +371,7 @@ export class TradeView {
     const resourcesWrapper = document.createElement('div')
     resourcesWrapper.id = 'tradeBoxContentLeftResources'
     for (const resource of currentState.resources) {
-      const upperBoundary = limitedState.resources.find((item) => item.key === resource.key)?.value
+      const upperBoundary = limitedState.resources.find((item) => item.key === resource.key)!.value
 
       const resourceContainer = document.createElement('div')
 
@@ -392,6 +392,7 @@ export class TradeView {
       const valueWrapper = document.createElement('div')
       const value = document.createElement('h4')
       value.innerText = `${resource.value}`
+      value.style.color = resource.value > upperBoundary ? 'red' : 'black';
       valueWrapper.appendChild(value)
 
       const tradeBoxPlayerOfferEqItemBtnUp = document.createElement('button')
@@ -400,9 +401,10 @@ export class TradeView {
       plus.ariaHidden = 'true'
       tradeBoxPlayerOfferEqItemBtnUp.appendChild(plus)
       tradeBoxPlayerOfferEqItemBtnUp.addEventListener('click', () => {
-        if (this.isCurrPlayerTurn && upperBoundary! > resource.value) {
+        if (this.isCurrPlayerTurn && upperBoundary > resource.value) {
           value.innerText = `${parseInt(value.innerText) + 1}`
           resource.value += 1
+          value.style.color = resource.value > upperBoundary ? 'red' : 'black';
 
           if (
             resource.value ===
@@ -482,6 +484,7 @@ export class TradeView {
         if (this.isCurrPlayerTurn && resource.value > 0) {
           value.innerText = `${parseInt(value.innerText) - 1}`
           resource.value -= 1
+          value.style.color = resource.value > upperBoundary ? 'red' : 'black';
 
           if (
             resource.value ===
@@ -573,6 +576,7 @@ export class TradeView {
     const valueWrapper = document.createElement('div')
     const value = document.createElement('h4')
     value.innerText = `${currentState.money}`
+    value.style.color = currentState.money > this.currPlayerEq.money ? 'red' : 'black';
     valueWrapper.appendChild(value)
 
     const tradeBoxPlayerOfferEqMoneyBtnUp = document.createElement('button')
@@ -584,6 +588,7 @@ export class TradeView {
       if (this.isCurrPlayerTurn && this.currPlayerEq.money > currentState.money) {
         value.innerText = `${parseInt(value.innerText) + 1}`
         currentState.money += 1
+        value.style.color = currentState.money > this.currPlayerEq.money ? 'red' : 'black';
 
         if (currentState.money === bid.money + 1) {
           this.changesDone += 1
@@ -653,6 +658,7 @@ export class TradeView {
       if (this.isCurrPlayerTurn && currentState.money > 0) {
         value.innerText = `${parseInt(value.innerText) - 1}`
         currentState.money -= 1
+        value.style.color = currentState.money > this.currPlayerEq.money ? 'red' : 'black';
 
         if (currentState.money === bid.money - 1) {
           this.changesDone += 1
