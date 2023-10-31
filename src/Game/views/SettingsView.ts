@@ -40,6 +40,7 @@ export class SettingsView {
 
     this.permanentAds = document.createElement('input')
     this.permanentAds.type = 'checkbox'
+    this.permanentAds.checked = true
     const permanentAdsLabel = document.createElement('label')
     permanentAdsLabel.innerText = 'Zawsze widoczne ogłoszenia'
     const settingsRow = document.createElement('div')
