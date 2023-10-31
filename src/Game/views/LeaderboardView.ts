@@ -140,6 +140,6 @@ export class LeaderboardView {
   }
 
   public close(): void {
-    this.leaderboard.remove()
+    window.document.body.removeChild(this.leaderboard)
   }
 }

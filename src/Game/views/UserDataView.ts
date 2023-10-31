@@ -1,6 +1,6 @@
 export class UserDataView {
-  public static readonly userDataBoxID = 'userDataBox'
   public static readonly userDataBoxWrapperID = 'userDataBoxWrapper'
+  public static readonly userDataBoxID = 'userDataBox'
 
   private readonly userDataBox: HTMLDivElement
   private readonly userName: HTMLHeadingElement
