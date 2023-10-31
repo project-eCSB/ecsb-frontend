@@ -113,6 +113,7 @@ export class Scene extends Phaser.Scene {
   public travelView: TravelView | null
   public interactionView: InteractionView
   public loadingView: LoadingView
+  public leaderboardView: LeaderboardView | null
   public lobbyView: LobbyView | null
   public interactionCloudBuiler!: InteractionCloudBuilder
   public advertisementInfoBuilder!: AdvertisementInfoBuilder
@@ -159,6 +160,7 @@ export class Scene extends Phaser.Scene {
     this.interactionView = new InteractionView()
     this.loadingView = new LoadingView()
     this.lobbyView = null
+    this.leaderboardView = null
     this.travelView = null
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
@@ -433,8 +435,8 @@ export class Scene extends Phaser.Scene {
               .getPlayerResults()
               .then((leaderboard: EndGameStatus) => {
                 this.movingEnabled = false
-                const leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
-                leaderboardView.show()
+                this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
+                this.leaderboardView.show()
               })
               .catch((err) => {
                 console.error(err)
@@ -645,8 +647,8 @@ export class Scene extends Phaser.Scene {
           .getPlayerResults()
           .then((leaderboard: EndGameStatus) => {
             this.movingEnabled = false
-            const leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
-            leaderboardView.show()
+            this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
+            this.leaderboardView.show()
           })
           .catch((err) => {
             console.error(err)

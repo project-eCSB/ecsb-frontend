@@ -62,31 +62,31 @@ export const startGame = (
 }
 
 export const stopGame = (gameData: GameData): void => {
+  window.document.getElementById('btn')?.remove()
+
+  window.document.getElementById('interactionBox')?.remove()
+  window.document.getElementById('errorsAndInfo')?.remove()
+  window.document.getElementById('requestBox')?.remove()
+  
+  window.document.getElementById('travelBoxWrapper')?.remove()
+  window.document.getElementById('tradeBoxWrapper')?.remove()
+  window.document.getElementById('tradeSuccessBox')?.remove()
+  window.document.getElementById('workshopBoxWrapper')?.remove()
+  window.document.getElementById('workshopSuccessBox')?.remove()
+  
+  gameData.scene.userDataView?.close()
+  gameData.scene.equipmentView?.close()
+  gameData.scene.settingsView?.close()
+  gameData.scene.timeView?.close()
+  gameData.scene.lobbyView?.close()
+  gameData.scene.leaderboardView?.close()
+  gameData.scene.loadingView?.close()
+  gameData.scene.statusAndCoopView?.close()
+
   gameData.scene.destroy()
   gameData.scene.sys.plugins.removeScenePlugin('gridEngine')
   gameData.scene.sys.game.destroy(true)
 
   gameData.game.plugins.removeScenePlugin('gridEngine')
   gameData.game.destroy(true)
-
-  window.document.getElementById('btn')?.remove()
-
-  window.document.getElementById('tradeBoxWrapper')?.remove()
-  window.document.getElementById('userDataBox')?.remove()
-  window.document.getElementById('equipmentBox')?.remove()
-  window.document.getElementById('interactionBox')?.remove()
-  window.document.getElementById('requestBox')?.remove()
-  window.document.getElementById('lobby')?.remove()
-
-  window.document.getElementById('workshopBoxWrapper')?.remove()
-  window.document.getElementById('workshopSuccessBox')?.remove()
-  window.document.getElementById('travelBoxWrapper')?.remove()
-
-  window.document.getElementById('errorsAndInfo')?.remove()
-  window.document.getElementById('leaderboard')?.remove()
-
-  gameData.scene.userDataView?.close()
-  gameData.scene.timeView?.close()
-  gameData.scene.settingsView?.close()
-  gameData.scene.statusAndCoopView?.close()
 }
