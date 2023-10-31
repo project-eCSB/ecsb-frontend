@@ -24,7 +24,7 @@ export const TradeOfferPopup = (props: TradeProps) => {
   const handleAcceptTrade = () => {
     if (!isPlayerInRange()) {
       const errorMessage = new ErrorView()
-      errorMessage.setText(`${from} wants to trade with you, but you are too far`)
+      errorMessage.setText(`${from} chce z tobą handlować, ale jesteś zbyt daleko`)
       errorMessage.show()
       setTimeout(() => {
         errorMessage.close()
