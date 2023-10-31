@@ -1,11 +1,11 @@
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const MIN_PASSWORD_LENGTH = 9
+const MIN_PASSWORD_LENGTH = 6
 
 export const validateEmail = (email: string): boolean => {
   return EMAIL_REGEX.test(email)
 }
 
-// co najmniej 9 znaków
+// At least 6 chatacters longs
 export const validatePassword = (password: string): boolean => {
   return password.length >= MIN_PASSWORD_LENGTH
 }

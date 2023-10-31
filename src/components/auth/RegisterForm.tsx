@@ -57,7 +57,7 @@ const RegisterForm = () => {
     }
     if (!validatePassword(data.password)) {
       errors.password =
-        'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character'
+        'Password must be at least 6 characters long'
     }
     if (!validateConfirmPassword(data.password, data.confirmPassword)) {
       errors.confirmPassword = 'Passwords are not same'
