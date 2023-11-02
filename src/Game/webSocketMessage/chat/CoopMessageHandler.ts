@@ -148,7 +148,8 @@ export enum OutcomingCoopMessageType {
     ResourceDecideAck = 'coop/resource_decide/ack',
     CancelCoop = 'coop/cancel_coop',
     CancelPlanning = 'coop/cancel_planning',
-    StartTravel = 'coop/start_travel',
+    StartPlanningTravel = 'coop/start_planning_travel',
+    StartSimpleTravel = 'coop/start_simple_travel',
 }
 
 export interface StartPlanningMessage {
@@ -240,10 +241,18 @@ export interface CancelPlanningMessage {
     }
 }
 
-export interface StartTravelMessage {
+export interface StartPlanningTravelMessage {
     senderId: string
     message: {
-        type: OutcomingCoopMessageType.StartTravel
+        type: OutcomingCoopMessageType.StartPlanningTravel
+        travelName: string
+    }
+}
+
+export interface StartSimpleTravelMessage {
+    senderId: string
+    message: {
+        type: OutcomingCoopMessageType.StartSimpleTravel
         travelName: string
     }
 }
@@ -260,7 +269,8 @@ export type OutcomingCoopMessage =
     | ResourceDecideAckMessage
     | CancelCoopMessage
     | CancelPlanningMessage
-    | StartTravelMessage
+    | StartPlanningTravelMessage
+    | StartSimpleTravelMessage
 
 export const sendCoopMessage = (socket: Websocket, message: OutcomingCoopMessage): void => {
     try {
