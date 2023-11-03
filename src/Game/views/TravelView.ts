@@ -4,7 +4,7 @@ import { ERROR_TIMEOUT, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
-import { TravelMessageType, sendTravelMessage } from '../webSocketMessage/chat/TravelMessage'
+import { TravelChoosingMessageType, sendTravelChoosingMessage } from '../webSocketMessage/chat/TravelChoosingMessage'
 import { ErrorView } from './ErrorView'
 
 export enum TravelType {
@@ -164,8 +164,8 @@ export class TravelView {
           travelItemCheckbox.value = travelItem.value.name
           travelItemCheckbox.addEventListener('change', () => {
             this.selectedTravel = travelItemCheckbox.value
-            sendTravelMessage(this.scene.chatWs, {
-              type: TravelMessageType.TravelChange,
+            sendTravelChoosingMessage(this.scene.chatWs, {
+              type: TravelChoosingMessageType.TravelChange,
               travelName: this.selectedTravel,
             })
             this.enableTravelButton()
@@ -401,8 +401,8 @@ export class TravelView {
   }
 
   public show(): void {
-    sendTravelMessage(this.scene.chatWs, {
-      type: TravelMessageType.TravelStart,
+    sendTravelChoosingMessage(this.scene.chatWs, {
+      type: TravelChoosingMessageType.TravelStart,
     })
     this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     window.document.body.appendChild(this.travelBoxWrapper)
@@ -411,8 +411,8 @@ export class TravelView {
   }
 
   public close(): void {
-    sendTravelMessage(this.scene.chatWs, {
-      type: TravelMessageType.TravelStop,
+    sendTravelChoosingMessage(this.scene.chatWs, {
+      type: TravelChoosingMessageType.TravelStop,
     })
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     document.getElementById(TravelView.travelBoxWrapperID)?.remove()

@@ -39,7 +39,7 @@ import {
   OutcomingTradeMessageType,
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
-import { UserStatusMessageType } from '../webSocketMessage/chat/UserStatusMessage'
+import { BackendWarningMessageType } from '../webSocketMessage/chat/BackendWarningMessage'
 import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
 import { InteractionCloudBuilder } from '../tools/InteractionCloudBuilder'
 import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
@@ -584,7 +584,7 @@ export class Scene extends Phaser.Scene {
       case IncomingTradeMessageType.TradeServerFinish:
         this.tradeWindow?.close(true)
         break
-      case UserStatusMessageType.UserWarning:
+      case BackendWarningMessageType.UserWarning:
         this.showBusyPopup(msg.message.reason)
         break
       case EquipmentMessageType.EquipmentChange:
@@ -781,39 +781,31 @@ export class Scene extends Phaser.Scene {
 
   acceptTradeInvitation(senderId: string): void {
     sendTradeMessage(this.chatWs, {
-      senderId: this.playerId,
-      message: {
         type: OutcomingTradeMessageType.ProposeTradeAck,
-        proposalSenderId: senderId,
-      },
-    })
+        proposalSenderId: senderId
+      }
+    )
   }
 
   sendTradeMinorChange(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.chatWs, {
-      senderId: this.playerId,
-      message: {
         type: OutcomingTradeMessageType.TradeMinorChange,
         tradeBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
         },
-        receiverId: this.otherPlayerId!,
-      },
+        receiverId: this.otherPlayerId!
     })
   }
 
   sendTradeBid(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.chatWs, {
-      senderId: this.playerId,
-      message: {
         type: OutcomingTradeMessageType.TradeBid,
         tradeBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
         },
-        receiverId: this.otherPlayerId!,
-      },
+        receiverId: this.otherPlayerId!
     })
     this.tradeWindow?.disableProposeButton()
     this.tradeWindow?.disableAcceptButton()
@@ -829,24 +821,18 @@ export class Scene extends Phaser.Scene {
 
   finishTrade(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.chatWs, {
-      senderId: this.playerId,
-      message: {
         type: OutcomingTradeMessageType.TradeBidAck,
         finalBid: {
           senderOffer: ourSide,
           senderRequest: otherSide,
         },
-        receiverId: this.otherPlayerId!,
-      },
+        receiverId: this.otherPlayerId!
     })
   }
 
   cancelTrade(): void {
     sendTradeMessage(this.chatWs, {
-      senderId: this.playerId,
-      message: {
-        type: OutcomingTradeMessageType.TradeCancel,
-      },
+        type: OutcomingTradeMessageType.TradeCancel
     })
     this.otherPlayerId = undefined
   }

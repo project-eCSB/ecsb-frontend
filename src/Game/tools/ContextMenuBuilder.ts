@@ -35,11 +35,8 @@ export class ContextMenuBuilder {
     buttonTrade.onclick = (_: Event) => {
       window.document.getElementById('btns')?.remove()
       sendTradeMessage(scene.chatWs, {
-        senderId: scene.playerId,
-        message: {
           type: OutcomingTradeMessageType.ProposeTrade,
-          proposalReceiverId: id,
-        },
+          proposalReceiverId: id
       })
       toast(TOAST_INVITE_MSG, {
         position: 'bottom-right',

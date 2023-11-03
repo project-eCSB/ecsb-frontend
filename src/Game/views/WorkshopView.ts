@@ -4,7 +4,7 @@ import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '..
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
-import { WorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessage'
+import { OutcomingWorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessageHandler'
 import { WorkshopSuccessView } from './WorkshopSuccessView'
 
 export class WorkshopView {
@@ -273,7 +273,7 @@ export class WorkshopView {
       this.pTime.appendChild(pTimeIconExtraWrapper)
 
       sendWorkshopMessage(this.scene.chatWs, {
-        type: WorkshopMessageType.WorkshopChange,
+        type: OutcomingWorkshopMessageType.WorkshopChoosingChange,
         amount: resource,
       })
 
@@ -313,7 +313,7 @@ export class WorkshopView {
       }
 
       sendWorkshopMessage(this.scene.chatWs, {
-        type: WorkshopMessageType.WorkshopChange,
+        type: OutcomingWorkshopMessageType.WorkshopChoosingChange,
         amount: resource,
       })
 
@@ -483,7 +483,7 @@ export class WorkshopView {
 
   public show(): void {
     sendWorkshopMessage(this.scene.chatWs, {
-      type: WorkshopMessageType.WorkshopStart,
+      type: OutcomingWorkshopMessageType.WorkshopChoosingStart,
     })
     this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.WORK)
     window.document.body.appendChild(this.workshopBoxWrapper)
@@ -493,7 +493,7 @@ export class WorkshopView {
 
   public close(): void {
     sendWorkshopMessage(this.scene.chatWs, {
-      type: WorkshopMessageType.WorkshopStop,
+      type: OutcomingWorkshopMessageType.WorkshopChoosingStop,
     })
     document.getElementById(WorkshopView.workshopBoxWrapperID)?.remove()
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
