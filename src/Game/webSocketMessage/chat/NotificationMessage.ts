@@ -1,5 +1,3 @@
-import type {Websocket} from 'websocket-ts'
-
 export enum NotificationMessageType {
   NotificationAdvertisementBuy = 'notification/buy', // One of the players wants to buy something
   NotificationAdvertisementSell = 'notification/sell', // One of the players wants to sell something
@@ -164,12 +162,3 @@ export type NotificationMessage =
   | NotificationStopAdvertiseMessage
   | NotificationStartNegotiationMessage
   | NotificationStopNegotiationMessage
-
-export const sendNotificationMessage = (socket: Websocket, message: NotificationMessage): void => {
-  try {
-    const serialized = JSON.stringify(message)
-    socket.send(serialized)
-  } catch (error) {
-    console.error(`Error serializing notification message. Reason: ${(error as Error).message}`)
-  }
-}

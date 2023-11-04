@@ -74,69 +74,45 @@ export enum OutcomingTradeMessageType {
 }
 
 export interface TradeBuyMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.TradeBuy
     gameResourceName: string
-  }
 }
 
 export interface TradeSellMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.TradeSell
     gameResourceName: string
-  }
 }
 
 export interface ProposeTradeMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.ProposeTrade
     proposalReceiverId: string
-  }
 }
 
 export interface ProposeTradeAckMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.ProposeTradeAck
     proposalSenderId: string
-  }
 }
 
 export interface TradeBidMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.TradeBid
     tradeBid: TradeBid
     receiverId: string
-  }
 }
 
 export interface TradeMinorChangeMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.TradeMinorChange
     tradeBid: TradeBid
     receiverId: string
-  }
 }
 
 export interface TradeFinishMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.TradeBidAck
     finalBid: TradeBid
     receiverId: string
-  }
 }
 
 export interface TradeCancelMessage {
-  senderId: string
-  message: {
     type: OutcomingTradeMessageType.TradeCancel
-  }
 }
 
 export type OutcomingTradeMessage =
@@ -151,7 +127,7 @@ export type OutcomingTradeMessage =
 
 export const sendTradeMessage = (socket: Websocket, message: OutcomingTradeMessage): void => {
   try {
-    const serialized = JSON.stringify(message.message)
+    const serialized = JSON.stringify(message)
     socket.send(serialized)
   } catch (error) {
     console.error(`Error serializing trade message. Reason: ${(error as Error).message}`)

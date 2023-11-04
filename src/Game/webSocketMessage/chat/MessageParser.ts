@@ -2,16 +2,18 @@ import {type EquipmentMessage, EquipmentMessageType} from './EqupimentMessage'
 import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
 import {type TimeMessage, TimeMessageType} from './TimeMessage'
 import {type IncomingTradeMessage, IncomingTradeMessageType} from './TradeMessageHandler'
-import {type UserStatusMessage, UserStatusMessageType} from './UserStatusMessage'
+import {type BackendWarningMessage, BackendWarningMessageType} from './BackendWarningMessage'
 import {type IncomingCoopMessage, IncomingCoopMessageType} from './CoopMessageHandler';
+import {type IncomingWorkshopMessage, IncomingWorkshopMessageType} from "./WorkshopMessageHandler";
 
 export type ChatMessage =
   | IncomingTradeMessage
   | NotificationMessage
-  | UserStatusMessage
+  | BackendWarningMessage
   | EquipmentMessage
   | TimeMessage
   | IncomingCoopMessage
+  | IncomingWorkshopMessage
 
 export const parseChatMessage = (message: string): ChatMessage | null => {
   try {
@@ -46,13 +48,21 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopGoToTravel:
         return { senderId: parsed.senderId, message: parsed.message }
-      case IncomingCoopMessageType.CoopTravelCompleted:
+      case IncomingCoopMessageType.CoopTravelAccept:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopTravelDeny:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopFinish:
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancel:
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancelPlanning:
         return { senderId: parsed.senderId, message: parsed.message }
-      case UserStatusMessageType.UserWarning:
+      case IncomingWorkshopMessageType.WorkshopAccept:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingWorkshopMessageType.WorkshopDeny:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case BackendWarningMessageType.UserWarning:
         return { senderId: parsed.senderId, message: parsed.message }
       case EquipmentMessageType.EquipmentChange:
         return { senderId: parsed.senderId, message: parsed.message }

@@ -17,7 +17,9 @@ export enum IncomingCoopMessageType {
     CoopResourceChange = 'coop/system/resource_change',
     CoopWaitForTravel = 'coop/system/travel_ready/wait',
     CoopGoToTravel = 'coop/system/travel_ready/go',
-    CoopTravelCompleted = 'coop/system/travel_completed',
+    CoopTravelAccept = 'coop/system/travel/accept',
+    CoopTravelDeny = 'coop/system/travel/deny',
+    CoopFinish = 'coop/system/finish',
     CoopCancel = 'coop/system/cancel_coop',
     CoopCancelPlanning = 'coop/system/cancel_planning'
 }
@@ -98,11 +100,29 @@ export interface CoopGoToTravelMessage {
     }
 }
 
-export interface CoopTravelCompletedMessage {
+export interface CoopTravelAcceptMessage {
     senderId: string
     message: {
-        type: IncomingCoopMessageType.CoopTravelCompleted
-        receiverId: string
+        type: IncomingCoopMessageType.CoopTravelAccept
+        time: number
+    }
+}
+
+export interface CoopTravelDenyMessage {
+    senderId: string
+    message: {
+        type: IncomingCoopMessageType.CoopTravelDeny
+        reason: string
+    }
+}
+
+// message received by second guy for coop, who didn't travel
+export interface CoopFinishMessage {
+    senderId: string
+    message: {
+        type: IncomingCoopMessageType.CoopFinish
+        travelerId: string
+        travelName: string
     }
 }
 
@@ -132,7 +152,9 @@ export type IncomingCoopMessage =
     | CoopResourceChangeMessage
     | CoopWaitForTravelMessage
     | CoopGoToTravelMessage
-    | CoopTravelCompletedMessage
+    | CoopTravelAcceptMessage
+    | CoopTravelDenyMessage
+    | CoopFinishMessage
     | CoopCancelMessage
     | CoopCancelPlanningMessage
 
@@ -153,108 +175,69 @@ export enum OutcomingCoopMessageType {
 }
 
 export interface StartPlanningMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.StartPlanning
-        travelName: string
-    }
+    type: OutcomingCoopMessageType.StartPlanning
+    travelName: string
 }
 
 export interface FindCompanyMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.FindCompany
-        travelName: string
-    }
+    type: OutcomingCoopMessageType.FindCompany
+    travelName: string
 }
 
 export interface StopFindingMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.StopFinding
-    }
+    type: OutcomingCoopMessageType.StopFinding
 }
 
 export interface JoinPlanningMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.JoinPlanning
-        ownerId: string
-    }
+    type: OutcomingCoopMessageType.JoinPlanning
+    ownerId: string
 }
 
 export interface JoinPlanningAckMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.JoinPlanningAck
-        guestId: string
-    }
+    type: OutcomingCoopMessageType.JoinPlanningAck
+    guestId: string
 }
 
 export interface ProposeCompanyMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.ProposeCompany
-        travelName: string
-        guestId: string
-    }
+    type: OutcomingCoopMessageType.ProposeCompany
+    travelName: string
+    guestId: string
 }
 
 export interface ProposeCompanyAckMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.ProposeCompanyAck
-        travelName: string
-        ownerId: string
-    }
+    type: OutcomingCoopMessageType.ProposeCompanyAck
+    travelName: string
+    ownerId: string
 }
 
 export interface ResourceDecideMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.ResourceDecide
-        yourBid: CoopBid
-        otherPlayerId: string
-    }
+    type: OutcomingCoopMessageType.ResourceDecide
+    yourBid: CoopBid
+    otherPlayerId: string
 }
 
 export interface ResourceDecideAckMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.ResourceDecideAck
-        otherPlayerBid: CoopBid
-        otherPlayerId: string
-    }
+    type: OutcomingCoopMessageType.ResourceDecideAck
+    otherPlayerBid: CoopBid
+    otherPlayerId: string
 }
 
 export interface CancelCoopMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.CancelCoop
-    }
+    type: OutcomingCoopMessageType.CancelCoop
 }
 
 export interface CancelPlanningMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.CancelPlanning
-    }
+    type: OutcomingCoopMessageType.CancelPlanning
 }
 
 export interface StartPlanningTravelMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.StartPlanningTravel
-        travelName: string
-    }
+    type: OutcomingCoopMessageType.StartPlanningTravel
+    travelName: string
 }
 
 export interface StartSimpleTravelMessage {
-    senderId: string
-    message: {
-        type: OutcomingCoopMessageType.StartSimpleTravel
-        travelName: string
-    }
+    type: OutcomingCoopMessageType.StartSimpleTravel
+    travelName: string
 }
 
 export type OutcomingCoopMessage =
@@ -274,7 +257,7 @@ export type OutcomingCoopMessage =
 
 export const sendCoopMessage = (socket: Websocket, message: OutcomingCoopMessage): void => {
     try {
-        const serialized = JSON.stringify(message.message)
+        const serialized = JSON.stringify(message)
         socket.send(serialized)
     } catch (error) {
         console.error(`Error serializing trade message. Reason: ${(error as Error).message}`)
