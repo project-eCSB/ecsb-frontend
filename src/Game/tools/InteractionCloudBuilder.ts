@@ -72,6 +72,7 @@ export class InteractionCloudBuilder {
     if (!cloudContainer) {
       return false
     }
-    return cloudContainer.style.visibility !== 'hidden'
+
+    return cloudContainer.style.visibility === 'visible'
   }
 }
