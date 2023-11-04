@@ -1,11 +1,9 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
-import gameService from '../../services/game/GameService'
 import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
 import { OutcomingWorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessageHandler'
-import { WorkshopSuccessView } from './WorkshopSuccessView'
 
 export class WorkshopView {
   public static readonly workshopBoxWrapperID = 'workshopBoxWrapper'
@@ -61,7 +59,7 @@ export class WorkshopView {
       RESOURCE_ICON_WIDTH,
       RESOURCE_ICON_SCALE,
       this.resourceURL,
-      3,
+      this.resourceRepresentation.length,
       getResourceMapping(this.resourceRepresentation)(resourceName),
       false,
     )
@@ -70,7 +68,7 @@ export class WorkshopView {
       RESOURCE_ICON_WIDTH,
       RESOURCE_ICON_SCALE,
       this.resourceURL,
-      3,
+      this.resourceRepresentation.length,
       getResourceMapping(this.resourceRepresentation)(resourceName),
       true,
     )
@@ -145,7 +143,7 @@ export class WorkshopView {
       20,
       1,
       this.resourceURL,
-      3,
+      this.resourceRepresentation.length,
       getResourceMapping(this.resourceRepresentation)(resourceName),
       false,
     )
@@ -354,7 +352,6 @@ export class WorkshopView {
     this.workshopBoxSubmitButton.addEventListener('click', () => {
       this.disableSubmitBtn()
 
-      this.scene.loadingView.show()
       this.workshopBoxSubmitButtonExtraWrapper.className =
         this.workshopBoxSubmitButtonExtraWrapper.className ===
         'workshopBoxSubmitButtonExtraWrapperEnabledActive'
@@ -370,31 +367,10 @@ export class WorkshopView {
           ? 'workshopBoxSubmitButtonEnabled'
           : 'workshopBoxSubmitButtonEnabledActive'
 
-      gameService
-        .produce(parseInt(pWantInput.innerText))
-        .then(() => {
-          this.scene.loadingView.close()
-          this.close()
-          const succesView = new WorkshopSuccessView(
-            this.scene.playerId,
-            this.scene.status.className,
-            parseInt(pWantInput.innerText),
-            itemIconReversed,
-            itemIcon,
-            () => {
-              this.scene.workshopView = null
-              this.scene.movingEnabled = true
-              this.scene.interactionView.setText('rozpocząć wytwarzanie...')
-              this.scene.interactionView.show()
-            },
-          )
-          succesView.show()
-        })
-        .catch((err) => {
-          this.scene.loadingView.close()
-          console.error(err)
-          this.enableSubmitBtn()
-        })
+      sendWorkshopMessage(scene.chatWs, {
+        type: OutcomingWorkshopMessageType.WorkshopStart,
+        amount: parseInt(pWantInput.innerText),
+      })
     })
 
     this.workshopBoxSubmitButtonWrapper.appendChild(this.workshopBoxSubmitButton)

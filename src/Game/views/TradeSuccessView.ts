@@ -131,7 +131,7 @@ export class TradeSuccessView {
           25,
           1,
           this.resourceURL,
-          3,
+          resourceRepresentation.length,
           getResourceMapping(this.resourceRepresentation)(resource.key),
           false,
         )
@@ -184,7 +184,7 @@ export class TradeSuccessView {
           25,
           1,
           this.resourceURL,
-          3,
+          resourceRepresentation.length,
           getResourceMapping(this.resourceRepresentation)(resource.key),
           false,
         )

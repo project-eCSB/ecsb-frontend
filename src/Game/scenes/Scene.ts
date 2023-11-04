@@ -50,13 +50,17 @@ import {
   CHARACTER_ASSET_KEY,
   ERROR_TIMEOUT,
   getPlayerMapping,
+  getResourceMapping,
   LAYER_SCALE,
   MAP_ASSET_KEY,
   PLAYER_DESC_OFFSET_LEFT,
   RANGE,
+  RESOURCE_ICON_SCALE,
+  RESOURCE_ICON_WIDTH,
   SPRITE_HEIGHT,
   SPRITE_WIDTH,
   TILES_ASSET_KEY,
+  TIMEOUT_OFFSET,
 } from '../GameUtils'
 import { EquipmentMessageType } from '../webSocketMessage/chat/EqupimentMessage'
 import { sendUserMessage, UserMessageType } from '../webSocketMessage/chat/UserMessage'
@@ -72,6 +76,9 @@ import { LeaderboardView } from '../views/LeaderboardView'
 import { parseLobbyMessage } from '../webSocketMessage/lobby/MessageParser'
 import { LobbyMessageType } from '../webSocketMessage/lobby/LobbyMessage'
 import { LobbyView } from '../views/LobbyView'
+import { LoadingBarAndResultBuilder } from '../tools/LoadingBarAndResultBuilder'
+import { IncomingCoopMessageType } from '../webSocketMessage/chat/CoopMessageHandler'
+import { IncomingWorkshopMessageType } from '../webSocketMessage/chat/WorkshopMessageHandler'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -119,6 +126,7 @@ export class Scene extends Phaser.Scene {
   public advertisementInfoBuilder!: AdvertisementInfoBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public imageCropper!: ImageCropper
+  public loadingBarBuilder: LoadingBarAndResultBuilder | undefined
   public movingEnabled: boolean
   private lobbyWs!: Websocket
   private movementWs!: Websocket
@@ -130,7 +138,6 @@ export class Scene extends Phaser.Scene {
   public tileUrl!: string
   private receivedTimeSync = false
   private receivedPlayerSync = false
-  private readonly movementQueue: MovementMessage[] = []
   private readonly chatQueue: ChatMessage[] = []
 
   constructor(
@@ -199,13 +206,15 @@ export class Scene extends Phaser.Scene {
   }
 
   create(): void {
-    const cloudCityTilemap = this.make.tilemap({ key: MAP_ASSET_KEY })
-    cloudCityTilemap.addTilesetImage('Overworld', TILES_ASSET_KEY)
+    const tilemap = this.make.tilemap({ key: MAP_ASSET_KEY })
+    tilemap.addTilesetImage('Overworld', TILES_ASSET_KEY)
 
-    for (let i = 0; i < cloudCityTilemap.layers.length; i++) {
-      const layer = cloudCityTilemap.createLayer(i, 'Overworld', 0, 0)
+    for (let i = 0; i < tilemap.layers.length; i++) {
+      const layer = tilemap.createLayer(i, 'Overworld', 0, 0)
       layer.scale = LAYER_SCALE
     }
+
+    this.loadingBarBuilder = new LoadingBarAndResultBuilder(tilemap.tileWidth, tilemap.tileHeight, this)
 
     const playerSprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
     const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
@@ -222,8 +231,8 @@ export class Scene extends Phaser.Scene {
     this.cameras.main.setBounds(
       0,
       0,
-      cloudCityTilemap.widthInPixels * LAYER_SCALE,
-      cloudCityTilemap.heightInPixels * LAYER_SCALE,
+      tilemap.widthInPixels * LAYER_SCALE,
+      tilemap.heightInPixels * LAYER_SCALE,
     )
 
     const container = this.add.container(0, 0, [playerSprite, text, cloud, adBubble])
@@ -253,7 +262,7 @@ export class Scene extends Phaser.Scene {
       direction: this.status.direction as Direction,
       sprite: playerSprite,
     }
-    this.gridEngine.create(cloudCityTilemap, gridEngineConfig)
+    this.gridEngine.create(tilemap, gridEngineConfig)
 
     this.configureLobbyWebSocket()
 
@@ -584,8 +593,34 @@ export class Scene extends Phaser.Scene {
       case IncomingTradeMessageType.TradeServerFinish:
         this.tradeWindow?.close(true)
         break
+      case IncomingWorkshopMessageType.WorkshopAccept:
+        this.movingEnabled = false
+        this.loadingBarBuilder!.setCoordinates(
+          this.players[this.playerId].coords.x, 
+          this.players[this.playerId].coords.y,
+        )
+        this.loadingBarBuilder!.showLoadingBar(msg.message.time - TIMEOUT_OFFSET)
+        this.workshopView?.close()
+        break
+      case IncomingWorkshopMessageType.WorkshopDeny:
+        this.showErrorPopup(msg.message.reason)
+        this.workshopView?.close()
+        break
+      case IncomingCoopMessageType.CoopTravelAccept:
+        this.movingEnabled = false
+        this.loadingBarBuilder!.setCoordinates(
+          this.players[this.playerId].coords.x, 
+          this.players[this.playerId].coords.y,
+        )
+        this.loadingBarBuilder!.showLoadingBar(msg.message.time - TIMEOUT_OFFSET)
+        this.travelView?.close()
+        break
+      case IncomingCoopMessageType.CoopTravelDeny:
+        this.showErrorPopup(msg.message.reason)
+        this.travelView?.close()
+        break
       case BackendWarningMessageType.UserWarning:
-        this.showBusyPopup(msg.message.reason)
+        this.showErrorPopup(msg.message.reason)
         break
       case EquipmentMessageType.EquipmentChange:
         this.equipment = msg.message.playerEquipment
@@ -638,6 +673,29 @@ export class Scene extends Phaser.Scene {
       case NotificationMessageType.NotificationProductionEnd:
         this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
         this.playerCloudMovement.set(msg.message.playerId, false)
+        break
+      case NotificationMessageType.QueueProcessed:
+        this.loadingBarBuilder!.setCoordinates(
+          this.players[this.playerId].coords.x, 
+          this.players[this.playerId].coords.y,
+        )
+        if (msg.message.context === "workshop") {
+          const img = this.imageCropper.crop(
+            RESOURCE_ICON_WIDTH,
+            RESOURCE_ICON_WIDTH,
+            RESOURCE_ICON_SCALE,
+            this.resourceUrl,
+            this.settings.classResourceRepresentation.length,
+            getResourceMapping(this.settings.classResourceRepresentation)(msg.message.resources![0].key),
+            false,
+          )
+          this.loadingBarBuilder!.showResult(msg.message.resources![0].value, img)
+        } else if (msg.message.context === "travel") {
+          const img = document.createElement('img')
+          img.src = "/assets/coinCustomIcon.png"
+          this.loadingBarBuilder!.showResult(msg.message.resources![0].value, img)
+        }
+        this.movingEnabled = true
         break
       case TimeMessageType.End:
         this.chatWs.close()
@@ -837,7 +895,7 @@ export class Scene extends Phaser.Scene {
     this.otherPlayerId = undefined
   }
 
-  showBusyPopup(message: string): void {
+  showErrorPopup(message: string): void {
     const errorMessage = new ErrorView()
     errorMessage.setText(message)
     errorMessage.show()

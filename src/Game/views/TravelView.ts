@@ -1,11 +1,10 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
-import gameService from '../../services/game/GameService'
-import { ERROR_TIMEOUT, getResourceMapping } from '../GameUtils'
+import { getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
+import { OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
 import { TravelChoosingMessageType, sendTravelChoosingMessage } from '../webSocketMessage/chat/TravelChoosingMessage'
-import { ErrorView } from './ErrorView'
 
 export enum TravelType {
   LOW = 'low',
@@ -217,7 +216,7 @@ export class TravelView {
                 25,
                 1,
                 this.resourceURL,
-                3,
+                resourceRepresentation.length,
                 getResourceMapping(this.resourceRepresentation)(resource.key),
                 false,
               )
@@ -334,25 +333,10 @@ export class TravelView {
           ? 'travelBoxButtonsContainerButtonEnabled'
           : 'travelBoxButtonsContainerButtonEnabledActive'
 
-      gameService
-        .travel(this.selectedTravel!)
-        .then(() => {
-          this.close()
-        })
-        .catch((err) => {
-          const errorMessage = new ErrorView()
-          errorMessage.setText('Niewystarczająca ilość zasobów')
-          errorMessage.show()
-          setTimeout(() => {
-            errorMessage.close()
-          }, ERROR_TIMEOUT)
-          console.error(err)
-          this.scene.loadingView?.close()
-          this.enableTravelButton()
-        })
-        .finally(() => {
-          this.scene.loadingView.close()
-        })
+      sendCoopMessage(scene.chatWs, {
+        type: OutcomingCoopMessageType.StartSimpleTravel,
+        travelName: this.selectedTravel!,
+      })
     })
     this.travelBoxTravelButtonWrapper.appendChild(this.travelBoxTravelButton)
     this.travelBoxTravelButtonExtraWrapper.appendChild(this.travelBoxTravelButtonWrapper)
