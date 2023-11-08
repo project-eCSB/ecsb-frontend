@@ -1,10 +1,10 @@
-import {type EquipmentMessage, EquipmentMessageType} from './EqupimentMessage'
-import {type NotificationMessage, NotificationMessageType} from './NotificationMessage'
-import {type TimeMessage, TimeMessageType} from './TimeMessage'
-import {type IncomingTradeMessage, IncomingTradeMessageType} from './TradeMessageHandler'
-import {type BackendWarningMessage, BackendWarningMessageType} from './BackendWarningMessage'
-import {type IncomingCoopMessage, IncomingCoopMessageType} from './CoopMessageHandler';
-import {type IncomingWorkshopMessage, IncomingWorkshopMessageType} from "./WorkshopMessageHandler";
+import { type EquipmentMessage, EquipmentMessageType } from './EqupimentMessage'
+import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
+import { type TimeMessage, TimeMessageType } from './TimeMessage'
+import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
+import { type BackendWarningMessage, BackendWarningMessageType } from './BackendWarningMessage'
+import { type IncomingCoopMessage, IncomingCoopMessageType } from './CoopMessageHandler'
+import { type IncomingWorkshopMessage, IncomingWorkshopMessageType } from './WorkshopMessageHandler'
 
 export type ChatMessage =
   | IncomingTradeMessage

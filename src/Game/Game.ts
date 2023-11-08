@@ -67,13 +67,13 @@ export const stopGame = (gameData: GameData): void => {
   window.document.getElementById('interactionBox')?.remove()
   window.document.getElementById('errorsAndInfo')?.remove()
   window.document.getElementById('requestBox')?.remove()
-  
+
   window.document.getElementById('travelBoxWrapper')?.remove()
   window.document.getElementById('tradeBoxWrapper')?.remove()
   window.document.getElementById('tradeSuccessBox')?.remove()
   window.document.getElementById('workshopBoxWrapper')?.remove()
   window.document.getElementById('workshopSuccessBox')?.remove()
-  
+
   gameData.scene.userDataView?.close()
   gameData.scene.equipmentView?.close()
   gameData.scene.settingsView?.close()

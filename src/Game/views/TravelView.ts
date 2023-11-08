@@ -3,8 +3,14 @@ import { getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
-import { OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
-import { TravelChoosingMessageType, sendTravelChoosingMessage } from '../webSocketMessage/chat/TravelChoosingMessage'
+import {
+  OutcomingCoopMessageType,
+  sendCoopMessage,
+} from '../webSocketMessage/chat/CoopMessageHandler'
+import {
+  TravelChoosingMessageType,
+  sendTravelChoosingMessage,
+} from '../webSocketMessage/chat/TravelChoosingMessage'
 
 export enum TravelType {
   LOW = 'low',

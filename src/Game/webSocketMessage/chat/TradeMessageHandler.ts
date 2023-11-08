@@ -74,45 +74,45 @@ export enum OutcomingTradeMessageType {
 }
 
 export interface TradeBuyMessage {
-    type: OutcomingTradeMessageType.TradeBuy
-    gameResourceName: string
+  type: OutcomingTradeMessageType.TradeBuy
+  gameResourceName: string
 }
 
 export interface TradeSellMessage {
-    type: OutcomingTradeMessageType.TradeSell
-    gameResourceName: string
+  type: OutcomingTradeMessageType.TradeSell
+  gameResourceName: string
 }
 
 export interface ProposeTradeMessage {
-    type: OutcomingTradeMessageType.ProposeTrade
-    proposalReceiverId: string
+  type: OutcomingTradeMessageType.ProposeTrade
+  proposalReceiverId: string
 }
 
 export interface ProposeTradeAckMessage {
-    type: OutcomingTradeMessageType.ProposeTradeAck
-    proposalSenderId: string
+  type: OutcomingTradeMessageType.ProposeTradeAck
+  proposalSenderId: string
 }
 
 export interface TradeBidMessage {
-    type: OutcomingTradeMessageType.TradeBid
-    tradeBid: TradeBid
-    receiverId: string
+  type: OutcomingTradeMessageType.TradeBid
+  tradeBid: TradeBid
+  receiverId: string
 }
 
 export interface TradeMinorChangeMessage {
-    type: OutcomingTradeMessageType.TradeMinorChange
-    tradeBid: TradeBid
-    receiverId: string
+  type: OutcomingTradeMessageType.TradeMinorChange
+  tradeBid: TradeBid
+  receiverId: string
 }
 
 export interface TradeFinishMessage {
-    type: OutcomingTradeMessageType.TradeBidAck
-    finalBid: TradeBid
-    receiverId: string
+  type: OutcomingTradeMessageType.TradeBidAck
+  finalBid: TradeBid
+  receiverId: string
 }
 
 export interface TradeCancelMessage {
-    type: OutcomingTradeMessageType.TradeCancel
+  type: OutcomingTradeMessageType.TradeCancel
 }
 
 export type OutcomingTradeMessage =

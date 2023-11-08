@@ -1,28 +1,25 @@
 export enum LobbyMessageType {
-    LobbyChange = 'landing_page/change',
-    LobbyStart = 'landing_page/game_started',
-    LobbyEnd = 'landing_page/game_ended',
+  LobbyChange = 'landing_page/change',
+  LobbyStart = 'landing_page/game_started',
+  LobbyEnd = 'landing_page/game_ended',
 }
 
 export interface PlayerAmountInfo {
-    amount: number
-    needed: number
-  }
+  amount: number
+  needed: number
+}
 
 export interface LobbyChangeMessage {
-    type: LobbyMessageType.LobbyChange
-    playersAmount: PlayerAmountInfo
+  type: LobbyMessageType.LobbyChange
+  playersAmount: PlayerAmountInfo
 }
 
 export interface LobbyStartMessage {
-    type: LobbyMessageType.LobbyStart
+  type: LobbyMessageType.LobbyStart
 }
 
 export interface LobbyEndMessage {
-    type: LobbyMessageType.LobbyEnd
+  type: LobbyMessageType.LobbyEnd
 }
 
-export type LobbyMessage =
-  | LobbyChangeMessage
-  | LobbyStartMessage
-  | LobbyEndMessage
+export type LobbyMessage = LobbyChangeMessage | LobbyStartMessage | LobbyEndMessage

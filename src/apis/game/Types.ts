@@ -54,7 +54,7 @@ export interface AdminGameSettingsRequest {
 }
 
 export interface copyGameRequest {
-  gameSessionId: number,
+  gameSessionId: number
   gameName: string
 }
 
