@@ -1085,7 +1085,7 @@
   bottom: -18px;
   left: -15px;
   padding: 1.7rem;
-  padding-left: 2.3rem;
+  padding-left: 2.5rem;
   background-color: #edb872;
   clip-path: polygon(
     3.05% 90%,
@@ -1145,6 +1145,7 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  position: relative;
 }
 
 #equipmentBoxContent > div > h1 {
@@ -1201,6 +1202,42 @@
     1.59% 62.1%,
     2.09% 76.88%
   );
+}
+
+#equipmentHoverBox {
+  position: fixed;
+  bottom: 130px;
+  left: -4px;
+}
+
+#equipmentHoverBox > div {
+  position: absolute;
+  top: -70px;
+  left: 0;
+}
+
+.equipmentResourceHoverBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.equipmentResourceHoverBox {
+  background-color: #edb872;
+  width: 100px;
+  height: 75px;
+  clip-path: polygon(5.24% 7.43%,4.29% 11.34%,3.92% 20.39%,3.74% 40.21%,4.53% 69.56%,4.96% 73.98%,6.12% 77.11%,8.14% 79.35%,12.19% 80.42%,27.28% 82.01%,29.80% 77.88%,31.70% 82.77%,43.78% 83.41%,45.81% 84.11%,47.14% 86.08%,49.23% 91.75%,50.84% 97.36%,52.06% 91.45%,54.21% 85.91%,55.95% 83.97%,64.85% 84.66%,74.93% 84.89%,88.24% 83.08%,93.14% 81.17%,94.95% 79.63%,95.42% 77.71%,96.37% 65.28%,95.97% 39.85%,94.90% 6.71%,87.04% 5.56%,74.74% 4.99%,73.29% 7.85%,72.38% 4.99%,59.05% 4.86%,42.52% 5.01%,20.62% 6.15%);
+}
+
+.equipmentResourceHoverBoxContent {
+  padding: 15px;
+}
+
+.equipmentResourceHoverBoxContent > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.equipmentResourceHoverBoxContent > div > p {
+  font-size: 0.8rem;
 }
 
 /* InteractionViewBox */

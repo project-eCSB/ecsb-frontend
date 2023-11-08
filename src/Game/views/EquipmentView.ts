@@ -6,8 +6,10 @@ import { ImageCropper } from '../tools/ImageCropper'
 export class EquipmentView {
   public static readonly equipmentBoxID = 'equipmentBox'
   public static readonly equipmentBoxContentID = 'equipmentBoxContent'
+  public static readonly equipmentHoverBoxID = 'equipmentHoverBox'
 
   private readonly equipmentBox: HTMLDivElement
+  private readonly equipmentHoverBox: HTMLDivElement
   private readonly resourceURL: string
   private readonly resourceRepresentation: ClassResourceRepresentation[]
   private readonly cropper: ImageCropper
@@ -19,6 +21,9 @@ export class EquipmentView {
 
     this.equipmentBox = document.createElement('div')
     this.equipmentBox.id = EquipmentView.equipmentBoxID
+
+    this.equipmentHoverBox = document.createElement('div')
+    this.equipmentHoverBox.id = EquipmentView.equipmentHoverBoxID
 
     this.fillEq(eq)
   }
@@ -32,7 +37,7 @@ export class EquipmentView {
     const equipmentBoxContent = document.createElement('div')
     equipmentBoxContent.id = EquipmentView.equipmentBoxContentID
 
-    for (const item of eq.resources) {
+    eq.resources.forEach((item, idx) => {
       const itemBox = document.createElement('div')
 
       const itemIcon = this.cropper.crop(
@@ -52,9 +57,56 @@ export class EquipmentView {
       itemBox.appendChild(itemIcon)
       itemBox.appendChild(itemValueWrapper)
 
-      equipmentBoxContent.appendChild(itemBox)
-    }
+      const itemHoverWrapper = document.createElement('div')
+      itemHoverWrapper.className = 'equipmentResourceHoverBoxWrapper'
+      itemHoverWrapper.style.transform = `translateX(${idx * 74}px)`
 
+      itemHoverWrapper.style.visibility = 'hidden'
+      const itemHover = document.createElement('div')
+      itemHover.className = 'equipmentResourceHoverBox'
+      const itemHoverContent = document.createElement('div')
+      itemHoverContent.className = 'equipmentResourceHoverBoxContent'
+
+      const itemHoverContentValues = document.createElement('div')
+      const itemHoverContentValuesText = document.createElement('p')
+      itemHoverContentValuesText.innerText = 'Cena'
+      const itemHoverContentValuesValue = document.createElement('p')
+      itemHoverContentValuesValue.innerText = `${
+        this.resourceRepresentation.find((res) => res.value.gameResourceName === item.key)!.value
+          .unitPrice
+      }`
+      itemHoverContentValues.appendChild(itemHoverContentValuesText)
+      itemHoverContentValues.appendChild(itemHoverContentValuesValue)
+
+      const itemHoverContentBuyouts = document.createElement('div')
+      const itemHoverContentBuyoutsText = document.createElement('p')
+      itemHoverContentBuyoutsText.innerText = 'Wykup'
+      const itemHoverContentBuyoutsValue = document.createElement('p')
+      itemHoverContentBuyoutsValue.innerText = `${
+        this.resourceRepresentation.find((res) => res.value.gameResourceName === item.key)!.value
+          .buyoutPrice
+      }`
+      itemHoverContentBuyouts.appendChild(itemHoverContentBuyoutsText)
+      itemHoverContentBuyouts.appendChild(itemHoverContentBuyoutsValue)
+
+      itemHoverContent.appendChild(itemHoverContentValues)
+      itemHoverContent.appendChild(itemHoverContentBuyouts)
+
+      itemHover.appendChild(itemHoverContent)
+      itemHoverWrapper.appendChild(itemHover)
+
+      itemBox.addEventListener('mouseover', () => {
+        itemHoverWrapper.style.visibility = 'visible'
+      })
+
+      itemBox.addEventListener('mouseleave', () => {
+        itemHoverWrapper.style.visibility = 'hidden'
+      })
+
+      this.equipmentHoverBox.appendChild(itemHoverWrapper)
+
+      equipmentBoxContent.appendChild(itemBox)
+    })
     const moneyBox = document.createElement('div')
 
     const moneyBoxicon = document.createElement('img')
@@ -77,10 +129,12 @@ export class EquipmentView {
   public show(): void {
     if (!document.getElementById(EquipmentView.equipmentBoxID)) {
       window.document.body.appendChild(this.equipmentBox)
+      window.document.body.appendChild(this.equipmentHoverBox)
     }
   }
 
   public close(): void {
     document.getElementById(EquipmentView.equipmentBoxID)?.remove()
+    document.getElementById(EquipmentView.equipmentHoverBoxID)?.remove()
   }
 }

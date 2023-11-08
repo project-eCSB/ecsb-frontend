@@ -78,9 +78,7 @@ const getAdminGameSettings = async (
     })
 }
 
-const startGame = async (
-  data: AdminGameSettingsRequest,
-): Promise<void> => {
+const startGame = async (data: AdminGameSettingsRequest): Promise<void> => {
   await authTokenAuthAndMenagementAPI
     .post(`/admin/startGame/${data.gameSessionId}`)
     .then((response) => {
@@ -97,9 +95,7 @@ const startGame = async (
     })
 }
 
-const copyGame = async (
-  data: copyGameRequest,
-): Promise<NewGameResponse> => {
+const copyGame = async (data: copyGameRequest): Promise<NewGameResponse> => {
   return await authTokenAuthAndMenagementAPI
     .post(`/admin/copyGame/${data.gameSessionId}?gameName=${data.gameName}`)
     .then((response) => {

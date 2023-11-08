@@ -3,7 +3,10 @@ import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '..
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
-import { OutcomingWorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessageHandler'
+import {
+  OutcomingWorkshopMessageType,
+  sendWorkshopMessage,
+} from '../webSocketMessage/chat/WorkshopMessageHandler'
 
 export class WorkshopView {
   public static readonly workshopBoxWrapperID = 'workshopBoxWrapper'

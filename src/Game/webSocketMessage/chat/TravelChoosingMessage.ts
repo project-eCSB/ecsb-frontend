@@ -1,5 +1,4 @@
-import {type Websocket} from 'websocket-ts'
-
+import { type Websocket } from 'websocket-ts'
 
 export enum TravelChoosingMessageType {
   TravelStart = 'travel/choosing/start', // Signal opening travel window
@@ -25,7 +24,10 @@ export type TravelChoosingMessage =
   | TravelChoosingStopMessage
   | TravelChoosingChangeMessage
 
-export const sendTravelChoosingMessage = (socket: Websocket, message: TravelChoosingMessage): void => {
+export const sendTravelChoosingMessage = (
+  socket: Websocket,
+  message: TravelChoosingMessage,
+): void => {
   try {
     const serialized = JSON.stringify(message)
     socket.send(serialized)

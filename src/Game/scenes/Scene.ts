@@ -160,7 +160,9 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow = null
     this.userDataView = new UserDataView(this.playerId, this.status.className)
     this.timeView = null
-    this.settingsView = new SettingsView(() => {this.destroy()})
+    this.settingsView = new SettingsView(() => {
+      this.destroy()
+    })
     this.statusAndCoopView = null
     this.equipmentView = null
     this.workshopView = null
@@ -214,7 +216,11 @@ export class Scene extends Phaser.Scene {
       layer.scale = LAYER_SCALE
     }
 
-    this.loadingBarBuilder = new LoadingBarAndResultBuilder(tilemap.tileWidth, tilemap.tileHeight, this)
+    this.loadingBarBuilder = new LoadingBarAndResultBuilder(
+      tilemap.tileWidth,
+      tilemap.tileHeight,
+      this,
+    )
 
     const playerSprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
     const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
@@ -444,7 +450,9 @@ export class Scene extends Phaser.Scene {
               .getPlayerResults()
               .then((leaderboard: EndGameStatus) => {
                 this.movingEnabled = false
-                this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
+                this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {
+                  this.destroy()
+                })
                 this.leaderboardView.show()
               })
               .catch((err) => {
@@ -490,25 +498,30 @@ export class Scene extends Phaser.Scene {
   handleMovementMessage(msg: MovementMessage): void {
     switch (msg.type) {
       case MovementMessageType.PlayerSyncing:
-        msg.players.forEach(player => {
-          if (!Object.keys(this.players).includes(player.playerPosition.id)){
-            this.addPlayer(player.playerPosition.id, player.playerPosition.coords, player.playerPosition.direction, player.className)
+        msg.players.forEach((player) => {
+          if (!Object.keys(this.players).includes(player.playerPosition.id)) {
+            this.addPlayer(
+              player.playerPosition.id,
+              player.playerPosition.coords,
+              player.playerPosition.direction,
+              player.className,
+            )
           }
         })
         this.receivedPlayerSync = true
         break
       case MovementMessageType.PlayerAdded:
-        if (!Object.keys(this.players).includes(msg.id)){
+        if (!Object.keys(this.players).includes(msg.id)) {
           this.addPlayer(msg.id, msg.coords, msg.direction, msg.className)
         }
         break
       case MovementMessageType.PlayerMoved:
-        if (Object.keys(this.players).includes(msg.id)){
+        if (Object.keys(this.players).includes(msg.id)) {
           this.movePlayer(msg.id, msg.coords, msg.direction)
         }
         break
       case MovementMessageType.PlayerRemoved:
-        if (Object.keys(this.players).includes(msg.id)){
+        if (Object.keys(this.players).includes(msg.id)) {
           this.removePlayer(msg.id)
         }
         break
@@ -596,7 +609,7 @@ export class Scene extends Phaser.Scene {
       case IncomingWorkshopMessageType.WorkshopAccept:
         this.movingEnabled = false
         this.loadingBarBuilder!.setCoordinates(
-          this.players[this.playerId].coords.x, 
+          this.players[this.playerId].coords.x,
           this.players[this.playerId].coords.y,
         )
         this.loadingBarBuilder!.showLoadingBar(msg.message.time - TIMEOUT_OFFSET)
@@ -609,7 +622,7 @@ export class Scene extends Phaser.Scene {
       case IncomingCoopMessageType.CoopTravelAccept:
         this.movingEnabled = false
         this.loadingBarBuilder!.setCoordinates(
-          this.players[this.playerId].coords.x, 
+          this.players[this.playerId].coords.x,
           this.players[this.playerId].coords.y,
         )
         this.loadingBarBuilder!.showLoadingBar(msg.message.time - TIMEOUT_OFFSET)
@@ -676,23 +689,25 @@ export class Scene extends Phaser.Scene {
         break
       case NotificationMessageType.QueueProcessed:
         this.loadingBarBuilder!.setCoordinates(
-          this.players[this.playerId].coords.x, 
+          this.players[this.playerId].coords.x,
           this.players[this.playerId].coords.y,
         )
-        if (msg.message.context === "workshop") {
+        if (msg.message.context === 'workshop') {
           const img = this.imageCropper.crop(
             RESOURCE_ICON_WIDTH,
             RESOURCE_ICON_WIDTH,
             RESOURCE_ICON_SCALE,
             this.resourceUrl,
             this.settings.classResourceRepresentation.length,
-            getResourceMapping(this.settings.classResourceRepresentation)(msg.message.resources![0].key),
+            getResourceMapping(this.settings.classResourceRepresentation)(
+              msg.message.resources![0].key,
+            ),
             false,
           )
           this.loadingBarBuilder!.showResult(msg.message.resources![0].value, img)
-        } else if (msg.message.context === "travel") {
+        } else if (msg.message.context === 'travel') {
           const img = document.createElement('img')
-          img.src = "/assets/coinCustomIcon.png"
+          img.src = '/assets/coinCustomIcon.png'
           this.loadingBarBuilder!.showResult(msg.message.resources![0].value, img)
         }
         this.movingEnabled = true
@@ -705,7 +720,9 @@ export class Scene extends Phaser.Scene {
           .getPlayerResults()
           .then((leaderboard: EndGameStatus) => {
             this.movingEnabled = false
-            this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {this.destroy()})
+            this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {
+              this.destroy()
+            })
             this.leaderboardView.show()
           })
           .catch((err) => {
@@ -839,31 +856,30 @@ export class Scene extends Phaser.Scene {
 
   acceptTradeInvitation(senderId: string): void {
     sendTradeMessage(this.chatWs, {
-        type: OutcomingTradeMessageType.ProposeTradeAck,
-        proposalSenderId: senderId
-      }
-    )
+      type: OutcomingTradeMessageType.ProposeTradeAck,
+      proposalSenderId: senderId,
+    })
   }
 
   sendTradeMinorChange(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.chatWs, {
-        type: OutcomingTradeMessageType.TradeMinorChange,
-        tradeBid: {
-          senderOffer: ourSide,
-          senderRequest: otherSide,
-        },
-        receiverId: this.otherPlayerId!
+      type: OutcomingTradeMessageType.TradeMinorChange,
+      tradeBid: {
+        senderOffer: ourSide,
+        senderRequest: otherSide,
+      },
+      receiverId: this.otherPlayerId!,
     })
   }
 
   sendTradeBid(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.chatWs, {
-        type: OutcomingTradeMessageType.TradeBid,
-        tradeBid: {
-          senderOffer: ourSide,
-          senderRequest: otherSide,
-        },
-        receiverId: this.otherPlayerId!
+      type: OutcomingTradeMessageType.TradeBid,
+      tradeBid: {
+        senderOffer: ourSide,
+        senderRequest: otherSide,
+      },
+      receiverId: this.otherPlayerId!,
     })
     this.tradeWindow?.disableProposeButton()
     this.tradeWindow?.disableAcceptButton()
@@ -879,18 +895,18 @@ export class Scene extends Phaser.Scene {
 
   finishTrade(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     sendTradeMessage(this.chatWs, {
-        type: OutcomingTradeMessageType.TradeBidAck,
-        finalBid: {
-          senderOffer: ourSide,
-          senderRequest: otherSide,
-        },
-        receiverId: this.otherPlayerId!
+      type: OutcomingTradeMessageType.TradeBidAck,
+      finalBid: {
+        senderOffer: ourSide,
+        senderRequest: otherSide,
+      },
+      receiverId: this.otherPlayerId!,
     })
   }
 
   cancelTrade(): void {
     sendTradeMessage(this.chatWs, {
-        type: OutcomingTradeMessageType.TradeCancel
+      type: OutcomingTradeMessageType.TradeCancel,
     })
     this.otherPlayerId = undefined
   }

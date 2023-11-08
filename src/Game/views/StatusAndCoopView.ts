@@ -74,13 +74,13 @@ export class StatusAndCoopView {
           scene.advertisementInfoBuilder.addBubble(bubble, scene.playerId)
 
           sendTradeMessage(scene.chatWs, {
-              type: OutcomingTradeMessageType.TradeSell,
-              gameResourceName: element.key
+            type: OutcomingTradeMessageType.TradeSell,
+            gameResourceName: element.key,
           })
         } else {
           sendTradeMessage(scene.chatWs, {
-              type: OutcomingTradeMessageType.TradeSell,
-              gameResourceName: ''
+            type: OutcomingTradeMessageType.TradeSell,
+            gameResourceName: '',
           })
         }
         scene.advertisementInfoBuilder.setMarginAndVisibility(scene.playerId)
@@ -124,13 +124,13 @@ export class StatusAndCoopView {
           scene.advertisementInfoBuilder.addBubble(bubble, scene.playerId)
 
           sendTradeMessage(scene.chatWs, {
-              type: OutcomingTradeMessageType.TradeBuy,
-              gameResourceName: element.key
+            type: OutcomingTradeMessageType.TradeBuy,
+            gameResourceName: element.key,
           })
         } else {
           sendTradeMessage(scene.chatWs, {
-              type: OutcomingTradeMessageType.TradeBuy,
-              gameResourceName: ''
+            type: OutcomingTradeMessageType.TradeBuy,
+            gameResourceName: '',
           })
         }
         scene.advertisementInfoBuilder.setMarginAndVisibility(scene.playerId)

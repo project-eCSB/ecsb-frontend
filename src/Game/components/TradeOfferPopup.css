@@ -18,11 +18,11 @@
 }
 
 .buttons-container > div:first-child > button {
-  background-color: #52B236;
+  background-color: #52b236;
 }
 
 .buttons-container > div:last-child > button {
-  background-color: #D74A4A;
+  background-color: #d74a4a;
 }
 
 #buttonWrapper {
