@@ -194,7 +194,7 @@ export class StatusAndCoopView {
     })
     this.coopButton.id = StatusAndCoopView.coopButtonID
     const spanCoop = document.createElement('span')
-    spanCoop.textContent = 'Coop'
+    spanCoop.textContent = 'Wyprawa'
     const iconCoop = document.createElement('i')
     iconCoop.className = 'fa fa-caret-down'
     iconCoop.ariaHidden = 'true'

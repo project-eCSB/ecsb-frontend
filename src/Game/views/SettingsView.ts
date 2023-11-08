@@ -3,6 +3,8 @@ export class SettingsView {
   public static readonly settingsWrapperID = 'settingsButtonWrapper'
   public static readonly settingsContainerID = 'settingsContainer'
   public static readonly settingsContainerWrapperID = 'settingsContainerWrapper'
+  public static readonly settingsContainerControlsID = 'settingsContainerControls'
+  public static readonly settingsContainerControlsWrapperID = 'settingsContainerControlsWrapper'
   public static readonly leaveButtonWrapperID = 'leaveButtonWrapper'
 
   settings: HTMLDivElement
@@ -47,6 +49,65 @@ export class SettingsView {
     settingsRow.appendChild(this.permanentAds)
     settingsRow.appendChild(permanentAdsLabel)
     this.settingsContainer.appendChild(settingsRow)
+
+    const controlsWrapper = document.createElement('div')
+    controlsWrapper.id = SettingsView.settingsContainerControlsWrapperID
+    const controlsBox = document.createElement('div')
+    controlsBox.id = SettingsView.settingsContainerControlsID
+    controlsWrapper.appendChild(controlsBox)
+    const controlsLabel = document.createElement('h3')
+    controlsLabel.textContent = '- Sterowanie -'
+    const divUp = document.createElement('div')
+    const descUp = document.createElement('h3')
+    const keyUp = document.createElement('h3')
+    descUp.textContent = 'Góra'
+    keyUp.textContent = 'W'
+    divUp.appendChild(descUp)
+    divUp.appendChild(keyUp)
+    const divDown = document.createElement('div')
+    const descDown = document.createElement('h3')
+    const keyDown = document.createElement('h3')
+    descDown.textContent = 'Dół'
+    keyDown.textContent = 'S'
+    divDown.appendChild(descDown)
+    divDown.appendChild(keyDown)
+    const divLeft = document.createElement('div')
+    const descLeft = document.createElement('h3')
+    const keyLeft = document.createElement('h3')
+    descLeft.textContent = 'Lewo'
+    keyLeft.textContent = 'A'
+    divLeft.appendChild(descLeft)
+    divLeft.appendChild(keyLeft)
+    const divRight = document.createElement('div')
+    const descRight = document.createElement('h3')
+    const keyRight = document.createElement('h3')
+    descRight.textContent = 'Prawo'
+    keyRight.textContent = 'D'
+    divRight.appendChild(descRight)
+    divRight.appendChild(keyRight)
+    const divAction = document.createElement('div')
+    const descAction = document.createElement('h3')
+    const keyAction = document.createElement('h3')
+    descAction.textContent = 'Akcja'
+    keyAction.textContent = 'Space'
+    divAction.appendChild(descAction)
+    divAction.appendChild(keyAction)
+    const divFullView = document.createElement('div')
+    const descFullView = document.createElement('h3')
+    const keyFullView = document.createElement('h3')
+    descFullView.textContent = 'Pełny widok'
+    keyFullView.textContent = 'Shift'
+    divFullView.appendChild(descFullView)
+    divFullView.appendChild(keyFullView)
+    controlsBox.appendChild(controlsLabel)
+    controlsBox.appendChild(divUp)
+    controlsBox.appendChild(divDown)
+    controlsBox.appendChild(divLeft)
+    controlsBox.appendChild(divRight)
+    controlsBox.appendChild(divAction)
+    controlsBox.appendChild(divFullView)
+    this.settingsContainer.appendChild(controlsWrapper)
+
     const leaveButton = document.createElement('button')
     leaveButton.innerHTML = 'Opuść grę'
     leaveButton.addEventListener('click', () => {
