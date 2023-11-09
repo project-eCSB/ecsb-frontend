@@ -632,6 +632,7 @@ export class Scene extends Phaser.Scene {
       case IncomingCoopMessageType.CoopTravelDeny:
         this.showErrorPopup(msg.message.reason)
         this.travelView?.close()
+        this.loadingView?.close()
         this.movingEnabled = true
         break
       case BackendWarningMessageType.UserWarning:
