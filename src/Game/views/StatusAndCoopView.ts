@@ -1,6 +1,6 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
 import { type Equipment } from '../../services/game/Types'
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import { RESOURCE_ICON_SCALE_SMALL, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { ImageCropper } from '../tools/ImageCropper'
 import {
@@ -43,11 +43,12 @@ export class StatusAndCoopView {
       buttonGive.id = 'adButton'
       const giveImage = document.createElement('img')
       giveImage.src = '/assets/giveCustomIcon.png'
+      giveImage.style.width = '30px'
       buttonGive.appendChild(giveImage)
       const resourceGiveImg = cropper.crop(
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
+        RESOURCE_ICON_SCALE_SMALL,
         url,
         resRepresentation.length,
         getResourceMapping(resRepresentation)(element.key),
@@ -93,11 +94,12 @@ export class StatusAndCoopView {
       buttonReceive.id = 'adButton'
       const receiveImage = document.createElement('img')
       receiveImage.src = '/assets/receiveCustomIcon.png'
+      receiveImage.style.width = '30px'
       buttonReceive.appendChild(receiveImage)
       const resourceReceiveImg = cropper.crop(
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
+        RESOURCE_ICON_SCALE_SMALL,
         url,
         resRepresentation.length,
         getResourceMapping(resRepresentation)(element.key),
