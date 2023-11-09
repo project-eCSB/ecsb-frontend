@@ -1,6 +1,6 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
 import { type Equipment } from '../../services/game/Types'
-import { RESOURCE_ICON_SCALE_SMALL, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import { RESOURCE_ICON_SCALE, RESOURCE_ICON_SCALE_SMALL, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { ImageCropper } from '../tools/ImageCropper'
 import {
@@ -55,6 +55,18 @@ export class StatusAndCoopView {
         false,
       )
       buttonGive.appendChild(resourceGiveImg)
+
+      const giveImageAdvertisement = document.createElement('img')
+      giveImageAdvertisement.src = '/assets/giveCustomIcon.png'
+      const resourceGiveImgAdvertisement = cropper.crop(
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_SCALE,
+        url,
+        resRepresentation.length,
+        getResourceMapping(resRepresentation)(element.key),
+        false,
+      )
       buttonGive.addEventListener('click', () => {
         document.querySelectorAll('.adGive').forEach((el) => {
           if (el !== buttonGive) el.id = 'adButton'
@@ -69,8 +81,8 @@ export class StatusAndCoopView {
         scene.advertisementInfoBuilder.cleanBubblesForPlayer(scene.playerId, false)
         if (buttonGive.id === 'adButtonActive') {
           const bubble = document.createElement('div')
-          bubble.appendChild(giveImage.cloneNode(true))
-          bubble.appendChild(resourceGiveImg.cloneNode(true))
+          bubble.appendChild(giveImageAdvertisement)
+          bubble.appendChild(resourceGiveImgAdvertisement)
           bubble.classList.add('bubbleGive')
           scene.advertisementInfoBuilder.addBubble(bubble, scene.playerId)
 
@@ -106,6 +118,18 @@ export class StatusAndCoopView {
         false,
       )
       buttonReceive.appendChild(resourceReceiveImg)
+
+      const receiveImageAdvertisement = document.createElement('img')
+      receiveImageAdvertisement.src = '/assets/receiveCustomIcon.png'
+      const resourceReceiveImgAdvertisement = cropper.crop(
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_SCALE,
+        url,
+        resRepresentation.length,
+        getResourceMapping(resRepresentation)(element.key),
+        false,
+      )
       buttonReceive.addEventListener('click', () => {
         document.querySelectorAll('.adReceive').forEach((el) => {
           if (el !== buttonReceive) el.id = 'adButton'
@@ -120,8 +144,8 @@ export class StatusAndCoopView {
         scene.advertisementInfoBuilder.cleanBubblesForPlayer(scene.playerId, true)
         if (buttonReceive.id === 'adButtonActive') {
           const bubble = document.createElement('div')
-          bubble.appendChild(receiveImage.cloneNode(true))
-          bubble.appendChild(resourceReceiveImg.cloneNode(true))
+          bubble.appendChild(receiveImageAdvertisement)
+          bubble.appendChild(resourceReceiveImgAdvertisement)
           bubble.classList.add('bubbleReceive')
           scene.advertisementInfoBuilder.addBubble(bubble, scene.playerId)
 
