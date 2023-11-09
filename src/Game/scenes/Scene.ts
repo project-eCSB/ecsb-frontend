@@ -618,6 +618,7 @@ export class Scene extends Phaser.Scene {
       case IncomingWorkshopMessageType.WorkshopDeny:
         this.showErrorPopup(msg.message.reason)
         this.workshopView?.close()
+        this.movingEnabled = true
         break
       case IncomingCoopMessageType.CoopTravelAccept:
         this.movingEnabled = false
@@ -631,6 +632,7 @@ export class Scene extends Phaser.Scene {
       case IncomingCoopMessageType.CoopTravelDeny:
         this.showErrorPopup(msg.message.reason)
         this.travelView?.close()
+        this.movingEnabled = true
         break
       case BackendWarningMessageType.UserWarning:
         this.showErrorPopup(msg.message.reason)
