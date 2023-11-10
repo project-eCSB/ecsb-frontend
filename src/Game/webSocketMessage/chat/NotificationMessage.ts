@@ -18,10 +18,10 @@ export enum NotificationMessageType {
   NotificationTravelEnd = 'notification/travel/end', // One of the players ended travel
   NotificationTradeStart = 'notification/trade/start', // One of the players opened trade window
   NotificationTradeEnd = 'notification/trade/end', // One of the players closed trade window
-  NotificationStartAdvertiseCoop = 'notification/coop/advertise/start',
-  NotificationStopAdvertiseCoop = 'notification/coop/advertise/stop',
-  NotificationStartNegotiation = 'notification/coop/decide/start',
-  NotificationStopNegotiation = 'notification/coop/decide/stop',
+  NotificationStartAdvertiseCoop = 'notification/coop/advertise/start', // One of the players started advertising a coop
+  NotificationStopAdvertiseCoop = 'notification/coop/advertise/stop', // One of the players stopped advertising a coop
+  NotificationStartNegotiation = 'notification/coop/decide/start', // One of the players started negotiation
+  NotificationStopNegotiation = 'notification/coop/decide/stop', // One of the players stopped negotiation
   NotificationSyncRequest = 'notification/sync',
   NotificationSyncTradeResponse = 'notification/trade/sync/response',
   NotificationSyncCoopResponse = 'notification/coop/sync/response',
@@ -203,17 +203,16 @@ export type IncomingNotificationMessage =
   | NotificationSyncCoopResponseMessage
   | QueueProcessedMessage
 
-export type OutcomingNotificationMessage =
-  | NotificationSyncRequestMessage
+export type OutcomingNotificationMessage = NotificationSyncRequestMessage
 
-  export const sendNotificationMessage = (
-    socket: Websocket,
-    message: OutcomingNotificationMessage,
-  ): void => {
-    try {
-      const serialized = JSON.stringify(message)
-      socket.send(serialized)
-    } catch (error) {
-      console.error(`Error serializing message. Reason: ${(error as Error).message}`)
-    }
+export const sendNotificationMessage = (
+  socket: Websocket,
+  message: OutcomingNotificationMessage,
+): void => {
+  try {
+    const serialized = JSON.stringify(message)
+    socket.send(serialized)
+  } catch (error) {
+    console.error(`Error serializing message. Reason: ${(error as Error).message}`)
   }
+}

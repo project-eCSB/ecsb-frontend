@@ -42,7 +42,11 @@ import {
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
 import { BackendWarningMessageType } from '../webSocketMessage/chat/BackendWarningMessage'
-import { NotificationMessageType, sendNotificationMessage, type tradeSyncValue } from '../webSocketMessage/chat/NotificationMessage'
+import {
+  NotificationMessageType,
+  sendNotificationMessage,
+  type tradeSyncValue,
+} from '../webSocketMessage/chat/NotificationMessage'
 import { InteractionCloudBuilder } from '../tools/InteractionCloudBuilder'
 import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
 import { TravelType, TravelView } from '../views/TravelView'
@@ -81,11 +85,16 @@ import { parseLobbyMessage } from '../webSocketMessage/lobby/MessageParser'
 import { LobbyMessageType } from '../webSocketMessage/lobby/LobbyMessage'
 import { LobbyView } from '../views/LobbyView'
 import { LoadingBarAndResultBuilder } from '../tools/LoadingBarAndResultBuilder'
-import { IncomingCoopMessageType, OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
+import {
+  IncomingCoopMessageType,
+  OutcomingCoopMessageType,
+  sendCoopMessage,
+} from '../webSocketMessage/chat/CoopMessageHandler'
 import { IncomingWorkshopMessageType } from '../webSocketMessage/chat/WorkshopMessageHandler'
 import { type Travel } from '../../apis/game/Types'
 import { InformationView } from '../views/InformationView'
 import { CoopOfferPopup } from '../components/CoopOfferPopup'
+import { ResourceNegotiationView } from '../views/ResourceNegotiationView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -129,6 +138,7 @@ export class Scene extends Phaser.Scene {
   public loadingView: LoadingView
   public leaderboardView: LeaderboardView | null
   public lobbyView: LobbyView | null
+  public resourceNegotiationView: ResourceNegotiationView | null
   public interactionCloudBuiler!: InteractionCloudBuilder
   public advertisementInfoBuilder!: AdvertisementInfoBuilder
   public contextMenuBuilder!: ContextMenuBuilder
@@ -147,6 +157,7 @@ export class Scene extends Phaser.Scene {
   private receivedPlayerSync = false
   private readonly chatQueue: ChatMessage[] = []
   public plannedTravel: PlannedTravel | null
+  public shownGatheredResourcesMessage: boolean
   public playerAdvertisedTravel: Record<PlayerId, string>
 
   constructor(
@@ -180,7 +191,9 @@ export class Scene extends Phaser.Scene {
     this.lobbyView = null
     this.leaderboardView = null
     this.travelView = null
+    this.resourceNegotiationView = null
     this.plannedTravel = null
+    this.shownGatheredResourcesMessage = false
     this.playerAdvertisedTravel = {}
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
@@ -435,7 +448,6 @@ export class Scene extends Phaser.Scene {
       })
       .onClose((i, ev) => {
         console.log('lobbyWs closed')
-        console.log(ev)
       })
       .onError((i, ev) => {
         console.error('lobbyWs error')
@@ -628,6 +640,9 @@ export class Scene extends Phaser.Scene {
         break
       case IncomingTradeMessageType.TradeServerCancel:
         this.tradeWindow?.close(false)
+        if (msg.senderId !== this.playerId) {
+          this.showErrorPopup(`Gracz ${msg.senderId} przerwał handel`)
+        }
         break
       case IncomingTradeMessageType.TradeServerBid:
         this.updateTradeDialog(msg.message.tradeBid.senderRequest, msg.message.tradeBid.senderOffer)
@@ -657,6 +672,9 @@ export class Scene extends Phaser.Scene {
         this.travelView?.close()
         this.loadingView?.close()
         this.movingEnabled = false
+        this.advertisementInfoBuilder.addBubbleForCoop('', this.playerId)
+        this.advertisementInfoBuilder.setMarginAndVisibility(this.playerId)
+        delete this.playerAdvertisedTravel[this.playerId]
         break
       case IncomingCoopMessageType.CoopTravelDeny:
         this.movingEnabled = true
@@ -664,8 +682,36 @@ export class Scene extends Phaser.Scene {
         this.travelView?.close()
         this.loadingView?.close()
         break
+      case IncomingCoopMessageType.CoopStartPlanning:
+        this.planSingleTravel(msg.message.travelName)
+        this.travelView?.close()
+        this.movingEnabled = true
+        break
+      case IncomingCoopMessageType.CoopCancelPlanning:
+        this.shownGatheredResourcesMessage = false
+        this.cancelPlanningTravel()
+        this.advertisementInfoBuilder.addBubbleForCoop('', this.playerId)
+        this.advertisementInfoBuilder.setMarginAndVisibility(this.playerId)
+        delete this.playerAdvertisedTravel[this.playerId]
+        break
+      case IncomingCoopMessageType.CoopCancel:
+        if (msg.senderId !== this.playerId) {
+          this.showErrorPopup(
+            `Gracz ${msg.senderId} przerwał wspólne planowanie podróży do miasta ${this.plannedTravel?.travel.value.name}`,
+          )
+        }
+        this.cancelPlanningTravel()
+        break
       case IncomingCoopMessageType.CoopResourceChange:
-        if (this.plannedTravel!.isSingle) {
+        if (this.plannedTravel === null) {
+          if (msg.message.equipments.length === 1) {
+            this.planSingleTravel(msg.message.travelName)
+          } else {
+            this.planMultiTravel(msg.message.travelName, msg.message.equipments)
+          }
+          return
+        }
+        if (this.plannedTravel.isSingle) {
           if (msg.message.equipments.length === 1) {
             this.updateCoopPlayersEquipment(msg.message.equipments)
           } else {
@@ -679,20 +725,79 @@ export class Scene extends Phaser.Scene {
           }
         }
         break
-      case IncomingCoopMessageType.CoopGoToTravel || IncomingCoopMessageType.CoopWaitForTravel:
-        this.fillCoopPlayersEquipment()
-        this.showInformationPopup(
-          `Uzbierano wymagane zasoby na wyprawe do miasta <strong>${
-            this.plannedTravel!.travel.value.name
-          }</strong>`,
-        )
-        if (msg.message.type === IncomingCoopMessageType.CoopGoToTravel) {
+      case IncomingCoopMessageType.CoopGoToTravel:
+      case IncomingCoopMessageType.CoopWaitForTravel:
+        if (!this.shownGatheredResourcesMessage) {
+          this.shownGatheredResourcesMessage = true
           this.showInformationPopup(
-            `Udaj się do miasta <strong>${
-              this.plannedTravel!.travel.value.name
-            }</strong> na wyprawę`,
+            `Uzbierano wymagane zasoby na wyprawe do miasta <strong>${msg.message.travelName}</strong>`,
+          )
+          if (msg.message.type === IncomingCoopMessageType.CoopGoToTravel) {
+            this.showInformationPopup(
+              `Udaj się do miasta <strong>${msg.message.travelName}</strong> na wyprawę`,
+            )
+          }
+        }
+        if (this.plannedTravel === null) {
+          if (msg.message.equipments.length === 1) {
+            this.planSingleTravel(msg.message.travelName)
+          } else {
+            this.planMultiTravel(msg.message.travelName, msg.message.equipments)
+          }
+        }
+        this.fillCoopPlayersEquipment()
+        break
+      case IncomingCoopMessageType.CoopStartNegotiation:
+        this.resourceNegotiationView = new ResourceNegotiationView(
+          this,
+          this.getTravelByName(msg.message.travelName)!,
+          msg.senderId,
+          this.resourceUrl,
+          this.settings.classResourceRepresentation,
+          msg.message.myTurn,
+        )
+        this.resourceNegotiationView?.show()
+        this.advertisementInfoBuilder.addBubbleForCoop('', this.playerId)
+        this.advertisementInfoBuilder.setMarginAndVisibility(this.playerId)
+        delete this.playerAdvertisedTravel[this.playerId]
+        break
+      case IncomingCoopMessageType.CoopFinishNegotiation:
+        this.resourceNegotiationView?.close(true)
+        this.loadingView.close()
+        this.plannedTravel = null
+        break
+      case IncomingCoopMessageType.CoopCancelNegotiation:
+        if (msg.senderId !== this.playerId) {
+          this.showErrorPopup(
+            `Gracz ${msg.senderId} przerwał negocjacje dotyczące podziału zasobów`,
           )
         }
+        this.resourceNegotiationView?.close(false)
+        break
+      case IncomingCoopMessageType.CoopNegotiationBid:
+        this.resourceNegotiationView?.update(true, msg.message.coopBid)
+        break
+      case IncomingCoopMessageType.CoopProposeOwnTravel:
+        this.showCoopInvite(
+          msg.senderId,
+          msg.message.travelName,
+          this.playerId !== msg.message.guestId,
+          false,
+          null,
+        )
+        break
+      case IncomingCoopMessageType.CoopSimpleJoinPlanning:
+        this.showCoopInvite(msg.senderId, this.plannedTravel!.travel.value.name, true, true, false)
+        break
+      case IncomingCoopMessageType.CoopGatheringJoinPlanning:
+        this.showCoopInvite(msg.senderId, this.plannedTravel!.travel.value.name, true, true, true)
+        break
+      case IncomingCoopMessageType.CoopFinish:
+        this.showInformationPopup(
+          `Współpraca z graczem ${this.plannedTravel?.partner} zakończona sukcesem`,
+        )
+        this.plannedTravel = null
+        this.statusAndCoopView?.updateCoopView()
         break
       case NotificationMessageType.NotificationStartAdvertiseCoop:
         this.advertisementInfoBuilder.addBubbleForCoop(msg.message.travelName, msg.senderId)
@@ -703,40 +808,6 @@ export class Scene extends Phaser.Scene {
         this.advertisementInfoBuilder.addBubbleForCoop('', msg.senderId)
         this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
         delete this.playerAdvertisedTravel[msg.senderId]
-        break
-      case IncomingCoopMessageType.CoopStartPlanning:
-        this.planSingleTravel(msg.message.travelName)
-        this.travelView?.close()
-        this.movingEnabled = true
-        break
-      case IncomingCoopMessageType.CoopCancelPlanning:
-        this.cancelPlanningTravel()
-        break
-      case IncomingCoopMessageType.CoopSimpleJoinPlanning:
-        this.showCoopInvite(msg.senderId, this.plannedTravel!.travel.value.name, true, true, false)
-        break
-      case IncomingCoopMessageType.CoopGatheringJoinPlanning:
-        this.showCoopInvite(msg.senderId, this.plannedTravel!.travel.value.name, true, true, true)
-        break
-      case IncomingCoopMessageType.CoopProposeOwnTravel:
-        this.showCoopInvite(msg.senderId, msg.message.travelName, this.playerId !== msg.message.guestId, false, null)
-        break
-      case IncomingCoopMessageType.CoopFinish:
-        this.showInformationPopup(`współpraca z graczem ${this.plannedTravel?.partner} zakończona sukcesem`)
-        this.plannedTravel = null
-        this.statusAndCoopView?.updateCoopView()
-        break
-      case BackendWarningMessageType.UserWarning:
-        this.showErrorPopup(msg.message.reason)
-        break
-      case EquipmentMessageType.EquipmentChange:
-        this.equipment = msg.message.playerEquipment
-        this.equipmentView?.update(msg.message.playerEquipment)
-
-        if (this.plannedTravel) {
-          this.plannedTravel.playerResources = msg.message.playerEquipment
-          this.statusAndCoopView?.updateCoopView()
-        }
         break
       case NotificationMessageType.NotificationAdvertisementBuy:
         this.advertisementInfoBuilder.addBubbleForResource(
@@ -792,6 +863,12 @@ export class Scene extends Phaser.Scene {
       case NotificationMessageType.NotificationSyncTradeResponse:
         this.adBubblesTrade(msg.message.states)
         break
+      case NotificationMessageType.NotificationStartNegotiation:
+        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TALK)
+        break
+      case NotificationMessageType.NotificationStopNegotiation:
+        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TALK)
+        break
       case NotificationMessageType.QueueProcessed:
         this.loadingBarBuilder!.setCoordinates(
           this.players[this.playerId].coords.x,
@@ -816,6 +893,13 @@ export class Scene extends Phaser.Scene {
           this.loadingBarBuilder!.showResult(msg.message.money!, img)
         }
         this.movingEnabled = true
+        break
+      case BackendWarningMessageType.UserWarning:
+        this.showErrorPopup(msg.message.reason)
+        break
+      case EquipmentMessageType.EquipmentChange:
+        this.equipment = msg.message.playerEquipment
+        this.equipmentView?.update(msg.message.playerEquipment)
         break
       case TimeMessageType.End:
         this.chatWs.close()
@@ -848,10 +932,11 @@ export class Scene extends Phaser.Scene {
 
   adBubblesCoop(states: { key: string; value: string }[] | null): void {
     if (this.receivedPlayerSync) {
-      states?.forEach(element => {
+      states?.forEach((element) => {
         if (Object.keys(this.players).includes(element.key) && element.key !== this.playerId) {
           this.advertisementInfoBuilder.addBubbleForCoop(element.value, element.key)
           this.advertisementInfoBuilder.setMarginAndVisibility(element.key)
+          this.playerAdvertisedTravel[element.key] = element.value
         }
       })
     } else {
@@ -863,13 +948,17 @@ export class Scene extends Phaser.Scene {
 
   adBubblesTrade(states: { key: string; value: tradeSyncValue }[] | null): void {
     if (this.receivedPlayerSync) {
-      states?.forEach(element => {
+      states?.forEach((element) => {
         if (Object.keys(this.players).includes(element.key) && element.key !== this.playerId) {
           if (element.value.buy) {
             this.advertisementInfoBuilder.addBubbleForResource(element.value.buy, element.key, true)
           }
           if (element.value.sell) {
-            this.advertisementInfoBuilder.addBubbleForResource(element.value.sell, element.key, false)
+            this.advertisementInfoBuilder.addBubbleForResource(
+              element.value.sell,
+              element.key,
+              false,
+            )
           }
           this.advertisementInfoBuilder.setMarginAndVisibility(element.key)
         }
@@ -1051,38 +1140,59 @@ export class Scene extends Phaser.Scene {
     this.otherPlayerId = undefined
   }
 
-  showCoopInvite(from: string, travelName: string, ownership: boolean, joining: boolean, senderHasTravel: boolean | null): void {
-    toast(CoopOfferPopup({ scene: this, from: from, travelName: travelName, ownership: ownership, joining: joining, senderHasTravel: senderHasTravel}), {
-      position: 'bottom-right',
-      autoClose: 8000,
-      hideProgressBar: true,
-      closeOnClick: false,
-      closeButton: false,
-      pauseOnHover: true,
-      draggable: false,
-      progress: undefined,
-      toastId: `${from}-coop`,
-    })
+  showCoopInvite(
+    from: string,
+    travelName: string,
+    ownership: boolean,
+    joining: boolean,
+    senderHasTravel: boolean | null,
+  ): void {
+    toast(
+      CoopOfferPopup({
+        scene: this,
+        from: from,
+        travelName: travelName,
+        ownership: ownership,
+        joining: joining,
+        senderHasTravel: senderHasTravel,
+      }),
+      {
+        position: 'bottom-right',
+        autoClose: 8000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        closeButton: false,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        toastId: `${from}-coop`,
+      },
+    )
   }
 
-  acceptCoopInvitation(senderId: string, joining: boolean, senderHasTravel: boolean | null, travelName: string): void {
+  acceptCoopInvitation(
+    senderId: string,
+    joining: boolean,
+    senderHasTravel: boolean | null,
+    travelName: string,
+  ): void {
     if (joining) {
       if (senderHasTravel) {
         sendCoopMessage(this.chatWs, {
           type: OutcomingCoopMessageType.GatheringJoinPlanningAck,
-          otherOwnerId: senderId
+          otherOwnerId: senderId,
         })
       } else {
         sendCoopMessage(this.chatWs, {
           type: OutcomingCoopMessageType.SimpleJoinPlanningAck,
-          guestId: senderId
+          guestId: senderId,
         })
       }
     } else {
       sendCoopMessage(this.chatWs, {
         type: OutcomingCoopMessageType.ProposeOwnTravelAck,
         travelName: travelName,
-        ownerId: senderId
+        ownerId: senderId,
       })
     }
   }
@@ -1128,7 +1238,7 @@ export class Scene extends Phaser.Scene {
     }
 
     const playerEquipment: Equipment = {
-      money: required ? coopEquipment.value.money.needed : coopEquipment.value.money.amount,
+      money: 0,
       time: 0,
       resources: resources,
     }
@@ -1136,6 +1246,12 @@ export class Scene extends Phaser.Scene {
       playerEquipment.resources.find((r) => r.key === resource.key)!.value = required
         ? resource.value.needed
         : resource.value.amount
+    }
+
+    if (coopEquipment.value.timeTokensCoopInfo) {
+      playerEquipment.time = required
+        ? coopEquipment.value.timeTokensCoopInfo.time.needed
+        : coopEquipment.value.timeTokensCoopInfo.time.amount
     }
 
     return playerEquipment
@@ -1176,12 +1292,12 @@ export class Scene extends Phaser.Scene {
       this.getTravelByName(travelName)!,
       this.getEquipmentFromCoopEquipment(playerCoopEquipment!, false),
       this.getEquipmentFromCoopEquipment(playerCoopEquipment!, true),
-      0,
-      true,
+      null,
+      playerCoopEquipment!.value.timeTokensCoopInfo !== null,
       partnerName,
       this.getEquipmentFromCoopEquipment(partnerCoopEquipment!, false),
       this.getEquipmentFromCoopEquipment(partnerCoopEquipment!, true),
-      0,
+      null,
     )
   }
 

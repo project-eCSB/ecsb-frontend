@@ -156,7 +156,6 @@ export class TravelView {
     this.scene.settings.travels.forEach((travel) => {
       if (travel.key === this.travelType) {
         travel.value.forEach((travelItem) => {
-          
           if (travelItem.value.name === this.plannedTravel?.value.name) {
             correctGate = true
           }
@@ -233,7 +232,11 @@ export class TravelView {
             timeIconExtraWrapper.appendChild(timeIconWrapper)
             travelItemContentTimes.appendChild(timeIconExtraWrapper)
 
-            if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
+            if (
+              this.plannedTravel &&
+              (this.plannedTravel?.value.name !== travelItem.value.name ||
+                !this.isPlannedTravelReady())
+            ) {
               timeIconWrapper.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
               timeIcon.style.opacity = '0.4'
             }
@@ -267,7 +270,11 @@ export class TravelView {
 
               travelItemContentResources.appendChild(itemContainer)
 
-              if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
+              if (
+                this.plannedTravel &&
+                (this.plannedTravel?.value.name !== travelItem.value.name ||
+                  !this.isPlannedTravelReady())
+              ) {
                 itemValue.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
                 itemValue.style.color = 'rgba(0, 0, 0, 0.7)'
                 itemIcon.style.opacity = '0.4'
@@ -310,7 +317,11 @@ export class TravelView {
 
           this.travelBoxContent.appendChild(travelItemContainerWrapper)
 
-          if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
+          if (
+            this.plannedTravel &&
+            (this.plannedTravel?.value.name !== travelItem.value.name ||
+              !this.isPlannedTravelReady())
+          ) {
             travelItemCheckbox.disabled = true
             travelItemCheckbox.style.cursor = 'auto'
             travelItemCheckbox.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
@@ -429,15 +440,27 @@ export class TravelView {
     this.disablePlanButton()
     this.disableTravelButton()
 
-    if (this.plannedTravel && this.scene.plannedTravel && this.scene.plannedTravel.playerIsRunning && !this.scene.plannedTravel.playerIsRunning) {
-      this.setWarning(`Zgodnie z wynikiem negocjacji to twój partner powinien odbyć podróż do miasta ${this.plannedTravel.value.name}`)
+    if (
+      this.plannedTravel &&
+      this.scene.plannedTravel &&
+      this.scene.plannedTravel.playerIsRunning === false
+    ) {
+      this.setWarning(
+        `Zgodnie z wynikiem negocjacji to twój partner powinien odbyć podróż do miasta ${this.plannedTravel.value.name}`,
+      )
     } else if (this.plannedTravel && correctGate && this.isPlannedTravelReady()) {
-      this.setWarning("Możesz wybrać tylko wyprawę którą zaplanowałeś. Jeżeli chcesz zmienić kierunek, anuluj kartę aktualnej wyprawy i wejdź ponownie.")
+      this.setWarning(
+        'Możesz wybrać tylko wyprawę którą zaplanowałeś. Jeżeli chcesz zmienić kierunek, anuluj kartę aktualnej wyprawy i wejdź ponownie.',
+      )
       this.enableTravelButton()
     } else if (this.plannedTravel && correctGate) {
-      this.setWarning(`Jesteś w trakcie planowania podróży do miasta ${this.plannedTravel.value.name}, na którą nie uzbierałeś jeszcze wszystkich zasobów. Jeżeli chcesz pojechać w inną podróż, zrezygnuj z aktualnej.`)
+      this.setWarning(
+        `Jesteś w trakcie planowania podróży do miasta ${this.plannedTravel.value.name}, na którą nie uzbierałeś jeszcze wszystkich zasobów. Jeżeli chcesz pojechać w inną podróż, zrezygnuj z aktualnej.`,
+      )
     } else if (this.plannedTravel) {
-      this.setWarning(`Jesteś w trakcie planowania podróży do miasta ${this.plannedTravel.value.name}. Jeżeli chcesz pojechać w inną podróż, zrezygnuj z aktualnej.`)
+      this.setWarning(
+        `Jesteś w trakcie planowania podróży do miasta ${this.plannedTravel.value.name}. Jeżeli chcesz pojechać w inną podróż, zrezygnuj z aktualnej.`,
+      )
     }
   }
 
@@ -515,14 +538,20 @@ export class TravelView {
   private isPlannedTravelReady(): boolean {
     if (this.scene.plannedTravel) {
       for (const resource of this.scene.plannedTravel.playerRequiredResources.resources) {
-        const currResource = this.scene.plannedTravel.playerResources.resources.find(currentResource => currentResource.key === resource.key)!
+        const currResource = this.scene.plannedTravel.playerResources.resources.find(
+          (currentResource) => currentResource.key === resource.key,
+        )!
         if (resource.value > currResource.value) {
           return false
         }
       }
-      if (this.scene.plannedTravel.playerRequiredResources.money > this.scene.plannedTravel.playerResources.money ||
-        this.scene.plannedTravel.playerRequiredResources.time > this.scene.plannedTravel.playerResources.time) {
-          return false
+      if (
+        this.scene.plannedTravel.playerRequiredResources.money >
+          this.scene.plannedTravel.playerResources.money ||
+        this.scene.plannedTravel.playerRequiredResources.time >
+          this.scene.plannedTravel.playerResources.time
+      ) {
+        return false
       }
       return true
     }

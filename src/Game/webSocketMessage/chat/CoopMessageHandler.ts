@@ -12,9 +12,9 @@ export enum IncomingCoopMessageType {
   CoopSimpleJoinPlanning = 'coop/system/join_planning/simple', // done
   CoopGatheringJoinPlanning = 'coop/system/join_planning/gathering', // done
   CoopProposeOwnTravel = 'coop/system/propose_own_travel', // done
-  CoopStartNegotiation = 'coop/system/negotiation/start',
-  CoopNegotiationBid = 'coop/system/negotiation/bid',
-  CoopFinishNegotiation = 'coop/system/negotiation/finish',
+  CoopStartNegotiation = 'coop/system/negotiation/start', // done
+  CoopNegotiationBid = 'coop/system/negotiation/bid', // done
+  CoopFinishNegotiation = 'coop/system/negotiation/finish', // done
   CoopResourceChange = 'coop/system/resource_change', // done
   CoopWaitForTravel = 'coop/system/travel_ready/wait', // done
   CoopGoToTravel = 'coop/system/travel_ready/go', // done
@@ -65,8 +65,8 @@ export interface CoopStartNegotiationMessage {
   message: {
     type: IncomingCoopMessageType.CoopStartNegotiation
     receiverId: string
-    myTurn: boolean
     travelName: string
+    myTurn: boolean
   }
 }
 
@@ -135,7 +135,6 @@ export interface CoopTravelDenyMessage {
   }
 }
 
-// message received by second guy for coop, who didn't travel
 export interface CoopFinishMessage {
   senderId: string
   message: {
@@ -198,10 +197,10 @@ export enum OutcomingCoopMessageType {
   GatheringJoinPlanningAck = 'coop/join_planning/gathering/ack', // done
   ProposeOwnTravel = 'coop/propose_own_travel', // done
   ProposeOwnTravelAck = 'coop/propose_own_travel/ack', // done
-  ResourceDecide = 'coop/resource_decide',
-  ResourceDecideAck = 'coop/resource_decide/ack',
-  CancelCoop = 'coop/cancel_coop',
-  CancelNegotiation = 'coop/cancel_negotiation',
+  ResourceDecide = 'coop/resource_decide', // done
+  ResourceDecideAck = 'coop/resource_decide/ack', // done
+  CancelCoop = 'coop/cancel_coop', // done
+  CancelNegotiation = 'coop/cancel_negotiation', // done
   CancelPlanning = 'coop/cancel_planning', // done
   StartPlannedTravel = 'coop/start_planned_travel', // done
   StartSimpleTravel = 'coop/start_simple_travel', // done
