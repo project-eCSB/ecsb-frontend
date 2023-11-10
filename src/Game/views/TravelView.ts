@@ -173,7 +173,20 @@ export class TravelView {
               type: TravelChoosingMessageType.TravelChange,
               travelName: this.selectedTravel,
             })
-            this.enableTravelButton()
+            if (
+              !(
+                travelItem.value.resources.some((resource) => {
+                  if (
+                    resource.value >
+                    this.scene.equipment!.resources.find((res) => res.key === resource.key)!.value
+                  )
+                    return true
+                  return false
+                }) || travelItem.value.time! > this.scene.timeView!.getAvailableTokens()
+              )
+            ) {
+              this.enableTravelButton()
+            }
           })
           travelItemHeader.appendChild(travelItemCheckbox)
           travelItemHeader.appendChild(travelItemTitle)
