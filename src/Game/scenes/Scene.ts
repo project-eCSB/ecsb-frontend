@@ -42,7 +42,7 @@ import {
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
 import { BackendWarningMessageType } from '../webSocketMessage/chat/BackendWarningMessage'
-import { NotificationMessageType } from '../webSocketMessage/chat/NotificationMessage'
+import { NotificationMessageType, sendNotificationMessage, type tradeSyncValue } from '../webSocketMessage/chat/NotificationMessage'
 import { InteractionCloudBuilder } from '../tools/InteractionCloudBuilder'
 import { ContextMenuBuilder } from '../tools/ContextMenuBuilder'
 import { TravelType, TravelView } from '../views/TravelView'
@@ -81,14 +81,11 @@ import { parseLobbyMessage } from '../webSocketMessage/lobby/MessageParser'
 import { LobbyMessageType } from '../webSocketMessage/lobby/LobbyMessage'
 import { LobbyView } from '../views/LobbyView'
 import { LoadingBarAndResultBuilder } from '../tools/LoadingBarAndResultBuilder'
-import { IncomingCoopMessageType } from '../webSocketMessage/chat/CoopMessageHandler'
+import { IncomingCoopMessageType, OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
 import { IncomingWorkshopMessageType } from '../webSocketMessage/chat/WorkshopMessageHandler'
 import { type Travel } from '../../apis/game/Types'
-import {
-  AdvertisementMessageType,
-  sendAdvertisementMessage,
-} from '../webSocketMessage/chat/AdvertisementMessage'
 import { InformationView } from '../views/InformationView'
+import { CoopOfferPopup } from '../components/CoopOfferPopup'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -500,6 +497,10 @@ export class Scene extends Phaser.Scene {
       .onClose((i, ev) => {
         console.log('movementWs closed')
         console.log(ev)
+        this.movingEnabled = false
+        const errorMessage = new ErrorView()
+        errorMessage.setText('moveWs closed - please reconnect')
+        errorMessage.show()
       })
       .onError((i, ev) => {
         console.error('movementWs error')
@@ -559,13 +560,17 @@ export class Scene extends Phaser.Scene {
         sendTimeMessage(this.chatWs, {
           type: TimeMessageType.SyncRequest,
         })
-        sendAdvertisementMessage(this.chatWs, {
-          type: AdvertisementMessageType.SyncRequest,
+        sendNotificationMessage(this.chatWs, {
+          type: NotificationMessageType.NotificationSyncRequest,
         })
       })
       .onClose((i, ev) => {
         console.log('chatWs closed')
         console.log(ev)
+        this.movingEnabled = false
+        const errorMessage = new ErrorView()
+        errorMessage.setText('chatWs closed - please reconnect')
+        errorMessage.show()
       })
       .onError((i, ev) => {
         console.error('chatWs error')
@@ -651,12 +656,13 @@ export class Scene extends Phaser.Scene {
         this.loadingBarBuilder!.showLoadingBar(msg.message.time - TIMEOUT_OFFSET)
         this.travelView?.close()
         this.loadingView?.close()
+        this.movingEnabled = false
         break
       case IncomingCoopMessageType.CoopTravelDeny:
+        this.movingEnabled = true
         this.showErrorPopup(msg.message.reason)
         this.travelView?.close()
         this.loadingView?.close()
-        this.movingEnabled = true
         break
       case IncomingCoopMessageType.CoopResourceChange:
         if (this.plannedTravel!.isSingle) {
@@ -705,6 +711,15 @@ export class Scene extends Phaser.Scene {
         break
       case IncomingCoopMessageType.CoopCancelPlanning:
         this.cancelPlanningTravel()
+        break
+      case IncomingCoopMessageType.CoopSimpleJoinPlanning:
+        this.showCoopInvite(msg.senderId, this.plannedTravel!.travel.value.name, true, true, false)
+        break
+      case IncomingCoopMessageType.CoopGatheringJoinPlanning:
+        this.showCoopInvite(msg.senderId, this.plannedTravel!.travel.value.name, true, true, true)
+        break
+      case IncomingCoopMessageType.CoopProposeOwnTravel:
+        this.showCoopInvite(msg.senderId, msg.message.travelName, this.playerId !== msg.message.guestId, false, null)
         break
       case BackendWarningMessageType.UserWarning:
         this.showErrorPopup(msg.message.reason)
@@ -766,6 +781,12 @@ export class Scene extends Phaser.Scene {
         this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.PRODUCTION)
         this.playerCloudMovement.set(msg.senderId, false)
         break
+      case NotificationMessageType.NotificationSyncCoopResponse:
+        this.adBubblesCoop(msg.message.states)
+        break
+      case NotificationMessageType.NotificationSyncTradeResponse:
+        this.adBubblesTrade(msg.message.states)
+        break
       case NotificationMessageType.QueueProcessed:
         this.loadingBarBuilder!.setCoordinates(
           this.players[this.playerId].coords.x,
@@ -817,14 +838,41 @@ export class Scene extends Phaser.Scene {
         })
         this.workshopView?.onTimeTokensChange()
         break
-      case AdvertisementMessageType.SyncCoopResponse:
-        // TODO: handle
-        console.log(msg.message)
-        break
-      case AdvertisementMessageType.SyncTradeResponse:
-        // TODO: handle
-        console.log(msg.message)
-        break
+    }
+  }
+
+  adBubblesCoop(states: { key: string; value: string }[] | null): void {
+    if (this.receivedPlayerSync) {
+      states?.forEach(element => {
+        if (Object.keys(this.players).includes(element.key) && element.key !== this.playerId) {
+          this.advertisementInfoBuilder.addBubbleForCoop(element.value, element.key)
+          this.advertisementInfoBuilder.setMarginAndVisibility(element.key)
+        }
+      })
+    } else {
+      setTimeout(() => {
+        this.adBubblesCoop(states)
+      }, 200)
+    }
+  }
+
+  adBubblesTrade(states: { key: string; value: tradeSyncValue }[] | null): void {
+    if (this.receivedPlayerSync) {
+      states?.forEach(element => {
+        if (Object.keys(this.players).includes(element.key) && element.key !== this.playerId) {
+          if (element.value.buy) {
+            this.advertisementInfoBuilder.addBubbleForResource(element.value.buy, element.key, true)
+          }
+          if (element.value.sell) {
+            this.advertisementInfoBuilder.addBubbleForResource(element.value.sell, element.key, false)
+          }
+          this.advertisementInfoBuilder.setMarginAndVisibility(element.key)
+        }
+      })
+    } else {
+      setTimeout(() => {
+        this.adBubblesTrade(states)
+      }, 200)
     }
   }
 
@@ -863,7 +911,6 @@ export class Scene extends Phaser.Scene {
     const cloud = this.interactionCloudBuiler.build(this, id)
     const adBubble = this.advertisementInfoBuilder.build(id)
     this.advertisementInfoBuilder.setMarginAndVisibility(id)
-    const div = this.contextMenuBuilder.build(this, id)
 
     sprite.setInteractive()
     sprite.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
@@ -880,6 +927,7 @@ export class Scene extends Phaser.Scene {
           Math.abs(neighbor.coords.y - currPlayer.coords.y) <= RANGE
         ) {
           window.document.getElementById('btns')?.remove()
+          const div = this.contextMenuBuilder.build(this, id)
           this.add.dom(
             this.cameras.main.scrollX + pointer.x,
             this.cameras.main.scrollY + pointer.y,
@@ -996,6 +1044,42 @@ export class Scene extends Phaser.Scene {
       type: OutcomingTradeMessageType.TradeCancel,
     })
     this.otherPlayerId = undefined
+  }
+
+  showCoopInvite(from: string, travelName: string, ownership: boolean, joining: boolean, senderHasTravel: boolean | null): void {
+    toast(CoopOfferPopup({ scene: this, from: from, travelName: travelName, ownership: ownership, joining: joining, senderHasTravel: senderHasTravel}), {
+      position: 'bottom-right',
+      autoClose: 8000,
+      hideProgressBar: true,
+      closeOnClick: false,
+      closeButton: false,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+      toastId: `${from}-coop`,
+    })
+  }
+
+  acceptCoopInvitation(senderId: string, joining: boolean, senderHasTravel: boolean | null, travelName: string): void {
+    if (joining) {
+      if (senderHasTravel) {
+        sendCoopMessage(this.chatWs, {
+          type: OutcomingCoopMessageType.GatheringJoinPlanningAck,
+          otherOwnerId: senderId
+        })
+      } else {
+        sendCoopMessage(this.chatWs, {
+          type: OutcomingCoopMessageType.SimpleJoinPlanningAck,
+          guestId: senderId
+        })
+      }
+    } else {
+      sendCoopMessage(this.chatWs, {
+        type: OutcomingCoopMessageType.ProposeOwnTravelAck,
+        travelName: travelName,
+        ownerId: senderId
+      })
+    }
   }
 
   showInformationPopup(message: string): void {

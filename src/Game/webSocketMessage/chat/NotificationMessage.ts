@@ -1,3 +1,10 @@
+import type { Websocket } from 'websocket-ts'
+
+export interface tradeSyncValue {
+  buy: string | null
+  sell: string | null
+}
+
 export enum NotificationMessageType {
   NotificationAdvertisementBuy = 'notification/buy', // One of the players wants to buy something
   NotificationAdvertisementSell = 'notification/sell', // One of the players wants to sell something
@@ -15,6 +22,9 @@ export enum NotificationMessageType {
   NotificationStopAdvertiseCoop = 'notification/coop/advertise/stop',
   NotificationStartNegotiation = 'notification/coop/decide/start',
   NotificationStopNegotiation = 'notification/coop/decide/stop',
+  NotificationSyncRequest = 'notification/sync',
+  NotificationSyncTradeResponse = 'notification/trade/sync/response',
+  NotificationSyncCoopResponse = 'notification/coop/sync/response',
   QueueProcessed = 'queue/processed',
 }
 
@@ -139,6 +149,26 @@ export interface NotificationStopNegotiationMessage {
   }
 }
 
+export interface NotificationSyncTradeResponseMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationSyncTradeResponse
+    states: { key: string; value: tradeSyncValue }[] | null
+  }
+}
+
+export interface NotificationSyncCoopResponseMessage {
+  senderId: string
+  message: {
+    type: NotificationMessageType.NotificationSyncCoopResponse
+    states: { key: string; value: string }[] | null
+  }
+}
+
+export interface NotificationSyncRequestMessage {
+  type: NotificationMessageType.NotificationSyncRequest
+}
+
 export interface QueueProcessedMessage {
   senderId: string
   message: {
@@ -150,7 +180,7 @@ export interface QueueProcessedMessage {
   }
 }
 
-export type NotificationMessage =
+export type IncomingNotificationMessage =
   | NotificationAdvertisementBuyMessage
   | NotificationAdvertisementSellMessage
   | NotificationTradeStartMessage
@@ -167,4 +197,21 @@ export type NotificationMessage =
   | NotificationStopAdvertiseMessage
   | NotificationStartNegotiationMessage
   | NotificationStopNegotiationMessage
+  | NotificationSyncTradeResponseMessage
+  | NotificationSyncCoopResponseMessage
   | QueueProcessedMessage
+
+export type OutcomingNotificationMessage =
+  | NotificationSyncRequestMessage
+
+  export const sendNotificationMessage = (
+    socket: Websocket,
+    message: OutcomingNotificationMessage,
+  ): void => {
+    try {
+      const serialized = JSON.stringify(message)
+      socket.send(serialized)
+    } catch (error) {
+      console.error(`Error serializing message. Reason: ${(error as Error).message}`)
+    }
+  }

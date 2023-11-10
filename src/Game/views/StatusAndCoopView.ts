@@ -417,6 +417,7 @@ export class StatusAndCoopView {
       sendCoopMessage(this.scene.chatWs, {
         type: OutcomingCoopMessageType.CancelPlanning,
       })
+      this.scene.advertisementInfoBuilder.addBubbleForCoop('', this.scene.playerId)
 
       coopDialogButtonsResignExtraWrapper.className =
         coopDialogButtonsResignExtraWrapper.className ===

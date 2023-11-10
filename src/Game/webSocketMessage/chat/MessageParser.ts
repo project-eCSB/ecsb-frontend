@@ -1,19 +1,17 @@
 import { type EquipmentMessage, EquipmentMessageType } from './EqupimentMessage'
-import { type NotificationMessage, NotificationMessageType } from './NotificationMessage'
+import { type IncomingNotificationMessage, NotificationMessageType } from './NotificationMessage'
 import { type TimeMessage, TimeMessageType } from './TimeMessage'
 import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMessageHandler'
 import { type BackendWarningMessage, BackendWarningMessageType } from './BackendWarningMessage'
 import { type IncomingCoopMessage, IncomingCoopMessageType } from './CoopMessageHandler'
 import { type IncomingWorkshopMessage, IncomingWorkshopMessageType } from './WorkshopMessageHandler'
-import { type AdvertisementMessage, AdvertisementMessageType } from './AdvertisementMessage'
 
 export type ChatMessage =
   | IncomingTradeMessage
-  | NotificationMessage
+  | IncomingNotificationMessage
   | BackendWarningMessage
   | EquipmentMessage
   | TimeMessage
-  | AdvertisementMessage
   | IncomingCoopMessage
   | IncomingWorkshopMessage
 
@@ -108,9 +106,9 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.PlayerRegen:
         return { senderId: parsed.senderId, message: parsed.message }
-      case AdvertisementMessageType.SyncCoopResponse:
+      case NotificationMessageType.NotificationSyncTradeResponse:
         return { senderId: parsed.senderId, message: parsed.message }
-      case AdvertisementMessageType.SyncTradeResponse:
+      case NotificationMessageType.NotificationSyncCoopResponse:
         return { senderId: parsed.senderId, message: parsed.message }
       default:
         console.error(

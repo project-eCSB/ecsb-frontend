@@ -9,19 +9,19 @@ export interface CoopBid {
 
 export enum IncomingCoopMessageType {
   CoopStartPlanning = 'coop/system/start_planning', // done
-  CoopSimpleJoinPlanning = 'coop/system/join_planning/simple',
-  CoopGatheringJoinPlanning = 'coop/system/join_planning/gathering',
-  CoopProposeOwnTravel = 'coop/system/propose_own_travel',
+  CoopSimpleJoinPlanning = 'coop/system/join_planning/simple', // done
+  CoopGatheringJoinPlanning = 'coop/system/join_planning/gathering', // done
+  CoopProposeOwnTravel = 'coop/system/propose_own_travel', // done
   CoopStartNegotiation = 'coop/system/negotiation/start',
   CoopNegotiationBid = 'coop/system/negotiation/bid',
   CoopFinishNegotiation = 'coop/system/negotiation/finish',
   CoopResourceChange = 'coop/system/resource_change', // done
-  CoopWaitForTravel = 'coop/system/travel_ready/wait',
+  CoopWaitForTravel = 'coop/system/travel_ready/wait', // done
   CoopGoToTravel = 'coop/system/travel_ready/go', // done
   CoopTravelAccept = 'coop/system/travel/accept', // done
   CoopTravelDeny = 'coop/system/travel/deny', // done
   CoopFinish = 'coop/system/finish',
-  CoopCancel = 'coop/system/cancel_coop',
+  CoopCancel = 'coop/system/cancel_coop', // done
   CoopCancelPlanning = 'coop/system/cancel_planning', // done
 }
 
@@ -181,12 +181,12 @@ export enum OutcomingCoopMessageType {
   StartPlanning = 'coop/start_planning', // done
   AdvertisePlanningStart = 'coop/advertise_planning/start', // done
   AdvertisePlanningStop = 'coop/advertise_planning/stop', // done
-  SimpleJoinPlanning = 'coop/join_planning/simple',
-  SimpleJoinPlanningAck = 'coop/join_planning/simple/ack',
-  GatheringJoinPlanning = 'coop/join_planning/gathering',
-  GatheringJoinPlanningAck = 'coop/join_planning/gathering/ack',
-  ProposeOwnTravel = 'coop/propose_own_travel',
-  ProposeOwnTravelAck = 'coop/propose_own_travel/ack',
+  SimpleJoinPlanning = 'coop/join_planning/simple', // done
+  SimpleJoinPlanningAck = 'coop/join_planning/simple/ack', // done
+  GatheringJoinPlanning = 'coop/join_planning/gathering', // done
+  GatheringJoinPlanningAck = 'coop/join_planning/gathering/ack', // done
+  ProposeOwnTravel = 'coop/propose_own_travel', // done
+  ProposeOwnTravelAck = 'coop/propose_own_travel/ack', // done
   ResourceDecide = 'coop/resource_decide',
   ResourceDecideAck = 'coop/resource_decide/ack',
   CancelCoop = 'coop/cancel_coop',
@@ -244,13 +244,11 @@ export interface ProposeOwnTravelAckMessage {
 export interface ResourceDecideMessage {
   type: OutcomingCoopMessageType.ResourceDecide
   yourBid: CoopBid
-  otherPlayerId: string
 }
 
 export interface ResourceDecideAckMessage {
   type: OutcomingCoopMessageType.ResourceDecideAck
-  otherPlayerBid: CoopBid
-  otherPlayerId: string
+  yourPlayerBid: CoopBid
 }
 
 export interface CancelCoopMessage {
