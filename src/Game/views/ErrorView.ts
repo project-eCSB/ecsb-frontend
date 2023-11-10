@@ -1,46 +1,56 @@
 export class ErrorView {
-  public static readonly interactionBoxID = 'interactionBox'
-  public static readonly interactionBoxWrapperID = 'interactionBoxWrapper'
+  public static readonly containerID = 'errorsAndInfo'
+  public static readonly errorBoxClassName = 'errorBox'
+  public static readonly errorBoxWrapperClassName = 'errorBoxWrapper'
 
-  error: HTMLDivElement
-  errorWrapper: HTMLDivElement
-  errorText: HTMLParagraphElement
+  private readonly errorBox: HTMLDivElement
+  private readonly errorBoxWrapper: HTMLDivElement
+  private readonly errorBoxText: HTMLParagraphElement
+
+  private isHidden: boolean
 
   constructor() {
-    this.error = document.createElement('div')
-    this.error.id = ErrorView.interactionBoxID
+    this.errorBox = document.createElement('div')
+    this.errorBox.className = ErrorView.errorBoxClassName
 
     const icon = document.createElement('i')
     icon.className = 'fa fa-exclamation-triangle'
     icon.ariaHidden = 'true'
     icon.style.color = '#BE0017'
 
-    this.errorText = document.createElement('p')
-    this.errorText.id = 'interactionTitle'
+    this.errorBoxText = document.createElement('p')
 
-    this.error.appendChild(icon)
-    this.error.appendChild(this.errorText)
+    this.errorBox.appendChild(icon)
+    this.errorBox.appendChild(this.errorBoxText)
 
-    this.errorWrapper = document.createElement('div')
-    this.errorWrapper.id = ErrorView.interactionBoxWrapperID
-    this.errorWrapper.appendChild(this.error)
+    this.errorBoxWrapper = document.createElement('div')
+    this.errorBoxWrapper.className = ErrorView.errorBoxWrapperClassName
+    this.errorBoxWrapper.appendChild(this.errorBox)
+
+    this.isHidden = true
   }
 
   setText(text: string): void {
-    this.errorText.innerHTML = `${text}`
+    this.errorBoxText.innerHTML = text
   }
 
   show(): void {
-    const container = document.getElementById('errorsAndInfo')
+    if (!this.isHidden) return
+
+    const container = document.getElementById(ErrorView.containerID)
     if (container) {
-      container.appendChild(this.errorWrapper)
+      container.appendChild(this.errorBoxWrapper)
+      this.isHidden = false
     }
   }
 
   close(): void {
-    const container = document.getElementById('errorsAndInfo')
+    if (this.isHidden) return
+
+    const container = document.getElementById(ErrorView.containerID)
     if (container) {
-      container.removeChild(this.errorWrapper)
+      container.removeChild(this.errorBoxWrapper)
+      this.isHidden = true
     }
   }
 }

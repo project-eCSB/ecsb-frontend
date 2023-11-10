@@ -5,6 +5,7 @@ import { type IncomingTradeMessage, IncomingTradeMessageType } from './TradeMess
 import { type BackendWarningMessage, BackendWarningMessageType } from './BackendWarningMessage'
 import { type IncomingCoopMessage, IncomingCoopMessageType } from './CoopMessageHandler'
 import { type IncomingWorkshopMessage, IncomingWorkshopMessageType } from './WorkshopMessageHandler'
+import { type AdvertisementMessage, AdvertisementMessageType } from './AdvertisementMessage'
 
 export type ChatMessage =
   | IncomingTradeMessage
@@ -12,6 +13,7 @@ export type ChatMessage =
   | BackendWarningMessage
   | EquipmentMessage
   | TimeMessage
+  | AdvertisementMessage
   | IncomingCoopMessage
   | IncomingWorkshopMessage
 
@@ -92,6 +94,10 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationProductionEnd:
         return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationStartAdvertiseCoop:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationStopAdvertiseCoop:
+        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.QueueProcessed:
         return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.SyncResponse:
@@ -101,6 +107,10 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
       case TimeMessageType.Remaining:
         return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.PlayerRegen:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case AdvertisementMessageType.SyncCoopResponse:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case AdvertisementMessageType.SyncTradeResponse:
         return { senderId: parsed.senderId, message: parsed.message }
       default:
         console.error(

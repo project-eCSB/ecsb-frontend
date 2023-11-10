@@ -38,6 +38,7 @@ export class AdvertisementInfoBuilder {
     bubbleContainer.classList.remove(`bubble-0`)
     bubbleContainer.classList.remove(`bubble-1`)
     bubbleContainer.classList.remove(`bubble-2`)
+    bubbleContainer.classList.remove(`bubble-3`)
     bubbleContainer.classList.add(`bubble-${bubbleContainer.children.length}`)
   }
 
@@ -79,6 +80,30 @@ export class AdvertisementInfoBuilder {
     buying ? div.classList.add('bubbleReceive') : div.classList.add('bubbleGive')
     div.appendChild(iconImg)
     div.appendChild(resourceImg)
+    bubbleContainer.appendChild(div)
+  }
+
+  addBubbleForCoop(travelName: string, playerId: string): void {
+    const bubbleContainer = document.getElementById(`bubble-${playerId}`)
+    if (!bubbleContainer) return
+
+    bubbleContainer.querySelectorAll('.bubbleCoop').forEach((el) => {
+      el.remove()
+    })
+
+    if (travelName === '') return
+
+    const iconImg = document.createElement('img')
+    iconImg.src = '/assets/coopCustomIcon.png'
+
+    const travelNameSpan = document.createElement('span')
+    travelNameSpan.innerText = travelName
+
+    const div = document.createElement('div')
+    div.classList.add('adBubbleOffer')
+    div.classList.add('bubbleCoop')
+    div.appendChild(iconImg)
+    div.appendChild(travelNameSpan)
     bubbleContainer.appendChild(div)
   }
 

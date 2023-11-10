@@ -358,7 +358,8 @@ export class TradeView {
     const bid = JSON.parse(JSON.stringify(currentState))
 
     const userName = document.createElement('h3')
-    userName.innerText = playerId.length > TradeView.maxPlayerIdLength
+    userName.innerText =
+      playerId.length > TradeView.maxPlayerIdLength
         ? playerId.slice(0, TradeView.maxPlayerIdLength) + '...'
         : playerId
     container.appendChild(userName)
@@ -836,7 +837,8 @@ export class TradeView {
     const bid = JSON.parse(JSON.stringify(currentState))
 
     const userName = document.createElement('h3')
-    userName.innerText = playerId.length > TradeView.maxPlayerIdLength
+    userName.innerText =
+      playerId.length > TradeView.maxPlayerIdLength
         ? playerId.slice(0, TradeView.maxPlayerIdLength) + '...'
         : playerId
     container.appendChild(userName)

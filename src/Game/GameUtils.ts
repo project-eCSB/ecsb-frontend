@@ -26,9 +26,11 @@ export const getResourceMapping =
       .resourceAsset ?? 0
 
 // OTHER
+export const SPACE_PRESS_ACTION_PREFIX = 'Wciśnij <strong>spacje</strong> by'
 export const TOAST_INVITE_MSG = 'Wysłano zaproszenie do handlu'
 export const TOAST_DISMISS_TIMEOUT = 500
 export const ERROR_TIMEOUT = 5000
+export const INFORMATION_TIMEOUT = 8000
 export const ONE_SECOND = 1000
 export const RESOURCE_ICON_SCALE = 0.22222 // 0.(2)
 export const RESOURCE_ICON_SCALE_SMALL = 0.17

@@ -5,14 +5,17 @@ import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
 import type {
   AssetConfig,
+  CoopEquipmentDto,
   EndGameStatus,
   Equipment,
+  GameResourceDto,
   GameSettings,
   GameStatus,
   TradeEquipment,
 } from '../../services/game/Types'
 import {
   CloudType,
+  type PlannedTravel,
   type Controls,
   type Coordinates,
   type PlayerId,
@@ -25,7 +28,6 @@ import { EquipmentView } from '../views/EquipmentView'
 import { toast } from 'react-toastify'
 import { TradeOfferPopup } from '../components/TradeOfferPopup'
 import { WorkshopView } from '../views/WorkshopView'
-import { InteractionView } from '../views/InteractionView'
 import { LoadingView } from '../views/LoadingView'
 import { type ChatMessage, parseChatMessage } from '../webSocketMessage/chat/MessageParser'
 import {
@@ -51,12 +53,14 @@ import {
   ERROR_TIMEOUT,
   getPlayerMapping,
   getResourceMapping,
+  INFORMATION_TIMEOUT,
   LAYER_SCALE,
   MAP_ASSET_KEY,
   PLAYER_DESC_OFFSET_LEFT,
   RANGE,
   RESOURCE_ICON_SCALE,
   RESOURCE_ICON_WIDTH,
+  SPACE_PRESS_ACTION_PREFIX,
   SPRITE_HEIGHT,
   SPRITE_WIDTH,
   TILES_ASSET_KEY,
@@ -79,6 +83,12 @@ import { LobbyView } from '../views/LobbyView'
 import { LoadingBarAndResultBuilder } from '../tools/LoadingBarAndResultBuilder'
 import { IncomingCoopMessageType } from '../webSocketMessage/chat/CoopMessageHandler'
 import { IncomingWorkshopMessageType } from '../webSocketMessage/chat/WorkshopMessageHandler'
+import { type Travel } from '../../apis/game/Types'
+import {
+  AdvertisementMessageType,
+  sendAdvertisementMessage,
+} from '../webSocketMessage/chat/AdvertisementMessage'
+import { InformationView } from '../views/InformationView'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -118,7 +128,7 @@ export class Scene extends Phaser.Scene {
   public equipmentView: EquipmentView | null
   public workshopView: WorkshopView | null
   public travelView: TravelView | null
-  public interactionView: InteractionView
+  public informationActionPopup: InformationView
   public loadingView: LoadingView
   public leaderboardView: LeaderboardView | null
   public lobbyView: LobbyView | null
@@ -139,6 +149,8 @@ export class Scene extends Phaser.Scene {
   private receivedTimeSync = false
   private receivedPlayerSync = false
   private readonly chatQueue: ChatMessage[] = []
+  public plannedTravel: PlannedTravel | null
+  public playerAdvertisedTravel: Record<PlayerId, string>
 
   constructor(
     gameToken: string,
@@ -166,11 +178,13 @@ export class Scene extends Phaser.Scene {
     this.statusAndCoopView = null
     this.equipmentView = null
     this.workshopView = null
-    this.interactionView = new InteractionView()
+    this.informationActionPopup = new InformationView()
     this.loadingView = new LoadingView()
     this.lobbyView = null
     this.leaderboardView = null
     this.travelView = null
+    this.plannedTravel = null
+    this.playerAdvertisedTravel = {}
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
     this.contextMenuBuilder = new ContextMenuBuilder()
@@ -302,25 +316,29 @@ export class Scene extends Phaser.Scene {
             (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
           )
         ) {
-          this.interactionView.setText('rozpocząć wytwarzanie...')
-          this.interactionView.show()
+          this.informationActionPopup.setText(
+            `${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`,
+          )
+          this.informationActionPopup.show()
         } else if (
           this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView.setText('odbyć krótką podróż...')
-          this.interactionView.show()
+          this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć krótką podróż...`)
+          this.informationActionPopup.show()
         } else if (
           this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView.setText('odbyć średnią podróż...')
-          this.interactionView.show()
+          this.informationActionPopup.setText(
+            `${SPACE_PRESS_ACTION_PREFIX} odbyć średnią podróż...`,
+          )
+          this.informationActionPopup.show()
         } else if (
           this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
         ) {
-          this.interactionView.setText('odbyć długą podróż...')
-          this.interactionView.show()
+          this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć długą podróż...`)
+          this.informationActionPopup.show()
         } else {
-          this.interactionView.close()
+          this.informationActionPopup.close()
         }
       }
     })
@@ -372,29 +390,29 @@ export class Scene extends Phaser.Scene {
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('rozpocząć wytwarzanie...')
-      this.interactionView.show()
+      this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`)
+      this.informationActionPopup.show()
     } else if (
       this.lowTravels.some(
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('odbyć krótką podróż...')
-      this.interactionView.show()
+      this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć krótką podróż...`)
+      this.informationActionPopup.show()
     } else if (
       this.mediumTravels.some(
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('odbyć średnią podróż...')
-      this.interactionView.show()
+      this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć średnią podróż...`)
+      this.informationActionPopup.show()
     } else if (
       this.highTravels.some(
         (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
       )
     ) {
-      this.interactionView.setText('odbyć długą podróż...')
-      this.interactionView.show()
+      this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć długą podróż...`)
+      this.informationActionPopup.show()
     }
   }
 
@@ -541,6 +559,9 @@ export class Scene extends Phaser.Scene {
         sendTimeMessage(this.chatWs, {
           type: TimeMessageType.SyncRequest,
         })
+        sendAdvertisementMessage(this.chatWs, {
+          type: AdvertisementMessageType.SyncRequest,
+        })
       })
       .onClose((i, ev) => {
         console.log('chatWs closed')
@@ -610,7 +631,6 @@ export class Scene extends Phaser.Scene {
         this.tradeWindow?.close(true)
         break
       case IncomingWorkshopMessageType.WorkshopAccept:
-        this.movingEnabled = false
         this.loadingBarBuilder!.setCoordinates(
           this.players[this.playerId].coords.x,
           this.players[this.playerId].coords.y,
@@ -624,13 +644,13 @@ export class Scene extends Phaser.Scene {
         this.movingEnabled = true
         break
       case IncomingCoopMessageType.CoopTravelAccept:
-        this.movingEnabled = false
         this.loadingBarBuilder!.setCoordinates(
           this.players[this.playerId].coords.x,
           this.players[this.playerId].coords.y,
         )
         this.loadingBarBuilder!.showLoadingBar(msg.message.time - TIMEOUT_OFFSET)
         this.travelView?.close()
+        this.loadingView?.close()
         break
       case IncomingCoopMessageType.CoopTravelDeny:
         this.showErrorPopup(msg.message.reason)
@@ -638,12 +658,65 @@ export class Scene extends Phaser.Scene {
         this.loadingView?.close()
         this.movingEnabled = true
         break
+      case IncomingCoopMessageType.CoopResourceChange:
+        if (this.plannedTravel!.isSingle) {
+          if (msg.message.equipments.length === 1) {
+            this.updateCoopPlayersEquipment(msg.message.equipments)
+          } else {
+            this.planMultiTravel(msg.message.travelName, msg.message.equipments)
+          }
+        } else {
+          if (msg.message.equipments.length === 1) {
+            this.planSingleTravel(msg.message.travelName)
+          } else {
+            this.updateCoopPlayersEquipment(msg.message.equipments)
+          }
+        }
+        break
+      case IncomingCoopMessageType.CoopGoToTravel || IncomingCoopMessageType.CoopWaitForTravel:
+        this.fillCoopPlayersEquipment()
+        this.showInformationPopup(
+          `Uzbierano wymagane zasoby na wyprawe do miasta <strong>${
+            this.plannedTravel!.travel.value.name
+          }</strong>`,
+        )
+        if (msg.message.type === IncomingCoopMessageType.CoopGoToTravel) {
+          this.showInformationPopup(
+            `Udaj się do miasta <strong>${
+              this.plannedTravel!.travel.value.name
+            }</strong> na wyprawę`,
+          )
+        }
+        break
+      case NotificationMessageType.NotificationStartAdvertiseCoop:
+        this.advertisementInfoBuilder.addBubbleForCoop(msg.message.travelName, msg.senderId)
+        this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
+        this.playerAdvertisedTravel[msg.senderId] = msg.message.travelName
+        break
+      case NotificationMessageType.NotificationStopAdvertiseCoop:
+        this.advertisementInfoBuilder.addBubbleForCoop('', msg.senderId)
+        this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
+        delete this.playerAdvertisedTravel[msg.senderId]
+        break
+      case IncomingCoopMessageType.CoopStartPlanning:
+        this.planSingleTravel(msg.message.travelName)
+        this.travelView?.close()
+        this.movingEnabled = true
+        break
+      case IncomingCoopMessageType.CoopCancelPlanning:
+        this.cancelPlanningTravel()
+        break
       case BackendWarningMessageType.UserWarning:
         this.showErrorPopup(msg.message.reason)
         break
       case EquipmentMessageType.EquipmentChange:
         this.equipment = msg.message.playerEquipment
         this.equipmentView?.update(msg.message.playerEquipment)
+
+        if (this.plannedTravel) {
+          this.plannedTravel.playerResources = msg.message.playerEquipment
+          this.statusAndCoopView?.updateCoopView()
+        }
         break
       case NotificationMessageType.NotificationAdvertisementBuy:
         this.advertisementInfoBuilder.addBubbleForResource(
@@ -714,7 +787,7 @@ export class Scene extends Phaser.Scene {
         } else if (msg.message.context === 'travel') {
           const img = document.createElement('img')
           img.src = '/assets/coinCustomIcon.png'
-          this.loadingBarBuilder!.showResult(msg.message.resources![0].value, img)
+          this.loadingBarBuilder!.showResult(msg.message.money!, img)
         }
         this.movingEnabled = true
         break
@@ -743,6 +816,14 @@ export class Scene extends Phaser.Scene {
           this.timeView?.setTimeToken(el.key, el.value.actual, el.value.max)
         })
         this.workshopView?.onTimeTokensChange()
+        break
+      case AdvertisementMessageType.SyncCoopResponse:
+        // TODO: handle
+        console.log(msg.message)
+        break
+      case AdvertisementMessageType.SyncTradeResponse:
+        // TODO: handle
+        console.log(msg.message)
         break
     }
   }
@@ -917,6 +998,15 @@ export class Scene extends Phaser.Scene {
     this.otherPlayerId = undefined
   }
 
+  showInformationPopup(message: string): void {
+    const informationPopup = new InformationView()
+    informationPopup.setText(message)
+    informationPopup.show()
+    setTimeout(() => {
+      informationPopup.close()
+    }, INFORMATION_TIMEOUT)
+  }
+
   showErrorPopup(message: string): void {
     const errorMessage = new ErrorView()
     errorMessage.setText(message)
@@ -924,6 +1014,164 @@ export class Scene extends Phaser.Scene {
     setTimeout(() => {
       errorMessage.close()
     }, ERROR_TIMEOUT)
+  }
+
+  getTravelByName = (travelName: string): Travel | null => {
+    for (const travelType of this.settings.travels) {
+      const foundTravel = travelType.value.find((travel) => travel.value.name === travelName)
+      if (foundTravel) {
+        return foundTravel
+      }
+    }
+    return null
+  }
+
+  getEquipmentFromCoopEquipment = (
+    coopEquipment: CoopEquipmentDto,
+    required: boolean,
+  ): Equipment => {
+    const resources: GameResourceDto[] = []
+    for (const resource of this.equipment!.resources) {
+      resources.push({
+        key: resource.key,
+        value: 0,
+      })
+    }
+
+    const playerEquipment: Equipment = {
+      money: required ? coopEquipment.value.money.needed : coopEquipment.value.money.amount,
+      time: 0,
+      resources: resources,
+    }
+    for (const resource of coopEquipment.value.resources) {
+      playerEquipment.resources.find((r) => r.key === resource.key)!.value = required
+        ? resource.value.needed
+        : resource.value.amount
+    }
+
+    return playerEquipment
+  }
+
+  planSingleTravel = (travelName: string): void => {
+    this.settings.travels.forEach((travelType) => {
+      travelType.value.forEach((travel) => {
+        if (travel.value.name === travelName) {
+          this.startPlanningTravel(
+            true,
+            travel,
+            this.equipment!,
+            {
+              money: 0,
+              time: travel.value.time!,
+              resources: travel.value.resources,
+            },
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+          )
+        }
+      })
+    })
+  }
+
+  planMultiTravel = (travelName: string, equipments: CoopEquipmentDto[]): void => {
+    const partnerName = equipments[0].key !== this.playerId ? equipments[0].key : equipments[1].key
+    const playerCoopEquipment = equipments.find((equipment) => equipment.key === this.playerId)
+    const partnerCoopEquipment = equipments.find((equipment) => equipment.key === partnerName)
+
+    this.startPlanningTravel(
+      false,
+      this.getTravelByName(travelName)!,
+      this.getEquipmentFromCoopEquipment(playerCoopEquipment!, false),
+      this.getEquipmentFromCoopEquipment(playerCoopEquipment!, true),
+      0,
+      true,
+      partnerName,
+      this.getEquipmentFromCoopEquipment(partnerCoopEquipment!, false),
+      this.getEquipmentFromCoopEquipment(partnerCoopEquipment!, true),
+      0,
+    )
+  }
+
+  cancelPlanningTravel = (): void => {
+    this.plannedTravel = null
+    this.statusAndCoopView?.updateCoopView()
+  }
+
+  startPlanningTravel = (
+    isSingle: boolean,
+    travel: Travel,
+    playerResources: Equipment,
+    playerRequiredResources: Equipment,
+    playerProfit: number | null,
+    playerIsRunning: boolean | null,
+    partner: string | null,
+    partnerResources: Equipment | null,
+    partnerRequiredResources: Equipment | null,
+    partnerProfit: number | null,
+  ): void => {
+    this.plannedTravel = {
+      isSingle: isSingle,
+      wantToCooperate: isSingle ? false : null,
+      travel: travel,
+      playerResources: playerResources,
+      playerRequiredResources: playerRequiredResources,
+      playerProfit: playerProfit,
+      playerIsRunning: playerIsRunning,
+      partner: partner,
+      partnerResources: partnerResources,
+      partnerRequiredResources: partnerRequiredResources,
+      partnerProfit: partnerProfit,
+    }
+    this.statusAndCoopView?.updateCoopView()
+  }
+
+  updateCoopPlayersEquipment = (equipments: CoopEquipmentDto[]): void => {
+    if (equipments.length === 2) {
+      const partnerName =
+        equipments[0].key !== this.playerId ? equipments[0].key : equipments[1].key
+      const partnerCoopEquipment = equipments.find((equipment) => equipment.key === partnerName)
+      partnerCoopEquipment!.value.resources.forEach((resource) => {
+        this.plannedTravel!.partnerResources!.resources.find((r) => r.key === resource.key)!.value =
+          resource.value.amount
+        this.plannedTravel!.partnerRequiredResources!.resources.find(
+          (r) => r.key === resource.key,
+        )!.value = resource.value.needed
+      })
+    }
+
+    const playerCoopEquipment = equipments.find((equipment) => equipment.key === this.playerId)
+    playerCoopEquipment!.value.resources.forEach((resource) => {
+      this.plannedTravel!.playerResources.resources.find((r) => r.key === resource.key)!.value =
+        resource.value.amount
+      this.plannedTravel!.playerRequiredResources.resources.find(
+        (r) => r.key === resource.key,
+      )!.value = resource.value.needed
+    })
+
+    this.statusAndCoopView?.updateCoopView()
+  }
+
+  fillCoopPlayersEquipment = (): void => {
+    if (this.plannedTravel!.isSingle) {
+      this.plannedTravel!.playerResources.time = this.timeView!.getAvailableTokens()
+      for (const resource of this.plannedTravel!.playerResources.resources) {
+        resource.value = this.plannedTravel!.playerRequiredResources.resources.find(
+          (r) => r.key === resource.key,
+        )!.value
+      }
+    }
+    if (!this.plannedTravel!.isSingle) {
+      for (const resource of this.plannedTravel!.partnerResources!.resources) {
+        resource.value = this.plannedTravel!.partnerRequiredResources!.resources.find(
+          (r) => r.key === resource.key,
+        )!.value
+      }
+    }
+    this.statusAndCoopView?.updateCoopView()
   }
 
   private areAllKeysDown(keys: Phaser.Input.Keyboard.Key[]): boolean {
@@ -975,7 +1223,7 @@ export class Scene extends Phaser.Scene {
         )
         this.workshopView.show()
 
-        this.interactionView.close()
+        this.informationActionPopup.close()
       } else if (
         this.lowTravels.some(
           (coords) =>
@@ -991,7 +1239,7 @@ export class Scene extends Phaser.Scene {
         )
         this.travelView.show()
 
-        this.interactionView.close()
+        this.informationActionPopup.close()
       } else if (
         this.mediumTravels.some(
           (coords) =>
@@ -1007,7 +1255,7 @@ export class Scene extends Phaser.Scene {
         )
         this.travelView.show()
 
-        this.interactionView.close()
+        this.informationActionPopup.close()
       } else if (
         this.highTravels.some(
           (coords) =>
@@ -1023,7 +1271,7 @@ export class Scene extends Phaser.Scene {
         )
         this.travelView.show()
 
-        this.interactionView.close()
+        this.informationActionPopup.close()
       }
 
       return

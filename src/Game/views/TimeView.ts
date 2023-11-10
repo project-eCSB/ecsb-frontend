@@ -82,8 +82,8 @@ export class TimeView {
   }
 
   close(): void {
-    window.document.body.removeChild(this.timeTokenBoxWrapper)
-    window.document.body.removeChild(this.timerBoxWrapper)
+    document.getElementById(TimeView.timeTokenBoxWrapperID)?.remove()
+    document.getElementById(TimeView.timerBoxWrapperID)?.remove()
   }
 
   startTimer(): void {

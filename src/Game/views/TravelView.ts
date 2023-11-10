@@ -1,5 +1,5 @@
-import { type ClassResourceRepresentation } from '../../apis/game/Types'
-import { getResourceMapping } from '../GameUtils'
+import { type Travel, type ClassResourceRepresentation } from '../../apis/game/Types'
+import { SPACE_PRESS_ACTION_PREFIX, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
@@ -21,7 +21,7 @@ export enum TravelType {
 export class TravelView {
   private readonly scene: Scene
   private readonly travelType: TravelType
-  private selectedTravel: string | null
+  private selectedTravel: Travel | null
   private readonly resourceURL: string
   private readonly resourceRepresentation: ClassResourceRepresentation[]
   private readonly cropper: ImageCropper
@@ -123,6 +123,7 @@ export class TravelView {
     closeButton.id = TravelView.travelBoxCloseButtonID
     closeButton.addEventListener('click', () => {
       this.close()
+      this.scene.movingEnabled = true
     })
     const XIcon = document.createElement('i')
     XIcon.className = 'fa fa-times'
@@ -168,10 +169,10 @@ export class TravelView {
           travelItemCheckbox.name = 'travel-option'
           travelItemCheckbox.value = travelItem.value.name
           travelItemCheckbox.addEventListener('change', () => {
-            this.selectedTravel = travelItemCheckbox.value
+            this.selectedTravel = travelItem
             sendTravelChoosingMessage(this.scene.chatWs, {
               type: TravelChoosingMessageType.TravelChange,
-              travelName: this.selectedTravel,
+              travelName: this.selectedTravel.value.name,
             })
             if (
               !(
@@ -187,6 +188,7 @@ export class TravelView {
             ) {
               this.enableTravelButton()
             }
+            this.enablePlanButton()
           })
           travelItemHeader.appendChild(travelItemCheckbox)
           travelItemHeader.appendChild(travelItemTitle)
@@ -320,7 +322,10 @@ export class TravelView {
           ? 'travelBoxButtonsContainerButtonEnabled'
           : 'travelBoxButtonsContainerButtonEnabledActive'
 
-      this.close()
+      sendCoopMessage(this.scene.chatWs, {
+        type: OutcomingCoopMessageType.StartPlanning,
+        travelName: this.selectedTravel!.value.name,
+      })
     })
     this.travelBoxPlanButtonWrapper.appendChild(this.travelBoxPlanButton)
     this.travelBoxPlanButtonExtraWrapper.appendChild(this.travelBoxPlanButtonWrapper)
@@ -354,7 +359,7 @@ export class TravelView {
 
       sendCoopMessage(scene.chatWs, {
         type: OutcomingCoopMessageType.StartSimpleTravel,
-        travelName: this.selectedTravel!,
+        travelName: this.selectedTravel!.value.name,
       })
     })
     this.travelBoxTravelButtonWrapper.appendChild(this.travelBoxTravelButton)
@@ -420,20 +425,25 @@ export class TravelView {
     this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     document.getElementById(TravelView.travelBoxWrapperID)?.remove()
     this.scene.travelView = null
-    this.scene.movingEnabled = true
 
     switch (this.travelType) {
       case TravelType.LOW:
-        this.scene.interactionView.setText('odbyć krótką podróż...')
+        this.scene.informationActionPopup.setText(
+          `${SPACE_PRESS_ACTION_PREFIX} by odbyć krótką podróż...`,
+        )
         break
       case TravelType.MEDIUM:
-        this.scene.interactionView.setText('odbyć średnią podróż...')
+        this.scene.informationActionPopup.setText(
+          `${SPACE_PRESS_ACTION_PREFIX} by odbyć średnią podróż...`,
+        )
         break
       case TravelType.HIGH:
-        this.scene.interactionView.setText('odbyć długą podróż...')
+        this.scene.informationActionPopup.setText(
+          `${SPACE_PRESS_ACTION_PREFIX} by odbyć długą podróż...`,
+        )
         break
     }
 
-    this.scene.interactionView.show()
+    this.scene.informationActionPopup.show()
   }
 }
