@@ -47,8 +47,10 @@ export interface TradeEquipment {
 }
 
 export interface CoopEquipment {
-  money: AmountDiff
   resources: ResourceDiff[]
+  timeTokensCoopInfo: {
+    time: AmountDiff
+  } | null
 }
 
 export interface CoopEquipmentDto {

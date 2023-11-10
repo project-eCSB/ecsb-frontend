@@ -100,6 +100,10 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.QueueProcessed:
         return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationStartNegotiation:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case NotificationMessageType.NotificationStopNegotiation:
+        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.SyncResponse:
         return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.End:

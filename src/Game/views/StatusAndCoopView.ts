@@ -323,6 +323,8 @@ export class StatusAndCoopView {
     coopDialogResources.id = 'singleCoopDialogResources'
     let hasAllResources = true
     this.scene.plannedTravel.playerRequiredResources.resources.forEach((resource) => {
+      if (resource.value === 0) return
+
       const coopDialogResourcesItem = document.createElement('div')
 
       const itemImage = this.cropper.crop(
@@ -359,6 +361,7 @@ export class StatusAndCoopView {
       successIcon.style.visibility = 'visible'
     } else {
       successIcon.style.visibility = 'hidden'
+      this.scene.shownGatheredResourcesMessage = false
     }
 
     const coopDialogResourcesTimes = document.createElement('div')
@@ -560,6 +563,8 @@ export class StatusAndCoopView {
 
     let playerHasAllResources = true
     this.scene.plannedTravel.playerRequiredResources.resources.forEach((resource) => {
+      if (resource.value === 0) return
+
       const coopDialogResourcesItem = document.createElement('div')
 
       const itemImage = this.cropper.crop(
@@ -639,6 +644,8 @@ export class StatusAndCoopView {
 
     let partnerHasAllResources = true
     this.scene.plannedTravel.partnerRequiredResources!.resources.forEach((resource) => {
+      if (resource.value === 0) return
+
       const coopDialogResourcesItem = document.createElement('div')
 
       const itemImage = this.cropper.crop(
@@ -711,6 +718,7 @@ export class StatusAndCoopView {
       successIcon.style.visibility = 'visible'
     } else {
       successIcon.style.visibility = 'hidden'
+      this.scene.shownGatheredResourcesMessage = false
     }
 
     // Buttons

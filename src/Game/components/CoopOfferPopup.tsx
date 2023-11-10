@@ -65,7 +65,11 @@ export const CoopOfferPopup = (props: CoopProps) => {
 
   return (
     <div className='container'>
-      <p>{ownership ? `${from} chce dołączyć do twojej wyprawy do miasta ${travelName}` : `${from} zaprasza Cię do swojej wyprawy do miasta ${travelName}`}</p>
+      <p>
+        {ownership
+          ? `${from} chce dołączyć do twojej wyprawy do miasta ${travelName}`
+          : `${from} zaprasza Cię do swojej wyprawy do miasta ${travelName}`}
+      </p>
       <div className='buttons-container'>
         <div id='buttonWrapper'>
           <button className='decisionButton' id={`${from}-accept-coop`} onClick={handleAcceptCoop}>
@@ -73,7 +77,11 @@ export const CoopOfferPopup = (props: CoopProps) => {
           </button>
         </div>
         <div id='buttonWrapper'>
-          <button className='decisionButton' id={`${from}-decline-coop`} onClick={handleDeclineCoop}>
+          <button
+            className='decisionButton'
+            id={`${from}-decline-coop`}
+            onClick={handleDeclineCoop}
+          >
             Odrzuć
           </button>
         </div>

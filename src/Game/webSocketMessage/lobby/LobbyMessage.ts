@@ -12,6 +12,7 @@ export interface PlayerAmountInfo {
 export interface LobbyChangeMessage {
   type: LobbyMessageType.LobbyChange
   playersAmount: PlayerAmountInfo
+  players: string[]
 }
 
 export interface LobbyStartMessage {

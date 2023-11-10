@@ -4647,7 +4647,7 @@
   gap: 2px;
 }
 
-input[type='radio'] {
+#travelBoxContent input[type='radio'] {
   cursor: pointer;
   margin: 0;
   width: 17px;
@@ -4660,7 +4660,7 @@ input[type='radio'] {
   border-radius: 50%;
 }
 
-input[type='radio']:checked {
+#travelBoxContent input[type='radio']:checked {
   background-color: #835211;
 }
 
@@ -5786,15 +5786,1330 @@ input[type='radio']:checked {
   visibility: hidden;
 }
 
-input[type='checkbox'] {
+#settingsContainer input[type='checkbox'] {
   appearance: none;
   background-color: #f6dcb8;
   border: 2px solid #f6dcb8;
   outline: 2px solid #835211;
   padding: 7px;
   margin: 0;
+  cursor: pointer;
 }
 
-input[type='checkbox']:checked {
+#settingsContainer input[type='checkbox']:checked {
   background-color: #835211;
+}
+
+/* ResourceNegotiationView */
+#resourceNegotiationBoxWrapper {
+  position: fixed;
+  top: -50vh;
+  left: -50vw;
+  width: 200vw;
+  height: 200vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+  #resourceNegotiationBoxWrapper {
+    transform: scale(0.85);
+  }
+}
+  
+@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+  #resourceNegotiationBoxWrapper {
+    transform: scale(0.7);
+  }
+}
+
+#resourceNegotiationBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ResourceNegotiationView - Header */
+#resourceNegotiationHeaderBoxExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationHeaderBoxWrapper {
+  position: relative;
+}
+
+#resourceNegotiationHeaderBox {
+  width: 100%;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #000;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+#resourceNegotiationHeaderBox h1 {
+  font-size: 2rem;
+}
+
+#resourceNegotiationHeaderBox h2 {
+  font-size: 1rem;
+}
+
+#resourceNegotiationCloseButton {
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #000;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  font-size: 1rem;
+  z-index: 999999;
+  background-color: #d39f59;
+  filter: drop-shadow(-1px 2px rgb(48, 20, 1, 0.9));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.1s ease-in-out all;
+}
+
+#resourceNegotiationCloseButton:hover {
+  transform: translate(1px, -1px);
+  filter: drop-shadow(-2px 3px rgb(48, 20, 1, 0.9));
+}
+
+#resourceNegotiationCloseButton:active {
+  filter: none;
+  transform: translate(0, 0);
+}
+
+/* ResourceNegotiationView - Result*/
+#resourceNegotiationResultBox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationResultCostBoxWrapper,
+#resourceNegotiationResultProfitBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationResultCostBox,
+#resourceNegotiationResultProfitBox {
+  padding: 0.5rem 1.5rem;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  color: #000;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+#resourceNegotiationResultCostBox > div,
+#resourceNegotiationResultProfitBox > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+#resourceNegotiationPlayerTurnBoxWrapper {
+  position: absolute;
+  top: 20px;
+  left: -140px;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationPlayerTurnBoxWrapper > h3 {
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 0.7rem 1rem;
+  color: #000;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.resourceNegotiationPlayerTurn {
+  background-color: #bfe50e;
+}
+
+.resourceNegotiationPartnerTurn {
+  background-color: #ff9801;
+}
+
+/* ResourceNegotiationView - Content */
+#resourceNegotiationContentBoxExtraWrapper {
+  position: relative;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationContentBoxWrapper {
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#resourceNegotiationContentBox {
+  width: 580px;
+  padding: 3rem 2rem 3.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationContentBox > hr {
+  border: 1px solid rgba(131, 82, 17, 0.7);
+  width: 100%;
+  margin: 5px 0;
+}
+
+#resourceNegotiationContentBox > div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationContentBox > div > h5 {
+  font-size: 0.9rem;
+}
+
+/* Resources */
+#resourceNegotiationContentBoxResourcesContent {
+  width: 87%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationContentBoxResourcesContent > div {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#resourceNegotiationContentBoxResourcesContent > div > div:not(:nth-child(2)) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationContentBoxResourcesContent > div > div:not(:nth-child(2)) > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationContentBoxResourcesContent > div > div:not(:nth-child(2)) > div:first-child {
+  margin-right: 10px;
+}
+
+#resourceNegotiationContentBoxResourcesContent > div > div:not(:nth-child(2)) > div > h5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 42px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+/* PlayerTime */
+#resourceNegotiationContentBoxPlayerTimeContent {
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+}
+
+#resourceNegotiationContentBoxPlayerTimeContent > div {
+  display: flex;
+  gap: 5px;
+}
+
+#resourceNegotiationContentBoxPlayerTimeContent > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationContentBoxPlayerTimeContent > div > div > div {
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.3rem;
+}
+
+/* Profit */
+#resourceNegotiationContentBoxProfitContent {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#resourceNegotiationContentBoxProfitContent > div:not(:nth-child(2)) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+#resourceNegotiationContentBoxProfitContent > div:not(:nth-child(2)) > div:first-child {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationContentBoxProfitContent > div:not(:nth-child(2)) > div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: 80px;
+}
+
+#resourceNegotiationContentBoxProfitContent > div:not(:nth-child(2)) > div:last-child > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  width: 100%;
+}
+
+#resourceNegotiationContentBoxProfitContent > div:not(:nth-child(2)) > div:last-child > div > h5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#playerRunsCheckbox,
+#partnerRunsCheckbox {
+  cursor: pointer;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  padding: 1px;
+  border: 4px solid #C19356;
+  outline: none;
+  border-radius: 50%;
+}
+
+.runsCheckbox {
+  background-color: #C19356;
+}
+
+.runsCheckboxEnabled:checked {
+  background-color: #835211;
+}
+
+.runsCheckboxDisabled:checked {
+  background-color: #a7a7a7;
+}
+
+/* Player names */
+#resourceNegotiationPlayerNameWrapper,
+#resourceNegotiationPartnerNameWrapper {
+  position: absolute;
+  top: 5px;
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationPlayerNameWrapper {
+  left: -10px;
+}
+
+#resourceNegotiationPartnerNameWrapper {
+  right: -10px;
+}
+
+#resourceNegotiationPlayerName,
+#resourceNegotiationPartnerName {
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 0.7rem 1rem;
+  color: #000;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  font-size: 1rem;
+  text-align: center;
+  background-color: #E3C296;
+}
+
+/* ResourceNegotiationView - Buttons */
+#resourceNegotiationButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationButtonsProposeButtonExtraWrapper,
+#resourceNegotiationButtonsAcceptButtonExtraWrapper {
+  border: none;
+}
+
+#resourceNegotiationButtonsProposeButtonWrapper,
+#resourceNegotiationButtonsAcceptButtonWrapper {
+  border: none;
+}
+
+.resourceNegotiationButtonsProposeButtonExtraWrapperEnabled,
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+.resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover,
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover {
+  filter: none;
+}
+
+.resourceNegotiationButtonsProposeButtonExtraWrapperEnabledActive,
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+.resourceNegotiationButtonsProposeButtonWrapperEnabledActive,
+.resourceNegotiationButtonsAcceptButtonWrapperEnabledActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+.resourceNegotiationButtonsProposeButtonWrapperEnabled,
+.resourceNegotiationButtonsAcceptButtonWrapperEnabled {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+.resourceNegotiationButtonsProposeButtonWrapperEnabled:hover,
+.resourceNegotiationButtonsAcceptButtonWrapperEnabled:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+.resourceNegotiationButtonsProposeButtonWrapperDisabled,
+.resourceNegotiationButtonsAcceptButtonWrapperDisabled {
+  filter: drop-shadow(-3px 4px #3f382e);
+}
+
+.resourceNegotiationButtonsProposeButtonWrapperDisabled:hover,
+.resourceNegotiationButtonsAcceptButtonWrapperDisabled:hover {
+  filter: drop-shadow(-3px 4px #3f382e);
+}
+
+#resourceNegotiationButtonsProposeButton,
+#resourceNegotiationButtonsAcceptButton {
+  width: 100%;
+  padding: 0.5rem;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  font-size: 1.2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+}
+
+.resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover .resourceNegotiationButtonsProposeButtonEnabled,
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover .resourceNegotiationButtonsAcceptButtonEnabled {
+  cursor: pointer;
+  transform: translate(2px, -2px);
+}
+
+.resourceNegotiationButtonsProposeButtonEnabled,
+.resourceNegotiationButtonsAcceptButtonEnabled {
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+}
+
+.resourceNegotiationButtonsProposeButtonEnabledActive,
+.resourceNegotiationButtonsAcceptButtonEnabledActive  {
+  background-color: #ab742b;
+  color: #000;
+  transition: 0.2s all ease-in-out;
+  transform: translate(-5px, 6px);
+}
+
+.resourceNegotiationButtonsProposeButtonDisabled,
+.resourceNegotiationButtonsAcceptButtonDisabled {
+  background-color: #e9d3b7;
+  color: #787272;
+}
+
+.resourceNegotiationButtonsProposeButtonDisabled:hover,
+.resourceNegotiationButtonsAcceptButtonDisabled:hover {
+  cursor: auto;
+  transform: none;
+}
+
+/* SliderContainer */
+.negotiationRangeSliderContainer {
+  position: relative;
+  flex-grow: 1;
+  height: 30px;
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.negotiationRangeSliderFront,
+.negotiationRangeSliderBack {
+  position: absolute;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: #835211;
+  outline: none;
+  border: none;
+  opacity: 0.5;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  margin: 0;
+  padding: 0;
+  border-radius: 15px;
+}
+
+.negotiationRangeSliderFront::-webkit-slider-thumb,
+.negotiationRangeSliderBack::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.negotiationRangeSliderBackCursor::-webkit-slider-thumb {
+  cursor: auto;
+}
+
+.negotiationRangeSliderFront::-webkit-slider-thumb {
+  background-color: #fda455;
+  opacity: 1;
+}
+
+.negotiationRangeSliderBack::-webkit-slider-thumb {
+  background-color: #a7a7a7;
+  opacity: 1;
+}
+
+.negotiationRangeSliderFront::-moz-range-thumb ,
+.negotiationRangeSliderBack::-moz-range-thumb  {
+  width: 25px;
+  height: 25px;
+  background: black;
+  cursor: pointer;
+}
+
+.negotiationRangeSliderBack {
+  opacity: 1;
+}
+
+/* ResourceNegotiationSuccessView */
+/* ResourceNegotiationSuccessView - Box */
+#resourceNegotiationSuccessBox {
+  position: fixed;
+  top: -50vh;
+  left: -50vw;
+  width: 200vw;
+  height: 200vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+  #resourceNegotiationSuccessBox {
+    transform: scale(0.85);
+  }
+}
+  
+@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+  #resourceNegotiationSuccessBox {
+    transform: scale(0.7);
+  }
+}
+
+/* ResourceNegotiationSuccessView - Header */
+#resourceNegotiationSuccessHeaderBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationSuccessHeaderBox {
+  width: 100%;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1rem 3rem;
+}
+
+#resourceNegotiationSuccessHeaderBox > h1 {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* ResourceNegotiationSuccessView - Information */
+#resourceNegotiationSuccessInformationBoxWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationSuccessInformationBox {
+  background-color: #e3c296;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#resourceNegotiationSuccessInformationBox > h2 {
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  border: none;
+  font-size: 1.2rem;
+}
+
+/* ResourceNegotiationSuccessView - Content */
+#resourceNegotiationSuccessContentBoxExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+#resourceNegotiationSuccessContentBoxWrapper {
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#resourceNegotiationSuccessContentBox {
+  padding: 2rem 3rem;
+  display: flex;
+}
+
+#resourceNegotiationSuccessContentBoxPlayersNames {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-right: 40px;
+}
+
+#resourceNegotiationSuccessContentBoxPlayersNames > h3 {
+  font-size: 1.2rem;
+}
+
+#resourceNegotiationSuccessContentBoxPlayersResources {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-right: 20px;
+}
+
+#resourceNegotiationSuccessContentBoxPlayersResources > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.resourceNegotiationSuccessContentBoxResources {
+  display: flex;
+  gap: 10px;
+}
+
+.resourceNegotiationSuccessContentBoxResources > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.resourceNegotiationSuccessContentBoxResources > div > div {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+}
+
+.resourceNegotiationSuccessContentBoxResources > div > div:last-child  > h5 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  width: 42px;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+.resourceNegotiationSuccessContentBoxResourcesTime {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.3rem;
+  font-size: 1rem;
+  background-color: #f6dcb8;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#resourceNegotiationSuccessContentBoxTravelDestination {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#resourceNegotiationSuccessContentBoxTravelDestination > h3 {
+  font-size: 1.2rem;
+}
+
+/* ResourceNegotiationSuccessView - OK Button */
+#resourceNegotiationSuccessOkButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+  border: none;
+}
+
+#resourceNegotiationSuccessOkButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#resourceNegotiationSuccessOkButtonExtraWrapperActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+#resourceNegotiationSuccessOkButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+#resourceNegotiationSuccessOkButtonWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#resourceNegotiationSuccessOkButtonWrapperActive {
+  transition: 0.2s all ease-in-out;
+  filter: none;
+}
+
+#resourceNegotiationSuccessOkButton {
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  font-size: 1.2rem;
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+  clip-path: polygon(
+    3.05% 90%,
+    24.63% 92.01%,
+    27.36% 88.02%,
+    30.45% 93.05%,
+    39.53% 93.09%,
+    54.54% 95.18%,
+    72.51% 95.37%,
+    91.71% 94.74%,
+    94.61% 93.11%,
+    96.73% 91.49%,
+    97.29% 88.24%,
+    98.11% 82%,
+    98.4% 64.77%,
+    97.93% 49.3%,
+    97.51% 29.37%,
+    96.68% 9.5%,
+    89.4% 9.64%,
+    82.38% 8.28%,
+    75.41% 7.56%,
+    72.98% 14.11%,
+    70.73% 7.23%,
+    61.53% 6.45%,
+    49.95% 5.9%,
+    41.43% 4.81%,
+    31.72% 5.61%,
+    21.73% 5.22%,
+    13.26% 5.44%,
+    7.33% 6.88%,
+    4.36% 7.76%,
+    2.44% 11.26%,
+    1.58% 18.28%,
+    0.98% 27.79%,
+    0.91% 39.31%,
+    1.09% 51.32%,
+    1.59% 62.1%,
+    2.09% 76.88%
+  );
+}
+
+#resourceNegotiationSuccessOkButtonExtraWrapper:hover #resourceNegotiationSuccessOkButton {
+  cursor: pointer;
+  transform: translate(2px, -2px);
+}
+
+#resourceNegotiationSuccessOkButton {
+  transition: 0.2s all ease-in-out;
+  color: #000;
+  background-color: #edb872;
+  cursor: pointer;
+}
+
+#resourceNegotiationSuccessOkButton:hover {
+  transform: translate(-1px, 2px);
+}
+
+#resourceNegotiationSuccessOkButtonActive {
+  background-color: #ab742b;
+  color: #000;
+  transition: 0.2s all ease-in-out;
+  transform: translate(-5px, 6px);
 }

@@ -71,6 +71,8 @@ export const stopGame = (gameData: GameData): void => {
   window.document.getElementById('tradeSuccessBox')?.remove()
   window.document.getElementById('workshopBoxWrapper')?.remove()
   window.document.getElementById('workshopSuccessBox')?.remove()
+  window.document.getElementById('resourceNegotiationBoxWrapper')?.remove()
+  window.document.getElementById('resourceNegotiationSuccessBox')?.remove()
 
   gameData.scene.userDataView?.close()
   gameData.scene.equipmentView?.close()

@@ -5,7 +5,10 @@ import {
   sendTradeMessage,
 } from '../webSocketMessage/chat/TradeMessageHandler'
 import { TOAST_INVITE_MSG, TOAST_INVITE_MSG_COOP } from '../GameUtils'
-import { OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
+import {
+  OutcomingCoopMessageType,
+  sendCoopMessage,
+} from '../webSocketMessage/chat/CoopMessageHandler'
 
 export class ContextMenuBuilder {
   private static readonly buttonPartnershipWrapperID = 'buttonPartnershipWrapper'
@@ -21,7 +24,10 @@ export class ContextMenuBuilder {
     const divInside = document.createElement('div')
     divInside.id = ContextMenuBuilder.buttonsWrapperID
 
-    if (scene.plannedTravel && scene.plannedTravel.travel.value.name === scene.playerAdvertisedTravel[id]) {
+    if (
+      scene.plannedTravel &&
+      scene.plannedTravel.travel.value.name === scene.playerAdvertisedTravel[id]
+    ) {
       const otherTravel = document.createElement('div')
       otherTravel.id = ContextMenuBuilder.buttonWithCloudID
       const buttonGetIntoPartnership = document.createElement('button')
@@ -38,7 +44,7 @@ export class ContextMenuBuilder {
         sendCoopMessage(scene.chatWs, {
           type: OutcomingCoopMessageType.ProposeOwnTravel,
           travelName: scene.plannedTravel!.travel.value.name,
-          guestId: id
+          guestId: id,
         })
         this.coopInviteConfirmation()
       }
@@ -73,7 +79,7 @@ export class ContextMenuBuilder {
           sendCoopMessage(scene.chatWs, {
             type: OutcomingCoopMessageType.ProposeOwnTravel,
             travelName: scene.plannedTravel!.travel.value.name,
-            guestId: id
+            guestId: id,
           })
           this.coopInviteConfirmation()
         }
@@ -100,19 +106,20 @@ export class ContextMenuBuilder {
         buttonGetIntoPartnership.onclick = (_: Event) => {
           window.document.getElementById('btns')?.remove()
           scene.actionTrade = null
-
-          if (scene.plannedTravel) {
-            sendCoopMessage(scene.chatWs, {
-              type: OutcomingCoopMessageType.GatheringJoinPlanning,
-              ownerId: id
-            })
-          } else {
-            sendCoopMessage(scene.chatWs, {
-              type: OutcomingCoopMessageType.SimpleJoinPlanning,
-              ownerId: id
-            })
+          if (scene.playerAdvertisedTravel[id] !== undefined) {
+            if (scene.plannedTravel) {
+              sendCoopMessage(scene.chatWs, {
+                type: OutcomingCoopMessageType.GatheringJoinPlanning,
+                ownerId: id,
+              })
+            } else {
+              sendCoopMessage(scene.chatWs, {
+                type: OutcomingCoopMessageType.SimpleJoinPlanning,
+                ownerId: id,
+              })
+            }
+            this.coopInviteConfirmation()
           }
-          this.coopInviteConfirmation()
         }
         const cityCloud = document.createElement('div')
         cityCloud.id = ContextMenuBuilder.cityCloudID
