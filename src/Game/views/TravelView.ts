@@ -326,6 +326,8 @@ export class TravelView {
         type: OutcomingCoopMessageType.StartPlanning,
         travelName: this.selectedTravel!.value.name,
       })
+      this.close()
+      this.scene.movingEnabled = true
     })
     this.travelBoxPlanButtonWrapper.appendChild(this.travelBoxPlanButton)
     this.travelBoxPlanButtonExtraWrapper.appendChild(this.travelBoxPlanButtonWrapper)
@@ -429,17 +431,17 @@ export class TravelView {
     switch (this.travelType) {
       case TravelType.LOW:
         this.scene.informationActionPopup.setText(
-          `${SPACE_PRESS_ACTION_PREFIX} by odbyć krótką podróż...`,
+          `${SPACE_PRESS_ACTION_PREFIX} odbyć krótką podróż...`,
         )
         break
       case TravelType.MEDIUM:
         this.scene.informationActionPopup.setText(
-          `${SPACE_PRESS_ACTION_PREFIX} by odbyć średnią podróż...`,
+          `${SPACE_PRESS_ACTION_PREFIX} odbyć średnią podróż...`,
         )
         break
       case TravelType.HIGH:
         this.scene.informationActionPopup.setText(
-          `${SPACE_PRESS_ACTION_PREFIX} by odbyć długą podróż...`,
+          `${SPACE_PRESS_ACTION_PREFIX} odbyć długą podróż...`,
         )
         break
     }

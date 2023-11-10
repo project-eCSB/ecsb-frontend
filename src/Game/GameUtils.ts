@@ -28,6 +28,7 @@ export const getResourceMapping =
 // OTHER
 export const SPACE_PRESS_ACTION_PREFIX = 'Wciśnij <strong>spacje</strong> by'
 export const TOAST_INVITE_MSG = 'Wysłano zaproszenie do handlu'
+export const TOAST_INVITE_MSG_COOP = 'Wysłano zaproszenie do spółki'
 export const TOAST_DISMISS_TIMEOUT = 500
 export const ERROR_TIMEOUT = 5000
 export const INFORMATION_TIMEOUT = 8000
