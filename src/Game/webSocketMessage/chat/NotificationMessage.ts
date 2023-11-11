@@ -119,6 +119,7 @@ export interface NotificationAdvertiseCoopMessage {
   message: {
     type: NotificationMessageType.NotificationAdvertiseCoop
     ownerId: string
+    travelName: string
   }
 }
 
