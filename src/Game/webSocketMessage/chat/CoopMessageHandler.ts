@@ -78,6 +78,7 @@ export interface CoopResourceChangeMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopResourceChange
+    travelName: string
     equipments: CoopEquipmentDto[]
   }
 }
