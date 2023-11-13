@@ -680,18 +680,18 @@ export class Scene extends Phaser.Scene {
         this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
         break
       case NotificationMessageType.NotificationWorkshopChoosingStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.WORK)
+        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.WORK)
         break
       case NotificationMessageType.NotificationWorkshopChoosingStop:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.WORK)
+        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.WORK)
         break
       case NotificationMessageType.NotificationProductionStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
-        this.playerCloudMovement.set(msg.message.playerId, true)
+        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.PRODUCTION)
+        this.playerCloudMovement.set(msg.senderId, true)
         break
       case NotificationMessageType.NotificationProductionEnd:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.PRODUCTION)
-        this.playerCloudMovement.set(msg.message.playerId, false)
+        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.PRODUCTION)
+        this.playerCloudMovement.set(msg.senderId, false)
         break
       case NotificationMessageType.QueueProcessed:
         this.loadingBarBuilder!.setCoordinates(

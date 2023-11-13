@@ -9,7 +9,7 @@ export class InteractionCloudBuilder {
     [CloudType.PRODUCTION]: this.createCloudIcon('/assets/workshopCloudCustomIcon.png'),
   }
 
-  private readonly notMoveableIconTypes: CloudType[] = [
+  private readonly notMovableIconTypes: CloudType[] = [
     CloudType.WORK,
     CloudType.TALK,
     CloudType.TRAVEL,
@@ -26,8 +26,7 @@ export class InteractionCloudBuilder {
     cloudContainer.id = `cloud-${playerId}`
     cloudContainer.className = 'actionCloudContainer'
 
-    const cloudSymbol = scene.add.dom(0, 0, cloudContainer)
-    return cloudSymbol
+    return scene.add.dom(0, 0, cloudContainer)
   }
 
   showInteractionCloud(playerId: string, cloudType: CloudType): void {
@@ -62,7 +61,7 @@ export class InteractionCloudBuilder {
   }
 
   purgeUnnecessaryIcons(playerId: string): void {
-    this.notMoveableIconTypes.forEach((cloudType) => {
+    this.notMovableIconTypes.forEach((cloudType) => {
       this.hideInteractionCloud(playerId, cloudType)
     })
   }

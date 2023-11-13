@@ -133,11 +133,7 @@ export class TimeView {
   }
 
   setTimeToken(tokenID: number, actual: number, max: number): void {
-    if (actual !== max) {
-      this.tokens[tokenID] = false
-    } else {
-      this.tokens[tokenID] = true
-    }
+    this.tokens[tokenID] = actual === max
 
     const row = Math.floor(tokenID / Math.floor(this.tokens.length / 2)) + 1
     const column = (tokenID % Math.floor(this.tokens.length / 2)) + 1
