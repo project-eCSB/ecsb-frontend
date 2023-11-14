@@ -1,19 +1,19 @@
 import { setGameToken } from '../../apis/apis'
 import gameAPI from '../../apis/game/GameAPI'
 import type {
-  AdminGameSettingsResponse,
-  AssetConfigResponse,
-  AssetResponse,
-  ClassResourceRepresentation,
-  CreateGameRequestTravels,
-  NewGameResponse,
-  GameTokenResponse,
-  ProductionResponse,
-  SavedAsset,
-  SavedAssetsResponse,
-  UploadAssetResponse,
-  UserGameSettingsResponse,
-  UserGameStatusResponse,
+    AdminGameSettingsResponse,
+    AssetConfigResponse,
+    AssetResponse,
+    ClassResourceRepresentation,
+    CreateGameRequestTravels,
+    NewGameResponse,
+    GameTokenResponse,
+    ProductionResponse,
+    SavedAsset,
+    SavedAssetsResponse,
+    UploadAssetResponse,
+    UserGameSettingsResponse,
+    UserGameStatusResponse,
 } from '../../apis/game/Types'
 import { GameResponseError } from '../../apis/game/Types'
 import type { AssetConfig, EndGameStatus, Equipment, GameSettings, GameStatus } from './Types'
@@ -217,9 +217,7 @@ const uploadAsset = async (
   return await gameAPI
     .uploadAsset({ file, fileName, fileType })
     .then((response: UploadAssetResponse) => {
-      const assetId: number = response.assetId
-
-      return assetId
+        return response.assetId
     })
     .catch((err: GameResponseError) => {
       throw new Error(err.message)
@@ -241,9 +239,7 @@ const getSavedAssets = async (fileType: string): Promise<SavedAsset[]> => {
   return await gameAPI
     .getSavedAssets({ fileType: fileType })
     .then((res: SavedAssetsResponse) => {
-      const savedAssets: SavedAsset[] = res.assets
-
-      return savedAssets
+        return res.assets
     })
     .catch((err: GameResponseError) => {
       throw new Error(err.message)

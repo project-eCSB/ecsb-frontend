@@ -52,6 +52,7 @@ export interface TradeServerCancelMessage {
   senderId: string
   message: {
     type: IncomingTradeMessageType.TradeServerCancel
+    receiverId: string
   }
 }
 

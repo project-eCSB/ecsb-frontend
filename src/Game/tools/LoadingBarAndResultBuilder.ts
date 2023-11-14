@@ -77,14 +77,14 @@ export class LoadingBarAndResultBuilder {
     plus.ariaHidden = 'true'
     plus.className = 'fa fa-plus'
     const amountWrapper = document.createElement('div')
-    const amountContianer = document.createElement('div')
+    const amountContainer = document.createElement('div')
     const amountMarker = document.createElement('h2')
     amountMarker.textContent = amount.toString()
-    amountWrapper.appendChild(amountContianer)
-    amountContianer.appendChild(amountMarker)
+    amountWrapper.appendChild(amountContainer)
+    amountContainer.appendChild(amountMarker)
 
     const containerInside = document.createElement('div')
-    containerInside.style.left = `${1 * this.tileWidth * LAYER_SCALE}px`
+    containerInside.style.left = `${this.tileWidth * LAYER_SCALE}px`
     containerInside.id = LoadingBarAndResultBuilder.containerDoneInsideID
     this.container.appendChild(containerInside)
     containerInside.appendChild(plus)

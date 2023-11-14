@@ -11,7 +11,7 @@ export enum NotificationMessageType {
   NotificationTravelEnd = 'notification/travel/end', // One of the players ended travel
   NotificationTradeStart = 'notification/trade/start', // One of the players opened trade window
   NotificationTradeEnd = 'notification/trade/end', // One of the players closed trade window
-  NotificationAdvertiseCoop = 'notification/coop/advertise/start',
+  NotificationStartAdvertiseCoop = 'notification/coop/advertise/start',
   NotificationStopAdvertiseCoop = 'notification/coop/advertise/stop',
   NotificationStartNegotiation = 'notification/coop/decide/start',
   NotificationStopNegotiation = 'notification/coop/decide/stop',
@@ -86,7 +86,6 @@ export interface NotificationWorkshopChoosingStartMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationWorkshopChoosingStart
-    playerId: string
   }
 }
 
@@ -94,7 +93,6 @@ export interface NotificationWorkshopChoosingStopMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationWorkshopChoosingStop
-    playerId: string
   }
 }
 
@@ -102,7 +100,6 @@ export interface NotificationProductionStartMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationProductionStart
-    playerId: string
   }
 }
 
@@ -110,15 +107,13 @@ export interface NotificationProductionEndMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationProductionEnd
-    playerId: string
   }
 }
 
 export interface NotificationAdvertiseCoopMessage {
   senderId: string
   message: {
-    type: NotificationMessageType.NotificationAdvertiseCoop
-    ownerId: string
+    type: NotificationMessageType.NotificationStartAdvertiseCoop
     travelName: string
   }
 }
@@ -127,7 +122,6 @@ export interface NotificationStopAdvertiseMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationStopAdvertiseCoop
-    ownerId: string
   }
 }
 
@@ -135,7 +129,6 @@ export interface NotificationStartNegotiationMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationStartNegotiation
-    playerId: string
   }
 }
 
@@ -143,7 +136,6 @@ export interface NotificationStopNegotiationMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationStopNegotiation
-    playerId: string
   }
 }
 
@@ -151,6 +143,7 @@ export interface QueueProcessedMessage {
   senderId: string
   message: {
     type: NotificationMessageType.QueueProcessed
+    receiverId: string
     context: string
     money: number | null
     resources: { key: string; value: number }[] | null

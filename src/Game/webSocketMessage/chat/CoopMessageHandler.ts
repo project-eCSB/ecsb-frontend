@@ -28,6 +28,7 @@ export interface CoopStartPlanningMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopStartPlanning
+    ownerId: string
     travelName: string
   }
 }
@@ -52,8 +53,8 @@ export interface CoopStartNegotiationMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopStartNegotiation
-    myTurn: boolean
     receiverId: string
+    myTurn: boolean
   }
 }
 
@@ -61,8 +62,8 @@ export interface CoopNegotiationBidMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopNegotiationBid
-    coopBid: CoopBid
     receiverId: string
+    coopBid: CoopBid
   }
 }
 
@@ -70,7 +71,7 @@ export interface CoopFinishNegotiationMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopFinishNegotiation
-    equipments: CoopEquipmentDto[]
+    receiverId: string
   }
 }
 
@@ -87,8 +88,10 @@ export interface CoopWaitForTravelMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopWaitForTravel
+    receiverId: string
     travelerId: string
     travelName: string
+    equipments: CoopEquipmentDto[]
   }
 }
 
@@ -96,8 +99,9 @@ export interface CoopGoToTravelMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopGoToTravel
-    waitingPlayerId: string
+    receiverId: string
     travelName: string
+    equipments: CoopEquipmentDto[]
   }
 }
 
@@ -105,6 +109,7 @@ export interface CoopTravelAcceptMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopTravelAccept
+    receiverId: string
     time: number
   }
 }
@@ -113,6 +118,7 @@ export interface CoopTravelDenyMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopTravelDeny
+    receiverId: string
     reason: string
   }
 }
@@ -122,6 +128,7 @@ export interface CoopFinishMessage {
   senderId: string
   message: {
     type: IncomingCoopMessageType.CoopFinish
+    receiverId: string
     travelerId: string
     travelName: string
   }

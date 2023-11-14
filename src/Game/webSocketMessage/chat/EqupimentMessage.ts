@@ -8,6 +8,7 @@ export interface EquipmentChangeMessage {
   senderId: string
   message: {
     type: EquipmentMessageType.EquipmentChange
+    receiverId: string
     playerEquipment: Equipment
   }
 }
