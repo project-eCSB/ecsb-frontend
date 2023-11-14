@@ -420,6 +420,7 @@ export class Scene extends Phaser.Scene {
       })
       .onClose((i, ev) => {
         console.log('lobbyWs closed')
+        console.log(ev)
       })
       .onError((i, ev) => {
         console.error('lobbyWs error')
@@ -480,6 +481,7 @@ export class Scene extends Phaser.Scene {
       })
       .onClose((i, ev) => {
         console.log('movementWs closed')
+        console.log(ev)
       })
       .onError((i, ev) => {
         console.error('movementWs error')
@@ -542,6 +544,7 @@ export class Scene extends Phaser.Scene {
       })
       .onClose((i, ev) => {
         console.log('chatWs closed')
+        console.log(ev)
       })
       .onError((i, ev) => {
         console.error('chatWs error')
