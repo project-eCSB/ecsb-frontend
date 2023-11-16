@@ -9,8 +9,9 @@ export interface CoopBid {
 
 export enum IncomingCoopMessageType {
   CoopStartPlanning = 'coop/system/start_planning',
-  CoopJoinPlanning = 'coop/system/join_planning',
-  CoopProposeCompany = 'coop/system/propose_company',
+  CoopSimpleJoinPlanning = 'coop/system/join_planning/simple',
+  CoopGatheringJoinPlanning = 'coop/system/join_planning/gathering',
+  CoopProposeOwnTravel = 'coop/system/propose_own_travel',
   CoopStartNegotiation = 'coop/system/negotiation/start',
   CoopNegotiationBid = 'coop/system/negotiation/bid',
   CoopFinishNegotiation = 'coop/system/negotiation/finish',
@@ -33,19 +34,28 @@ export interface CoopStartPlanningMessage {
   }
 }
 
-export interface CoopJoinPlanningMessage {
+export interface CoopSimpleJoinPlanningMessage {
   senderId: string
   message: {
-    type: IncomingCoopMessageType.CoopJoinPlanning
+    type: IncomingCoopMessageType.CoopSimpleJoinPlanning
     ownerId: string
   }
 }
 
-export interface CoopProposeCompanyMessage {
+export interface CoopGatheringJoinPlanningMessage {
   senderId: string
   message: {
-    type: IncomingCoopMessageType.CoopProposeCompany
+    type: IncomingCoopMessageType.CoopGatheringJoinPlanning
+    ownerId: string
+  }
+}
+
+export interface CoopProposeOwnTravelMessage {
+  senderId: string
+  message: {
+    type: IncomingCoopMessageType.CoopProposeOwnTravel
     guestId: string
+    travelName: string
   }
 }
 
@@ -152,8 +162,9 @@ export interface CoopCancelPlanningMessage {
 
 export type IncomingCoopMessage =
   | CoopStartPlanningMessage
-  | CoopJoinPlanningMessage
-  | CoopProposeCompanyMessage
+  | CoopSimpleJoinPlanningMessage
+  | CoopGatheringJoinPlanningMessage
+  | CoopProposeOwnTravelMessage
   | CoopStartNegotiationMessage
   | CoopNegotiationBidMessage
   | CoopFinishNegotiationMessage
@@ -168,12 +179,14 @@ export type IncomingCoopMessage =
 
 export enum OutcomingCoopMessageType {
   StartPlanning = 'coop/start_planning',
-  FindCompany = 'coop/find_company',
-  StopFinding = 'coop/stop_finding',
-  JoinPlanning = 'coop/join_planning',
-  JoinPlanningAck = 'coop/join_planning/ack',
-  ProposeCompany = 'coop/propose_company',
-  ProposeCompanyAck = 'coop/propose_company/ack',
+  AdvertisePlanningStart = 'coop/advertise_planning/start',
+  AdvertisePlanningStop = 'coop/advertise_planning/stop',
+  SimpleJoinPlanning = 'coop/join_planning/simple',
+  SimpleJoinPlanningAck = 'coop/join_planning/simple/ack',
+  GatheringJoinPlanning = 'coop/join_planning/gathering',
+  GatheringJoinPlanningAck = 'coop/join_planning/gathering/ack',
+  ProposeOwnTravel = 'coop/propose_own_travel',
+  ProposeOwnTravelAck = 'coop/propose_own_travel/ack',
   ResourceDecide = 'coop/resource_decide',
   ResourceDecideAck = 'coop/resource_decide/ack',
   CancelCoop = 'coop/cancel_coop',
@@ -187,33 +200,43 @@ export interface StartPlanningMessage {
   travelName: string
 }
 
-export interface FindCompanyMessage {
-  type: OutcomingCoopMessageType.FindCompany
+export interface AdvertisePlanningStart {
+  type: OutcomingCoopMessageType.AdvertisePlanningStart
   travelName: string
 }
 
-export interface StopFindingMessage {
-  type: OutcomingCoopMessageType.StopFinding
+export interface AdvertisePlanningStop {
+  type: OutcomingCoopMessageType.AdvertisePlanningStop
 }
 
-export interface JoinPlanningMessage {
-  type: OutcomingCoopMessageType.JoinPlanning
+export interface SimpleJoinPlanningMessage {
+  type: OutcomingCoopMessageType.SimpleJoinPlanning
   ownerId: string
 }
 
-export interface JoinPlanningAckMessage {
-  type: OutcomingCoopMessageType.JoinPlanningAck
+export interface SimpleJoinPlanningAckMessage {
+  type: OutcomingCoopMessageType.SimpleJoinPlanningAck
   guestId: string
 }
 
-export interface ProposeCompanyMessage {
-  type: OutcomingCoopMessageType.ProposeCompany
+export interface GatheringJoinPlanningMessage {
+  type: OutcomingCoopMessageType.GatheringJoinPlanning
+  ownerId: string
+}
+
+export interface GatheringJoinPlanningAckMessage {
+  type: OutcomingCoopMessageType.GatheringJoinPlanningAck
+  otherOwnerId: string
+}
+
+export interface ProposeOwnTravelMessage {
+  type: OutcomingCoopMessageType.ProposeOwnTravel
   travelName: string
   guestId: string
 }
 
-export interface ProposeCompanyAckMessage {
-  type: OutcomingCoopMessageType.ProposeCompanyAck
+export interface ProposeOwnTravelAckMessage {
+  type: OutcomingCoopMessageType.ProposeOwnTravelAck
   travelName: string
   ownerId: string
 }
@@ -250,12 +273,14 @@ export interface StartSimpleTravelMessage {
 
 export type OutcomingCoopMessage =
   | StartPlanningMessage
-  | FindCompanyMessage
-  | StopFindingMessage
-  | JoinPlanningMessage
-  | JoinPlanningAckMessage
-  | ProposeCompanyMessage
-  | ProposeCompanyAckMessage
+  | AdvertisePlanningStart
+  | AdvertisePlanningStop
+  | SimpleJoinPlanningMessage
+  | SimpleJoinPlanningAckMessage
+  | GatheringJoinPlanningMessage
+  | GatheringJoinPlanningAckMessage
+  | ProposeOwnTravelMessage
+  | ProposeOwnTravelAckMessage
   | ResourceDecideMessage
   | ResourceDecideAckMessage
   | CancelCoopMessage
