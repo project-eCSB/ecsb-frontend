@@ -32,9 +32,11 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopStartPlanning:
         return { senderId: parsed.senderId, message: parsed.message }
-      case IncomingCoopMessageType.CoopJoinPlanning:
+      case IncomingCoopMessageType.CoopSimpleJoinPlanning:
         return { senderId: parsed.senderId, message: parsed.message }
-      case IncomingCoopMessageType.CoopProposeCompany:
+      case IncomingCoopMessageType.CoopGatheringJoinPlanning:
+        return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopProposeOwnTravel:
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopStartNegotiation:
         return { senderId: parsed.senderId, message: parsed.message }
