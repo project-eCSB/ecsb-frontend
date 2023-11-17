@@ -8,21 +8,21 @@ export interface CoopBid {
 }
 
 export enum IncomingCoopMessageType {
-  CoopStartPlanning = 'coop/system/start_planning',
+  CoopStartPlanning = 'coop/system/start_planning', // done
   CoopSimpleJoinPlanning = 'coop/system/join_planning/simple',
   CoopGatheringJoinPlanning = 'coop/system/join_planning/gathering',
   CoopProposeOwnTravel = 'coop/system/propose_own_travel',
   CoopStartNegotiation = 'coop/system/negotiation/start',
   CoopNegotiationBid = 'coop/system/negotiation/bid',
   CoopFinishNegotiation = 'coop/system/negotiation/finish',
-  CoopResourceChange = 'coop/system/resource_change',
+  CoopResourceChange = 'coop/system/resource_change', // done
   CoopWaitForTravel = 'coop/system/travel_ready/wait',
-  CoopGoToTravel = 'coop/system/travel_ready/go',
-  CoopTravelAccept = 'coop/system/travel/accept',
-  CoopTravelDeny = 'coop/system/travel/deny',
+  CoopGoToTravel = 'coop/system/travel_ready/go', // done
+  CoopTravelAccept = 'coop/system/travel/accept', // done
+  CoopTravelDeny = 'coop/system/travel/deny', // done
   CoopFinish = 'coop/system/finish',
   CoopCancel = 'coop/system/cancel_coop',
-  CoopCancelPlanning = 'coop/system/cancel_planning',
+  CoopCancelPlanning = 'coop/system/cancel_planning', // done
 }
 
 export interface CoopStartPlanningMessage {
@@ -178,9 +178,9 @@ export type IncomingCoopMessage =
   | CoopCancelPlanningMessage
 
 export enum OutcomingCoopMessageType {
-  StartPlanning = 'coop/start_planning',
-  AdvertisePlanningStart = 'coop/advertise_planning/start',
-  AdvertisePlanningStop = 'coop/advertise_planning/stop',
+  StartPlanning = 'coop/start_planning', // done
+  AdvertisePlanningStart = 'coop/advertise_planning/start', // done
+  AdvertisePlanningStop = 'coop/advertise_planning/stop', // done
   SimpleJoinPlanning = 'coop/join_planning/simple',
   SimpleJoinPlanningAck = 'coop/join_planning/simple/ack',
   GatheringJoinPlanning = 'coop/join_planning/gathering',
@@ -190,7 +190,7 @@ export enum OutcomingCoopMessageType {
   ResourceDecide = 'coop/resource_decide',
   ResourceDecideAck = 'coop/resource_decide/ack',
   CancelCoop = 'coop/cancel_coop',
-  CancelPlanning = 'coop/cancel_planning',
+  CancelPlanning = 'coop/cancel_planning', // done
   StartPlanningTravel = 'coop/start_planning_travel',
   StartSimpleTravel = 'coop/start_simple_travel', // done
 }

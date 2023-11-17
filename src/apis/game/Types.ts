@@ -70,20 +70,22 @@ export interface GameSettingsResource {
   value: number
 }
 
+export interface Travel {
+  key: number
+  value: {
+    name: string
+    time: number | null
+    moneyRange: {
+      from: number
+      to: number
+    }
+    resources: GameSettingsResource[]
+  }
+}
+
 export interface GameSettingsTravels {
   key: string
-  value: {
-    key: number
-    value: {
-      name: string
-      time: number | null
-      moneyRange: {
-        from: number
-        to: number
-      }
-      resources: GameSettingsResource[]
-    }
-  }[]
+  value: Travel[]
 }
 
 export interface AdminGameSettingsResponse {

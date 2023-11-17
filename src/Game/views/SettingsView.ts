@@ -131,8 +131,8 @@ export class SettingsView {
   }
 
   close(): void {
-    window.document.body.removeChild(this.settingsWrapper)
-    window.document.body.removeChild(this.settingsContainerWrapper)
+    document.getElementById(SettingsView.settingsWrapperID)?.remove()
+    document.getElementById(SettingsView.settingsContainerWrapperID)?.remove()
   }
 
   permanentAdsSetting(): boolean {

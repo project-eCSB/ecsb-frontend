@@ -1,5 +1,10 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import {
+  RESOURCE_ICON_SCALE,
+  RESOURCE_ICON_WIDTH,
+  SPACE_PRESS_ACTION_PREFIX,
+  getResourceMapping,
+} from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
@@ -118,8 +123,10 @@ export class WorkshopView {
       this.scene.workshopView = null
       this.scene.movingEnabled = true
 
-      this.scene.interactionView.setText('rozpocząć wytwarzanie...')
-      this.scene.interactionView.show()
+      this.scene.informationActionPopup.setText(
+        `${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`,
+      )
+      this.scene.informationActionPopup.show()
       this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     })
     const XIcon = document.createElement('i')

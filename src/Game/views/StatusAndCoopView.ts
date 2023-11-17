@@ -1,8 +1,17 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
 import { type Equipment } from '../../services/game/Types'
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_SCALE_SMALL, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import {
+  RESOURCE_ICON_SCALE,
+  RESOURCE_ICON_SCALE_SMALL,
+  RESOURCE_ICON_WIDTH,
+  getResourceMapping,
+} from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { ImageCropper } from '../tools/ImageCropper'
+import {
+  OutcomingCoopMessageType,
+  sendCoopMessage,
+} from '../webSocketMessage/chat/CoopMessageHandler'
 import {
   OutcomingTradeMessageType,
   sendTradeMessage,
@@ -15,6 +24,12 @@ export class StatusAndCoopView {
   public static readonly coopButtonWrapperID = 'coopButtonWrapper'
   public static readonly statusAndCoopConatinerID = 'statusAndCoopContainer'
   public static readonly advertisementContainerID = 'advertisementContainer'
+  public static readonly coopContainerID = 'coopContainer'
+
+  private readonly scene: Scene
+  private readonly cropper: ImageCropper
+  private readonly url: string
+  private readonly resRepresentation: ClassResourceRepresentation[]
 
   private readonly statusButton: HTMLDivElement
   private readonly statusButtonWrapper: HTMLDivElement
@@ -22,6 +37,7 @@ export class StatusAndCoopView {
   private readonly coopButtonWrapper: HTMLDivElement
   private readonly container: HTMLDivElement
   private readonly advertisementContainer: HTMLDivElement
+  private readonly coopContainer: HTMLDivElement
 
   constructor(
     equipment: Equipment,
@@ -29,8 +45,11 @@ export class StatusAndCoopView {
     resRepresentation: ClassResourceRepresentation[],
     scene: Scene,
   ) {
-    const cropper = new ImageCropper()
+    this.cropper = new ImageCropper()
+    this.url = url
+    this.resRepresentation = resRepresentation
 
+    this.scene = scene
     this.advertisementContainer = document.createElement('div')
     this.advertisementContainer.id = StatusAndCoopView.advertisementContainerID
     equipment.resources.forEach((element) => {
@@ -45,26 +64,26 @@ export class StatusAndCoopView {
       giveImage.src = '/assets/giveCustomIcon.png'
       giveImage.style.width = '30px'
       buttonGive.appendChild(giveImage)
-      const resourceGiveImg = cropper.crop(
+      const resourceGiveImg = this.cropper.crop(
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE_SMALL,
-        url,
-        resRepresentation.length,
-        getResourceMapping(resRepresentation)(element.key),
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(element.key),
         false,
       )
       buttonGive.appendChild(resourceGiveImg)
 
       const giveImageAdvertisement = document.createElement('img')
       giveImageAdvertisement.src = '/assets/giveCustomIcon.png'
-      const resourceGiveImgAdvertisement = cropper.crop(
+      const resourceGiveImgAdvertisement = this.cropper.crop(
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE,
-        url,
-        resRepresentation.length,
-        getResourceMapping(resRepresentation)(element.key),
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(element.key),
         false,
       )
       buttonGive.addEventListener('click', () => {
@@ -108,26 +127,26 @@ export class StatusAndCoopView {
       receiveImage.src = '/assets/receiveCustomIcon.png'
       receiveImage.style.width = '30px'
       buttonReceive.appendChild(receiveImage)
-      const resourceReceiveImg = cropper.crop(
+      const resourceReceiveImg = this.cropper.crop(
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE_SMALL,
-        url,
-        resRepresentation.length,
-        getResourceMapping(resRepresentation)(element.key),
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(element.key),
         false,
       )
       buttonReceive.appendChild(resourceReceiveImg)
 
       const receiveImageAdvertisement = document.createElement('img')
       receiveImageAdvertisement.src = '/assets/receiveCustomIcon.png'
-      const resourceReceiveImgAdvertisement = cropper.crop(
+      const resourceReceiveImgAdvertisement = this.cropper.crop(
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_WIDTH,
         RESOURCE_ICON_SCALE,
-        url,
-        resRepresentation.length,
-        getResourceMapping(resRepresentation)(element.key),
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(element.key),
         false,
       )
       buttonReceive.addEventListener('click', () => {
@@ -196,6 +215,7 @@ export class StatusAndCoopView {
 
       if (iconStatus.className === 'fa fa-caret-up') {
         iconCoop.className = 'fa fa-caret-down'
+        this.coopContainer.style.display = 'none'
       }
     })
     this.statusButton.appendChild(spanStatus)
@@ -203,6 +223,10 @@ export class StatusAndCoopView {
 
     this.statusButtonWrapper = document.createElement('div')
     this.statusButtonWrapper.id = StatusAndCoopView.statusButtonWrapperID
+
+    this.coopContainer = document.createElement('div')
+    this.coopContainer.id = StatusAndCoopView.coopContainerID
+    this.coopContainer.style.display = 'none'
 
     this.coopButton = document.createElement('div')
     this.coopButton.addEventListener('click', () => {
@@ -228,6 +252,9 @@ export class StatusAndCoopView {
       iconCoop.className =
         iconCoop.className === 'fa fa-caret-up' ? 'fa fa-caret-down' : 'fa fa-caret-up'
 
+      this.coopContainer.style.display =
+        this.coopContainer.style.display === 'none' ? 'block' : 'none'
+
       if (iconCoop.className === 'fa fa-caret-up') {
         iconStatus.className = 'fa fa-caret-down'
         this.advertisementContainer.style.display = 'none'
@@ -247,6 +274,505 @@ export class StatusAndCoopView {
     this.container.appendChild(this.statusButtonWrapper)
     this.container.appendChild(this.advertisementContainer)
     this.container.appendChild(this.coopButtonWrapper)
+    this.container.appendChild(this.coopContainer)
+  }
+
+  public updateCoopView(): void {
+    while (this.coopContainer.firstChild) {
+      this.coopContainer.removeChild(this.coopContainer.firstChild)
+    }
+
+    if (!this.scene.plannedTravel) return
+
+    if (this.scene.plannedTravel.isSingle) {
+      this.fillCoopViewSingleTravel()
+    } else {
+      this.fillCoopViewMultiTravel()
+    }
+  }
+
+  private fillCoopViewSingleTravel(): void {
+    if (!this.scene.plannedTravel) return
+
+    const coopDialogExtraWrapper = document.createElement('div')
+    coopDialogExtraWrapper.className = 'coopDialogExtraWrapper'
+    const coopDialogWrapper = document.createElement('div')
+    coopDialogWrapper.className = 'coopDialogWrapper'
+    const coopDialog = document.createElement('div')
+    coopDialog.className = 'coopDialog singleCoopDialog'
+
+    // Header
+    const coopDialogHeader = document.createElement('div')
+    coopDialogHeader.id = 'singleCoopDialogHeader'
+
+    const coopDialogTownName = document.createElement('span')
+    coopDialogTownName.innerText = this.scene.plannedTravel.travel.value.name
+    const successIcon = document.createElement('img')
+    successIcon.id = 'coopDialogSuccessIcon'
+    successIcon.src = '/assets/successCustomIcon.png'
+    successIcon.style.width = '15px'
+
+    coopDialogHeader.appendChild(coopDialogTownName)
+    coopDialogHeader.appendChild(successIcon)
+
+    coopDialog.appendChild(coopDialogHeader)
+    coopDialog.appendChild(document.createElement('hr'))
+
+    // Resources
+    const coopDialogResources = document.createElement('div')
+    coopDialogResources.id = 'singleCoopDialogResources'
+    let hasAllResources = true
+    this.scene.plannedTravel.playerRequiredResources.resources.forEach((resource) => {
+      const coopDialogResourcesItem = document.createElement('div')
+
+      const itemImage = this.cropper.crop(
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_SCALE_SMALL,
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(resource.key),
+        false,
+      )
+
+      const playerResourceValue = this.scene.plannedTravel!.playerResources.resources.find(
+        (r) => r.key === resource.key,
+      )!.value
+      const playerRequiredValue = resource.value
+
+      if (playerResourceValue < playerRequiredValue) hasAllResources = false
+
+      const itemValueWrapper = document.createElement('div')
+      const itemValue = document.createElement('h4')
+      itemValue.innerText = `${Math.min(playerResourceValue, playerRequiredValue)}/${
+        resource.value
+      }`
+
+      itemValueWrapper.appendChild(itemValue)
+
+      coopDialogResourcesItem.appendChild(itemImage)
+      coopDialogResourcesItem.appendChild(itemValueWrapper)
+
+      coopDialogResources.appendChild(coopDialogResourcesItem)
+    })
+    if (hasAllResources) {
+      successIcon.style.visibility = 'visible'
+    } else {
+      successIcon.style.visibility = 'hidden'
+    }
+
+    const coopDialogResourcesTimes = document.createElement('div')
+    if (this.scene.plannedTravel.playerRequiredResources.time <= 2) {
+      for (let i = 0; i < this.scene.plannedTravel.playerRequiredResources.time; i++) {
+        const timeIconExtraWrapper = document.createElement('div')
+        const timeIconWrapper = document.createElement('div')
+        const timeIcon = document.createElement('img')
+        timeIcon.src = '/assets/timeCustomIcon.png'
+        timeIcon.style.width = '20px'
+        timeIcon.style.height = '20px'
+        timeIconWrapper.appendChild(timeIcon)
+        timeIconExtraWrapper.appendChild(timeIconWrapper)
+        coopDialogResourcesTimes.appendChild(timeIconExtraWrapper)
+      }
+    } else {
+      const timeIconExtraWrapper = document.createElement('div')
+      const timeIconWrapper = document.createElement('div')
+      const timeIcon = document.createElement('img')
+      timeIcon.src = '/assets/timeCustomIcon.png'
+      timeIcon.style.width = '20px'
+      timeIcon.style.height = '20px'
+      const timeValue = document.createElement('h4')
+      timeValue.innerText = `${this.scene.plannedTravel.playerRequiredResources.time}`
+      timeIconWrapper.appendChild(timeIcon)
+      timeIconWrapper.appendChild(timeValue)
+      timeIconExtraWrapper.appendChild(timeIconWrapper)
+
+      coopDialogResourcesTimes.appendChild(timeIconExtraWrapper)
+    }
+    coopDialogResources.appendChild(coopDialogResourcesTimes)
+
+    coopDialog.appendChild(coopDialogResources)
+    coopDialog.appendChild(document.createElement('hr'))
+
+    // Buttons
+    const coopDialogButtons = document.createElement('div')
+    coopDialogButtons.id = 'singleCoopDialogButtons'
+
+    // Buttons - Resign
+    const coopDialogButtonsResignExtraWrapper = document.createElement('div')
+    coopDialogButtonsResignExtraWrapper.id = 'coopDialogButtonsResignExtraWrapper'
+    coopDialogButtonsResignExtraWrapper.className = 'coopDialogButtonsResignExtraWrapperEnabled'
+
+    const coopDialogButtonsResignWrapper = document.createElement('div')
+    coopDialogButtonsResignWrapper.id = 'coopDialogButtonsResignWrapper'
+    coopDialogButtonsResignWrapper.className = 'coopDialogButtonsResignWrapperEnabled'
+
+    const coopDialogButtonsResign = document.createElement('button')
+    coopDialogButtonsResign.id = 'coopDialogButtonsResign'
+    coopDialogButtonsResign.className = 'coopDialogButtonsResignEnabled'
+    coopDialogButtonsResign.innerText = 'Zrezygnuj'
+    coopDialogButtonsResign.addEventListener('click', () => {
+      coopDialogButtonsResign.disabled = true
+
+      sendCoopMessage(this.scene.chatWs, {
+        type: OutcomingCoopMessageType.CancelPlanning,
+      })
+
+      coopDialogButtonsResignExtraWrapper.className =
+        coopDialogButtonsResignExtraWrapper.className ===
+        'coopDialogButtonsResignExtraWrapperEnabledActive'
+          ? 'coopDialogButtonsResignExtraWrapperEnabled'
+          : 'coopDialogButtonsResignExtraWrapperEnabledActive'
+      coopDialogButtonsResignWrapper.className =
+        coopDialogButtonsResignWrapper.className === 'coopDialogButtonsResignWrapperEnabledActive'
+          ? 'coopDialogButtonsResignWrapperEnabled'
+          : 'coopDialogButtonsResignWrapperEnabledActive'
+      coopDialogButtonsResign.className =
+        coopDialogButtonsResign.className === 'coopDialogButtonsResignEnabledActive'
+          ? 'coopDialogButtonsResignEnabled'
+          : 'coopDialogButtonsResignEnabledActive'
+    })
+
+    coopDialogButtonsResignWrapper.appendChild(coopDialogButtonsResign)
+    coopDialogButtonsResignExtraWrapper.appendChild(coopDialogButtonsResignWrapper)
+
+    coopDialogButtons.appendChild(coopDialogButtonsResignExtraWrapper)
+
+    // Buttons - Cooperate
+    const coopDialogButtonsCooperateExtraWrapper = document.createElement('div')
+    coopDialogButtonsCooperateExtraWrapper.id = 'coopDialogButtonsCooperateExtraWrapper'
+    coopDialogButtonsCooperateExtraWrapper.className =
+      'coopDialogButtonsCooperateExtraWrapperEnabled'
+
+    const coopDialogButtonsCooperateWrapper = document.createElement('div')
+    coopDialogButtonsCooperateWrapper.id = 'coopDialogButtonsCooperateWrapper'
+    coopDialogButtonsCooperateWrapper.className = 'coopDialogButtonsCooperateWrapperEnabled'
+
+    const coopDialogButtonsCooperate = document.createElement('button')
+    coopDialogButtonsCooperate.id = 'coopDialogButtonsCooperate'
+    coopDialogButtonsCooperate.className = 'coopDialogButtonsCooperateEnabled'
+    const cooperateIcon = document.createElement('img')
+    cooperateIcon.src = '/assets/coopCustomIcon.png'
+    cooperateIcon.style.width = '25px'
+    coopDialogButtonsCooperate.appendChild(cooperateIcon)
+    coopDialogButtonsCooperate.addEventListener('click', () => {
+      this.scene.plannedTravel!.wantToCooperate = !this.scene.plannedTravel!.wantToCooperate
+
+      if (this.scene.plannedTravel!.wantToCooperate) {
+        sendCoopMessage(this.scene.chatWs, {
+          type: OutcomingCoopMessageType.AdvertisePlanningStart,
+          travelName: this.scene.plannedTravel!.travel.value.name,
+        })
+        this.scene.advertisementInfoBuilder.addBubbleForCoop(
+          this.scene.plannedTravel!.travel.value.name,
+          this.scene.playerId,
+        )
+        this.scene.advertisementInfoBuilder.setMarginAndVisibility(this.scene.playerId)
+        this.scene.playerAdvertisedTravel[this.scene.playerId] =
+          this.scene.plannedTravel!.travel.value.name
+      } else {
+        sendCoopMessage(this.scene.chatWs, {
+          type: OutcomingCoopMessageType.AdvertisePlanningStop,
+        })
+        this.scene.advertisementInfoBuilder.addBubbleForCoop('', this.scene.playerId)
+        this.scene.advertisementInfoBuilder.setMarginAndVisibility(this.scene.playerId)
+        delete this.scene.playerAdvertisedTravel[this.scene.playerId]
+      }
+
+      coopDialogButtonsCooperateExtraWrapper.className =
+        coopDialogButtonsCooperateExtraWrapper.className ===
+        'coopDialogButtonsCooperateExtraWrapperEnabledActive'
+          ? 'coopDialogButtonsCooperateExtraWrapperEnabled'
+          : 'coopDialogButtonsCooperateExtraWrapperEnabledActive'
+      coopDialogButtonsCooperateWrapper.className =
+        coopDialogButtonsCooperateWrapper.className ===
+        'coopDialogButtonsCooperateWrapperEnabledActive'
+          ? 'coopDialogButtonsCooperateWrapperEnabled'
+          : 'coopDialogButtonsCooperateWrapperEnabledActive'
+      coopDialogButtonsCooperate.className =
+        coopDialogButtonsCooperate.className === 'coopDialogButtonsCooperateEnabledActive'
+          ? 'coopDialogButtonsCooperateEnabled'
+          : 'coopDialogButtonsCooperateEnabledActive'
+    })
+
+    coopDialogButtonsCooperateWrapper.appendChild(coopDialogButtonsCooperate)
+    coopDialogButtonsCooperateExtraWrapper.appendChild(coopDialogButtonsCooperateWrapper)
+
+    coopDialogButtons.appendChild(coopDialogButtonsCooperateExtraWrapper)
+
+    coopDialog.appendChild(coopDialogButtons)
+
+    coopDialogWrapper.appendChild(coopDialog)
+    coopDialogExtraWrapper.appendChild(coopDialogWrapper)
+
+    this.coopContainer.appendChild(coopDialogExtraWrapper)
+  }
+
+  private fillCoopViewMultiTravel(): void {
+    if (!this.scene.plannedTravel) return
+
+    const coopDialogExtraWrapper = document.createElement('div')
+    coopDialogExtraWrapper.className = 'coopDialogExtraWrapper'
+    const coopDialogWrapper = document.createElement('div')
+    coopDialogWrapper.className = 'coopDialogWrapper'
+    const coopDialog = document.createElement('div')
+    coopDialog.className = 'coopDialog multiCoopDialog'
+
+    // Header
+    const coopDialogHeader = document.createElement('div')
+    coopDialogHeader.id = 'multiCoopDialogHeader'
+
+    const coopDialogHeaderLeft = document.createElement('div')
+    const coopDialogTownName = document.createElement('span')
+    coopDialogTownName.innerText = this.scene.plannedTravel.travel.value.name
+    const successIcon = document.createElement('img')
+    successIcon.id = 'coopDialogSuccessIcon'
+    successIcon.src = '/assets/successCustomIcon.png'
+    successIcon.style.width = '15px'
+    coopDialogHeaderLeft.appendChild(coopDialogTownName)
+    coopDialogHeaderLeft.appendChild(successIcon)
+
+    const coopDialogHeaderRight = document.createElement('div')
+    const cooperateHeaderIcon = document.createElement('img')
+    cooperateHeaderIcon.src = '/assets/coopCustomIcon.png'
+    cooperateHeaderIcon.style.width = '20px'
+    const partnerName = document.createElement('span')
+    partnerName.innerText = this.scene.plannedTravel.partner!
+
+    coopDialogHeaderRight.appendChild(cooperateHeaderIcon)
+    coopDialogHeaderRight.appendChild(partnerName)
+
+    coopDialogHeader.appendChild(coopDialogHeaderLeft)
+    coopDialogHeader.appendChild(coopDialogHeaderRight)
+
+    coopDialog.appendChild(coopDialogHeader)
+    coopDialog.appendChild(document.createElement('hr'))
+
+    // PlayerResources
+    const coopDialogPlayerName = document.createElement('span')
+    coopDialogPlayerName.className = 'multiCoopDialogPlayerName'
+    coopDialogPlayerName.innerText = this.scene.playerId
+    coopDialog.appendChild(coopDialogPlayerName)
+
+    const coopDialogPlayerResources = document.createElement('div')
+    coopDialogPlayerResources.className = 'multiCoopDialogResources'
+
+    let playerHasAllResources = true
+    this.scene.plannedTravel.playerRequiredResources.resources.forEach((resource) => {
+      const coopDialogResourcesItem = document.createElement('div')
+
+      const itemImage = this.cropper.crop(
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_SCALE_SMALL,
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(resource.key),
+        false,
+      )
+
+      const playerResourceValue = this.scene.plannedTravel!.playerResources.resources.find(
+        (r) => r.key === resource.key,
+      )!.value
+      const playerRequiredValue = resource.value
+
+      if (playerResourceValue < playerRequiredValue) playerHasAllResources = false
+
+      const itemValueWrapper = document.createElement('div')
+      const itemValue = document.createElement('h4')
+      itemValue.innerText = `${Math.min(playerResourceValue, playerRequiredValue)}/${
+        resource.value
+      }`
+
+      itemValueWrapper.appendChild(itemValue)
+
+      coopDialogResourcesItem.appendChild(itemImage)
+      coopDialogResourcesItem.appendChild(itemValueWrapper)
+
+      coopDialogPlayerResources.appendChild(coopDialogResourcesItem)
+    })
+
+    if (this.scene.plannedTravel.playerIsRunning) {
+      const coopDialogResourcesTimes = document.createElement('div')
+      if (this.scene.plannedTravel.playerRequiredResources.time <= 2) {
+        for (let i = 0; i < this.scene.plannedTravel.playerRequiredResources.time; i++) {
+          const timeIconExtraWrapper = document.createElement('div')
+          const timeIconWrapper = document.createElement('div')
+          const timeIcon = document.createElement('img')
+          timeIcon.src = '/assets/timeCustomIcon.png'
+          timeIcon.style.width = '20px'
+          timeIcon.style.height = '20px'
+          timeIconWrapper.appendChild(timeIcon)
+          timeIconExtraWrapper.appendChild(timeIconWrapper)
+          coopDialogResourcesTimes.appendChild(timeIconExtraWrapper)
+        }
+      } else {
+        const timeIconExtraWrapper = document.createElement('div')
+        const timeIconWrapper = document.createElement('div')
+        const timeIcon = document.createElement('img')
+        timeIcon.src = '/assets/timeCustomIcon.png'
+        timeIcon.style.width = '20px'
+        timeIcon.style.height = '20px'
+        const timeValue = document.createElement('h4')
+        timeValue.innerText = `${this.scene.plannedTravel.playerRequiredResources.time}`
+        timeIconWrapper.appendChild(timeIcon)
+        timeIconWrapper.appendChild(timeValue)
+        timeIconExtraWrapper.appendChild(timeIconWrapper)
+
+        coopDialogResourcesTimes.appendChild(timeIconExtraWrapper)
+      }
+      coopDialogPlayerResources.appendChild(coopDialogResourcesTimes)
+    }
+
+    coopDialog.appendChild(coopDialogPlayerResources)
+    coopDialog.appendChild(document.createElement('hr'))
+
+    // PartnerResources
+    const coopDialogPartnerName = document.createElement('span')
+    coopDialogPartnerName.className = 'multiCoopDialogPlayerName'
+    coopDialogPartnerName.innerText = this.scene.plannedTravel.partner!
+    coopDialog.appendChild(coopDialogPartnerName)
+
+    const coopDialogPartnerResources = document.createElement('div')
+    coopDialogPartnerResources.className = 'multiCoopDialogResources'
+
+    let partnerHasAllResources = true
+    this.scene.plannedTravel.partnerRequiredResources!.resources.forEach((resource) => {
+      const coopDialogResourcesItem = document.createElement('div')
+
+      const itemImage = this.cropper.crop(
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_WIDTH,
+        RESOURCE_ICON_SCALE_SMALL,
+        this.url,
+        this.resRepresentation.length,
+        getResourceMapping(this.resRepresentation)(resource.key),
+        false,
+      )
+
+      const partnerResourceValue = this.scene.plannedTravel!.partnerResources!.resources.find(
+        (r) => r.key === resource.key,
+      )!.value
+      const partnerRequiredValue = resource.value
+
+      if (partnerResourceValue < partnerRequiredValue) partnerHasAllResources = false
+
+      const itemValueWrapper = document.createElement('div')
+      const itemValue = document.createElement('h4')
+      itemValue.innerText = `${Math.min(partnerResourceValue, partnerRequiredValue)}/${
+        resource.value
+      }`
+
+      itemValueWrapper.appendChild(itemValue)
+
+      coopDialogResourcesItem.appendChild(itemImage)
+      coopDialogResourcesItem.appendChild(itemValueWrapper)
+
+      coopDialogPartnerResources.appendChild(coopDialogResourcesItem)
+    })
+
+    if (!this.scene.plannedTravel.playerIsRunning) {
+      const coopDialogResourcesTimes = document.createElement('div')
+      if (this.scene.plannedTravel.partnerRequiredResources!.time <= 2) {
+        for (let i = 0; i < this.scene.plannedTravel.partnerRequiredResources!.time; i++) {
+          const timeIconExtraWrapper = document.createElement('div')
+          const timeIconWrapper = document.createElement('div')
+          const timeIcon = document.createElement('img')
+          timeIcon.src = '/assets/timeCustomIcon.png'
+          timeIcon.style.width = '20px'
+          timeIcon.style.height = '20px'
+          timeIconWrapper.appendChild(timeIcon)
+          timeIconExtraWrapper.appendChild(timeIconWrapper)
+          coopDialogResourcesTimes.appendChild(timeIconExtraWrapper)
+        }
+      } else {
+        const timeIconExtraWrapper = document.createElement('div')
+        const timeIconWrapper = document.createElement('div')
+        const timeIcon = document.createElement('img')
+        timeIcon.src = '/assets/timeCustomIcon.png'
+        timeIcon.style.width = '20px'
+        timeIcon.style.height = '20px'
+        const timeValue = document.createElement('h4')
+        timeValue.innerText = `${this.scene.plannedTravel.partnerRequiredResources!.time}`
+        timeIconWrapper.appendChild(timeIcon)
+        timeIconWrapper.appendChild(timeValue)
+        timeIconExtraWrapper.appendChild(timeIconWrapper)
+
+        coopDialogResourcesTimes.appendChild(timeIconExtraWrapper)
+      }
+      coopDialogPartnerResources.appendChild(coopDialogResourcesTimes)
+    }
+
+    coopDialog.appendChild(coopDialogPartnerResources)
+    coopDialog.appendChild(document.createElement('hr'))
+
+    if (playerHasAllResources && partnerHasAllResources) {
+      successIcon.style.visibility = 'visible'
+    } else {
+      successIcon.style.visibility = 'hidden'
+    }
+
+    // Buttons
+    const coopDialogButtons = document.createElement('div')
+    coopDialogButtons.id = 'multiCoopDialogButtons'
+
+    // Buttons - Break
+    const coopDialogButtonsBreakExtraWrapper = document.createElement('div')
+    coopDialogButtonsBreakExtraWrapper.id = 'coopDialogButtonsBreakExtraWrapper'
+    coopDialogButtonsBreakExtraWrapper.className = 'coopDialogButtonsBreakExtraWrapperEnabled'
+
+    const coopDialogButtonsBreakWrapper = document.createElement('div')
+    coopDialogButtonsBreakWrapper.id = 'coopDialogButtonsBreakWrapper'
+    coopDialogButtonsBreakWrapper.className = 'coopDialogButtonsBreakWrapperEnabled'
+
+    const coopDialogButtonsBreak = document.createElement('button')
+    coopDialogButtonsBreak.id = 'coopDialogButtonsBreak'
+    coopDialogButtonsBreak.className = 'coopDialogButtonsBreakEnabled'
+    coopDialogButtonsBreak.innerText = 'Zerwij'
+    coopDialogButtonsBreak.addEventListener('click', () => {
+      coopDialogButtonsBreak.disabled = true
+
+      sendCoopMessage(this.scene.chatWs, {
+        type: OutcomingCoopMessageType.CancelCoop,
+      })
+
+      coopDialogButtonsBreakExtraWrapper.className =
+        coopDialogButtonsBreakExtraWrapper.className ===
+        'coopDialogButtonsBreakExtraWrapperEnabledActive'
+          ? 'coopDialogButtonsBreakExtraWrapperEnabled'
+          : 'coopDialogButtonsBreakExtraWrapperEnabledActive'
+      coopDialogButtonsBreakWrapper.className =
+        coopDialogButtonsBreakWrapper.className === 'coopDialogButtonsBreakWrapperEnabledActive'
+          ? 'coopDialogButtonsBreakWrapperEnabled'
+          : 'coopDialogButtonsBreakWrapperEnabledActive'
+      coopDialogButtonsBreak.className =
+        coopDialogButtonsBreak.className === 'coopDialogButtonsBreakEnabledActive'
+          ? 'coopDialogButtonsBreakEnabled'
+          : 'coopDialogButtonsBreakEnabledActive'
+    })
+
+    coopDialogButtonsBreakWrapper.appendChild(coopDialogButtonsBreak)
+    coopDialogButtonsBreakExtraWrapper.appendChild(coopDialogButtonsBreakWrapper)
+
+    coopDialogButtons.appendChild(coopDialogButtonsBreakExtraWrapper)
+
+    coopDialog.appendChild(coopDialogButtons)
+
+    coopDialogWrapper.appendChild(coopDialog)
+    coopDialogExtraWrapper.appendChild(coopDialogWrapper)
+
+    this.coopContainer.appendChild(coopDialogExtraWrapper)
+  }
+
+  public updateCoopSuccessIcon(success: boolean): void {
+    const icon = document.getElementById('coopDialogSuccessIcon')
+    if (!icon) return
+
+    if (success) {
+      icon.style.visibility = 'visible'
+    } else {
+      icon.style.visibility = 'hidden'
+    }
   }
 
   public show(): void {
@@ -254,6 +780,6 @@ export class StatusAndCoopView {
   }
 
   public close(): void {
-    window.document.body.removeChild(this.container)
+    document.getElementById(StatusAndCoopView.statusAndCoopConatinerID)?.remove()
   }
 }

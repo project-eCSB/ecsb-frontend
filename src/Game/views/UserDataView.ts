@@ -30,6 +30,6 @@ export class UserDataView {
   }
 
   public close(): void {
-    window.document.body.removeChild(this.userDataBoxWrapper)
+    document.getElementById(UserDataView.userDataBoxWrapperID)?.remove()
   }
 }
