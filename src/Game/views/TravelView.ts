@@ -22,6 +22,7 @@ export class TravelView {
   private readonly scene: Scene
   private readonly travelType: TravelType
   private selectedTravel: Travel | null
+  private readonly plannedTravel: Travel | null
   private readonly resourceURL: string
   private readonly resourceRepresentation: ClassResourceRepresentation[]
   private readonly cropper: ImageCropper
@@ -39,6 +40,8 @@ export class TravelView {
   private static readonly travelBoxButtonsContainerID = 'travelBoxButtonsContainer'
   private static readonly travelBoxPlanButtonID = 'travelBoxPlanButton'
   private static readonly travelBoxTravelButtonID = 'travelBoxTravelButton'
+
+  private static readonly travelWarningBoxID = 'travelWarningBox'
 
   private readonly travelBoxWrapper: HTMLDivElement
 
@@ -66,6 +69,7 @@ export class TravelView {
     this.scene = scene
     this.travelType = travelType
     this.selectedTravel = null
+    this.plannedTravel = scene.plannedTravel ? scene.plannedTravel.travel : null
     this.resourceURL = resourceURL
     this.resourceRepresentation = resourceRepresentation
     this.cropper = new ImageCropper()
@@ -148,9 +152,15 @@ export class TravelView {
     this.travelBoxContent = document.createElement('div')
     this.travelBoxContent.id = TravelView.travelBoxContentID
 
+    let correctGate = false
     this.scene.settings.travels.forEach((travel) => {
       if (travel.key === this.travelType) {
         travel.value.forEach((travelItem) => {
+          
+          if (travelItem.value.name === this.plannedTravel?.value.name) {
+            correctGate = true
+          }
+
           // Item
           const travelItemContainerWrapper = document.createElement('div')
           travelItemContainerWrapper.className = 'travelBoxContentItemWrapper'
@@ -222,6 +232,11 @@ export class TravelView {
             timeIconWrapper.appendChild(timeIcon)
             timeIconExtraWrapper.appendChild(timeIconWrapper)
             travelItemContentTimes.appendChild(timeIconExtraWrapper)
+
+            if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
+              timeIconWrapper.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
+              timeIcon.style.opacity = '0.4'
+            }
           }
           travelItemContentLeft.appendChild(travelItemContentTimes)
 
@@ -251,6 +266,12 @@ export class TravelView {
               itemContainer.appendChild(itemValueWrapper)
 
               travelItemContentResources.appendChild(itemContainer)
+
+              if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
+                itemValue.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
+                itemValue.style.color = 'rgba(0, 0, 0, 0.7)'
+                itemIcon.style.opacity = '0.4'
+              }
             }
           })
           travelItemContentLeft.appendChild(travelItemContentResources)
@@ -288,6 +309,28 @@ export class TravelView {
           travelItemContainerWrapper.appendChild(travelItemContainer)
 
           this.travelBoxContent.appendChild(travelItemContainerWrapper)
+
+          if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
+            travelItemCheckbox.disabled = true
+            travelItemCheckbox.style.cursor = 'auto'
+            travelItemCheckbox.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
+            travelItemCheckbox.style.borderColor = 'rgba(246, 220, 184, 0.4)'
+            travelItemContainer.style.backgroundColor = 'rgba(176, 156, 95, 0.40)'
+
+            travelItemTitle.style.color = 'rgba(0, 0, 0, 0.7)'
+
+            travelItemContentLeftHeader.style.color = 'rgba(0, 0, 0, 0.7)'
+
+            result.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
+            result.style.color = 'rgba(0, 0, 0, 0.7)'
+            moneyIcon.style.opacity = '0.4'
+            travelItemContentRightHeader.style.color = 'rgba(0, 0, 0, 0.7)'
+          }
+
+          if (this.plannedTravel && this.plannedTravel?.value.name === travelItem.value.name) {
+            travelItemCheckbox.style.display = 'none'
+            this.selectedTravel = travelItem
+          }
         })
       }
     })
@@ -376,6 +419,17 @@ export class TravelView {
 
     this.disablePlanButton()
     this.disableTravelButton()
+
+    if (this.plannedTravel && this.scene.plannedTravel && this.scene.plannedTravel.playerIsRunning && !this.scene.plannedTravel.playerIsRunning) {
+      this.setWarning(`Zgodnie z wynikiem negocjacji to twój partner powinien odbyć podróż do miasta ${this.plannedTravel.value.name}`)
+    } else if (this.plannedTravel && correctGate && this.isPlannedTravelReady()) {
+      this.setWarning("Możesz wybrać tylko wyprawę którą zaplanowałeś. Jeżeli chcesz zmienić kierunek, anuluj kartę aktualnej wyprawy i wejdź ponownie.")
+      this.enableTravelButton()
+    } else if (this.plannedTravel && correctGate) {
+      this.setWarning(`Jesteś w trakcie planowania podróży do miasta ${this.plannedTravel.value.name}, na którą nie uzbierałeś jeszcze wszystkich zasobów. Jeżeli chcesz pojechać w inną podróż, zrezygnuj z aktualnej.`)
+    } else if (this.plannedTravel) {
+      this.setWarning(`Jesteś w trakcie planowania podróży do miasta ${this.plannedTravel.value.name}. Jeżeli chcesz pojechać w inną podróż, zrezygnuj z aktualnej.`)
+    }
   }
 
   public disableTravelButton(): void {
@@ -447,5 +501,43 @@ export class TravelView {
     }
 
     this.scene.informationActionPopup.show()
+  }
+
+  private isPlannedTravelReady(): boolean {
+    if (this.scene.plannedTravel) {
+      for (const resource of this.scene.plannedTravel.playerRequiredResources.resources) {
+        const currResource = this.scene.plannedTravel.playerResources.resources.find(currentResource => currentResource.key === resource.key)!
+        if (resource.value > currResource.value) {
+          return false
+        }
+      }
+      if (this.scene.plannedTravel.playerRequiredResources.money > this.scene.plannedTravel.playerResources.money ||
+        this.scene.plannedTravel.playerRequiredResources.time > this.scene.plannedTravel.playerResources.time) {
+          return false
+      }
+      return true
+    }
+    return false
+  }
+
+  private setWarning(text: string): void {
+    const warningBox = document.createElement('div')
+    const warningText = document.createElement('h5')
+    warningText.innerHTML = text
+    const icon = document.createElement('i')
+    icon.className = 'fa fa-question-circle'
+    icon.ariaHidden = 'true'
+    icon.style.color = '#835211'
+    warningBox.appendChild(icon)
+    warningBox.appendChild(warningText)
+    warningBox.id = TravelView.travelWarningBoxID
+    const travels = this.travelBoxContent.childNodes.length
+    if (travels === 1) {
+      warningBox.style.maxWidth = '410px'
+    } else if (travels === 2) {
+      warningBox.style.maxWidth = '820px'
+    }
+    this.travelBoxContentWrapper.appendChild(document.createElement('hr'))
+    this.travelBoxContentWrapper.appendChild(warningBox)
   }
 }
