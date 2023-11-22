@@ -402,10 +402,19 @@ export class TravelView {
           ? 'travelBoxButtonsContainerButtonEnabled'
           : 'travelBoxButtonsContainerButtonEnabledActive'
 
-      sendCoopMessage(scene.chatWs, {
-        type: OutcomingCoopMessageType.StartSimpleTravel,
-        travelName: this.selectedTravel!.value.name,
-      })
+      if (this.plannedTravel && correctGate && this.isPlannedTravelReady()) {
+        sendCoopMessage(scene.chatWs, {
+          type: OutcomingCoopMessageType.StartPlannedTravel,
+          travelName: this.selectedTravel!.value.name,
+        })
+        scene.plannedTravel = null
+        scene.statusAndCoopView?.updateCoopView()
+      } else {
+        sendCoopMessage(scene.chatWs, {
+          type: OutcomingCoopMessageType.StartSimpleTravel,
+          travelName: this.selectedTravel!.value.name,
+        })
+      }
     })
     this.travelBoxTravelButtonWrapper.appendChild(this.travelBoxTravelButton)
     this.travelBoxTravelButtonExtraWrapper.appendChild(this.travelBoxTravelButtonWrapper)

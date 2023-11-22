@@ -721,6 +721,11 @@ export class Scene extends Phaser.Scene {
       case IncomingCoopMessageType.CoopProposeOwnTravel:
         this.showCoopInvite(msg.senderId, msg.message.travelName, this.playerId !== msg.message.guestId, false, null)
         break
+      case IncomingCoopMessageType.CoopFinish:
+        this.showInformationPopup(`współpraca z graczem ${this.plannedTravel?.partner} zakończona sukcesem`)
+        this.plannedTravel = null
+        this.statusAndCoopView?.updateCoopView()
+        break
       case BackendWarningMessageType.UserWarning:
         this.showErrorPopup(msg.message.reason)
         break

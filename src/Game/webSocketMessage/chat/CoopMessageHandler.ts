@@ -20,7 +20,7 @@ export enum IncomingCoopMessageType {
   CoopGoToTravel = 'coop/system/travel_ready/go', // done
   CoopTravelAccept = 'coop/system/travel/accept', // done
   CoopTravelDeny = 'coop/system/travel/deny', // done
-  CoopFinish = 'coop/system/finish',
+  CoopFinish = 'coop/system/finish', // done
   CoopCancel = 'coop/system/cancel_coop', // done
   CoopCancelNegotiation = 'coop/system/cancel_negotiation', // done
   CoopCancelPlanning = 'coop/system/cancel_planning', // done
@@ -203,7 +203,7 @@ export enum OutcomingCoopMessageType {
   CancelCoop = 'coop/cancel_coop',
   CancelNegotiation = 'coop/cancel_negotiation',
   CancelPlanning = 'coop/cancel_planning', // done
-  StartPlannedTravel = 'coop/start_planned_travel',
+  StartPlannedTravel = 'coop/start_planned_travel', // done
   StartSimpleTravel = 'coop/start_simple_travel', // done
 }
 
