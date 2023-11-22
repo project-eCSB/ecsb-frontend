@@ -153,6 +153,7 @@ export interface NotificationSyncTradeResponseMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationSyncTradeResponse
+    receiverId: string
     states: { key: string; value: tradeSyncValue }[] | null
   }
 }
@@ -161,6 +162,7 @@ export interface NotificationSyncCoopResponseMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationSyncCoopResponse
+    receiverId: string
     states: { key: string; value: string }[] | null
   }
 }
