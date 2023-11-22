@@ -58,6 +58,8 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancel:
         return { senderId: parsed.senderId, message: parsed.message }
+      case IncomingCoopMessageType.CoopCancelNegotiation:
+        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancelPlanning:
         return { senderId: parsed.senderId, message: parsed.message }
       case IncomingWorkshopMessageType.WorkshopAccept:
