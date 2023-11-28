@@ -538,20 +538,26 @@ export class TravelView {
   private isPlannedTravelReady(): boolean {
     if (this.scene.plannedTravel) {
       for (const resource of this.scene.plannedTravel.playerRequiredResources.resources) {
-        const currResource = this.scene.plannedTravel.playerResources.resources.find(
-          (currentResource) => currentResource.key === resource.key,
-        )!
+        const currResource = this.scene.plannedTravel.playerResources.resources.find((currentResource) => currentResource.key === resource.key)!
         if (resource.value > currResource.value) {
           return false
         }
       }
-      if (
-        this.scene.plannedTravel.playerRequiredResources.money >
-          this.scene.plannedTravel.playerResources.money ||
-        this.scene.plannedTravel.playerRequiredResources.time >
-          this.scene.plannedTravel.playerResources.time
-      ) {
-        return false
+      if (!this.scene.plannedTravel.isSingle) {
+        for (const resource of this.scene.plannedTravel.partnerRequiredResources!.resources) {
+          const currResource = this.scene.plannedTravel.partnerResources!.resources.find(currentResource => currentResource.key === resource.key)!
+          if (resource.value > currResource.value) {
+            return false
+          }
+        }
+      }
+      if (this.scene.plannedTravel.playerRequiredResources.time > this.scene.plannedTravel.playerResources.time) {
+          return false
+      }
+      if (!this.scene.plannedTravel.isSingle) {
+        if (this.scene.plannedTravel.partnerRequiredResources!.time > this.scene.plannedTravel.partnerResources!.time) {
+            return false
+        }
       }
       return true
     }
