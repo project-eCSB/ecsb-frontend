@@ -205,14 +205,6 @@ export interface AssetResponse {
   assetURL: string
 }
 
-export interface IncreaseVisibleEquipmentSourceRequest {
-  resourceName: string
-}
-
-export interface DecreaseVisibleEquipmentSourceRequest {
-  resourceName: string
-}
-
 /**
   GameReponseError represents an error from the server.
   Code is 0 if the error is not from the server.
