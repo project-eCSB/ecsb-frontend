@@ -279,28 +279,6 @@ const travel = async (city: string): Promise<boolean> => {
     })
 }
 
-const increaseVisibleEquipmentSource = async (resourceName: string): Promise<null> => {
-  return await gameAPI
-    .increaseVisibleEquipmentSource({ resourceName: resourceName })
-    .then((response: null) => {
-      return response
-    })
-    .catch((err: GameResponseError) => {
-      throw new Error(err.message)
-    })
-}
-
-const decreaseVisibleEquipmentSource = async (resourceName: string): Promise<null> => {
-  return await gameAPI
-    .decreaseVisibleEquipmentSource({ resourceName: resourceName })
-    .then((response: null) => {
-      return response
-    })
-    .catch((err: GameResponseError) => {
-      throw new Error(err.message)
-    })
-}
-
 const gameService = {
   createGame,
   startGame,
@@ -317,9 +295,7 @@ const gameService = {
   getSavedAssets,
   getAsset,
   produce,
-  travel,
-  increaseVisibleEquipmentSource,
-  decreaseVisibleEquipmentSource,
+  travel
 }
 
 export default gameService

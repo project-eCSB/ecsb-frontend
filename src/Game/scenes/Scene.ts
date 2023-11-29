@@ -876,7 +876,7 @@ export class Scene extends Phaser.Scene {
       case NotificationMessageType.NotificationStopNegotiation:
         this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TALK)
         break
-      case NotificationMessageType.QueueProcessed:
+      case EquipmentMessageType.QueueProcessed:
         this.loadingBarBuilder!.setCoordinates(
           this.players[this.playerId].coords.x,
           this.players[this.playerId].coords.y,

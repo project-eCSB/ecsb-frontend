@@ -70,6 +70,8 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
         return { senderId: parsed.senderId, message: parsed.message }
       case EquipmentMessageType.EquipmentChange:
         return { senderId: parsed.senderId, message: parsed.message }
+      case EquipmentMessageType.QueueProcessed:
+        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationAdvertisementBuy:
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationAdvertisementSell:
@@ -97,8 +99,6 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
       case NotificationMessageType.NotificationStartAdvertiseCoop:
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationStopAdvertiseCoop:
-        return { senderId: parsed.senderId, message: parsed.message }
-      case NotificationMessageType.QueueProcessed:
         return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationStartNegotiation:
         return { senderId: parsed.senderId, message: parsed.message }

@@ -8,10 +8,8 @@ import type {
   AssetResponse,
   CreateGameRequest,
   NewGameResponse,
-  DecreaseVisibleEquipmentSourceRequest,
   GameTokenRequest,
   GameTokenResponse,
-  IncreaseVisibleEquipmentSourceRequest,
   ProductionRequest,
   ProductionResponse,
   SavedAssetsRequest,
@@ -199,27 +197,6 @@ const getPlayerEquipment = async (): Promise<Equipment> => {
     })
 }
 
-const increaseVisibleEquipmentSource = async (
-  data: IncreaseVisibleEquipmentSourceRequest,
-): Promise<null> => {
-  return await gameTokenSelfInteractionsAPI
-    .put(`/visibleEquipment/${data.resourceName}/increase`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return null
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
-}
-
 const getPlayerResults = async (): Promise<EndGameStatus> => {
   return await gameTokenAPI
     .get('/results')
@@ -229,27 +206,6 @@ const getPlayerResults = async (): Promise<EndGameStatus> => {
       }
 
       return response.data
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
-}
-
-const decreaseVisibleEquipmentSource = async (
-  data: DecreaseVisibleEquipmentSourceRequest,
-): Promise<null> => {
-  return await gameTokenSelfInteractionsAPI
-    .put(`/visibleEquipment/${data.resourceName}/decrease`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return null
     })
     .catch((error) => {
       if (error.response) {
@@ -443,8 +399,6 @@ const gameAPI = {
   getAsset,
   produce,
   travel,
-  increaseVisibleEquipmentSource,
-  decreaseVisibleEquipmentSource,
 }
 
 export default gameAPI

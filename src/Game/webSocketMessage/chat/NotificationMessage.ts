@@ -25,7 +25,6 @@ export enum NotificationMessageType {
   NotificationSyncRequest = 'notification/sync',
   NotificationSyncTradeResponse = 'notification/trade/sync/response',
   NotificationSyncCoopResponse = 'notification/coop/sync/response',
-  QueueProcessed = 'queue/processed',
 }
 
 export interface NotificationAdvertisementBuyMessage {
@@ -167,21 +166,6 @@ export interface NotificationSyncCoopResponseMessage {
   }
 }
 
-export interface NotificationSyncRequestMessage {
-  type: NotificationMessageType.NotificationSyncRequest
-}
-
-export interface QueueProcessedMessage {
-  senderId: string
-  message: {
-    type: NotificationMessageType.QueueProcessed
-    receiverId: string
-    context: string
-    money: number | null
-    resources: { key: string; value: number }[] | null
-  }
-}
-
 export type IncomingNotificationMessage =
   | NotificationAdvertisementBuyMessage
   | NotificationAdvertisementSellMessage
@@ -201,13 +185,14 @@ export type IncomingNotificationMessage =
   | NotificationStopNegotiationMessage
   | NotificationSyncTradeResponseMessage
   | NotificationSyncCoopResponseMessage
-  | QueueProcessedMessage
 
-export type OutcomingNotificationMessage = NotificationSyncRequestMessage
+export interface NotificationSyncRequestMessage {
+  type: NotificationMessageType.NotificationSyncRequest
+}
 
 export const sendNotificationMessage = (
   socket: Websocket,
-  message: OutcomingNotificationMessage,
+  message: NotificationSyncRequestMessage,
 ): void => {
   try {
     const serialized = JSON.stringify(message)

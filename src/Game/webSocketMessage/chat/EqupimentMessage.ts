@@ -2,6 +2,7 @@ import { type Equipment } from '../../../services/game/Types'
 
 export enum EquipmentMessageType {
   EquipmentChange = 'equipment/change',
+  QueueProcessed = 'queue/processed'
 }
 
 export interface EquipmentChangeMessage {
@@ -13,4 +14,15 @@ export interface EquipmentChangeMessage {
   }
 }
 
-export type EquipmentMessage = EquipmentChangeMessage
+export interface QueueProcessedMessage {
+  senderId: string
+  message: {
+    type: EquipmentMessageType.QueueProcessed
+    receiverId: string
+    context: string
+    money: number | null
+    resources: { key: string; value: number }[] | null
+  }
+}
+
+export type EquipmentMessage = EquipmentChangeMessage | QueueProcessedMessage
