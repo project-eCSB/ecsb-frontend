@@ -66,13 +66,7 @@ export const stopGame = (gameData: GameData): void => {
 
   window.document.getElementById('errorsAndInfo')?.remove()
 
-  window.document.getElementById('travelBoxWrapper')?.remove()
-  window.document.getElementById('tradeBoxWrapper')?.remove()
-  window.document.getElementById('tradeSuccessBox')?.remove()
-  window.document.getElementById('workshopBoxWrapper')?.remove()
-  window.document.getElementById('workshopSuccessBox')?.remove()
-  window.document.getElementById('resourceNegotiationBoxWrapper')?.remove()
-  window.document.getElementById('resourceNegotiationSuccessBox')?.remove()
+  clearOverlayWindows()
 
   gameData.scene.userDataView?.close()
   gameData.scene.equipmentView?.close()
@@ -89,4 +83,13 @@ export const stopGame = (gameData: GameData): void => {
 
   gameData.game.plugins.removeScenePlugin('gridEngine')
   gameData.game.destroy(true)
+}
+
+export const clearOverlayWindows = (): void => {
+  window.document.getElementById('travelBoxWrapper')?.remove()
+  window.document.getElementById('tradeBoxWrapper')?.remove()
+  window.document.getElementById('tradeSuccessBox')?.remove()
+  window.document.getElementById('workshopBoxWrapper')?.remove()
+  window.document.getElementById('resourceNegotiationBoxWrapper')?.remove()
+  window.document.getElementById('resourceNegotiationSuccessBox')?.remove()
 }

@@ -95,6 +95,7 @@ import { type Travel } from '../../apis/game/Types'
 import { InformationView } from '../views/InformationView'
 import { CoopOfferPopup } from '../components/CoopOfferPopup'
 import { ResourceNegotiationView } from '../views/ResourceNegotiationView'
+import { clearOverlayWindows } from '../Game'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -509,6 +510,9 @@ export class Scene extends Phaser.Scene {
       .onClose((i, ev) => {
         console.log('movementWs closed')
         console.log(ev)
+
+        clearOverlayWindows()
+
         this.movingEnabled = false
         const errorMessage = new ErrorView()
         errorMessage.setText('moveWs closed - please reconnect')
@@ -579,6 +583,9 @@ export class Scene extends Phaser.Scene {
       .onClose((i, ev) => {
         console.log('chatWs closed')
         console.log(ev)
+
+        clearOverlayWindows()
+
         this.movingEnabled = false
         const errorMessage = new ErrorView()
         errorMessage.setText('chatWs closed - please reconnect')
