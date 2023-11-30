@@ -16,15 +16,33 @@ const Home = () => {
   const [gameCode, setGameCode] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [usernameError, setUsernameError] = useState<string>('')
+  const [gameCodeError, setGameCodeError] = useState<string>('')
   const submitBtnRef = useRef<HTMLButtonElement | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setGameCode(event.target.value)
+  const handleGameCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const gameCode = event.target.value
+    setGameCode(gameCode)
+
+    if (gameCode.length !== 6) {
+      setGameCodeError('Game code must be 6 characters long')
+    } else {
+      setGameCodeError('')
+    }
+    setError('')
   }
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value)
+    const username = event.target.value
+    setUsername(username)
+
+    if (username.length < 3) {
+      setUsernameError('Username must be at least 3 characters long')
+    } else {
+      setUsernameError('')
+    }
+    setError('')
   }
 
   const enableSubmitBtn = (): void => {
@@ -41,6 +59,10 @@ const Home = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    if (usernameError || gameCodeError) {
+      return
+    }
 
     setIsLoading(true)
     disableSubmitBtn()
@@ -102,7 +124,7 @@ const Home = () => {
               placeholder='Enter username'
               value={username}
               onChange={handleUsernameChange}
-              maxLength={255}
+              maxLength={10}
               required
             />
             <input
@@ -111,11 +133,13 @@ const Home = () => {
               name='gameCode'
               placeholder='Enter game code'
               value={gameCode}
-              onChange={handleInputChange}
-              maxLength={255}
+              onChange={handleGameCodeChange}
+              maxLength={6}
               required
             />
             {error && <span className='home-form-error'>{error}</span>}
+            {usernameError && <span className='home-form-error'>{usernameError}</span>}
+            {gameCodeError && <span className='home-form-error'>{gameCodeError}</span>}
             <button
               ref={submitBtnRef}
               className={`${
