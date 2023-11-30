@@ -17,7 +17,6 @@ export interface TimeSyncResponseMessage {
   senderId: string
   message: {
     type: TimeMessageType.SyncResponse
-    timeForGame: number
     timeLeftSeconds: number
     timeTokens: { key: number; value: TimeState }[]
   }
