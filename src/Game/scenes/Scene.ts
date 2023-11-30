@@ -1368,13 +1368,11 @@ export class Scene extends Phaser.Scene {
   }
 
   fillCoopPlayersEquipment = (): void => {
-    if (this.plannedTravel!.isSingle) {
-      this.plannedTravel!.playerResources.time = this.timeView!.getAvailableTokens()
-      for (const resource of this.plannedTravel!.playerResources.resources) {
-        resource.value = this.plannedTravel!.playerRequiredResources.resources.find(
-          (r) => r.key === resource.key,
-        )!.value
-      }
+    this.plannedTravel!.playerResources.time = this.timeView!.getAvailableTokens()
+    for (const resource of this.plannedTravel!.playerResources.resources) {
+      resource.value = this.plannedTravel!.playerRequiredResources.resources.find(
+        (r) => r.key === resource.key,
+      )!.value
     }
     if (!this.plannedTravel!.isSingle) {
       for (const resource of this.plannedTravel!.partnerResources!.resources) {
