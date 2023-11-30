@@ -277,6 +277,18 @@ export class StatusAndCoopView {
     this.container.appendChild(this.coopContainer)
   }
 
+  public showCoopView(): void {
+    if (this.coopButton.id !== 'coopButtonActive') {
+      this.coopButton.click()
+    }
+  }
+
+  public hideCoopView(): void {
+    if (this.coopButton.id === 'coopButtonActive') {
+      this.coopButton.click()
+    }
+  }
+
   public updateCoopView(): void {
     while (this.coopContainer.firstChild) {
       this.coopContainer.removeChild(this.coopContainer.firstChild)

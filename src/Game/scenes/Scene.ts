@@ -1311,6 +1311,7 @@ export class Scene extends Phaser.Scene {
   cancelPlanningTravel = (): void => {
     this.plannedTravel = null
     this.statusAndCoopView?.updateCoopView()
+    this.statusAndCoopView?.hideCoopView()
   }
 
   startPlanningTravel = (
@@ -1339,6 +1340,7 @@ export class Scene extends Phaser.Scene {
       partnerProfit: partnerProfit,
     }
     this.statusAndCoopView?.updateCoopView()
+    this.statusAndCoopView?.showCoopView()
   }
 
   updateCoopPlayersEquipment = (equipments: CoopEquipmentDto[]): void => {
