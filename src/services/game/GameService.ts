@@ -295,7 +295,7 @@ const gameService = {
   getSavedAssets,
   getAsset,
   produce,
-  travel
+  travel,
 }
 
 export default gameService

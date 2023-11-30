@@ -27,7 +27,8 @@ export class ResourceNegotiationSuccessView {
     this.cropper = new ImageCropper()
     this.onClose = onClose
 
-    const arrowIconWidth = (travel.value.resources.length + 1) * ResourceNegotiationSuccessView.resourceElementWitdh
+    const arrowIconWidth =
+      (travel.value.resources.length + 1) * ResourceNegotiationSuccessView.resourceElementWitdh
 
     // Container
     this.resourceNegotiationSuccessBox = document.createElement('div')

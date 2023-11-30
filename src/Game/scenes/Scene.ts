@@ -833,22 +833,22 @@ export class Scene extends Phaser.Scene {
         this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
         break
       case NotificationMessageType.NotificationTradeStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TALK)
+        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TALK)
         break
       case NotificationMessageType.NotificationTradeEnd:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TALK)
+        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TALK)
         break
       case NotificationMessageType.NotificationTravelStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TRAVEL)
         break
       case NotificationMessageType.NotificationTravelEnd:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TRAVEL)
         break
       case NotificationMessageType.NotificationTravelChoosingStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TRAVEL)
         break
       case NotificationMessageType.NotificationTravelChoosingStop:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.message.playerId, CloudType.TRAVEL)
+        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TRAVEL)
         break
       case NotificationMessageType.NotificationWorkshopChoosingStart:
         this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.WORK)
@@ -1271,7 +1271,7 @@ export class Scene extends Phaser.Scene {
           this.startPlanningTravel(
             true,
             travel,
-            this.equipment!,
+            JSON.parse(JSON.stringify(this.equipment!)),
             {
               money: 0,
               time: travel.value.time!,

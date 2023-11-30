@@ -47,7 +47,6 @@ export interface NotificationTradeStartMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationTradeStart
-    playerId: string
   }
 }
 
@@ -55,7 +54,6 @@ export interface NotificationTradeEndMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationTradeEnd
-    playerId: string
   }
 }
 
@@ -63,7 +61,6 @@ export interface NotificationTravelStartMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationTravelStart
-    playerId: string
   }
 }
 
@@ -71,7 +68,6 @@ export interface NotificationTravelEndMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationTravelEnd
-    playerId: string
   }
 }
 
@@ -79,7 +75,6 @@ export interface NotificationTravelChoosingStartMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationTravelChoosingStart
-    playerId: string
   }
 }
 
@@ -87,7 +82,6 @@ export interface NotificationTravelChoosingStopMessage {
   senderId: string
   message: {
     type: NotificationMessageType.NotificationTravelChoosingStop
-    playerId: string
   }
 }
 
