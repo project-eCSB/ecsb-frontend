@@ -2,7 +2,7 @@ import { type Equipment } from '../../../services/game/Types'
 
 export enum EquipmentMessageType {
   EquipmentChange = 'equipment/change',
-  QueueProcessed = 'queue/processed'
+  QueueProcessed = 'queue/processed',
 }
 
 export interface EquipmentChangeMessage {
