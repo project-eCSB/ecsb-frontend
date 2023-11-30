@@ -26,7 +26,7 @@ export const getResourceMapping =
       .resourceAsset ?? 0
 
 // OTHER
-export const SPACE_PRESS_ACTION_PREFIX = 'Wciśnij <strong>spacje</strong> by'
+export const SPACE_PRESS_ACTION_PREFIX = 'Wciśnij <strong>spację</strong> by'
 export const TOAST_INVITE_MSG = 'Wysłano zaproszenie do handlu'
 export const TOAST_INVITE_MSG_COOP = 'Wysłano zaproszenie do spółki'
 export const TOAST_DISMISS_TIMEOUT = 500
