@@ -1,4 +1,4 @@
-import { type Equipment } from '../../../services/game/Types'
+import { type GameResourceDto, type Equipment } from '../../../services/game/Types'
 
 export enum EquipmentMessageType {
   EquipmentChange = 'equipment/change',
@@ -21,7 +21,7 @@ export interface QueueProcessedMessage {
     receiverId: string
     context: string
     money: number | null
-    resources: { key: string; value: number }[] | null
+    resources: GameResourceDto[] | null
   }
 }
 
