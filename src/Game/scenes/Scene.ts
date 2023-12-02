@@ -767,6 +767,10 @@ export class Scene extends Phaser.Scene {
         this.advertisementInfoBuilder.addBubbleForCoop('', this.playerId)
         this.advertisementInfoBuilder.setMarginAndVisibility(this.playerId)
         delete this.playerAdvertisedTravel[this.playerId]
+        if (this.plannedTravel?.isSingle && this.plannedTravel?.wantToCooperate) {
+          this.plannedTravel.wantToCooperate = false
+          this.statusAndCoopView?.updateCoopView()
+        }
         break
       case IncomingCoopMessageType.CoopFinishNegotiation:
         this.resourceNegotiationView?.close(true)
