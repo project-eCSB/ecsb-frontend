@@ -181,22 +181,6 @@ export interface SavedAssetsResponse {
   assets: SavedAsset[]
 }
 
-export interface ProductionRequest {
-  quantity: number
-}
-
-export interface ProductionResponse {
-  success: boolean
-}
-
-export interface TravelRequest {
-  city: string
-}
-
-export interface TravelResponse {
-  success: boolean
-}
-
 export interface AssetRequest {
   assetId: number
 }

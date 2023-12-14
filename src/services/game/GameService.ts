@@ -8,7 +8,6 @@ import type {
   CreateGameRequestTravels,
   NewGameResponse,
   GameTokenResponse,
-  ProductionResponse,
   SavedAsset,
   SavedAssetsResponse,
   UploadAssetResponse,
@@ -257,28 +256,6 @@ const getAsset = async (assetId: number): Promise<string> => {
     })
 }
 
-const produce = async (quantity: number): Promise<boolean> => {
-  return await gameAPI
-    .produce({ quantity: quantity })
-    .then((response: ProductionResponse) => {
-      return response.success
-    })
-    .catch((err: GameResponseError) => {
-      throw new Error(err.message)
-    })
-}
-
-const travel = async (city: string): Promise<boolean> => {
-  return await gameAPI
-    .travel({ city: city })
-    .then((response: ProductionResponse) => {
-      return response.success
-    })
-    .catch((err: GameResponseError) => {
-      throw new Error(err.message)
-    })
-}
-
 const gameService = {
   createGame,
   startGame,
@@ -293,9 +270,7 @@ const gameService = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
-  getAsset,
-  produce,
-  travel,
+  getAsset
 }
 
 export default gameService

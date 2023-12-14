@@ -10,12 +10,8 @@ import type {
   NewGameResponse,
   GameTokenRequest,
   GameTokenResponse,
-  ProductionRequest,
-  ProductionResponse,
   SavedAssetsRequest,
   SavedAssetsResponse,
-  TravelRequest,
-  TravelResponse,
   UploadAssetRequest,
   UploadAssetResponse,
   UserGameSettingsResponse,
@@ -337,48 +333,6 @@ const getAsset = async (request: AssetRequest): Promise<AssetResponse> => {
     })
 }
 
-const produce = async (data: ProductionRequest): Promise<ProductionResponse> => {
-  return await gameTokenSelfInteractionsAPI
-    .post('/production', data.quantity)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        success: true,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
-}
-
-const travel = async (data: TravelRequest): Promise<TravelResponse> => {
-  return await gameTokenSelfInteractionsAPI
-    .post('/travel', data.city)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        success: true,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
-}
-
 /**
  * Game API is used to make request to the server that refers to game.
  */
@@ -396,9 +350,7 @@ const gameAPI = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
-  getAsset,
-  produce,
-  travel,
+  getAsset
 }
 
 export default gameAPI
