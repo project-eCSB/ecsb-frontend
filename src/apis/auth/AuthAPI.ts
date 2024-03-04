@@ -1,9 +1,9 @@
 import type { AuthRequest, AuthResponse } from './Types'
 import { AuthResponseError } from './Types'
-import { authTokenAuthAndMenagementAPI } from '../apis'
+import { authTokenAuthAndManagementAPI } from '../apis'
 
 const login = async (data: AuthRequest): Promise<AuthResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .post('/login', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -26,7 +26,7 @@ const login = async (data: AuthRequest): Promise<AuthResponse> => {
 }
 
 const register = async (data: AuthRequest): Promise<AuthResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .post('/register', data)
     .then((response) => {
       if (response.status !== 200) {

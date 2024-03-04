@@ -1,4 +1,4 @@
-import { authTokenAuthAndMenagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI } from '../apis'
+import { authTokenAuthAndManagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI } from '../apis'
 import type {
   AdminGameSettingsRequest,
   AdminGameSettingsResponse,
@@ -22,7 +22,7 @@ import { GameResponseError } from './Types'
 import type { EndGameStatus, Equipment } from '../../services/game/Types'
 
 const createGame = async (data: CreateGameRequest): Promise<NewGameResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .post('/admin/createGame', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -45,7 +45,7 @@ const createGame = async (data: CreateGameRequest): Promise<NewGameResponse> => 
 const getAdminGameSettings = async (
   data: AdminGameSettingsRequest,
 ): Promise<AdminGameSettingsResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .get(`/admin/settings/${data.gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -73,7 +73,7 @@ const getAdminGameSettings = async (
 }
 
 const startGame = async (data: AdminGameSettingsRequest): Promise<void> => {
-  await authTokenAuthAndMenagementAPI
+  await authTokenAuthAndManagementAPI
     .post(`/admin/startGame/${data.gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -90,7 +90,7 @@ const startGame = async (data: AdminGameSettingsRequest): Promise<void> => {
 }
 
 const copyGame = async (data: copyGameRequest): Promise<NewGameResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .post(`/admin/copyGame/${data.gameSessionId}?gameName=${data.gameName}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -111,7 +111,7 @@ const copyGame = async (data: copyGameRequest): Promise<NewGameResponse> => {
 }
 
 const getAdminGameLogs = async (data: AdminGameSettingsRequest): Promise<string> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .get(`/getLogs/${data.gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -125,7 +125,7 @@ const getAdminGameLogs = async (data: AdminGameSettingsRequest): Promise<string>
 }
 
 const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .post('/getGameToken', data)
     .then((response) => {
       if (response.status !== 200) {
@@ -239,7 +239,7 @@ const getUserGameStatus = async (): Promise<UserGameStatusResponse> => {
 const uploadAsset = async (
   uploadAssetRequest: UploadAssetRequest,
 ): Promise<UploadAssetResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .post(
       `/assets?fileName=${uploadAssetRequest.fileName}&fileType=${uploadAssetRequest.fileType}`,
       uploadAssetRequest.file,
@@ -270,7 +270,7 @@ const uploadAsset = async (
 const getAssetConfig = async (
   assetConfigRequest: AssetConfigRequest,
 ): Promise<AssetConfigResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .get(`/assets/config/${assetConfigRequest.assetId}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -289,7 +289,7 @@ const getAssetConfig = async (
 }
 
 const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .get(`/assets?fileType=${request.fileType}`)
     .then((response) => {
       if (response.status !== 200) {
@@ -310,7 +310,7 @@ const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsR
 }
 
 const getAsset = async (request: AssetRequest): Promise<AssetResponse> => {
-  return await authTokenAuthAndMenagementAPI
+  return await authTokenAuthAndManagementAPI
     .get(`/assets/${request.assetId}`, { responseType: 'arraybuffer' })
     .then((response) => {
       if (response.status !== 200) {

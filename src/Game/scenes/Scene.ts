@@ -101,8 +101,8 @@ const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
 const VITE_ECSB_LOBBY_WS_API_URL: string = import.meta.env.VITE_ECSB_LOBBY_WS_API_URL as string
-const VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL: string = import.meta.env
-  .VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL
+const VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL: string = import.meta.env
+  .VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -223,7 +223,7 @@ export class Scene extends Phaser.Scene {
   preload(): void {
     this.load.tilemapTiledJSON(
       MAP_ASSET_KEY,
-      `${VITE_ECSB_HTTP_AUTH_AND_MENAGEMENT_API_URL}/assets/${this.settings.gameAssets.mapAssetId}`,
+      `${VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL}/assets/${this.settings.gameAssets.mapAssetId}`,
     )
     this.load.image(TILES_ASSET_KEY, this.tileUrl)
     this.load.spritesheet(CHARACTER_ASSET_KEY, this.characterUrl, {
