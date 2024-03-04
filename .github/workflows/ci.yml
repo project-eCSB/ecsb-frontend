@@ -66,4 +66,4 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           source: 'dist/*,assets/'
-          target: ~/dist
+          target: ~/prod_source
