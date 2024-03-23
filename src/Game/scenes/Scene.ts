@@ -1073,7 +1073,7 @@ export class Scene extends Phaser.Scene {
   }
 
   movePlayer(id: string, coords: Coordinates, direction: Direction): void {
-    this.gridEngine.moveTo(id, coords)
+    this.gridEngine.moveTo(id, coords, { algorithm: 'JPS' })
 
     this.interactionCloudBuiler.purgeUnnecessaryIcons(id)
     this.players[id].coords = coords
