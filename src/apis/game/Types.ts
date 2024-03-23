@@ -29,17 +29,19 @@ export interface CreateGameRequestTravels {
   }[]
 }
 
+export interface GameAsset {
+  key: string
+  value: number
+}
+
 export interface CreateGameRequest {
   travels: CreateGameRequestTravels[]
   classResourceRepresentation: ClassResourceRepresentation[]
   gameName: string
-  mapAssetId: number
-  tileAssetId: number
-  characterAssetId: number
-  resourceAssetsId: number
+  gameAssetsIds: GameAsset[]
   timeForGame: number
   maxPlayerAmount: number
-  maxTimeAmount: number
+  maxTimeTokens: number
   walkingSpeed: number
   interactionRadius: number
   defaultMoney: number
@@ -49,20 +51,9 @@ export interface NewGameResponse {
   gameSessionId: number
 }
 
-export interface AdminGameSettingsRequest {
-  gameSessionId: number
-}
-
-export interface copyGameRequest {
+export interface CopyGameRequest {
   gameSessionId: number
   gameName: string
-}
-
-export interface GameAssets {
-  mapAssetId: number
-  tileAssetsId: number
-  characterAssetsId: number
-  resourceAssetsId: number
 }
 
 export interface GameSettingsResource {
@@ -88,24 +79,11 @@ export interface GameSettingsTravels {
   value: Travel[]
 }
 
-export interface AdminGameSettingsResponse {
-  timeForGame: number
-  walkingSpeed: number
-  classResourceRepresentation: ClassResourceRepresentation[]
-  travels: GameSettingsTravels[]
+export interface AdminGameSettingsRequest {
   gameSessionId: number
-  name: string
-  shortName: string
-  gameAssets: {
-    mapAssetId: number
-    tileAssetsId: number
-    characterAssetsId: number
-    resourceAssetsId: number
-  }
-  interactionRadius: number
 }
 
-export interface UserGameSettingsResponse {
+export interface GameSettingsResponse {
   timeForGame: number
   walkingSpeed: number
   classResourceRepresentation: ClassResourceRepresentation[]
@@ -113,12 +91,7 @@ export interface UserGameSettingsResponse {
   gameSessionId: number
   name: string
   shortName: string
-  gameAssets: {
-    mapAssetId: number
-    tileAssetsId: number
-    characterAssetsId: number
-    resourceAssetsId: number
-  }
+  gameAssets: GameAsset[]
   interactionRadius: number
 }
 
@@ -172,15 +145,11 @@ export interface SavedAssetsRequest {
   fileType: string
 }
 
-export interface SavedAsset {
+export type SavedAssetsResponse = Asset[]
+
+export interface Asset {
   id: number
   name: string
-  fileType: string
-  createdAt: string
-}
-
-export interface SavedAssetsResponse {
-  assets: SavedAsset[]
 }
 
 export interface AssetRequest {
@@ -189,6 +158,10 @@ export interface AssetRequest {
 
 export interface AssetResponse {
   assetURL: string
+}
+
+export interface DefaultAssetsResponse {
+  [fileType: string]: Asset
 }
 
 /**

@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import { type AssetConfigResponse } from '../../../../apis/game/Types'
+import {
+  type SavedAssetsResponse,
+  type AssetConfigResponse,
+  type DefaultAssetsResponse,
+} from '../../../../apis/game/Types'
 import GameResourcesForm from './resourcesForm/GameResourcesForm'
 import GameTravelsForm from './travelsForm/GameTravelsForm'
 import ModifyTravel from './travelsForm/modifyTravel/ModifyTravel'
@@ -36,11 +40,15 @@ export interface Travel {
   maxReward: number
 }
 
+export enum FileType {
+  CHARACTER = 'CHARACTER_ASSET_FILE',
+  RESOURCE = 'RESOURCE_ASSET_FILE',
+  TILE = 'TILE_ASSET_FILE',
+  MAP = 'MAP',
+  NONE = '',
+}
+
 export interface CreateGameFormData {
-  characterAssetFile: File | null
-  resourceAssetFile: File | null
-  tileAssetFile: File | null
-  mapAssetFile: File | null
   classResources: ClassResource[]
   lowTravels: Travel[]
   mediumTravels: Travel[]
@@ -48,32 +56,24 @@ export interface CreateGameFormData {
   gameName: string
   gameFullTime: number
   maxPlayerAmount: number
-  mapAssetId: number | null
-  mapAssetName: string
-  tileAssetId: number | null
-  tileAssetName: string
-  characterAssetsId: number | null
-  characterAssetsName: string
-  resourceAssetsId: number | null
-  resourceAssetsName: string
+  assets: Record<
+    string,
+    {
+      id: number | null
+      file: File | null
+      name: string | null
+    } | null
+  >
   movingSpeed: number
   maxTimeAmount: number
   interactionRadius: number
   defaultMoney: number
 }
 
-export interface SavedAsset {
-  id: number
-  name: string
-  fileType: string
-  createdAt: string
-}
-
 export interface SavedAssetData {
-  assets: SavedAsset[]
-  formAssetFieldToSet: string
-  formAssetNameField: string
-  formAssetFieldToUnset: string
+  type: FileType
+  assets: SavedAssetsResponse
+  defaultAssetId: number
 }
 
 export interface ModifyTravelData {
@@ -84,10 +84,6 @@ export interface ModifyTravelData {
 const CreateGameForm = () => {
   const [page, setPage] = useState(1)
   const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>({
-    characterAssetFile: null,
-    resourceAssetFile: null,
-    tileAssetFile: null,
-    mapAssetFile: null,
     classResources: [],
     lowTravels: [],
     mediumTravels: [],
@@ -95,14 +91,28 @@ const CreateGameForm = () => {
     gameName: '',
     gameFullTime: 0,
     maxPlayerAmount: 0,
-    mapAssetId: null,
-    mapAssetName: '',
-    tileAssetId: null,
-    tileAssetName: '',
-    characterAssetsId: null,
-    characterAssetsName: '',
-    resourceAssetsId: null,
-    resourceAssetsName: '',
+    assets: {
+      [FileType.CHARACTER]: {
+        id: null,
+        file: null,
+        name: null,
+      },
+      [FileType.RESOURCE]: {
+        id: null,
+        file: null,
+        name: null,
+      },
+      [FileType.TILE]: {
+        id: null,
+        file: null,
+        name: null,
+      },
+      [FileType.MAP]: {
+        id: null,
+        file: null,
+        name: null,
+      },
+    },
     movingSpeed: 0,
     maxTimeAmount: 0,
     interactionRadius: 0,
@@ -116,30 +126,30 @@ const CreateGameForm = () => {
   })
   const [showSavedAssetModal, setShowSavedAssetModal] = useState<boolean>(false)
   const [savedAssets, setSavedAssets] = useState<SavedAssetData>({
+    type: FileType.NONE,
     assets: [],
-    formAssetFieldToSet: '',
-    formAssetNameField: '',
-    formAssetFieldToUnset: '',
+    defaultAssetId: 0,
   })
   const [showResultModal, setShowResultModal] = useState<boolean>(false)
   const [modalMessage, setModalMessage] = useState<string>('')
 
-  const setAndShowSavedAssetModalForm = (
-    fileType: string,
-    formAssetFieldToSet: string,
-    formAssetNameField: string,
-    formAssetFieldToUnset: string,
-  ) => {
+  const setAndShowSavedAssetModalForm = (fileType: string) => {
     gameService
       .getSavedAssets(fileType)
-      .then((response: SavedAsset[]) => {
-        setSavedAssets({
-          assets: response,
-          formAssetFieldToSet: formAssetFieldToSet,
-          formAssetNameField: formAssetNameField,
-          formAssetFieldToUnset: formAssetFieldToUnset,
-        })
-        setShowSavedAssetModal(true)
+      .then((response: SavedAssetsResponse) => {
+        gameService
+          .getDefaultAssets()
+          .then((defaultAssets: DefaultAssetsResponse) => {
+            setSavedAssets({
+              type: fileType as FileType,
+              assets: response,
+              defaultAssetId: defaultAssets[fileType].id,
+            })
+            setShowSavedAssetModal(true)
+          })
+          .catch((error: Error) => {
+            setAndShowResultModal(error.message)
+          })
       })
       .catch((error: Error) => {
         setAndShowResultModal(error.message)
@@ -164,10 +174,6 @@ const CreateGameForm = () => {
 
   const resetForm = () => {
     setCreateGameFormData({
-      characterAssetFile: null,
-      resourceAssetFile: null,
-      tileAssetFile: null,
-      mapAssetFile: null,
       classResources: [],
       lowTravels: [],
       mediumTravels: [],
@@ -175,14 +181,28 @@ const CreateGameForm = () => {
       gameName: '',
       gameFullTime: 0,
       maxPlayerAmount: 0,
-      mapAssetId: null,
-      mapAssetName: '',
-      tileAssetId: null,
-      tileAssetName: '',
-      characterAssetsId: null,
-      characterAssetsName: '',
-      resourceAssetsId: null,
-      resourceAssetsName: '',
+      assets: {
+        [FileType.CHARACTER]: {
+          id: null,
+          file: null,
+          name: null,
+        },
+        [FileType.RESOURCE]: {
+          id: null,
+          file: null,
+          name: null,
+        },
+        [FileType.TILE]: {
+          id: null,
+          file: null,
+          name: null,
+        },
+        [FileType.MAP]: {
+          id: null,
+          file: null,
+          name: null,
+        },
+      },
       movingSpeed: 0,
       maxTimeAmount: 0,
       interactionRadius: 0,
@@ -205,11 +225,8 @@ const CreateGameForm = () => {
         <AssetUpload
           key={1}
           title={'Character Asset file'}
-          formFileField={'characterAssetFile'}
-          formFileNameField={'characterAssetsName'}
-          formFileIDField={'characterAssetsId'}
-          fileType={'image/png'}
-          requestFileType={'character_asset_file'}
+          fileExtension={'image/png'}
+          fileType={FileType.CHARACTER}
           createGameFormData={createGameFormData}
           setCreateGameFormData={setCreateGameFormData}
           setAndShowSavedAssetModalForm={setAndShowSavedAssetModalForm}
@@ -217,11 +234,8 @@ const CreateGameForm = () => {
         <AssetUpload
           key={2}
           title={'Resource Asset file'}
-          formFileField={'resourceAssetFile'}
-          formFileNameField={'resourceAssetsName'}
-          formFileIDField={'resourceAssetsId'}
-          fileType={'image/png'}
-          requestFileType={'resource_asset_file'}
+          fileExtension={'image/png'}
+          fileType={FileType.RESOURCE}
           createGameFormData={createGameFormData}
           setCreateGameFormData={setCreateGameFormData}
           setAndShowSavedAssetModalForm={setAndShowSavedAssetModalForm}
@@ -229,11 +243,8 @@ const CreateGameForm = () => {
         <AssetUpload
           key={3}
           title={'Tile Asset file'}
-          formFileField={'tileAssetFile'}
-          formFileNameField={'tileAssetName'}
-          formFileIDField={'tileAssetId'}
-          fileType={'image/png'}
-          requestFileType={'tile_asset_file'}
+          fileExtension={'image/png'}
+          fileType={FileType.TILE}
           createGameFormData={createGameFormData}
           setCreateGameFormData={setCreateGameFormData}
           setAndShowSavedAssetModalForm={setAndShowSavedAssetModalForm}
@@ -241,11 +252,8 @@ const CreateGameForm = () => {
         <AssetUpload
           key={4}
           title={'Map Asset file'}
-          formFileField={'mapAssetFile'}
-          formFileNameField={'mapAssetName'}
-          formFileIDField={'mapAssetId'}
-          fileType={'.json'}
-          requestFileType={'map'}
+          fileExtension={'.json'}
+          fileType={FileType.MAP}
           createGameFormData={createGameFormData}
           setCreateGameFormData={setCreateGameFormData}
           setAndShowSavedAssetModalForm={setAndShowSavedAssetModalForm}
@@ -292,12 +300,14 @@ const CreateGameForm = () => {
     switch (page) {
       case 1:
         return (
-          (createGameFormData.characterAssetFile === null &&
-            createGameFormData.characterAssetsId === null) ||
-          (createGameFormData.resourceAssetFile === null &&
-            createGameFormData.resourceAssetsId === null) ||
-          (createGameFormData.tileAssetFile === null && createGameFormData.tileAssetId === null) ||
-          (createGameFormData.mapAssetFile === null && createGameFormData.mapAssetId === null)
+          (createGameFormData.assets[FileType.CHARACTER]!.file === null &&
+            createGameFormData.assets[FileType.CHARACTER]!.id === null) ||
+          (createGameFormData.assets[FileType.RESOURCE]!.file === null &&
+            createGameFormData.assets[FileType.RESOURCE]!.id === null) ||
+          (createGameFormData.assets[FileType.TILE]!.file === null &&
+            createGameFormData.assets[FileType.TILE]!.id === null) ||
+          (createGameFormData.assets[FileType.MAP]!.file === null &&
+            createGameFormData.assets[FileType.MAP]!.id === null)
         )
       case 2:
         for (const classResource of createGameFormData.classResources) {
@@ -403,19 +413,29 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (!e || !e.target || !e.target.result || !createGameFormData.characterAssetFile) return
+        if (
+          !e ||
+          !e.target ||
+          !e.target.result ||
+          !createGameFormData.assets[FileType.CHARACTER]!.file
+        )
+          return
 
         await gameService
           .uploadAsset(
             e.target.result as ArrayBuffer,
-            createGameFormData.characterAssetFile.name,
-            'character_asset_file',
+            createGameFormData.assets[FileType.CHARACTER]!.name!,
+            FileType.CHARACTER,
           )
           .then(
             (assetId: number) => {
               if (showResultModal) return
 
-              createGameFormData.characterAssetsId = assetId
+              createGameFormData.assets[FileType.CHARACTER] = {
+                id: assetId,
+                file: null,
+                name: createGameFormData.assets[FileType.CHARACTER]!.name,
+              }
 
               resolve(assetId)
             },
@@ -429,12 +449,12 @@ const CreateGameForm = () => {
           )
       }
 
-      if (!createGameFormData.characterAssetFile) {
+      if (!createGameFormData.assets[FileType.CHARACTER]!.file) {
         reject(new Error('No character asset file selected'))
         return
       }
 
-      reader.readAsArrayBuffer(createGameFormData.characterAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.assets[FileType.CHARACTER]!.file)
     })
   }
 
@@ -443,19 +463,29 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (!e || !e.target || !e.target.result || !createGameFormData.resourceAssetFile) return
+        if (
+          !e ||
+          !e.target ||
+          !e.target.result ||
+          !createGameFormData.assets[FileType.RESOURCE]!.file
+        )
+          return
 
         await gameService
           .uploadAsset(
             e.target.result as ArrayBuffer,
-            createGameFormData.resourceAssetFile.name,
-            'resource_asset_file',
+            createGameFormData.assets[FileType.RESOURCE]!.name!,
+            FileType.RESOURCE,
           )
           .then(
             (assetId: number) => {
               if (showResultModal) return
 
-              createGameFormData.resourceAssetsId = assetId
+              createGameFormData.assets[FileType.RESOURCE] = {
+                id: assetId,
+                file: null,
+                name: createGameFormData.assets[FileType.RESOURCE]!.name,
+              }
 
               resolve(assetId)
             },
@@ -469,12 +499,12 @@ const CreateGameForm = () => {
           )
       }
 
-      if (!createGameFormData.resourceAssetFile) {
+      if (!createGameFormData.assets[FileType.RESOURCE]!.file) {
         reject(new Error('No resource asset file selected'))
         return
       }
 
-      reader.readAsArrayBuffer(createGameFormData.resourceAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.assets[FileType.RESOURCE]!.file)
     })
   }
 
@@ -483,19 +513,24 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (!e || !e.target || !e.target.result || !createGameFormData.tileAssetFile) return
+        if (!e || !e.target || !e.target.result || !createGameFormData.assets[FileType.TILE]!.file)
+          return
 
         await gameService
           .uploadAsset(
             e.target.result as ArrayBuffer,
-            createGameFormData.tileAssetFile.name,
-            'tile_asset_file',
+            createGameFormData.assets[FileType.TILE]!.name!,
+            FileType.TILE,
           )
           .then(
             (assetId: number) => {
               if (showResultModal) return
 
-              createGameFormData.tileAssetId = assetId
+              createGameFormData.assets[FileType.TILE] = {
+                id: assetId,
+                file: null,
+                name: createGameFormData.assets[FileType.TILE]!.name,
+              }
 
               resolve(assetId)
             },
@@ -509,12 +544,12 @@ const CreateGameForm = () => {
           )
       }
 
-      if (!createGameFormData.tileAssetFile) {
+      if (!createGameFormData.assets[FileType.TILE]!.file) {
         reject(new Error('No tile asset file selected'))
         return
       }
 
-      reader.readAsArrayBuffer(createGameFormData.tileAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.assets[FileType.TILE]!.file)
     })
   }
 
@@ -523,15 +558,24 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (!e || !e.target || !e.target.result || !createGameFormData.mapAssetFile) return
+        if (!e || !e.target || !e.target.result || !createGameFormData.assets[FileType.MAP]!.file)
+          return
 
         await gameService
-          .uploadAsset(e.target.result as ArrayBuffer, createGameFormData.mapAssetFile.name, 'map')
+          .uploadAsset(
+            e.target.result as ArrayBuffer,
+            createGameFormData.assets[FileType.MAP]!.name!,
+            FileType.MAP,
+          )
           .then(
             (assetId: number) => {
               if (showResultModal) return
 
-              createGameFormData.mapAssetId = assetId
+              createGameFormData.assets[FileType.MAP] = {
+                id: assetId,
+                file: null,
+                name: createGameFormData.assets[FileType.MAP]!.name,
+              }
 
               resolve(assetId)
             },
@@ -545,12 +589,12 @@ const CreateGameForm = () => {
           )
       }
 
-      if (!createGameFormData.mapAssetFile) {
+      if (!createGameFormData.assets[FileType.MAP]!.file) {
         reject(new Error('No map asset file selected'))
         return
       }
 
-      reader.readAsArrayBuffer(createGameFormData.mapAssetFile)
+      reader.readAsArrayBuffer(createGameFormData.assets[FileType.MAP]!.file)
     })
   }
 
@@ -558,8 +602,8 @@ const CreateGameForm = () => {
     setRequestInProgress(true)
 
     if (page === 1) {
-      if (!createGameFormData.characterAssetsId) {
-        if (!createGameFormData.characterAssetFile) {
+      if (!createGameFormData.assets[FileType.CHARACTER]!.id) {
+        if (!createGameFormData.assets[FileType.CHARACTER]!.file) {
           setAndShowResultModal('No character asset file selected')
           setRequestInProgress(false)
           return
@@ -568,8 +612,8 @@ const CreateGameForm = () => {
         await uploadCharacterAssetFile()
       }
 
-      if (!createGameFormData.resourceAssetsId) {
-        if (!createGameFormData.resourceAssetFile) {
+      if (!createGameFormData.assets[FileType.RESOURCE]!.id) {
+        if (!createGameFormData.assets[FileType.RESOURCE]!.file) {
           setAndShowResultModal('No resource asset file selected')
           setRequestInProgress(false)
           return
@@ -578,8 +622,8 @@ const CreateGameForm = () => {
         await uploadResourceAssetFile()
       }
 
-      if (!createGameFormData.tileAssetId) {
-        if (!createGameFormData.tileAssetFile) {
+      if (!createGameFormData.assets[FileType.TILE]!.id) {
+        if (!createGameFormData.assets[FileType.TILE]!.file) {
           setAndShowResultModal('No tile asset file selected')
           setRequestInProgress(false)
           return
@@ -588,8 +632,8 @@ const CreateGameForm = () => {
         await uploadTileAssetFile()
       }
 
-      if (!createGameFormData.mapAssetId) {
-        if (!createGameFormData.mapAssetFile) {
+      if (!createGameFormData.assets[FileType.MAP]!.id) {
+        if (!createGameFormData.assets[FileType.MAP]!.file) {
           setAndShowResultModal('No map asset file selected')
           setRequestInProgress(false)
           return
@@ -599,10 +643,10 @@ const CreateGameForm = () => {
       }
 
       if (
-        !createGameFormData.characterAssetsId ||
-        !createGameFormData.resourceAssetsId ||
-        !createGameFormData.tileAssetId ||
-        !createGameFormData.mapAssetId
+        !createGameFormData.assets[FileType.CHARACTER]?.id ||
+        !createGameFormData.assets[FileType.RESOURCE]?.id ||
+        !createGameFormData.assets[FileType.TILE]?.id ||
+        !createGameFormData.assets[FileType.MAP]?.id
       ) {
         if (!showResultModal) {
           setAndShowResultModal('Something went wrong while uploading assets')
@@ -612,7 +656,7 @@ const CreateGameForm = () => {
         return
       }
 
-      await gameService.getAssetConfig(createGameFormData.mapAssetId).then(
+      await gameService.getAssetConfig(createGameFormData.assets[FileType.MAP].id).then(
         (response: AssetConfigResponse) => {
           const classResources: ClassResource[] = []
 

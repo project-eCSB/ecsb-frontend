@@ -1,100 +1,27 @@
 import { useState, type FC, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { type CreateGameFormData } from '../../CreateGameForm'
+import { FileType, type CreateGameFormData } from '../../CreateGameForm'
 import './AssetUpload.css'
 import gameService from '../../../../../../services/game/GameService'
 
 interface AssetUploadProps {
   createGameFormData: CreateGameFormData
   setCreateGameFormData: React.Dispatch<React.SetStateAction<CreateGameFormData>>
-  formFileField: string
-  formFileNameField: string
-  formFileIDField: string
-  fileType: string
-  requestFileType: string
+  fileExtension: string
+  fileType: FileType
   title: string
-  setAndShowSavedAssetModalForm: (
-    fileType: string,
-    formAssetFieldToSet: string,
-    formAssetNameField: string,
-    formAssetFieldToUnset: string,
-  ) => void
+  setAndShowSavedAssetModalForm: (fileType: FileType) => void
 }
 
 const AssetUpload: FC<AssetUploadProps> = ({
   createGameFormData,
   setCreateGameFormData,
-  formFileField,
-  formFileNameField,
-  formFileIDField,
+  fileExtension,
   fileType,
-  requestFileType,
   title,
   setAndShowSavedAssetModalForm,
 }) => {
-  const [url, setUrl] = useState<string | null>(null)
-
-  const selectedFileName = (): string | null => {
-    switch (formFileNameField) {
-      case 'characterAssetsName':
-        return createGameFormData.characterAssetsName
-      case 'tileAssetName':
-        return createGameFormData.tileAssetName
-      case 'resourceAssetsName':
-        return createGameFormData.resourceAssetsName
-      case 'mapAssetName':
-        return createGameFormData.mapAssetName
-      default:
-        return null
-    }
-  }
-
-  const selectedFileId = (): number | null => {
-    switch (formFileIDField) {
-      case 'characterAssetsId':
-        return createGameFormData.characterAssetsId
-      case 'tileAssetId':
-        return createGameFormData.tileAssetId
-      case 'resourceAssetsId':
-        return createGameFormData.resourceAssetsId
-      case 'mapAssetId':
-        return createGameFormData.mapAssetId
-      default:
-        return null
-    }
-  }
-
-  const selectedFile = (): File | null => {
-    switch (formFileField) {
-      case 'characterAssetFile':
-        return createGameFormData.characterAssetFile
-      case 'tileAssetFile':
-        return createGameFormData.tileAssetFile
-      case 'resourceAssetFile':
-        return createGameFormData.resourceAssetFile
-      case 'mapAssetFile':
-        return createGameFormData.mapAssetFile
-      default:
-        return null
-    }
-  }
-
-  const fileId = selectedFileId()
-  const fileName = selectedFileName()
-  const file = selectedFile()
-
-  useEffect(() => {
-    if (fileId) {
-      gameService.getAsset(fileId)
-        .then((response: string) => {
-          setUrl(response)
-        })
-        .catch((error) => {
-          console.error("Error fetching asset:", error)
-        })
-    }
-  }, [fileId])
-
+  const [url, setURL] = useState<string | null>(null)
   const uuid = uuidv4()
 
   const selectFiles = (fileList: FileList | null) => {
@@ -106,14 +33,81 @@ const AssetUpload: FC<AssetUploadProps> = ({
       setCreateGameFormData((prevState: CreateGameFormData) => {
         const newFormData = {
           ...prevState,
-          [formFileField]: fileList.item(0),
-          [formFileNameField]: fileList.item(0)?.name,
-          [formFileIDField]: null,
+          assets: {
+            ...prevState.assets,
+            [fileType]: {
+              id: null,
+              file: fileList.item(0)!,
+              name: fileList.item(0)!.name,
+            },
+          },
         }
         return newFormData
       })
     }
   }
+
+  const selectedFileId = (): number | null => {
+    switch (fileType) {
+      case FileType.CHARACTER:
+        return createGameFormData.assets[FileType.CHARACTER]!.id
+      case FileType.TILE:
+        return createGameFormData.assets[FileType.TILE]!.id
+      case FileType.RESOURCE:
+        return createGameFormData.assets[FileType.RESOURCE]!.id
+      case FileType.MAP:
+        return createGameFormData.assets[FileType.MAP]!.id
+      default:
+        return null
+    }
+  }
+
+  const selectedFileName = (): string | null => {
+    switch (fileType) {
+      case FileType.CHARACTER:
+        return createGameFormData.assets[FileType.CHARACTER]!.name
+      case FileType.TILE:
+        return createGameFormData.assets[FileType.TILE]!.name
+      case FileType.RESOURCE:
+        return createGameFormData.assets[FileType.RESOURCE]!.name
+      case FileType.MAP:
+        return createGameFormData.assets[FileType.MAP]!.name
+      default:
+        return null
+    }
+  }
+
+  const selectedFile = (): File | null => {
+    switch (fileType) {
+      case FileType.CHARACTER:
+        return createGameFormData.assets[FileType.CHARACTER]!.file
+      case FileType.TILE:
+        return createGameFormData.assets[FileType.TILE]!.file
+      case FileType.RESOURCE:
+        return createGameFormData.assets[FileType.RESOURCE]!.file
+      case FileType.MAP:
+        return createGameFormData.assets[FileType.MAP]!.file
+      default:
+        return null
+    }
+  }
+
+  const fileId = selectedFileId()
+  const fileName = selectedFileName()
+  const file = selectedFile()
+
+  useEffect(() => {
+    if (fileId) {
+      gameService
+        .getAsset(fileId)
+        .then((response: string) => {
+          setURL(response)
+        })
+        .catch((error) => {
+          console.error('Error fetching asset:', error)
+        })
+    }
+  }, [fileId])
 
   return (
     <div className={'asset-upload-container'}>
@@ -134,7 +128,7 @@ const AssetUpload: FC<AssetUploadProps> = ({
             onChange={(e) => {
               selectFiles(e.target.files)
             }}
-            accept={fileType}
+            accept={fileExtension}
             hidden={true}
             id={uuid}
             type={'file'}
@@ -143,12 +137,7 @@ const AssetUpload: FC<AssetUploadProps> = ({
         <button
           className={'cta-button'}
           onClick={() => {
-            setAndShowSavedAssetModalForm(
-              requestFileType,
-              formFileIDField,
-              formFileNameField,
-              formFileField,
-            )
+            setAndShowSavedAssetModalForm(fileType)
           }}
         >
           <p className={'text'}>Saved Assets</p>
