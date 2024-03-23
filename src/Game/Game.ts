@@ -37,6 +37,10 @@ export const startGame = (
       pixelArt: true,
       powerPreference: 'high-performance',
     },
+    input: {
+      keyboard: true,
+      mouse: true,
+    },
     scale: {
       mode: Phaser.Scale.ScaleModes.RESIZE,
       width: window.innerWidth,
