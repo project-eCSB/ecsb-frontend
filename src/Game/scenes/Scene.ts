@@ -238,7 +238,7 @@ export class Scene extends Phaser.Scene {
 
     for (let i = 0; i < tilemap.layers.length; i++) {
       const layer = tilemap.createLayer(i, 'Overworld', 0, 0)
-      layer.scale = LAYER_SCALE
+      layer!.scale = LAYER_SCALE
     }
 
     this.loadingBarBuilder = new LoadingBarAndResultBuilder(
@@ -1396,12 +1396,12 @@ export class Scene extends Phaser.Scene {
 
   update(): void {
     const controls: Controls = {
-      up: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-      down: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-      left: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-      right: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-      action: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
-      advancedView: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
+      up: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+      down: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+      left: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      right: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+      action: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+      advancedView: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT),
     }
 
     if (controls.advancedView.isDown || this.settingsView.permanentAdsSetting()) {
