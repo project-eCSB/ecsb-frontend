@@ -17,7 +17,10 @@ export interface AuthResponse {
   Code is 0 if the error is not from the server.
 */
 export class AuthResponseError extends Error {
-  public constructor(public code: number, public message: string) {
+  public constructor(
+    public code: number,
+    public message: string,
+  ) {
     super(message)
   }
 }

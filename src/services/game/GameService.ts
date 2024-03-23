@@ -270,7 +270,7 @@ const gameService = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
-  getAsset
+  getAsset,
 }
 
 export default gameService
