@@ -102,6 +102,7 @@ export interface AdminGameSettingsResponse {
     characterAssetsId: number
     resourceAssetsId: number
   }
+  interactionRadius: number
 }
 
 export interface UserGameSettingsResponse {
@@ -118,6 +119,7 @@ export interface UserGameSettingsResponse {
     characterAssetsId: number
     resourceAssetsId: number
   }
+  interactionRadius: number
 }
 
 export interface Coordinate {

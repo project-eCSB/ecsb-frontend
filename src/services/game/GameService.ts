@@ -69,6 +69,7 @@ const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings
         name: res.name,
         shortName: res.shortName,
         gameAssets: res.gameAssets,
+        interactionRadius: res.interactionRadius,
       }
 
       return gameSettings
@@ -159,6 +160,7 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
         name: res.name,
         shortName: res.shortName,
         gameAssets: res.gameAssets,
+        interactionRadius: res.interactionRadius,
       }
 
       return gameSettings
@@ -270,7 +272,7 @@ const gameService = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
-  getAsset
+  getAsset,
 }
 
 export default gameService

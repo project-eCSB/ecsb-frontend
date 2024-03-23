@@ -14,6 +14,7 @@ export interface GameSettings {
   name: string
   shortName: string
   gameAssets: GameAssets
+  interactionRadius: number
 }
 
 export interface AssetConfig {
