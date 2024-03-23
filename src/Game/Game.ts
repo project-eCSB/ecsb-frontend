@@ -34,12 +34,15 @@ export const startGame = (
     },
     render: {
       antialias: false,
-    },
+      pixelArt: true,
+      powerPreference: 'high-performance',
+  },
     scale: {
       mode: Phaser.Scale.ScaleModes.RESIZE,
       width: window.innerWidth,
       height: window.innerHeight,
     },
+    fps: { target: 30 },
     parent: 'game-content',
     scene: scene,
     plugins: {
