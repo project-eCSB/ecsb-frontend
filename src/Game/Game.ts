@@ -36,7 +36,7 @@ export const startGame = (
       antialias: false,
       pixelArt: true,
       powerPreference: 'high-performance',
-  },
+    },
     scale: {
       mode: Phaser.Scale.ScaleModes.RESIZE,
       width: window.innerWidth,

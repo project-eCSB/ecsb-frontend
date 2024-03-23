@@ -457,25 +457,22 @@ export class StatusAndCoopView {
     // Buttons - Cooperate
     const coopDialogButtonsCooperateExtraWrapper = document.createElement('div')
     coopDialogButtonsCooperateExtraWrapper.id = 'coopDialogButtonsCooperateExtraWrapper'
-    coopDialogButtonsCooperateExtraWrapper.className =
-      !this.scene.plannedTravel.wantToCooperate
-        ? 'coopDialogButtonsCooperateExtraWrapperEnabled'
-        : 'coopDialogButtonsCooperateExtraWrapperEnabledActive'
+    coopDialogButtonsCooperateExtraWrapper.className = !this.scene.plannedTravel.wantToCooperate
+      ? 'coopDialogButtonsCooperateExtraWrapperEnabled'
+      : 'coopDialogButtonsCooperateExtraWrapperEnabledActive'
 
     const coopDialogButtonsCooperateWrapper = document.createElement('div')
     coopDialogButtonsCooperateWrapper.id = 'coopDialogButtonsCooperateWrapper'
-    coopDialogButtonsCooperateWrapper.className =
-      !this.scene.plannedTravel.wantToCooperate
-        ? 'coopDialogButtonsCooperateWrapperEnabled'
-        : 'coopDialogButtonsCooperateWrapperEnabledActive'
+    coopDialogButtonsCooperateWrapper.className = !this.scene.plannedTravel.wantToCooperate
+      ? 'coopDialogButtonsCooperateWrapperEnabled'
+      : 'coopDialogButtonsCooperateWrapperEnabledActive'
 
     const coopDialogButtonsCooperate = document.createElement('button')
     coopDialogButtonsCooperate.id = 'coopDialogButtonsCooperate'
-    coopDialogButtonsCooperate.className =
-      !this.scene.plannedTravel.wantToCooperate
-        ? 'coopDialogButtonsCooperateEnabled'
-        : 'coopDialogButtonsCooperateEnabledActive'
-    
+    coopDialogButtonsCooperate.className = !this.scene.plannedTravel.wantToCooperate
+      ? 'coopDialogButtonsCooperateEnabled'
+      : 'coopDialogButtonsCooperateEnabledActive'
+
     const cooperateIcon = document.createElement('img')
     cooperateIcon.src = '/assets/coopCustomIcon.png'
     cooperateIcon.style.width = '25px'

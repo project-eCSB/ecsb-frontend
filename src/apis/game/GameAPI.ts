@@ -350,7 +350,7 @@ const gameAPI = {
   uploadAsset,
   getAssetConfig,
   getSavedAssets,
-  getAsset
+  getAsset,
 }
 
 export default gameAPI

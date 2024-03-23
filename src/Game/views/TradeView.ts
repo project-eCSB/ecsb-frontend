@@ -464,9 +464,8 @@ export class TradeView {
           } else {
             document.getElementById(`tradeBoxContentLeftResult-${resource.key}`)!.style.display =
               'flex'
-            document.getElementById(
-              `tradeBoxContentLeftResult-${resource.key}-value`,
-            )!.innerText = `${resource.value}`
+            document.getElementById(`tradeBoxContentLeftResult-${resource.key}-value`)!.innerText =
+              `${resource.value}`
           }
 
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -544,9 +543,8 @@ export class TradeView {
           } else {
             document.getElementById(`tradeBoxContentLeftResult-${resource.key}`)!.style.display =
               'flex'
-            document.getElementById(
-              `tradeBoxContentLeftResult-${resource.key}-value`,
-            )!.innerText = `${resource.value}`
+            document.getElementById(`tradeBoxContentLeftResult-${resource.key}-value`)!.innerText =
+              `${resource.value}`
           }
 
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -638,9 +636,8 @@ export class TradeView {
           document.getElementById('tradeBoxContentLeftResult-money-value')!.innerText = '0'
         } else {
           document.getElementById('tradeBoxContentLeftResult-money')!.style.display = 'flex'
-          document.getElementById(
-            'tradeBoxContentLeftResult-money-value',
-          )!.innerText = `${currentState.money}`
+          document.getElementById('tradeBoxContentLeftResult-money-value')!.innerText =
+            `${currentState.money}`
         }
 
         this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -708,9 +705,8 @@ export class TradeView {
           document.getElementById('tradeBoxContentLeftResult-money-value')!.innerText = '0'
         } else {
           document.getElementById('tradeBoxContentLeftResult-money')!.style.display = 'flex'
-          document.getElementById(
-            'tradeBoxContentLeftResult-money-value',
-          )!.innerText = `${currentState.money}`
+          document.getElementById('tradeBoxContentLeftResult-money-value')!.innerText =
+            `${currentState.money}`
         }
 
         this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -940,9 +936,8 @@ export class TradeView {
           } else {
             document.getElementById(`tradeBoxContentRightResult-${resource.key}`)!.style.display =
               'flex'
-            document.getElementById(
-              `tradeBoxContentRightResult-${resource.key}-value`,
-            )!.innerText = `${resource.value}`
+            document.getElementById(`tradeBoxContentRightResult-${resource.key}-value`)!.innerText =
+              `${resource.value}`
           }
 
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -1019,9 +1014,8 @@ export class TradeView {
           } else {
             document.getElementById(`tradeBoxContentRightResult-${resource.key}`)!.style.display =
               'flex'
-            document.getElementById(
-              `tradeBoxContentRightResult-${resource.key}-value`,
-            )!.innerText = `${resource.value}`
+            document.getElementById(`tradeBoxContentRightResult-${resource.key}-value`)!.innerText =
+              `${resource.value}`
           }
 
           this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -1112,9 +1106,8 @@ export class TradeView {
           document.getElementById('tradeBoxContentRightResult-money-value')!.innerText = '0'
         } else {
           document.getElementById('tradeBoxContentRightResult-money')!.style.display = 'flex'
-          document.getElementById(
-            'tradeBoxContentRightResult-money-value',
-          )!.innerText = `${currentState.money}`
+          document.getElementById('tradeBoxContentRightResult-money-value')!.innerText =
+            `${currentState.money}`
         }
 
         this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
@@ -1182,9 +1175,8 @@ export class TradeView {
           document.getElementById('tradeBoxContentRightResult-money-value')!.innerText = '0'
         } else {
           document.getElementById('tradeBoxContentRightResult-money')!.style.display = 'flex'
-          document.getElementById(
-            'tradeBoxContentRightResult-money-value',
-          )!.innerText = `${currentState.money}`
+          document.getElementById('tradeBoxContentRightResult-money-value')!.innerText =
+            `${currentState.money}`
         }
 
         this.scene.sendTradeMinorChange(this.youOffer, this.youGet)
