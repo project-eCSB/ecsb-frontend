@@ -1,7 +1,8 @@
-import { type FC } from 'react'
+import { useState, type FC, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { type CreateGameFormData } from '../../CreateGameForm'
 import './AssetUpload.css'
+import gameService from '../../../../../../services/game/GameService'
 
 interface AssetUploadProps {
   createGameFormData: CreateGameFormData
@@ -31,25 +32,7 @@ const AssetUpload: FC<AssetUploadProps> = ({
   title,
   setAndShowSavedAssetModalForm,
 }) => {
-  const uuid = uuidv4()
-
-  const selectFiles = (fileList: FileList | null) => {
-    if (!fileList) {
-      return
-    }
-
-    if (fileList.length === 1) {
-      setCreateGameFormData((prevState: CreateGameFormData) => {
-        const newFormData = {
-          ...prevState,
-          [formFileField]: fileList.item(0),
-          [formFileNameField]: fileList.item(0)?.name,
-          [formFileIDField]: null,
-        }
-        return newFormData
-      })
-    }
-  }
+  const [url, setUrl] = useState<string | null>(null)
 
   const selectedFileName = (): string | null => {
     switch (formFileNameField) {
@@ -61,6 +44,21 @@ const AssetUpload: FC<AssetUploadProps> = ({
         return createGameFormData.resourceAssetsName
       case 'mapAssetName':
         return createGameFormData.mapAssetName
+      default:
+        return null
+    }
+  }
+
+  const selectedFileId = (): number | null => {
+    switch (formFileIDField) {
+      case 'characterAssetsId':
+        return createGameFormData.characterAssetsId
+      case 'tileAssetId':
+        return createGameFormData.tileAssetId
+      case 'resourceAssetsId':
+        return createGameFormData.resourceAssetsId
+      case 'mapAssetId':
+        return createGameFormData.mapAssetId
       default:
         return null
     }
@@ -81,8 +79,41 @@ const AssetUpload: FC<AssetUploadProps> = ({
     }
   }
 
+  const fileId = selectedFileId()
   const fileName = selectedFileName()
   const file = selectedFile()
+
+  useEffect(() => {
+    if (fileId) {
+      gameService.getAsset(fileId)
+        .then((response: string) => {
+          setUrl(response)
+        })
+        .catch((error) => {
+          console.error("Error fetching asset:", error)
+        })
+    }
+  }, [fileId])
+
+  const uuid = uuidv4()
+
+  const selectFiles = (fileList: FileList | null) => {
+    if (!fileList) {
+      return
+    }
+
+    if (fileList.length === 1) {
+      setCreateGameFormData((prevState: CreateGameFormData) => {
+        const newFormData = {
+          ...prevState,
+          [formFileField]: fileList.item(0),
+          [formFileNameField]: fileList.item(0)?.name,
+          [formFileIDField]: null,
+        }
+        return newFormData
+      })
+    }
+  }
 
   return (
     <div className={'asset-upload-container'}>
@@ -90,9 +121,8 @@ const AssetUpload: FC<AssetUploadProps> = ({
       {fileName && (
         <div className='asset-file'>
           <h5>Currently selected file: {fileName}</h5>
-          {file && (
-            <img className={'asset-image'} src={URL.createObjectURL(file)} alt={file.name} />
-          )}
+          {file && <img className={'asset-image'} src={URL.createObjectURL(file)} alt={fileName} />}
+          {url && <img className={'asset-image'} src={url} alt={fileName} />}
         </div>
       )}
       <div className={'asset-buttons'}>
