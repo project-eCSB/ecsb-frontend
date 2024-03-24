@@ -1,7 +1,7 @@
 import { type GameSettings } from '../../../../../services/game/Types'
 import {
+  type GameAsset,
   type ClassResourceRepresentation,
-  type GameAssets,
   type GameSettingsTravels,
 } from '../../../../../apis/game/Types'
 import './Settings.css'
@@ -55,16 +55,17 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
     )
   }
 
-  const renderAssets = (assets: GameAssets) => {
+  const renderAssets = (assets: GameAsset[]) => {
     return (
       <div className='modal-assets-settings'>
         <h2>
           <strong>Assets</strong>
         </h2>
-        <h3>Map asset ID: {assets.mapAssetId}</h3>
-        <h3>Character assets ID: {assets.characterAssetsId}</h3>
-        <h3>Resource assets ID: {assets.resourceAssetsId}</h3>
-        <h3>Tile assets ID: {assets.tileAssetsId}</h3>
+        {assets.map((asset: GameAsset) => (
+          <h3 key={asset.key}>
+            {asset.key}: {asset.value}
+          </h3>
+        ))}
       </div>
     )
   }

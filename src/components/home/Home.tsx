@@ -8,6 +8,7 @@ import HomeNavbar from './HomeNavbar'
 import { useGameStore } from '../../store/GameStore'
 import { startGame } from '../../Game/Game'
 import LoadingSpinner from '../common/spinner/LoadingSpinner'
+import { FileType } from '../admin/forms/createGameForm/CreateGameForm'
 
 const Home = () => {
   const navigate: NavigateFunction = useNavigate()
@@ -80,11 +81,19 @@ const Home = () => {
         if (!gameToken) {
           setError('Error getting game token')
         } else {
-          const mapConfig = await gameService.getAssetConfig(gameSettings.gameAssets.mapAssetId)
+          const mapConfig = await gameService.getAssetConfig(
+            gameSettings.gameAssets.find((asset) => asset.key === FileType.MAP)!.value,
+          )
 
-          const characterURL = await gameService.getAsset(gameSettings.gameAssets.characterAssetsId)
-          const resourceURL = await gameService.getAsset(gameSettings.gameAssets.resourceAssetsId)
-          const tileSetURL = await gameService.getAsset(gameSettings.gameAssets.tileAssetsId)
+          const characterURL = await gameService.getAsset(
+            gameSettings.gameAssets.find((asset) => asset.key === FileType.CHARACTER)!.value,
+          )
+          const resourceURL = await gameService.getAsset(
+            gameSettings.gameAssets.find((asset) => asset.key === FileType.RESOURCE)!.value,
+          )
+          const tileSetURL = await gameService.getAsset(
+            gameSettings.gameAssets.find((asset) => asset.key === FileType.TILE)!.value,
+          )
 
           const gameData = startGame(
             gameToken,

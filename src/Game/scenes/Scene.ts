@@ -96,6 +96,7 @@ import { InformationView } from '../views/InformationView'
 import { CoopOfferPopup } from '../components/CoopOfferPopup'
 import { ResourceNegotiationView } from '../views/ResourceNegotiationView'
 import { clearOverlayWindows } from '../Game'
+import { FileType } from '../../components/admin/forms/createGameForm/CreateGameForm'
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
   .VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -227,7 +228,7 @@ export class Scene extends Phaser.Scene {
   preload(): void {
     this.load.tilemapTiledJSON(
       MAP_ASSET_KEY,
-      `${VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL}/assets/${this.settings.gameAssets.mapAssetId}`,
+      `${VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL}/assets/${this.settings.gameAssets.find((asset) => asset.key === FileType.MAP)!.value}`,
     )
     this.load.image(TILES_ASSET_KEY, this.tileUrl)
     this.load.spritesheet(CHARACTER_ASSET_KEY, this.characterUrl, {
@@ -876,7 +877,6 @@ export class Scene extends Phaser.Scene {
         this.playerCloudType[msg.senderId] = CloudType.PRODUCTION
         this.playerHasCloud[msg.senderId] = false
         this.playerCloudMovement.set(msg.senderId, true)
-        console.log('xxx')
         break
       case NotificationMessageType.NotificationProductionEnd:
         delete this.playerCloudType[msg.senderId]

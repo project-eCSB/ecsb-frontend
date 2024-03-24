@@ -1,18 +1,18 @@
 import { setGameToken } from '../../apis/apis'
 import gameAPI from '../../apis/game/GameAPI'
 import type {
-  AdminGameSettingsResponse,
+  GameSettingsResponse,
   AssetConfigResponse,
   AssetResponse,
   ClassResourceRepresentation,
   CreateGameRequestTravels,
   NewGameResponse,
   GameTokenResponse,
-  SavedAsset,
   SavedAssetsResponse,
   UploadAssetResponse,
-  UserGameSettingsResponse,
   UserGameStatusResponse,
+  GameAsset,
+  DefaultAssetsResponse,
 } from '../../apis/game/Types'
 import { GameResponseError } from '../../apis/game/Types'
 import type { AssetConfig, EndGameStatus, Equipment, GameSettings, GameStatus } from './Types'
@@ -21,10 +21,7 @@ const createGame = async (
   classResourceRepresentation: ClassResourceRepresentation[],
   gameName: string,
   travels: CreateGameRequestTravels[],
-  mapAssetId: number,
-  tileAssetId: number,
-  characterAssetId: number,
-  resourceAssetsId: number,
+  assets: GameAsset[],
   timeForGame: number,
   maxTimeAmount: number,
   walkingSpeed: number,
@@ -37,12 +34,9 @@ const createGame = async (
       travels,
       classResourceRepresentation,
       gameName,
-      mapAssetId,
-      tileAssetId,
-      characterAssetId,
-      resourceAssetsId,
+      gameAssetsIds: assets,
       timeForGame,
-      maxTimeAmount,
+      maxTimeTokens: maxTimeAmount,
       walkingSpeed,
       interactionRadius,
       defaultMoney,
@@ -59,7 +53,7 @@ const createGame = async (
 const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings> => {
   return await gameAPI
     .getAdminGameSettings({ gameSessionId })
-    .then((res: AdminGameSettingsResponse) => {
+    .then((res: GameSettingsResponse) => {
       const gameSettings: GameSettings = {
         timeForGame: res.timeForGame,
         walkingSpeed: res.walkingSpeed,
@@ -150,7 +144,7 @@ const getGameSession = async (gameCode: string, playerId: string): Promise<numbe
 const getUserGameSettings = async (): Promise<GameSettings> => {
   return await gameAPI
     .getUserGameSettings()
-    .then((res: UserGameSettingsResponse) => {
+    .then((res: GameSettingsResponse) => {
       const gameSettings: GameSettings = {
         timeForGame: res.timeForGame,
         walkingSpeed: res.walkingSpeed,
@@ -236,11 +230,11 @@ const getAssetConfig = async (assetId: number): Promise<AssetConfig> => {
     })
 }
 
-const getSavedAssets = async (fileType: string): Promise<SavedAsset[]> => {
+const getSavedAssets = async (fileType: string): Promise<SavedAssetsResponse> => {
   return await gameAPI
     .getSavedAssets({ fileType: fileType })
     .then((res: SavedAssetsResponse) => {
-      return res.assets
+      return res
     })
     .catch((err: GameResponseError) => {
       throw new Error(err.message)
@@ -252,6 +246,17 @@ const getAsset = async (assetId: number): Promise<string> => {
     .getAsset({ assetId: assetId })
     .then((response: AssetResponse) => {
       return response.assetURL
+    })
+    .catch((err: GameResponseError) => {
+      throw new Error(err.message)
+    })
+}
+
+const getDefaultAssets = async (): Promise<DefaultAssetsResponse> => {
+  return await gameAPI
+    .getDefaultAssets()
+    .then((response: DefaultAssetsResponse) => {
+      return response
     })
     .catch((err: GameResponseError) => {
       throw new Error(err.message)
@@ -273,6 +278,7 @@ const gameService = {
   getAssetConfig,
   getSavedAssets,
   getAsset,
+  getDefaultAssets,
 }
 
 export default gameService

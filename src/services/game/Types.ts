@@ -1,7 +1,7 @@
 import {
   type ClassResourceRepresentation,
   type Coordinate,
-  type GameAssets,
+  type GameAsset,
   type GameSettingsTravels,
 } from '../../apis/game/Types'
 
@@ -13,7 +13,7 @@ export interface GameSettings {
   gameSessionId: number
   name: string
   shortName: string
-  gameAssets: GameAssets
+  gameAssets: GameAsset[]
   interactionRadius: number
 }
 

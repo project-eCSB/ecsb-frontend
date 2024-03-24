@@ -1,7 +1,7 @@
 import { authTokenAuthAndManagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI } from '../apis'
 import type {
   AdminGameSettingsRequest,
-  AdminGameSettingsResponse,
+  GameSettingsResponse,
   AssetConfigRequest,
   AssetConfigResponse,
   AssetRequest,
@@ -14,9 +14,9 @@ import type {
   SavedAssetsResponse,
   UploadAssetRequest,
   UploadAssetResponse,
-  UserGameSettingsResponse,
   UserGameStatusResponse,
-  copyGameRequest,
+  CopyGameRequest,
+  DefaultAssetsResponse,
 } from './Types'
 import { GameResponseError } from './Types'
 import type { EndGameStatus, Equipment } from '../../services/game/Types'
@@ -44,7 +44,7 @@ const createGame = async (data: CreateGameRequest): Promise<NewGameResponse> => 
 
 const getAdminGameSettings = async (
   data: AdminGameSettingsRequest,
-): Promise<AdminGameSettingsResponse> => {
+): Promise<GameSettingsResponse> => {
   return await authTokenAuthAndManagementAPI
     .get(`/admin/settings/${data.gameSessionId}`)
     .then((response) => {
@@ -90,7 +90,7 @@ const startGame = async (data: AdminGameSettingsRequest): Promise<void> => {
     })
 }
 
-const copyGame = async (data: copyGameRequest): Promise<NewGameResponse> => {
+const copyGame = async (data: CopyGameRequest): Promise<NewGameResponse> => {
   return await authTokenAuthAndManagementAPI
     .post(`/admin/copyGame/${data.gameSessionId}?gameName=${data.gameName}`)
     .then((response) => {
@@ -147,7 +147,7 @@ const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> 
     })
 }
 
-const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
+const getUserGameSettings = async (): Promise<GameSettingsResponse> => {
   return await gameTokenAPI
     .get('/settings')
     .then((response) => {
@@ -297,10 +297,7 @@ const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsR
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
       }
-
-      return {
-        assets: response.data,
-      }
+      return response.data
     })
     .catch((error) => {
       if (error.response) {
@@ -335,6 +332,25 @@ const getAsset = async (request: AssetRequest): Promise<AssetResponse> => {
     })
 }
 
+const getDefaultAssets = async (): Promise<DefaultAssetsResponse> => {
+  return await authTokenAuthAndManagementAPI
+    .get(`/assets/default`)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new GameResponseError(response.status, response.data)
+      }
+
+      return response.data as DefaultAssetsResponse
+    })
+    .catch((error) => {
+      if (error.response) {
+        throw new GameResponseError(error.response.status, error.response.data)
+      } else {
+        throw new GameResponseError(0, error.message)
+      }
+    })
+}
+
 /**
  * Game API is used to make request to the server that refers to game.
  */
@@ -353,6 +369,7 @@ const gameAPI = {
   getAssetConfig,
   getSavedAssets,
   getAsset,
+  getDefaultAssets,
 }
 
 export default gameAPI

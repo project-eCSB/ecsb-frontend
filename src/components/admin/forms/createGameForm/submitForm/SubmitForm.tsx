@@ -1,6 +1,11 @@
 import { type CreateGameRequest } from '../../../../../apis/game/Types'
 import gameService from '../../../../../services/game/GameService'
-import { type ClassResource, type CreateGameFormData, type Travel } from '../CreateGameForm'
+import {
+  FileType,
+  type ClassResource,
+  type CreateGameFormData,
+  type Travel,
+} from '../CreateGameForm'
 import './SubmitForm.css'
 
 interface SubmitFormProps {
@@ -66,13 +71,10 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       classResourceRepresentation: [],
       travels: [],
       gameName: '',
-      mapAssetId: 0,
-      tileAssetId: 0,
-      characterAssetId: 0,
-      resourceAssetsId: 0,
+      gameAssetsIds: [],
       timeForGame: 0,
       maxPlayerAmount: 0,
-      maxTimeAmount: 0,
+      maxTimeTokens: 0,
       walkingSpeed: 0,
       interactionRadius: 0,
       defaultMoney: 0,
@@ -125,14 +127,16 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       })
     }
 
-    transformedData.mapAssetId = Number(formData.mapAssetId)
-    transformedData.tileAssetId = Number(formData.tileAssetId)
-    transformedData.characterAssetId = Number(formData.characterAssetsId)
-    transformedData.resourceAssetsId = Number(formData.resourceAssetsId)
+    Object.entries(formData.assets).forEach(([key, value]) => {
+      transformedData.gameAssetsIds.push({
+        key: key,
+        value: value!.id!,
+      })
+    })
 
     transformedData.timeForGame = formData.gameFullTime * 1000 * 60
     transformedData.maxPlayerAmount = formData.maxPlayerAmount
-    transformedData.maxTimeAmount = formData.maxTimeAmount
+    transformedData.maxTimeTokens = formData.maxTimeAmount
     transformedData.walkingSpeed = formData.movingSpeed
     transformedData.interactionRadius = formData.interactionRadius
     transformedData.defaultMoney = formData.defaultMoney
@@ -210,12 +214,9 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         transformedData.classResourceRepresentation,
         transformedData.gameName,
         transformedData.travels,
-        transformedData.mapAssetId,
-        transformedData.tileAssetId,
-        transformedData.characterAssetId,
-        transformedData.resourceAssetsId,
+        transformedData.gameAssetsIds,
         transformedData.timeForGame,
-        transformedData.maxTimeAmount,
+        transformedData.maxTimeTokens,
         transformedData.walkingSpeed,
         transformedData.interactionRadius,
         transformedData.defaultMoney,
@@ -242,10 +243,10 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         <div className='summary-files'>
           <h5>Assets</h5>
           <div>
-            <p>Character Asset File: {createGameFormData.characterAssetsName}</p>
-            <p>Resource Asset File: {createGameFormData.resourceAssetsName}</p>
-            <p>Tile Asset File: {createGameFormData.tileAssetName}</p>
-            <p>Map Asset File: {createGameFormData.mapAssetName}</p>
+            <p>Character Asset File: {createGameFormData.assets[FileType.CHARACTER]?.name}</p>
+            <p>Resource Asset File: {createGameFormData.assets[FileType.RESOURCE]?.name}</p>
+            <p>Tile Asset File: {createGameFormData.assets[FileType.TILE]?.name}</p>
+            <p>Map Asset File: {createGameFormData.assets[FileType.MAP]?.name}</p>
           </div>
         </div>
         <div className='summary-class-resources'>

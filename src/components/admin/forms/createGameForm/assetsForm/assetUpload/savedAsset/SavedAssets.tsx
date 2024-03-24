@@ -1,5 +1,4 @@
 import { type SavedAssetData, type CreateGameFormData } from '../../../CreateGameForm'
-import { format } from 'date-fns'
 import './SavedAssets.css'
 
 interface SavedAssetsProps {
@@ -17,9 +16,33 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
     setCreateGameFormData((prevState: CreateGameFormData) => {
       const newFormData = {
         ...prevState,
-        [data.formAssetFieldToSet]: data.assets[index].id,
-        [data.formAssetNameField]: data.assets[index].name,
-        [data.formAssetFieldToUnset]: null,
+        assets: {
+          ...prevState.assets,
+          [data.type]: {
+            id: data.assets[index].id,
+            file: null,
+            name: data.assets[index].name,
+          },
+        },
+      }
+      return newFormData
+    })
+
+    handleClose()
+  }
+
+  const handleSelectDefaultAsset = () => {
+    setCreateGameFormData((prevState: CreateGameFormData) => {
+      const newFormData = {
+        ...prevState,
+        assets: {
+          ...prevState.assets,
+          [data.type]: {
+            id: data.defaultAssetId,
+            file: null,
+            name: 'Default',
+          },
+        },
       }
       return newFormData
     })
@@ -31,12 +54,9 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
     <div className='saved-assets-overlay'>
       <div className='saved-assets-modal'>
         <div className='saved-assets-list'>
-          {data.assets.map((asset, index) => (
+          {Object.values(data.assets).map((asset, index) => (
             <div key={index} className='saved-asset-item'>
               <div className='saved-asset-name'>{asset.name}</div>
-              <div className='saved-asset-date'>
-                {format(new Date(asset.createdAt), 'yyyy-MM-dd HH:mm:ss')}
-              </div>
               <button
                 className='saved-asset-select'
                 onClick={() => {
@@ -52,7 +72,7 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
           <button className='saved-assets-close' onClick={handleClose}>
             Close
           </button>
-          <button className='saved-assets-default' disabled={true} onClick={handleClose}>
+          <button className='saved-assets-default' onClick={handleSelectDefaultAsset}>
             Choose default
           </button>
         </div>
