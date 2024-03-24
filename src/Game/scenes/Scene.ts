@@ -160,6 +160,8 @@ export class Scene extends Phaser.Scene {
   public plannedTravel: PlannedTravel | null
   public shownGatheredResourcesMessage: boolean
   public playerAdvertisedTravel: Record<PlayerId, string>
+  public playerCloudType: Record<PlayerId, CloudType>
+  public playerHasCloud: Record<PlayerId, boolean>
 
   constructor(
     gameToken: string,
@@ -196,6 +198,8 @@ export class Scene extends Phaser.Scene {
     this.plannedTravel = null
     this.shownGatheredResourcesMessage = false
     this.playerAdvertisedTravel = {}
+    this.playerCloudType = {}
+    this.playerHasCloud = {}
     this.interactionCloudBuiler = new InteractionCloudBuilder()
     this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
     this.contextMenuBuilder = new ContextMenuBuilder()
@@ -837,35 +841,46 @@ export class Scene extends Phaser.Scene {
         this.advertisementInfoBuilder.setMarginAndVisibility(msg.senderId)
         break
       case NotificationMessageType.NotificationTradeStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TALK)
+        this.playerCloudType[msg.senderId] = CloudType.TALK
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationTradeEnd:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TALK)
+        delete this.playerCloudType[msg.senderId]
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationTravelStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TRAVEL)
+        this.playerCloudType[msg.senderId] = CloudType.TRAVEL
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationTravelEnd:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TRAVEL)
+        delete this.playerCloudType[msg.senderId]
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationTravelChoosingStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TRAVEL)
+        this.playerCloudType[msg.senderId] = CloudType.TRAVEL
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationTravelChoosingStop:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TRAVEL)
+        delete this.playerCloudType[msg.senderId]
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationWorkshopChoosingStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.WORK)
+        this.playerCloudType[msg.senderId] = CloudType.WORK
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationWorkshopChoosingStop:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.WORK)
+        delete this.playerCloudType[msg.senderId]
+        this.playerHasCloud[msg.senderId] = false
         break
       case NotificationMessageType.NotificationProductionStart:
-        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.PRODUCTION)
+        this.playerCloudType[msg.senderId] = CloudType.PRODUCTION
+        this.playerHasCloud[msg.senderId] = false
         this.playerCloudMovement.set(msg.senderId, true)
+        console.log('xxx')
         break
       case NotificationMessageType.NotificationProductionEnd:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.PRODUCTION)
+        delete this.playerCloudType[msg.senderId]
+        this.playerHasCloud[msg.senderId] = false
         this.playerCloudMovement.set(msg.senderId, false)
         break
       case NotificationMessageType.NotificationSyncCoopResponse:
@@ -1395,6 +1410,21 @@ export class Scene extends Phaser.Scene {
   }
 
   update(): void {
+    for (const key in this.players) {
+      if (
+        this.playerCloudType[key] &&
+        Math.sqrt(
+          Math.pow(this.players[this.playerId].coords.x - this.players[key].coords.x, 2) +
+            Math.pow(this.players[this.playerId].coords.y - this.players[key].coords.y, 2),
+        ) <= this.settings.interactionRadius
+      ) {
+        if (!this.playerHasCloud[key])
+          this.interactionCloudBuiler.showInteractionCloud(key, this.playerCloudType[key])
+      } else {
+        if (key !== this.playerId) this.interactionCloudBuiler.clearInteractionCloud(key)
+      }
+    }
+
     const controls: Controls = {
       up: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.W),
       down: this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.S),

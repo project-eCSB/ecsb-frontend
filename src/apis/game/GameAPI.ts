@@ -61,6 +61,7 @@ const getAdminGameSettings = async (
         name: response.data.name,
         shortName: response.data.shortName,
         gameAssets: response.data.gameAssets,
+        interactionRadius: response.data.interactionRadius,
       }
     })
     .catch((error) => {
@@ -163,6 +164,7 @@ const getUserGameSettings = async (): Promise<UserGameSettingsResponse> => {
         name: response.data.name,
         shortName: response.data.shortName,
         gameAssets: response.data.gameAssets,
+        interactionRadius: response.data.interactionRadius,
       }
     })
     .catch((error) => {
