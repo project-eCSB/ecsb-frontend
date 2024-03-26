@@ -47,7 +47,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
               <strong>Resource Buyout Price:</strong> {classDto.value.buyoutPrice}
             </p>
             <p>
-              <strong>Token Regeneration Time:</strong> {classDto.value.regenTime}
+              <strong>Token Regeneration Time:</strong> {(classDto.value.regenTime / 1000)} sec
             </p>
           </div>
         ))}
@@ -84,7 +84,7 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
                   {travelValue.value.resources
                     .map((resource) => `${resource.key}: ${resource.value}`)
                     .join(', ')}
-                  {travelValue.value.time !== null ? `, time: ${travelValue.value.time}` : ''}
+                  {`, time: ${travelValue.value.time}, regeneration: ${travelValue.value.regenTime/1000} sec`}
                 </p>
                 <p>
                   <strong>Money reward range:</strong> {travelValue.value.moneyRange.from} -{' '}

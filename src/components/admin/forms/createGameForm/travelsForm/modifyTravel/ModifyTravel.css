@@ -77,17 +77,17 @@
   gap: 1rem;
 }
 
-.modify-travel-modal-rewards .rewards .reward {
+.modify-travel-modal-rewards .rewards .reward .token-reg {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.modify-travel-modal-rewards .rewards .reward label {
+.modify-travel-modal-rewards .rewards .reward label .token-reg {
   font-size: 1rem;
 }
 
-.modify-travel-modal-rewards .rewards .reward input {
+.modify-travel-modal-rewards .rewards .reward input .token-reg {
   font-size: 1rem;
 }
 

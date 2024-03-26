@@ -127,6 +127,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       cost: [],
       minReward: 0,
       maxReward: 0,
+      regenTime: 0
     })
 
     for (const resource of createGameFormData.classResources) {
@@ -155,6 +156,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       cost: [],
       minReward: 0,
       maxReward: 0,
+      regenTime: 0
     })
 
     for (const resource of createGameFormData.classResources) {
@@ -183,6 +185,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       cost: [],
       minReward: 0,
       maxReward: 0,
+      regenTime: 0
     })
 
     for (const resource of createGameFormData.classResources) {

@@ -76,6 +76,25 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
     setCreateGameFormData(updatedTravels)
   }
 
+  const handleTokenRegenerationChange = (value: number) => {
+    const updatedTravels = { ...createGameFormData }
+    const { index, travel } = travelData
+
+    switch (travel.type) {
+      case 'low':
+        updatedTravels.lowTravels[index].regenTime = value
+        break
+      case 'medium':
+        updatedTravels.mediumTravels[index].regenTime = value
+        break
+      case 'high':
+        updatedTravels.highTravels[index].regenTime = value
+        break
+    }
+
+    setCreateGameFormData(updatedTravels)
+  }
+
   return (
     <div className='modify-travel-modal'>
       <div className='modify-travel-modal-content'>
@@ -109,31 +128,45 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
             ))}
           </tbody>
         </table>
+        <div className='modify-travel-modal-token-regeneration'>
+          <h5>Time token regeneration</h5>
+          <div className='token-reg'>
+            <input
+              min={0}
+              max={60}
+              type='number'
+              value={travelData.travel.regenTime}
+              onChange={(e) => {
+                handleTokenRegenerationChange(parseInt(e.target.value, 10))
+              }}
+            />
+        </div>
+        </div>
         <div className='modify-travel-modal-rewards'>
           <h5>Rewards</h5>
           <div className='rewards'>
             <div className='reward'>
               <label htmlFor=''>min</label>
               <input
-                min={0}
-                max={1000000}
-                type='number'
-                value={travelData.travel.minReward}
-                onChange={(e) => {
-                  handleMinRewardChange(parseInt(e.target.value, 10))
-                }}
+                  min={0}
+                  max={1000000}
+                  type='number'
+                  value={travelData.travel.minReward}
+                  onChange={(e) => {
+                    handleMinRewardChange(parseInt(e.target.value, 10))
+                  }}
               />
             </div>
             <div className='reward'>
               <label htmlFor=''>max</label>
               <input
-                min={0}
-                max={1000000}
-                type='number'
-                value={travelData.travel.maxReward}
-                onChange={(e) => {
-                  handleMaxRewardChange(parseInt(e.target.value, 10))
-                }}
+                  min={0}
+                  max={1000000}
+                  type='number'
+                  value={travelData.travel.maxReward}
+                  onChange={(e) => {
+                    handleMaxRewardChange(parseInt(e.target.value, 10))
+                  }}
               />
             </div>
           </div>

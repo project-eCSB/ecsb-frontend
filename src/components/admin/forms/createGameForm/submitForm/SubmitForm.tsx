@@ -57,6 +57,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
             ))}
           </div>
           <div className='summary-travels-travel-reward'>
+            <p>Time token regeneration: {(travel.regenTime)}</p>
             <p>Min Reward: {travel.minReward}</p>
             <p>Max Reward: {travel.maxReward}</p>
           </div>
@@ -71,9 +72,9 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       classResourceRepresentation: [],
       travels: [],
       gameName: '',
-      gameAssetsIds: [],
+      assets: [],
       timeForGame: 0,
-      maxPlayerAmount: 0,
+      minPlayersToStart: 0,
       maxTimeTokens: 0,
       walkingSpeed: 0,
       interactionRadius: 0,
@@ -128,15 +129,15 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     }
 
     Object.entries(formData.assets).forEach(([key, value]) => {
-      transformedData.gameAssetsIds.push({
+      transformedData.assets.push({
         key: key,
         value: value!.id!,
       })
     })
 
     transformedData.timeForGame = formData.gameFullTime * 1000 * 60
-    transformedData.maxPlayerAmount = formData.maxPlayerAmount
-    transformedData.maxTimeTokens = formData.maxTimeAmount
+    transformedData.minPlayersToStart = formData.minPlayersToStart
+    transformedData.maxTimeTokens = formData.maxTimeTokens
     transformedData.walkingSpeed = formData.movingSpeed
     transformedData.interactionRadius = formData.interactionRadius
     transformedData.defaultMoney = formData.defaultMoney
@@ -156,6 +157,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         to: travel.maxReward,
       },
       time: travel.cost[travel.cost.length - 1].itemCost,
+      regenTime: travel.regenTime * 1000
     }
   }
 
@@ -186,7 +188,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     if (value.length === 0) {
       setCreateGameFormData((prevFormData) => ({
         ...prevFormData,
-        maxPlayerAmount: 0,
+        minPlayersToStart: 0,
       }))
       return
     }
@@ -201,7 +203,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
 
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
-      maxPlayerAmount: parsedValue,
+      minPlayersToStart: parsedValue,
     }))
   }
 
@@ -214,13 +216,13 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         transformedData.classResourceRepresentation,
         transformedData.gameName,
         transformedData.travels,
-        transformedData.gameAssetsIds,
+        transformedData.assets,
         transformedData.timeForGame,
         transformedData.maxTimeTokens,
         transformedData.walkingSpeed,
         transformedData.interactionRadius,
         transformedData.defaultMoney,
-        transformedData.maxPlayerAmount,
+        transformedData.minPlayersToStart,
       )
       .then((gameSessionId: number) => {
         setRequestInProgress(false)
@@ -299,11 +301,11 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         />
       </div>
       <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
-        <label htmlFor=''>Number of players</label>
+        <label htmlFor=''>Minimum number of players to start</label>
         <input
           min={1}
           max={30}
-          value={createGameFormData.maxPlayerAmount}
+          value={createGameFormData.minPlayersToStart}
           onChange={(e) => {
             handleChangeNumberOfPlayers(e.target.value)
           }}

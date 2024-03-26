@@ -23,24 +23,24 @@ const createGame = async (
   travels: CreateGameRequestTravels[],
   assets: GameAsset[],
   timeForGame: number,
-  maxTimeAmount: number,
+  maxTimeTokens: number,
   walkingSpeed: number,
   interactionRadius: number,
   defaultMoney: number,
-  maxPlayerAmount: number,
+  minPlayersToStart: number,
 ): Promise<number> => {
   return await gameAPI
     .createGame({
       travels,
       classResourceRepresentation,
       gameName,
-      gameAssetsIds: assets,
+      assets,
       timeForGame,
-      maxTimeTokens: maxTimeAmount,
+      maxTimeTokens,
       walkingSpeed,
       interactionRadius,
       defaultMoney,
-      maxPlayerAmount,
+      minPlayersToStart,
     })
     .then((res: NewGameResponse) => {
       return res.gameSessionId
@@ -55,14 +55,14 @@ const getAdminGameSettings = async (gameSessionId: number): Promise<GameSettings
     .getAdminGameSettings({ gameSessionId })
     .then((res: GameSettingsResponse) => {
       const gameSettings: GameSettings = {
-        timeForGame: res.timeForGame,
-        walkingSpeed: res.walkingSpeed,
         classResourceRepresentation: res.classResourceRepresentation,
         travels: res.travels,
         gameSessionId: res.gameSessionId,
         name: res.name,
         shortName: res.shortName,
         gameAssets: res.gameAssets,
+        timeForGame: res.timeForGame,
+        walkingSpeed: res.walkingSpeed,
         interactionRadius: res.interactionRadius,
       }
 
