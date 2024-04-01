@@ -64,7 +64,7 @@
 .modify-travel-modal-rewards {
   display: flex;
   flex-direction: column;
-  gap: 0rem;
+  gap: 0;
 }
 
 .modify-travel-modal-rewards h5 {

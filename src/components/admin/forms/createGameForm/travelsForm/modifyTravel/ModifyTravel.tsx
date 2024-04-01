@@ -1,5 +1,6 @@
 import { type CreateGameFormData, type ModifyTravelData } from '../../CreateGameForm'
 import './ModifyTravel.css'
+import type React from "react";
 
 interface ModifyTravelProps {
   createGameFormData: CreateGameFormData

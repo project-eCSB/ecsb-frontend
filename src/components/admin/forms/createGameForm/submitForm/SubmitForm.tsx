@@ -7,6 +7,7 @@ import {
   type Travel,
 } from '../CreateGameForm'
 import './SubmitForm.css'
+import type React from "react";
 
 interface SubmitFormProps {
   createGameFormData: CreateGameFormData

@@ -1,3 +1,4 @@
+import type React from 'react';
 import { useState } from 'react'
 import { type CreateGameFormData, type Travel } from '../CreateGameForm'
 import './GameTravelsForm.css'

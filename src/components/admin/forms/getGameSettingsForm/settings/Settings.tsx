@@ -5,6 +5,7 @@ import {
   type GameSettingsTravels,
 } from '../../../../../apis/game/Types'
 import './Settings.css'
+import type React from "react";
 
 interface SettingsProps {
   settings: GameSettings | null

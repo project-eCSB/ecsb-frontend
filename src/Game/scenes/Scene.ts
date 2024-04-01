@@ -1293,7 +1293,7 @@ export class Scene extends Phaser.Scene {
             JSON.parse(JSON.stringify(this.equipment!)),
             {
               money: 0,
-              time: travel.value.time!,
+              time: travel.value.time,
               resources: travel.value.resources,
             },
             null,

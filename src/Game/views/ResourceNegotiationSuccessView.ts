@@ -133,7 +133,7 @@ export class ResourceNegotiationSuccessView {
     }
     if (playerBid.travelerId !== '') {
       const timeContainer = document.createElement('div')
-      if (travel.value.time! > 3) {
+      if (travel.value.time > 3) {
         const timeIconExtraWrapper = document.createElement('div')
         const timeIconWrapper = document.createElement('div')
         timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
@@ -142,14 +142,14 @@ export class ResourceNegotiationSuccessView {
         timeIcon.style.width = '20px'
         timeIcon.style.height = '20px'
         const timeValue = document.createElement('span')
-        timeValue.innerText = `${travel.value.time!}`
+        timeValue.innerText = `${travel.value.time}`
         timeValue.style.marginLeft = '5px'
         timeIconWrapper.appendChild(timeIcon)
         timeIconWrapper.appendChild(timeValue)
         timeIconExtraWrapper.appendChild(timeIconWrapper)
         timeContainer.appendChild(timeIconExtraWrapper)
       } else {
-        for (let i = 0; i < travel.value.time!; i++) {
+        for (let i = 0; i < travel.value.time; i++) {
           const timeIconExtraWrapper = document.createElement('div')
           const timeIconWrapper = document.createElement('div')
           timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
@@ -202,7 +202,7 @@ export class ResourceNegotiationSuccessView {
     }
     if (partnerBid.travelerId !== '') {
       const timeContainer = document.createElement('div')
-      if (travel.value.time! > 3) {
+      if (travel.value.time > 3) {
         const timeIconExtraWrapper = document.createElement('div')
         const timeIconWrapper = document.createElement('div')
         timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
@@ -211,14 +211,14 @@ export class ResourceNegotiationSuccessView {
         timeIcon.style.width = '20px'
         timeIcon.style.height = '20px'
         const timeValue = document.createElement('span')
-        timeValue.innerText = `${travel.value.time!}`
+        timeValue.innerText = `${travel.value.time}`
         timeValue.style.marginLeft = '5px'
         timeIconWrapper.appendChild(timeIcon)
         timeIconWrapper.appendChild(timeValue)
         timeIconExtraWrapper.appendChild(timeIconWrapper)
         timeContainer.appendChild(timeIconExtraWrapper)
       } else {
-        for (let i = 0; i < travel.value.time!; i++) {
+        for (let i = 0; i < travel.value.time; i++) {
           const timeIconExtraWrapper = document.createElement('div')
           const timeIconWrapper = document.createElement('div')
           timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'

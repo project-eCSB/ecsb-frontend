@@ -92,7 +92,7 @@ export class TravelView {
     timeIcon.style.transform = 'translateX(-15px)'
 
     const travelBoxHeaderSideTitle = document.createElement('h2')
-    let sideTitle = ''
+    let sideTitle: string
     switch (travelType) {
       case TravelType.LOW:
         sideTitle = 'BLISKIE'
@@ -186,13 +186,9 @@ export class TravelView {
             if (
               !(
                 travelItem.value.resources.some((resource) => {
-                  if (
-                    resource.value >
-                    this.scene.equipment!.resources.find((res) => res.key === resource.key)!.value
-                  )
-                    return true
-                  return false
-                }) || travelItem.value.time! > this.scene.timeView!.getAvailableTokens()
+                  return resource.value > this.scene.equipment!.resources.find((res) => res.key === resource.key)!.value;
+
+                }) || travelItem.value.time > this.scene.timeView!.getAvailableTokens()
               )
             ) {
               this.enableTravelButton()
@@ -221,7 +217,7 @@ export class TravelView {
 
           const travelItemContentTimes = document.createElement('div')
           travelItemContentTimes.className = 'travelBoxContentItemContentLeftTimes'
-          for (let i = 0; i < travelItem.value.time!; i++) {
+          for (let i = 0; i < travelItem.value.time; i++) {
             const timeIconExtraWrapper = document.createElement('div')
             const timeIconWrapper = document.createElement('div')
             const timeIcon = document.createElement('img')
