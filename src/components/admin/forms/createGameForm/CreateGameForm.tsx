@@ -38,6 +38,7 @@ export interface Travel {
   cost: ItemCost[]
   minReward: number
   maxReward: number
+  regenTime: number
 }
 
 export enum FileType {
@@ -55,7 +56,7 @@ export interface CreateGameFormData {
   highTravels: Travel[]
   gameName: string
   gameFullTime: number
-  maxPlayerAmount: number
+  minPlayersToStart: number
   assets: Record<
     string,
     {
@@ -65,7 +66,7 @@ export interface CreateGameFormData {
     } | null
   >
   movingSpeed: number
-  maxTimeAmount: number
+  maxTimeTokens: number
   interactionRadius: number
   defaultMoney: number
 }
@@ -90,7 +91,7 @@ const CreateGameForm = () => {
     highTravels: [],
     gameName: '',
     gameFullTime: 0,
-    maxPlayerAmount: 0,
+    minPlayersToStart: 0,
     assets: {
       [FileType.CHARACTER]: {
         id: null,
@@ -114,7 +115,7 @@ const CreateGameForm = () => {
       },
     },
     movingSpeed: 0,
-    maxTimeAmount: 0,
+    maxTimeTokens: 0,
     interactionRadius: 0,
     defaultMoney: 0,
   })
@@ -122,7 +123,7 @@ const CreateGameForm = () => {
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
   const [modifyTravelData, setModifyTravelData] = useState<ModifyTravelData>({
     index: 0,
-    travel: { type: 'low', townName: '', cost: [], minReward: 0, maxReward: 0 },
+    travel: { type: 'low', townName: '', cost: [], minReward: 0, maxReward: 0, regenTime: 0 },
   })
   const [showSavedAssetModal, setShowSavedAssetModal] = useState<boolean>(false)
   const [savedAssets, setSavedAssets] = useState<SavedAssetData>({
@@ -180,7 +181,7 @@ const CreateGameForm = () => {
       highTravels: [],
       gameName: '',
       gameFullTime: 0,
-      maxPlayerAmount: 0,
+      minPlayersToStart: 0,
       assets: {
         [FileType.CHARACTER]: {
           id: null,
@@ -204,7 +205,7 @@ const CreateGameForm = () => {
         },
       },
       movingSpeed: 0,
-      maxTimeAmount: 0,
+      maxTimeTokens: 0,
       interactionRadius: 0,
       defaultMoney: 0,
     })
@@ -353,7 +354,7 @@ const CreateGameForm = () => {
           return true
         }
 
-        if (createGameFormData.maxTimeAmount <= 0) {
+        if (createGameFormData.maxTimeTokens <= 0) {
           return true
         }
 
@@ -379,19 +380,19 @@ const CreateGameForm = () => {
         }
 
         for (const travel of createGameFormData.lowTravels) {
-          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0) {
+          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0 || travel.regenTime === 0) {
             return true
           }
         }
 
         for (const travel of createGameFormData.mediumTravels) {
-          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0) {
+          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0 || travel.regenTime === 0) {
             return true
           }
         }
 
         for (const travel of createGameFormData.highTravels) {
-          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0) {
+          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0 || travel.regenTime === 0) {
             return true
           }
         }

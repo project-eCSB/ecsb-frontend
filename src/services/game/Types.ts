@@ -6,14 +6,14 @@ import {
 } from '../../apis/game/Types'
 
 export interface GameSettings {
-  timeForGame: number
-  walkingSpeed: number
   classResourceRepresentation: ClassResourceRepresentation[]
   travels: GameSettingsTravels[]
   gameSessionId: number
   name: string
   shortName: string
   gameAssets: GameAsset[]
+  timeForGame: number
+  walkingSpeed: number
   interactionRadius: number
 }
 

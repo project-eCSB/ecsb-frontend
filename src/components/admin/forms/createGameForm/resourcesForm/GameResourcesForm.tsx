@@ -1,5 +1,6 @@
 import { type CreateGameFormData } from '../CreateGameForm'
 import './GameResourcesForm.css'
+import type React from "react";
 
 interface GameResourcesFormProps {
   createGameFormData: CreateGameFormData
@@ -141,7 +142,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
     if (newValue.length === 0) {
       setCreateGameFormData((prevFormData) => ({
         ...prevFormData,
-        maxTimeAmount: 0,
+        maxTimeTokens: 0,
       }))
       return
     }
@@ -160,7 +161,7 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
 
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
-      maxTimeAmount: parsedNewValue,
+      maxTimeTokens: parsedNewValue,
     }))
   }
 
@@ -350,9 +351,9 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
           <input
             min={0}
             max={100}
-            value={createGameFormData.maxTimeAmount}
+            value={createGameFormData.maxTimeTokens}
             onChange={(e) => {
-              handleChangeTimeAmount(createGameFormData.maxTimeAmount, e.target.value)
+              handleChangeTimeAmount(createGameFormData.maxTimeTokens, e.target.value)
             }}
             type='number'
           />

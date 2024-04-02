@@ -249,9 +249,9 @@ export class ResourceNegotiationView {
     }
 
     const timeContainer = document.createElement('div')
-    if (this.travel.value.time! > 3) {
+    if (this.travel.value.time > 3) {
       const timeValue = document.createElement('span')
-      timeValue.innerText = `${this.travel.value.time!}`
+      timeValue.innerText = `${this.travel.value.time}`
       const timeIcon = document.createElement('img')
       timeIcon.src = '/assets/timeCustomIcon.png'
       timeIcon.style.width = '20px'
@@ -259,7 +259,7 @@ export class ResourceNegotiationView {
       timeContainer.appendChild(timeValue)
       timeContainer.appendChild(timeIcon)
     } else {
-      for (let i = 0; i < this.travel.value.time!; i++) {
+      for (let i = 0; i < this.travel.value.time; i++) {
         const timeIcon = document.createElement('img')
         timeIcon.src = '/assets/timeCustomIcon.png'
         timeIcon.style.width = '20px'
@@ -700,7 +700,7 @@ export class ResourceNegotiationView {
 
     resourceNegotiationContentBoxPlayerTimeContent.appendChild(playerMovesCheckbox)
     const timeContainer = document.createElement('div')
-    if (this.travel.value.time! > 3) {
+    if (this.travel.value.time > 3) {
       const timeIconExtraWrapper = document.createElement('div')
       const timeIconWrapper = document.createElement('div')
       const timeIcon = document.createElement('img')
@@ -708,14 +708,14 @@ export class ResourceNegotiationView {
       timeIcon.style.width = '20px'
       timeIcon.style.height = '20px'
       const timeValue = document.createElement('span')
-      timeValue.innerText = `${this.travel.value.time!}`
+      timeValue.innerText = `${this.travel.value.time}`
       timeValue.style.marginLeft = '5px'
       timeIconWrapper.appendChild(timeIcon)
       timeIconWrapper.appendChild(timeValue)
       timeIconExtraWrapper.appendChild(timeIconWrapper)
       timeContainer.appendChild(timeIconExtraWrapper)
     } else {
-      for (let i = 0; i < this.travel.value.time!; i++) {
+      for (let i = 0; i < this.travel.value.time; i++) {
         const timeIconExtraWrapper = document.createElement('div')
         const timeIconWrapper = document.createElement('div')
         const timeIcon = document.createElement('img')
@@ -930,7 +930,7 @@ export class ResourceNegotiationView {
   }
 
   private updateResourceValue(player: boolean, resourceName: string, value: number): void {
-    let resourceElement: HTMLElement | null = null
+    let resourceElement: HTMLElement | null
     if (player) {
       resourceElement = document.getElementById(`coop-playerBid-${resourceName}`)
     } else {
@@ -942,8 +942,8 @@ export class ResourceNegotiationView {
   }
 
   private updateMoneyValue(player: boolean, percentage: number): void {
-    let moneyPercentageElement: HTMLElement | null = null
-    let moneyValueElement: HTMLElement | null = null
+    let moneyPercentageElement: HTMLElement | null
+    let moneyValueElement: HTMLElement | null
     if (player) {
       moneyPercentageElement = document.getElementById('coop-playerBid-money-percentage')
       moneyValueElement = document.getElementById('coop-playerBid-money-value')

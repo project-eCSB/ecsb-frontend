@@ -24,7 +24,8 @@ export interface CreateGameRequestTravels {
         from: number
         to: number
       }
-      time: number | null
+      time: number
+      regenTime: number
     }
   }[]
 }
@@ -38,9 +39,9 @@ export interface CreateGameRequest {
   travels: CreateGameRequestTravels[]
   classResourceRepresentation: ClassResourceRepresentation[]
   gameName: string
-  gameAssetsIds: GameAsset[]
+  assets: GameAsset[]
   timeForGame: number
-  maxPlayerAmount: number
+  minPlayersToStart: number
   maxTimeTokens: number
   walkingSpeed: number
   interactionRadius: number
@@ -65,7 +66,8 @@ export interface Travel {
   key: number
   value: {
     name: string
-    time: number | null
+    time: number
+    regenTime: number
     moneyRange: {
       from: number
       to: number
@@ -84,14 +86,14 @@ export interface AdminGameSettingsRequest {
 }
 
 export interface GameSettingsResponse {
-  timeForGame: number
-  walkingSpeed: number
   classResourceRepresentation: ClassResourceRepresentation[]
   travels: GameSettingsTravels[]
   gameSessionId: number
   name: string
   shortName: string
   gameAssets: GameAsset[]
+  timeForGame: number
+  walkingSpeed: number
   interactionRadius: number
 }
 
