@@ -25,6 +25,7 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
       case IncomingTradeMessageType.TradeServerBid:
       case IncomingTradeMessageType.TradeServerCancel:
       case IncomingTradeMessageType.TradeServerFinish:
+      case IncomingTradeMessageType.TradeServerRemind:
       case IncomingCoopMessageType.CoopStartPlanning:
       case IncomingCoopMessageType.CoopSimpleJoinPlanning:
       case IncomingCoopMessageType.CoopGatheringJoinPlanning:

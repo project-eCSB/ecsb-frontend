@@ -186,8 +186,10 @@ export class TravelView {
             if (
               !(
                 travelItem.value.resources.some((resource) => {
-                  return resource.value > this.scene.equipment!.resources.find((res) => res.key === resource.key)!.value;
-
+                  return (
+                    resource.value >
+                    this.scene.equipment!.resources.find((res) => res.key === resource.key)!.value
+                  )
                 }) || travelItem.value.time > this.scene.timeView!.getAvailableTokens()
               )
             ) {

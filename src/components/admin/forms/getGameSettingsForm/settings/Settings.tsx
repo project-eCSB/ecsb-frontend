@@ -26,14 +26,30 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
         </h2>
         {classRepresentation.map((classDto) => (
           <div key={classDto.key}>
-            <p><strong>Class Name:</strong> {classDto.key}</p>
-            <p><strong>Class Asset Mapping:</strong> {classDto.value.classAsset}</p>
-            <p><strong>Resource Name:</strong> {classDto.value.gameResourceName}</p>
-            <p><strong>Resource Asset Mapping:</strong> {classDto.value.resourceAsset}</p>
-            <p><strong>Resource Unit Price:</strong> {classDto.value.unitPrice}</p>
-            <p><strong>Resource Max Production:</strong> {classDto.value.maxProduction}</p>
-            <p><strong>Resource Buyout Price:</strong> {classDto.value.buyoutPrice}</p>
-            <p><strong>Token Regeneration Time:</strong> {(classDto.value.regenTime / 1000)} sec</p>
+            <p>
+              <strong>Class Name:</strong> {classDto.key}
+            </p>
+            <p>
+              <strong>Class Asset Mapping:</strong> {classDto.value.classAsset}
+            </p>
+            <p>
+              <strong>Resource Name:</strong> {classDto.value.gameResourceName}
+            </p>
+            <p>
+              <strong>Resource Asset Mapping:</strong> {classDto.value.resourceAsset}
+            </p>
+            <p>
+              <strong>Resource Unit Price:</strong> {classDto.value.unitPrice}
+            </p>
+            <p>
+              <strong>Resource Max Production:</strong> {classDto.value.maxProduction}
+            </p>
+            <p>
+              <strong>Resource Buyout Price:</strong> {classDto.value.buyoutPrice}
+            </p>
+            <p>
+              <strong>Token Regeneration Time:</strong> {classDto.value.regenTime / 1000} sec
+            </p>
           </div>
         ))}
       </div>
@@ -62,8 +78,14 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
                 <h3>City: {travelValue.value.name}</h3>
                 <p>
                   <strong>Cost:</strong>{' '}
-                  {travelValue.value.resources.map((resource) => `${resource.key}: ${resource.value}`).join(', ')}
+                  {travelValue.value.resources
+                    .map((resource) => `${resource.key}: ${resource.value}`)
+                    .join(', ')}
                   {`, time: ${travelValue.value.time}, regeneration: ${travelValue.value.regenTime / 1000} sec`}
+                </p>
+                <p>
+                  <strong>Money reward range:</strong> {travelValue.value.moneyRange.from} -{' '}
+                  {travelValue.value.moneyRange.to}
                 </p>
                 <p><strong>Money reward range:</strong> {travelValue.value.moneyRange.from} - {travelValue.value.moneyRange.to}</p>
               </div>

@@ -266,7 +266,7 @@
     font-size: large;
   }
 
-  #settingsContainer{
+  #settingsContainer {
     width: 350px;
   }
 
@@ -294,7 +294,7 @@
     font-size: medium;
   }
 
-  #settingsContainer{
+  #settingsContainer {
     width: 300px;
   }
 
@@ -302,7 +302,7 @@
     font-size: small;
   }
 
-  #settingsContainer{
+  #settingsContainer {
     padding-top: 3rem;
     padding-bottom: 3rem;
   }
@@ -1542,7 +1542,10 @@
     transform: scale(0.85) translateX(-10%) translateY(-10%);
   }
 
-  #statusButton > span, #statusButtonActive > span, #coopButton > span, #coopButtonActive > span {
+  #statusButton > span,
+  #statusButtonActive > span,
+  #coopButton > span,
+  #coopButtonActive > span {
     font-size: 0.85rem;
   }
 }
@@ -1552,7 +1555,10 @@
     transform: scale(0.7) translateX(-20%) translateY(-20%);
   }
 
-  #statusButton > span, #statusButtonActive > span, #coopButton > span, #coopButtonActive > span {
+  #statusButton > span,
+  #statusButtonActive > span,
+  #coopButton > span,
+  #coopButtonActive > span {
     font-size: 0.7rem;
   }
 }
@@ -2214,7 +2220,11 @@
   margin-right: 8px;
 }
 
-#tradeBoxCloseButton {
+#tradeBoxCloseButton,
+#tradeBoxCloseButtonActive,
+#tradeBoxCloseMessageButton,
+#tradeBoxCloseMessageButtonActive,
+#tradeBoxProposeMessageButton {
   border: none;
   width: 30px;
   height: 30px;
@@ -2224,11 +2234,9 @@
   font-weight: 400;
   line-height: normal;
   position: absolute;
-  top: -7px;
-  right: -7px;
   font-size: 1rem;
   z-index: 999999;
-  background-color: #d39f59;
+  background-color: #edb872;
   filter: drop-shadow(-1px 2px rgb(48, 20, 1, 0.9));
   display: flex;
   justify-content: center;
@@ -2237,13 +2245,96 @@
   transition: 0.1s ease-in-out all;
 }
 
-#tradeBoxCloseButton:hover {
-  transform: translate(1px, -1px);
-  filter: drop-shadow(-2px 3px rgb(48, 20, 1, 0.9));
+#tradeBoxProposeMessageButton {
+  filter: none;
 }
 
-#tradeBoxCloseButton:active {
+#tradeBoxCloseButton,
+#tradeBoxCloseButtonActive {
+  top: -7px;
+  right: -7px;
+}
+
+#tradeBoxCloseMessageButton,
+#tradeBoxCloseMessageButtonActive {
+  transform: scale(0.66);
+  top: 0;
+  right: -26px;
+}
+
+#tradeBoxCloseButton:hover,
+#tradeBoxCloseMessageButton:hover {
+  transform: translate(2px, -2px);
+  filter: drop-shadow(-3px 4px rgb(48, 20, 1, 0.9));
+}
+
+#tradeBoxCloseMessageButton:hover {
+  transform: scale(0.66) translate(3px, -3px);
+}
+
+#tradeBoxCloseButton:active,
+#tradeBoxCloseButtonActive,
+#tradeBoxCloseMessageButton:active,
+#tradeBoxCloseMessageButtonActive {
+  background-color: #ab742b;
   filter: none;
+  transform: translate(0, 0);
+}
+
+#tradeBoxCloseMessageButton:active,
+#tradeBoxCloseMessageButtonActive {
+  transform: scale(0.66) translate(0, 0);
+}
+
+#tradeBoxProposeMessageButtonWrapper,
+#tradeBoxProposeMessageButtonExtraWrapper {
+  width: 30px;
+  height: 30px;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper,
+#tradeBoxProposeMessageButtonExtraWrapperActive {
+  position: relative;
+  top: -6px;
+  left: 5px;
+}
+
+#tradeBoxProposeMessageButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper #tradeBoxProposeMessageButton {
+  transform: translate(3px, -4px);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper:hover #tradeBoxProposeMessageButton {
+  transform: translate(5px, -6px);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper:hover > #tradeBoxProposeMessageButtonWrapper {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapperActive {
+  filter: none;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapperActive > #tradeBoxProposeMessageButtonWrapper {
+  filter: none;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapperActive #tradeBoxProposeMessageButton {
+  background-color: #ab742b;
   transform: translate(0, 0);
 }
 
@@ -2794,6 +2885,7 @@
 
 #userTurnUserTurn {
   background-color: #bfe50e;
+  transition: 0.2s ease-in-out all;
 }
 
 #userTurnNotUserTurn {
@@ -2807,8 +2899,14 @@
   margin-top: 20px;
 }
 
+#tradeBoxProposeButtonExtraWrapper,
+#tradeBoxAcceptButtonExtraWrapper {
+  position: relative;
+}
+
 #tradeBoxProposeButton,
-#tradeBoxAcceptButton {
+#tradeBoxAcceptButton,
+#tradeBoxRemindButton {
   width: 100%;
   padding: 0.5rem;
   clip-path: polygon(
@@ -2920,7 +3018,163 @@
   transform: none;
 }
 
-@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
+#tradeBoxCloseMessagesContainer {
+  position: absolute;
+  top: -40px;
+  right: -320px;
+}
+
+#tradeBoxCloseMessagesContainer > div:last-child > div {
+  transform: scale(1, -1);
+}
+
+#tradeBoxCloseMessagesContainer > div:last-child > div > div {
+  transform: scale(1, -1);
+}
+
+#tradeBoxCloseMessagesContainer > .tradeMessageExtraWrapper {
+  margin-bottom: 8px;
+}
+
+#tradeMessageReceivedExtraWrapper {
+  width: 300px;
+  position: absolute;
+  top: -20px;
+  right: -200px;
+}
+
+.tradeMessageClickable {
+  cursor: pointer;
+}
+
+.tradeMessageExtraWrapper {
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+.tradeMessageWrapper {
+  padding: 8px 20px 12px 20px;
+  background-color: #e3c296;
+  clip-path: polygon(
+    8.33% 12.29%,
+    11.22% 12%,
+    15.22% 12.29%,
+    19.89% 12.29%,
+    25.44% 11.71%,
+    33.33% 12%,
+    40.67% 12.86%,
+    47.78% 12.57%,
+    54.78% 11.71%,
+    60.11% 11.43%,
+    63.67% 12.29%,
+    68.56% 12.57%,
+    72.67% 12%,
+    73.78% 15.71%,
+    75.33% 12.57%,
+    78.89% 13.43%,
+    82.44% 13.43%,
+    86.67% 14%,
+    91.33% 14%,
+    95.44% 14.57%,
+    96% 26.86%,
+    96.22% 35.71%,
+    96.56% 42.29%,
+    96.67% 50.29%,
+    96.89% 60.86%,
+    96.56% 70.57%,
+    96.22% 75.43%,
+    95.67% 79.14%,
+    94.89% 82%,
+    92.44% 83.14%,
+    88.78% 83.43%,
+    85.11% 84%,
+    82% 84.29%,
+    76.44% 84.57%,
+    70.78% 84%,
+    62.78% 83.71%,
+    56.56% 83.14%,
+    50.56% 83.14%,
+    44.56% 82.57%,
+    37.67% 82%,
+    32.56% 81.14%,
+    30.44% 77.71%,
+    27.89% 81.43%,
+    24.56% 80.57%,
+    21.11% 79.71%,
+    18.22% 79.71%,
+    15.56% 80.86%,
+    12.56% 84%,
+    8.67% 88.86%,
+    5.56% 92.29%,
+    1.44% 98%,
+    2.33% 94%,
+    3.33% 90.57%,
+    4.33% 85.71%,
+    4.78% 80.86%,
+    5.33% 76.86%,
+    5.56% 73.43%,
+    5.44% 66.29%,
+    5.22% 58%,
+    4.78% 49.43%,
+    4.67% 41.43%,
+    4.89% 31.14%,
+    5.22% 21.14%,
+    5.56% 16.57%,
+    6.33% 13.14%
+  );
+  width: 100%;
+  height: 100%;
+}
+
+.tradeMessageExtraWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+.tradeMessageExtraWrapper:hover > .tradeMessageWrapper {
+  transform: translate(2px, -2px);
+}
+
+#tradeBoxCloseMessagesContainer
+  > .tradeMessageExtraWrapper:last-child:hover
+  > .tradeMessageWrapper {
+  transform: scale(1, -1) translate(2px, 2px);
+}
+
+.tradeMessage {
+  width: 120%;
+  height: 100%;
+  padding: 5px;
+}
+
+.tradeMessageMiddle {
+  padding: 10px 5px 15px 5px !important;
+}
+
+#tradeBoxMessagesContainer {
+  position: relative;
+  top: -25px;
+}
+
+#tradeBoxMessagesContainer > div > div {
+  transform: scale(1, -1);
+}
+
+#tradeBoxMessagesContainer > div > div > div {
+  transform: scale(1, -1);
+}
+
+#tradeBoxMessagesContainer > div > div:hover {
+  transform: scale(1, -1) translate(2px, 2px);
+}
+
+#tradeMessageReceivedExtraWrapper {
+  filter: none;
+}
+
+#tradeMessageReceivedExtraWrapper > .tradeMessageWrapper {
+  transform: none;
+}
+
+@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
   #tradeBoxWrapper {
     transform: scale(0.85);
   }
@@ -3001,7 +3255,7 @@
     1.59% 62.1%,
     2.09% 76.88%
   );
-  background-color: #F6DCB8;
+  background-color: #f6dcb8;
   transition: 0.2s ease-in-out;
   border: none;
   cursor: pointer;
@@ -3019,8 +3273,8 @@
     8.14% 79.35%,
     12.19% 80.42%,
     27.28% 82.01%,
-    29.80% 77.88%,
-    31.70% 82.77%,
+    29.8% 77.88%,
+    31.7% 82.77%,
     43.78% 83.41%,
     45.81% 84.11%,
     47.14% 86.08%,
@@ -3037,7 +3291,7 @@
     95.42% 77.71%,
     96.37% 65.28%,
     95.97% 39.85%,
-    94.90% 6.71%,
+    94.9% 6.71%,
     87.04% 5.56%,
     74.74% 4.99%,
     73.29% 7.85%,
@@ -3046,7 +3300,7 @@
     42.52% 5.01%,
     20.62% 6.15%
   );
-  background-color: #F6DCB8;
+  background-color: #f6dcb8;
   position: relative;
   height: 45px;
   padding: 0.5rem 1rem 1rem;
@@ -3063,8 +3317,9 @@
   transform: translate(2px, -2px);
 }
 
-/* TradeSuccessBox */
-#tradeSuccessBox {
+/* TradeSuccessBox & TradeFailureBox */
+#tradeSuccessBox,
+#tradeFailureBox {
   position: fixed;
   top: -50vh;
   left: -50vw;
@@ -3080,12 +3335,14 @@
 }
 
 /* TradeSuccessBox - Header */
-#tradeSuccessBoxHeaderWrapper {
+#tradeSuccessBoxHeaderWrapper,
+#tradeFailureBoxHeaderWrapper {
   position: relative;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#tradeSuccessBoxHeader {
+#tradeSuccessBoxHeader,
+#tradeFailureBoxHeader {
   width: 100%;
   background-color: #edb872;
   clip-path: polygon(
@@ -3137,29 +3394,35 @@
   line-height: normal;
 }
 
-#tradeSuccessBoxHeader > h1 {
+#tradeSuccessBoxHeader > h1,
+#tradeFailureBoxHeader > h1 {
   font-size: 1.5rem;
   text-align: center;
 }
 
 #tradeSuccessBoxHeader > div:first-child,
-#tradeSuccessBoxHeader > div:last-child {
+#tradeSuccessBoxHeader > div:last-child,
+#tradeFailureBoxHeader > div:first-child,
+#tradeFailureBoxHeader > div:last-child {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-#tradeSuccessBoxHeader > div:first-child {
+#tradeSuccessBoxHeader > div:first-child,
+#tradeFailureBoxHeader > div:first-child {
   margin-right: 8px;
 }
 
 /* TradeSuccessBox - Information */
-#tradeSuccessBoxInformationBoxWrapper {
+#tradeSuccessBoxInformationBoxWrapper,
+#tradeFailureBoxInformationBoxWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#tradeSuccessBoxInformationBox {
+#tradeSuccessBoxInformationBox,
+#tradeFailureBoxInformationBox {
   padding: 1.2rem;
   background-color: #e3c296;
   clip-path: polygon(
@@ -3206,7 +3469,8 @@
   gap: 0.5rem;
 }
 
-#tradeSuccessBoxInformationBox > h1 {
+#tradeSuccessBoxInformationBox > h1,
+#tradeFailureBoxInformationBox > h1 {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -3215,11 +3479,13 @@
 }
 
 /* TradeSuccessBox - Content */
-#tradeSuccessBoxContentBoxExtraWrapper {
+#tradeSuccessBoxContentBoxExtraWrapper,
+#tradeFailureBoxContentBoxExtraWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-#tradeSuccessBoxContentBoxWrapper {
+#tradeSuccessBoxContentBoxWrapper,
+#tradeFailureBoxContentBoxWrapper {
   background-color: #edb872;
   clip-path: polygon(
     3.05% 90%,
@@ -3261,10 +3527,34 @@
   );
 }
 
-#tradeSuccessBoxContentBox {
+#tradeSuccessBoxContentBox,
+#tradeFailureBoxContentBox {
   padding: 30px 50px;
   display: flex;
   gap: 20px;
+}
+
+#tradeFailureBoxContentBox {
+  min-height: 150px;
+}
+
+.tradeFailureBoxContentBoxUsername {
+  font-size: 1.2rem;
+}
+
+#tradeFailureBoxContentBox > div:first-child,
+#tradeFailureBoxContentBox > div:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: end;
+}
+
+#tradeFailureBoxContentBox > div:nth-child(2) {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: start;
 }
 
 #tradeSuccessBoxContentBox > h2 {
@@ -3369,36 +3659,43 @@
 }
 
 /* TradeSuccessBox - Ok button */
-#tradeSuccessBoxOkButtonExtraWrapper {
+#tradeSuccessBoxOkButtonExtraWrapper,
+#tradeFailureBoxOkButtonExtraWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px 4px #edb872);
   border: none;
 }
 
-#tradeSuccessBoxOkButtonExtraWrapper:hover {
+#tradeSuccessBoxOkButtonExtraWrapper:hover,
+#tradeFailureBoxOkButtonExtraWrapper:hover {
   filter: none;
 }
 
-#tradeSuccessBoxOkButtonExtraWrapperActive {
+#tradeSuccessBoxOkButtonExtraWrapperActive,
+#tradeFailureBoxOkButtonExtraWrapperActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
-#tradeSuccessBoxOkButtonWrapper {
+#tradeSuccessBoxOkButtonWrapper,
+#tradeFailureBoxOkButtonWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
 }
 
-#tradeSuccessBoxOkButtonWrapper:hover {
+#tradeSuccessBoxOkButtonWrapper:hover,
+#tradeFailureBoxOkButtonWrapper:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
-#tradeSuccessBoxOkButtonWrapperActive {
+#tradeSuccessBoxOkButtonWrapperActive,
+#tradeFailureBoxOkButtonWrapperActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
-#tradeSuccessBoxOkButton {
+#tradeSuccessBoxOkButton,
+#tradeFailureBoxOkButton {
   border: none;
   padding: 0.8rem 1.6rem;
   font-style: normal;
@@ -3448,23 +3745,25 @@
   );
 }
 
-#tradeSuccessBoxOkButtonExtraWrapper:hover #tradeSuccessBoxOkButton {
+#tradeSuccessBoxOkButtonExtraWrapper:hover #tradeSuccessBoxOkButton,
+#tradeFailureBoxOkButtonExtraWrapper:hover #tradeFailureBoxOkButton {
   cursor: pointer;
   transform: translate(2px, -2px);
 }
 
-#tradeSuccessBoxOkButton {
+#tradeSuccessBoxOkButton,
+#tradeFailureBoxOkButton {
   transition: 0.2s all ease-in-out;
   color: #000;
   background-color: #edb872;
   cursor: pointer;
 }
 
-#tradeSuccessBoxOkButton:hover {
+#tradeSuccessBoxOkButton:hover #tradeFailureBoxOkButton:hover {
   transform: translate(-1px, 2px);
 }
 
-#tradeSuccessBoxOkButtonActive {
+#tradeSuccessBoxOkButtonActive #tradeFailureBoxOkButtonActive {
   background-color: #ab742b;
   color: #000;
   transition: 0.2s all ease-in-out;
@@ -3475,10 +3774,16 @@
   #tradeSuccessBox {
     transform: scale(0.85);
   }
+  #tradeFailureBox {
+    transform: scale(0.85);
+  }
 }
 
 @media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #tradeSuccessBox {
+    transform: scale(0.7);
+  }
+  #tradeFailureBox {
     transform: scale(0.7);
   }
 }
@@ -4334,7 +4639,7 @@
 
 #travelBoxContentWrapper > hr {
   width: 150%;
-  color: #EDB872;
+  color: #edb872;
   border: none;
   box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.25);
   height: 2px;
@@ -6197,13 +6502,13 @@
   height: 20px;
   appearance: none;
   padding: 1px;
-  border: 4px solid #C19356;
+  border: 4px solid #c19356;
   outline: none;
   border-radius: 50%;
 }
 
 .runsCheckbox {
-  background-color: #C19356;
+  background-color: #c19356;
 }
 
 .runsCheckboxEnabled:checked {
@@ -6277,7 +6582,7 @@
   line-height: normal;
   font-size: 1rem;
   text-align: center;
-  background-color: #E3C296;
+  background-color: #e3c296;
 }
 
 /* ResourceNegotiationView - Buttons */
@@ -6390,8 +6695,10 @@
   border: none;
 }
 
-.resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover .resourceNegotiationButtonsProposeButtonEnabled,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover .resourceNegotiationButtonsAcceptButtonEnabled {
+.resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover
+  .resourceNegotiationButtonsProposeButtonEnabled,
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover
+  .resourceNegotiationButtonsAcceptButtonEnabled {
   cursor: pointer;
   transform: translate(2px, -2px);
 }
@@ -6404,7 +6711,7 @@
 }
 
 .resourceNegotiationButtonsProposeButtonEnabledActive,
-.resourceNegotiationButtonsAcceptButtonEnabledActive  {
+.resourceNegotiationButtonsAcceptButtonEnabledActive {
   background-color: #ab742b;
   color: #000;
   transition: 0.2s all ease-in-out;
@@ -6444,8 +6751,8 @@
   outline: none;
   border: none;
   opacity: 0.5;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
   margin: 0;
   padding: 0;
   border-radius: 15px;
@@ -6475,8 +6782,8 @@
   opacity: 1;
 }
 
-.negotiationRangeSliderFront::-moz-range-thumb ,
-.negotiationRangeSliderBack::-moz-range-thumb  {
+.negotiationRangeSliderFront::-moz-range-thumb,
+.negotiationRangeSliderBack::-moz-range-thumb {
   width: 25px;
   height: 25px;
   background: black;
@@ -6509,7 +6816,7 @@
     transform: scale(0.85);
   }
 }
-  
+
 @media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #resourceNegotiationSuccessBox {
     transform: scale(0.7);
@@ -6723,7 +7030,7 @@
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-.resourceNegotiationSuccessContentBoxResources > div > div:last-child  > h5 {
+.resourceNegotiationSuccessContentBoxResources > div > div:last-child > h5 {
   display: flex;
   justify-content: center;
   align-items: center;

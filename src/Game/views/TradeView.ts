@@ -4,6 +4,7 @@ import { type ClassResourceRepresentation, type TradeEquipment } from '../../api
 import { ImageCropper } from '../tools/ImageCropper'
 import { getResourceMapping } from '../GameUtils'
 import { TradeSuccessView } from './TradeSuccessView'
+import { TradeFailureView } from './TradeFailureView'
 
 export class TradeView {
   private static readonly maxPlayerIdLength = 24
@@ -27,6 +28,7 @@ export class TradeView {
   public static readonly tradeBoxHeaderWrapperID = 'tradeBoxHeaderWrapper'
   public static readonly tradeBoxHeaderID = 'tradeBoxHeader'
   public static readonly tradeBoxCloseButtonID = 'tradeBoxCloseButton'
+  public static readonly tradeBoxCloseButtonActiveID = 'tradeBoxCloseButtonActive'
   /* TradeBox - Content */
   public static readonly tradeBoxContentID = 'tradeBoxContent'
   public static readonly tradeBoxContentLeftWrapperID = 'tradeBoxContentLeftWrapper'
@@ -46,6 +48,10 @@ export class TradeView {
   public static readonly tradeBoxAcceptButtonExtraWrapperID = 'tradeBoxAcceptButtonExtraWrapper'
   public static readonly tradeBoxAcceptButtonWrapperID = 'tradeBoxAcceptButtonWrapper'
   public static readonly tradeBoxAcceptButtonID = 'tradeBoxAcceptButton'
+  /* TradeBox - Remind Button */
+  public static readonly tradeBoxRemindButtonExtraWrapperID = 'tradeBoxRemindButtonExtraWrapper'
+  public static readonly tradeBoxRemindButtonWrapperID = 'tradeBoxRemindButtonWrapper'
+  public static readonly tradeBoxRemindButtonID = 'tradeBoxRemindButton'
   /* HTML Elements */
   private readonly tradeBoxWrapper: HTMLDivElement
   private readonly tradeBoxCurrPlayerTurnHeader: HTMLHeadingElement
@@ -55,7 +61,20 @@ export class TradeView {
   private readonly tradeBoxAcceptButtonExtraWrapper: HTMLDivElement
   private readonly tradeBoxAcceptButtonWrapper: HTMLDivElement
   private readonly tradeBoxAcceptButton: HTMLButtonElement
+  private readonly tradeBoxRemindButtonExtraWrapper: HTMLDivElement
+  private readonly tradeBoxRemindButtonWrapper: HTMLDivElement
+  private readonly tradeBoxRemindButton: HTMLButtonElement
+  private readonly tradeBoxCloseButton: HTMLButtonElement
+  private readonly tradeBoxCloseMessageButton: HTMLButtonElement
   private readonly resourceButtons: HTMLButtonElement[] = []
+  /* Messages */
+  private readonly tradeBoxReceivedMessageExtraWrapper: HTMLDivElement
+  private readonly tradeBoxReceivedMessage: HTMLDivElement
+  private readonly tradeBoxProposeMessageButtonExtraWrapper: HTMLDivElement
+  private readonly tradeBoxProposeMessagesContainer: HTMLDivElement
+  private readonly tradeBoxCloseMessagesContainer: HTMLDivElement
+  /* Timeouts */
+  private remindButtonTimeoutID: number | null = null
 
   constructor(
     scene: Scene,
@@ -132,22 +151,81 @@ export class TradeView {
     tradeBoxHeader.appendChild(rightArrows)
     tradeBoxHeaderWrapper.appendChild(tradeBoxHeader)
 
-    const tradeBoxCloseButton = document.createElement('button')
-    tradeBoxCloseButton.id = TradeView.tradeBoxCloseButtonID
-    tradeBoxCloseButton.addEventListener('click', () => {
-      scene.cancelTrade()
-      const cloud = document.getElementById(`actionCloud-${this.scene.playerId}`)
-      if (cloud) {
-        cloud.style.visibility = 'hidden'
-      }
-      this.close(false)
+    // Close button
+    this.tradeBoxCloseButton = document.createElement('button')
+    this.tradeBoxCloseButton.id = TradeView.tradeBoxCloseButtonID
+    this.tradeBoxCloseButton.addEventListener('click', () => {
+      this.handleClose('')
     })
     const XIcon = document.createElement('i')
     XIcon.className = 'fa fa-times'
     XIcon.ariaHidden = 'true'
     XIcon.style.color = 'black'
-    tradeBoxCloseButton.appendChild(XIcon)
-    tradeBoxHeaderWrapper.appendChild(tradeBoxCloseButton)
+    this.tradeBoxCloseButton.appendChild(XIcon)
+    tradeBoxHeaderWrapper.appendChild(this.tradeBoxCloseButton)
+
+    // Show/Hide close messages button
+    this.tradeBoxCloseMessageButton = document.createElement('button')
+    this.tradeBoxCloseMessageButton.id = 'tradeBoxCloseMessageButton'
+    this.tradeBoxCloseMessageButton.addEventListener('click', () => {
+      this.tradeBoxCloseMessagesContainer.style.display =
+        this.tradeBoxCloseMessagesContainer.style.display === 'block' ? 'none' : 'block'
+      this.tradeBoxCloseButton.id =
+        this.tradeBoxCloseMessageButton.id === 'tradeBoxCloseMessageButtonActive'
+          ? TradeView.tradeBoxCloseButtonID
+          : TradeView.tradeBoxCloseButtonActiveID
+      this.tradeBoxCloseMessageButton.id =
+        this.tradeBoxCloseMessageButton.id === 'tradeBoxCloseMessageButtonActive'
+          ? 'tradeBoxCloseMessageButton'
+          : 'tradeBoxCloseMessageButtonActive'
+    })
+    const CloseChatIcon = document.createElement('i')
+    CloseChatIcon.className = 'fa fa-comment'
+    CloseChatIcon.ariaHidden = 'true'
+    CloseChatIcon.style.color = 'black'
+    this.tradeBoxCloseMessageButton.appendChild(CloseChatIcon)
+    tradeBoxHeaderWrapper.appendChild(this.tradeBoxCloseMessageButton)
+
+    // Close messages
+    this.tradeBoxCloseMessagesContainer = document.createElement('div')
+    this.tradeBoxCloseMessagesContainer.id = 'tradeBoxCloseMessagesContainer'
+
+    const tradeBoxCloseMessageOneExtraWrapper = document.createElement('div')
+    tradeBoxCloseMessageOneExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxCloseMessageOneExtraWrapper.addEventListener('click', () => {
+      this.handleClose('Muszę iść wyprodukować zasób')
+    })
+    const tradeBoxCloseMessageOneWrapper = document.createElement('div')
+    tradeBoxCloseMessageOneWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxCloseMessageOne = document.createElement('div')
+    tradeBoxCloseMessageOne.className = 'tradeMessage'
+    tradeBoxCloseMessageOne.innerText = 'Muszę iść wyprodukować zasób'
+    tradeBoxCloseMessageOneExtraWrapper.appendChild(tradeBoxCloseMessageOneWrapper)
+    tradeBoxCloseMessageOneWrapper.appendChild(tradeBoxCloseMessageOne)
+
+    const tradeBoxCloseMessageTwoExtraWrapper = document.createElement('div')
+    tradeBoxCloseMessageTwoExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxCloseMessageTwoExtraWrapper.addEventListener('click', () => {
+      this.handleClose('Nie mam tego co chcesz')
+    })
+    const tradeBoxCloseMessageTwoWrapper = document.createElement('div')
+    tradeBoxCloseMessageTwoWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxCloseMessageTwo = document.createElement('div')
+    tradeBoxCloseMessageTwo.className = 'tradeMessage'
+    tradeBoxCloseMessageTwo.innerText = 'Nie mam tego co chcesz'
+    tradeBoxCloseMessageTwoExtraWrapper.appendChild(tradeBoxCloseMessageTwoWrapper)
+    tradeBoxCloseMessageTwoWrapper.appendChild(tradeBoxCloseMessageTwo)
+
+    this.tradeBoxCloseMessagesContainer.appendChild(tradeBoxCloseMessageOneExtraWrapper)
+    this.tradeBoxCloseMessagesContainer.appendChild(tradeBoxCloseMessageTwoExtraWrapper)
+
+    tradeBoxHeaderWrapper.appendChild(this.tradeBoxCloseMessagesContainer)
 
     // Content
     const tradeBoxContent = document.createElement('div')
@@ -202,9 +280,22 @@ export class TradeView {
     tradeBoxContentRight.id = 'tradeBoxContentRight'
     this.fillOtherPlayerEq(otherPlayerId, tradeBoxContentRight, this.youGet)
 
+    this.tradeBoxReceivedMessageExtraWrapper = document.createElement('div')
+    this.tradeBoxReceivedMessageExtraWrapper.id = 'tradeMessageReceivedExtraWrapper'
+    this.tradeBoxReceivedMessageExtraWrapper.className = 'tradeMessageExtraWrapper'
+    const tradeBoxReceivedMessageWrapper = document.createElement('div')
+    tradeBoxReceivedMessageWrapper.className = 'tradeMessageWrapper'
+    this.tradeBoxReceivedMessage = document.createElement('div')
+    this.tradeBoxReceivedMessage.className = 'tradeMessage'
+    this.tradeBoxReceivedMessage.innerText = ''
+
+    this.tradeBoxReceivedMessageExtraWrapper.appendChild(tradeBoxReceivedMessageWrapper)
+    tradeBoxReceivedMessageWrapper.appendChild(this.tradeBoxReceivedMessage)
+
     tradeBoxContentRightWrapper.appendChild(tradeBoxContentRight)
     tradeBoxContentRightExtraWrapper.appendChild(tradeBoxContentRightWrapper)
     tradeBoxContentRightExtraWrapper.appendChild(tradeBoxContentRightWrapperTitleExtraWrapper)
+    tradeBoxContentRightExtraWrapper.appendChild(this.tradeBoxReceivedMessageExtraWrapper)
 
     // Content middle
     const tradeBoxContentMiddle = document.createElement('div')
@@ -227,7 +318,11 @@ export class TradeView {
     middleArrowsRight.style.width = '100px'
     middleArrows.appendChild(middleArrowsLeft)
     middleArrows.appendChild(middleArrowsRight)
+
     tradeBoxContentMiddle.appendChild(middleArrows)
+
+    // Propose button
+    const tradeBoxProposeContainer = document.createElement('div')
 
     this.tradeBoxProposeButtonExtraWrapper = document.createElement('div')
     this.tradeBoxProposeButtonExtraWrapper.id = TradeView.tradeBoxProposeButtonExtraWrapperID
@@ -237,44 +332,120 @@ export class TradeView {
     this.tradeBoxProposeButton.id = TradeView.tradeBoxProposeButtonID
     this.tradeBoxProposeButton.innerText = 'ZAPROPONUJ'
     this.tradeBoxProposeButton.addEventListener('click', () => {
-      if (this.isCurrPlayerTurn) {
-        this.tradeBoxProposeButtonExtraWrapper.className =
-          this.tradeBoxProposeButtonExtraWrapper.className ===
-          'tradeBoxMiddleButtonExtraWrapperEnabledActive'
-            ? 'tradeBoxMiddleButtonExtraWrapperEnabled'
-            : 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
-
-        this.tradeBoxProposeButtonWrapper.className =
-          this.tradeBoxProposeButtonWrapper.className === 'tradeBoxMiddleButtonWrapperEnabledActive'
-            ? 'tradeBoxMiddleButtonWrapperEnabled'
-            : 'tradeBoxMiddleButtonWrapperEnabledActive'
-
-        this.tradeBoxProposeButton.className =
-          this.tradeBoxProposeButton.className === 'tradeBoxMiddleButtonEnabledActive'
-            ? 'tradeBoxMiddleButtonEnabled'
-            : 'tradeBoxMiddleButtonEnabledActive'
-
-        this.disableProposeButton()
-
-        scene.sendTradeBid(this.youOffer, this.youGet)
-        this.isCurrPlayerTurn = false
-        this.updatePlayerTurnElements()
-        this.youOfferPrevious = JSON.parse(JSON.stringify(this.youOffer))
-        this.youGetPrevious = JSON.parse(JSON.stringify(this.youGet))
-      }
+      this.handlePropose('')
     })
-    this.disableProposeButton()
 
     this.tradeBoxProposeButtonWrapper.appendChild(this.tradeBoxProposeButton)
     this.tradeBoxProposeButtonExtraWrapper.appendChild(this.tradeBoxProposeButtonWrapper)
-    tradeBoxContentMiddle.appendChild(this.tradeBoxProposeButtonExtraWrapper)
 
+    tradeBoxProposeContainer.appendChild(this.tradeBoxProposeButtonExtraWrapper)
+
+    // Show/Hide propose messages button
+    this.tradeBoxProposeMessageButtonExtraWrapper = document.createElement('div')
+    this.tradeBoxProposeMessageButtonExtraWrapper.id = 'tradeBoxProposeMessageButtonExtraWrapper'
+    const tradeBoxProposeMessageButtonWrapper = document.createElement('div')
+    tradeBoxProposeMessageButtonWrapper.id = 'tradeBoxProposeMessageButtonWrapper'
+    const tradeBoxProposeMessageButton = document.createElement('button')
+    tradeBoxProposeMessageButton.id = 'tradeBoxProposeMessageButton'
+    tradeBoxProposeMessageButton.addEventListener('click', () => {
+      this.tradeBoxProposeMessagesContainer.style.display =
+        this.tradeBoxProposeMessagesContainer.style.display === 'block' ? 'none' : 'block'
+      this.tradeBoxProposeMessageButtonExtraWrapper.id =
+        this.tradeBoxProposeMessageButtonExtraWrapper.id ===
+        'tradeBoxProposeMessageButtonExtraWrapper'
+          ? 'tradeBoxProposeMessageButtonExtraWrapperActive'
+          : 'tradeBoxProposeMessageButtonExtraWrapper'
+      this.tradeBoxProposeButtonExtraWrapper.className =
+        this.tradeBoxProposeButtonExtraWrapper.className ===
+        'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+          ? 'tradeBoxMiddleButtonExtraWrapperEnabled'
+          : 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+      this.tradeBoxProposeButtonWrapper.className =
+        this.tradeBoxProposeButtonWrapper.className === 'tradeBoxMiddleButtonWrapperEnabledActive'
+          ? 'tradeBoxMiddleButtonWrapperEnabled'
+          : 'tradeBoxMiddleButtonWrapperEnabledActive'
+      this.tradeBoxProposeButton.className =
+        this.tradeBoxProposeButton.className === 'tradeBoxMiddleButtonEnabledActive'
+          ? 'tradeBoxMiddleButtonEnabled'
+          : 'tradeBoxMiddleButtonEnabledActive'
+    })
+    const ProposeChatIcon = document.createElement('i')
+    ProposeChatIcon.className = 'fa fa-comment'
+    ProposeChatIcon.ariaHidden = 'true'
+    ProposeChatIcon.style.color = 'black'
+    tradeBoxProposeMessageButton.appendChild(ProposeChatIcon)
+    tradeBoxProposeMessageButtonWrapper.appendChild(tradeBoxProposeMessageButton)
+    this.tradeBoxProposeMessageButtonExtraWrapper.appendChild(tradeBoxProposeMessageButtonWrapper)
+
+    tradeBoxProposeContainer.appendChild(this.tradeBoxProposeMessageButtonExtraWrapper)
+
+    tradeBoxContentMiddle.appendChild(tradeBoxProposeContainer)
+
+    // Propose messages
+    this.tradeBoxProposeMessagesContainer = document.createElement('div')
+    this.tradeBoxProposeMessagesContainer.id = 'tradeBoxMessagesContainer'
+
+    const tradeBoxProposeMessageOneExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageOneExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxProposeMessageOneExtraWrapper.addEventListener('click', () => {
+      this.handlePropose('Nie mam tego')
+    })
+    const tradeBoxProposeMessageOneWrapper = document.createElement('div')
+    tradeBoxProposeMessageOneWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxProposeMessageOne = document.createElement('div')
+    tradeBoxProposeMessageOne.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessageOne.innerText = 'Nie mam tego'
+    tradeBoxProposeMessageOneExtraWrapper.appendChild(tradeBoxProposeMessageOneWrapper)
+    tradeBoxProposeMessageOneWrapper.appendChild(tradeBoxProposeMessageOne)
+
+    const tradeBoxProposeMessageTwoExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageTwoExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxProposeMessageTwoExtraWrapper.addEventListener('click', () => {
+      this.handlePropose('Nie chce tego')
+    })
+    const tradeBoxProposeMessageTwoWrapper = document.createElement('div')
+    tradeBoxProposeMessageTwoWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxProposeMessageTwo = document.createElement('div')
+    tradeBoxProposeMessageTwo.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessageTwo.innerText = 'Nie chce tego'
+    tradeBoxProposeMessageTwoExtraWrapper.appendChild(tradeBoxProposeMessageTwoWrapper)
+    tradeBoxProposeMessageTwoWrapper.appendChild(tradeBoxProposeMessageTwo)
+
+    const tradeBoxProposeMessageThreeExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageThreeExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxProposeMessageThreeExtraWrapper.addEventListener('click', () => {
+      this.handlePropose('Chce ten zasób')
+    })
+    const tradeBoxProposeMessageThreeWrapper = document.createElement('div')
+    tradeBoxProposeMessageThreeWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxProposeMessageThree = document.createElement('div')
+    tradeBoxProposeMessageThree.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessageThree.innerText = 'Chce ten zasób'
+    tradeBoxProposeMessageThreeExtraWrapper.appendChild(tradeBoxProposeMessageThreeWrapper)
+    tradeBoxProposeMessageThreeWrapper.appendChild(tradeBoxProposeMessageThree)
+
+    this.tradeBoxProposeMessagesContainer.appendChild(tradeBoxProposeMessageOneExtraWrapper)
+    this.tradeBoxProposeMessagesContainer.appendChild(tradeBoxProposeMessageTwoExtraWrapper)
+    this.tradeBoxProposeMessagesContainer.appendChild(tradeBoxProposeMessageThreeExtraWrapper)
+
+    tradeBoxContentMiddle.appendChild(this.tradeBoxProposeMessagesContainer)
+
+    // Accept button
     this.tradeBoxAcceptButtonExtraWrapper = document.createElement('div')
-    this.tradeBoxAcceptButtonExtraWrapper.id = TradeView.tradeBoxProposeButtonExtraWrapperID
+    this.tradeBoxAcceptButtonExtraWrapper.id = TradeView.tradeBoxAcceptButtonExtraWrapperID
     this.tradeBoxAcceptButtonWrapper = document.createElement('div')
-    this.tradeBoxAcceptButtonWrapper.id = TradeView.tradeBoxProposeButtonWrapperID
+    this.tradeBoxAcceptButtonWrapper.id = TradeView.tradeBoxAcceptButtonWrapperID
     this.tradeBoxAcceptButton = document.createElement('button')
-    this.tradeBoxAcceptButton.id = TradeView.tradeBoxProposeButtonID
+    this.tradeBoxAcceptButton.id = TradeView.tradeBoxAcceptButtonID
     this.tradeBoxAcceptButton.innerText = 'POTWIERDŹ'
     this.tradeBoxAcceptButton.addEventListener('click', () => {
       if (this.isCurrPlayerTurn) {
@@ -297,20 +468,83 @@ export class TradeView {
         scene.finishTrade(this.youOffer, this.youGet)
       }
     })
-    this.disableAcceptButton()
 
     this.tradeBoxAcceptButtonWrapper.appendChild(this.tradeBoxAcceptButton)
     this.tradeBoxAcceptButtonExtraWrapper.appendChild(this.tradeBoxAcceptButtonWrapper)
-    tradeBoxContentMiddle.appendChild(this.tradeBoxAcceptButtonExtraWrapper)
 
+    // Remind button
+    this.tradeBoxRemindButtonExtraWrapper = document.createElement('div')
+    this.tradeBoxRemindButtonExtraWrapper.id = TradeView.tradeBoxRemindButtonExtraWrapperID
+    this.tradeBoxRemindButtonWrapper = document.createElement('div')
+    this.tradeBoxRemindButtonWrapper.id = TradeView.tradeBoxRemindButtonWrapperID
+    this.tradeBoxRemindButton = document.createElement('button')
+    this.tradeBoxRemindButton.id = TradeView.tradeBoxRemindButtonID
+    this.tradeBoxRemindButton.innerText = 'PRZYPOMNIJ'
+    this.tradeBoxRemindButton.addEventListener('click', () => {
+      if (!this.isCurrPlayerTurn) {
+        this.tradeBoxRemindButtonExtraWrapper.className =
+          this.tradeBoxRemindButtonExtraWrapper.className ===
+          'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+            ? 'tradeBoxMiddleButtonExtraWrapperEnabled'
+            : 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+
+        this.tradeBoxRemindButtonWrapper.className =
+          this.tradeBoxRemindButtonWrapper.className === 'tradeBoxMiddleButtonWrapperEnabledActive'
+            ? 'tradeBoxMiddleButtonWrapperEnabled'
+            : 'tradeBoxMiddleButtonWrapperEnabledActive'
+
+        this.tradeBoxRemindButton.className =
+          this.tradeBoxRemindButton.className === 'tradeBoxMiddleButtonEnabledActive'
+            ? 'tradeBoxMiddleButtonEnabled'
+            : 'tradeBoxMiddleButtonEnabledActive'
+
+        this.remind()
+        this.disableRemindButton()
+        this.remindButtonTimeoutID = setTimeout(() => {
+          this.enableRemindButton()
+        }, 5000)
+      }
+    })
+
+    this.tradeBoxRemindButtonWrapper.appendChild(this.tradeBoxRemindButton)
+    this.tradeBoxRemindButtonExtraWrapper.appendChild(this.tradeBoxRemindButtonWrapper)
+    tradeBoxContentMiddle.appendChild(this.tradeBoxRemindButtonExtraWrapper)
+
+    // Append elements
     tradeBoxContent.appendChild(tradeBoxContentLeftExtraWrapper)
     tradeBoxContent.appendChild(tradeBoxContentMiddle)
     tradeBoxContent.appendChild(tradeBoxContentRightExtraWrapper)
     this.tradeBoxWrapper.appendChild(tradeBoxHeaderWrapper)
     this.tradeBoxWrapper.appendChild(tradeBoxContent)
+
+    // Disable buttons
+    this.disableProposeButton()
+    this.disableAcceptButton()
+    this.disableRemindButton()
+
+    // Hide messages
+    this.hideReceivedMessage()
+    this.hideCloseMessages()
+
+    if (!this.isCurrPlayerTurn) {
+      this.remindButtonTimeoutID = setTimeout(() => {
+        this.enableRemindButton()
+      }, 60000)
+    }
   }
 
-  public update(youOffer: TradeEquipment, youGet: TradeEquipment): void {
+  public update(youOffer: TradeEquipment, youGet: TradeEquipment, msg: string): void {
+    this.hideReceivedMessage()
+
+    if (this.remindButtonTimeoutID) {
+      clearTimeout(this.remindButtonTimeoutID)
+      this.remindButtonTimeoutID = !this.isCurrPlayerTurn
+        ? setTimeout(() => {
+            this.enableRemindButton()
+          }, 60000)
+        : null
+    }
+
     this.youOffer = youOffer
     this.youGet = youGet
     this.changesDone = 0
@@ -346,6 +580,13 @@ export class TradeView {
     }
 
     this.disableProposeButton()
+    this.disableRemindButton()
+
+    if (msg.length > 0) {
+      this.showReceivedMessage(msg)
+    } else {
+      this.hideReceivedMessage()
+    }
   }
 
   private fillCurrentPlayerEq(
@@ -1291,6 +1532,52 @@ export class TradeView {
     container.appendChild(resultExtraWrapper)
   }
 
+  public handleClose(msg: string): void {
+    this.scene.cancelTrade(msg)
+    const cloud = document.getElementById(`actionCloud-${this.scene.playerId}`)
+    if (cloud) {
+      cloud.style.visibility = 'hidden'
+    }
+    this.close(false, '')
+  }
+
+  public handlePropose(msg: string): void {
+    if (this.isCurrPlayerTurn) {
+      this.tradeBoxProposeMessageButtonExtraWrapper.id = 'tradeBoxProposeMessageButtonExtraWrapper'
+      this.tradeBoxCloseMessagesContainer.style.display = 'none'
+      this.tradeBoxCloseButton.id = TradeView.tradeBoxCloseButtonID
+      this.tradeBoxCloseMessageButton.id = 'tradeBoxCloseMessageButton'
+      this.tradeBoxProposeButtonExtraWrapper.className =
+        this.tradeBoxProposeButtonExtraWrapper.className ===
+        'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+          ? 'tradeBoxMiddleButtonExtraWrapperEnabled'
+          : 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+
+      this.tradeBoxProposeButtonWrapper.className =
+        this.tradeBoxProposeButtonWrapper.className === 'tradeBoxMiddleButtonWrapperEnabledActive'
+          ? 'tradeBoxMiddleButtonWrapperEnabled'
+          : 'tradeBoxMiddleButtonWrapperEnabledActive'
+
+      this.tradeBoxProposeButton.className =
+        this.tradeBoxProposeButton.className === 'tradeBoxMiddleButtonEnabledActive'
+          ? 'tradeBoxMiddleButtonEnabled'
+          : 'tradeBoxMiddleButtonEnabledActive'
+
+      this.disableProposeButton()
+      this.hideReceivedMessage()
+
+      this.scene.sendTradeBid(this.youOffer, this.youGet, msg)
+      this.setCurrPlayerTurn(false)
+      this.updatePlayerTurnElements()
+      this.youOfferPrevious = JSON.parse(JSON.stringify(this.youOffer))
+      this.youGetPrevious = JSON.parse(JSON.stringify(this.youGet))
+
+      this.remindButtonTimeoutID = setTimeout(() => {
+        this.enableRemindButton()
+      }, 60000)
+    }
+  }
+
   public setCurrPlayerTurn(currPlayerTurn: boolean): void {
     this.isCurrPlayerTurn = currPlayerTurn
   }
@@ -1299,6 +1586,7 @@ export class TradeView {
     if (this.isCurrPlayerTurn) {
       this.tradeBoxCurrPlayerTurnHeader.innerText = 'Twoja kolej!'
       this.tradeBoxCurrPlayerTurnHeader.id = 'userTurnUserTurn'
+
       for (const button of this.resourceButtons) {
         this.enableResourceButton(button)
       }
@@ -1317,6 +1605,63 @@ export class TradeView {
     }
   }
 
+  public showCloseMessages(): void {
+    this.tradeBoxCloseMessagesContainer.style.display = 'block'
+  }
+
+  public hideCloseMessages(): void {
+    this.tradeBoxCloseMessagesContainer.style.display = 'none'
+  }
+
+  public showProposeMessagesButton(): void {
+    this.tradeBoxProposeMessageButtonExtraWrapper.style.display = 'block'
+  }
+
+  public hideProposeMessagesButton(): void {
+    this.tradeBoxProposeMessageButtonExtraWrapper.style.display = 'none'
+  }
+
+  public showProposeMessages(): void {
+    this.tradeBoxProposeMessagesContainer.style.display = 'block'
+  }
+
+  public hideProposeMessages(): void {
+    this.tradeBoxProposeMessagesContainer.style.display = 'none'
+  }
+
+  public showReceivedMessage(message: string): void {
+    this.tradeBoxReceivedMessage.innerText = message
+    this.tradeBoxReceivedMessageExtraWrapper.style.display = 'block'
+  }
+
+  public hideReceivedMessage(): void {
+    this.tradeBoxReceivedMessage.innerText = ''
+    this.tradeBoxReceivedMessageExtraWrapper.style.display = 'none'
+  }
+
+  public remind(): void {
+    this.scene.sendRemind()
+  }
+
+  public onRemind(): void {
+    this.tradeBoxCurrPlayerTurnHeader.style.transform = 'scale(1.2)'
+    setTimeout(() => {
+      this.tradeBoxCurrPlayerTurnHeader.style.transform = 'none'
+    }, 200)
+    setTimeout(() => {
+      this.tradeBoxCurrPlayerTurnHeader.style.transform = 'scale(1.2)'
+    }, 400)
+    setTimeout(() => {
+      this.tradeBoxCurrPlayerTurnHeader.style.transform = 'none'
+    }, 600)
+    setTimeout(() => {
+      this.tradeBoxCurrPlayerTurnHeader.style.transform = 'scale(1.2)'
+    }, 800)
+    setTimeout(() => {
+      this.tradeBoxCurrPlayerTurnHeader.style.transform = 'none'
+    }, 1000)
+  }
+
   public enableResourceButton(button: HTMLButtonElement): void {
     button.disabled = false
     button.className = 'tradeBoxResourceButtonEnabled'
@@ -1327,40 +1672,63 @@ export class TradeView {
     button.className = 'tradeBoxResourceButtonDisabled'
   }
 
-  public disableAcceptButton(): void {
-    this.tradeBoxAcceptButton.disabled = true
+  public enableRemindButton(): void {
+    this.tradeBoxRemindButton.disabled = false
 
-    this.tradeBoxAcceptButtonExtraWrapper.style.visibility = 'hidden'
-    this.tradeBoxAcceptButtonExtraWrapper.className = 'tradeBoxMiddlleButtonExtraWrapperDisabled'
-    this.tradeBoxAcceptButtonWrapper.className = 'tradeBoxMiddleButtonWrapperDisabled'
-    this.tradeBoxAcceptButton.className = 'tradeBoxProposeButtonDisabled'
+    this.tradeBoxRemindButtonExtraWrapper.style.display = 'block'
+    this.tradeBoxRemindButtonExtraWrapper.className = 'tradeBoxMiddleButtonExtraWrapperEnabled'
+    this.tradeBoxRemindButtonWrapper.className = 'tradeBoxMiddleButtonWrapperEnabled'
+    this.tradeBoxRemindButton.className = 'tradeBoxMiddleButtonEnabled'
+  }
+
+  public disableRemindButton(): void {
+    this.tradeBoxRemindButton.disabled = true
+
+    this.tradeBoxRemindButtonExtraWrapper.style.display = 'none'
+    this.tradeBoxRemindButtonExtraWrapper.className = 'tradeBoxMiddlleButtonExtraWrapperDisabled'
+    this.tradeBoxRemindButtonWrapper.className = 'tradeBoxMiddleButtonWrapperDisabled'
+    this.tradeBoxRemindButton.className = 'tradeBoxMiddleButtonDisabled'
   }
 
   public enableAcceptButton(): void {
     this.tradeBoxAcceptButton.disabled = false
 
-    this.tradeBoxAcceptButtonExtraWrapper.style.visibility = 'visible'
+    this.tradeBoxAcceptButtonExtraWrapper.style.display = 'block'
     this.tradeBoxAcceptButtonExtraWrapper.className = 'tradeBoxMiddleButtonExtraWrapperEnabled'
     this.tradeBoxAcceptButtonWrapper.className = 'tradeBoxMiddleButtonWrapperEnabled'
     this.tradeBoxAcceptButton.className = 'tradeBoxMiddleButtonEnabled'
   }
 
-  public disableProposeButton(): void {
-    this.tradeBoxProposeButton.disabled = true
+  public disableAcceptButton(): void {
+    this.tradeBoxAcceptButton.disabled = true
 
-    this.tradeBoxProposeButtonExtraWrapper.style.visibility = 'hidden'
-    this.tradeBoxProposeButtonExtraWrapper.className = 'tradeBoxMiddlleButtonExtraWrapperDisabled'
-    this.tradeBoxProposeButtonWrapper.className = 'tradeBoxMiddleButtonWrapperDisabled'
-    this.tradeBoxProposeButton.className = 'tradeBoxProposeButtonDisabled'
+    this.tradeBoxAcceptButtonExtraWrapper.style.display = 'none'
+    this.tradeBoxAcceptButtonExtraWrapper.className = 'tradeBoxMiddlleButtonExtraWrapperDisabled'
+    this.tradeBoxAcceptButtonWrapper.className = 'tradeBoxMiddleButtonWrapperDisabled'
+    this.tradeBoxAcceptButton.className = 'tradeBoxMiddleButtonDisabled'
   }
 
   public enableProposeButton(): void {
     this.tradeBoxProposeButton.disabled = false
 
-    this.tradeBoxProposeButtonExtraWrapper.style.visibility = 'visible'
+    this.tradeBoxProposeButtonExtraWrapper.style.display = 'block'
     this.tradeBoxProposeButtonExtraWrapper.className = 'tradeBoxMiddleButtonExtraWrapperEnabled'
     this.tradeBoxProposeButtonWrapper.className = 'tradeBoxMiddleButtonWrapperEnabled'
     this.tradeBoxProposeButton.className = 'tradeBoxMiddleButtonEnabled'
+
+    this.showProposeMessagesButton()
+  }
+
+  public disableProposeButton(): void {
+    this.tradeBoxProposeButton.disabled = true
+
+    this.tradeBoxProposeButtonExtraWrapper.style.display = 'none'
+    this.tradeBoxProposeButtonExtraWrapper.className = 'tradeBoxMiddlleButtonExtraWrapperDisabled'
+    this.tradeBoxProposeButtonWrapper.className = 'tradeBoxMiddleButtonWrapperDisabled'
+    this.tradeBoxProposeButton.className = 'tradeBoxMiddleButtonDisabled'
+
+    this.hideProposeMessagesButton()
+    this.hideProposeMessages()
   }
 
   public show(): void {
@@ -1369,7 +1737,9 @@ export class TradeView {
     this.scene.movingEnabled = false
   }
 
-  public close(success: boolean): void {
+  public close(success: boolean, message: string): void {
+    // TODO: show message if not empty
+
     document.getElementById(TradeView.tradeBoxWrapperID)?.remove()
 
     if (success) {
@@ -1392,10 +1762,28 @@ export class TradeView {
       )
       succesView.show()
     } else {
-      this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
-      this.scene.tradeWindow = null
-      this.scene.movingEnabled = true
-      this.scene.otherPlayerId = undefined
+      if (message.length > 0) {
+        const failureView = new TradeFailureView(
+          this.scene.playerId,
+          this.otherPlayerId,
+          message,
+          () => {
+            this.scene.interactionCloudBuilder.hideInteractionCloud(
+              this.scene.playerId,
+              CloudType.TALK,
+            )
+            this.scene.tradeWindow = null
+            this.scene.movingEnabled = true
+            this.scene.otherPlayerId = undefined
+          },
+        )
+        failureView.show()
+      } else {
+        this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
+        this.scene.tradeWindow = null
+        this.scene.movingEnabled = true
+        this.scene.otherPlayerId = undefined
+      }
     }
   }
 }
