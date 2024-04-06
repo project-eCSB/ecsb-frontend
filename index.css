@@ -2260,15 +2260,15 @@
 
 #tradeBoxCloseButton,
 #tradeBoxCloseButtonActive {
-  top: -10px;
-  right: -10px;
+  top: -7px;
+  right: -7px;
 }
 
 #tradeBoxCloseMessageButton,
 #tradeBoxCloseMessageButtonActive {
-  transform: scale(0.7);
-  top: 3px;
-  right: -33px;
+  transform: scale(0.66);
+  top: 0;
+  right: -26px;
 }
 
 #tradeBoxCloseButton:hover,
@@ -2287,6 +2287,63 @@
 #tradeBoxCloseMessageButtonActive {
   background-color: #ab742b;
   filter: none;
+  transform: translate(0, 0);
+}
+
+#tradeBoxCloseMessageButton:active,
+#tradeBoxCloseMessageButtonActive {
+  transform: scale(0.66) translate(0, 0);
+}
+
+#tradeBoxProposeMessageButtonWrapper,
+#tradeBoxProposeMessageButtonExtraWrapper {
+  width: 30px;
+  height: 30px;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper,
+#tradeBoxProposeMessageButtonExtraWrapperActive {
+  position: relative;
+  top: -6px;
+  left: 5px;
+}
+
+#tradeBoxProposeMessageButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper #tradeBoxProposeMessageButton {
+  transform: translate(3px, -4px);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper:hover #tradeBoxProposeMessageButton {
+  transform: translate(5px, -6px);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper:hover > #tradeBoxProposeMessageButtonWrapper {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#tradeBoxProposeMessageButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapperActive {
+  filter: none;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapperActive > #tradeBoxProposeMessageButtonWrapper {
+  filter: none;
+}
+
+#tradeBoxProposeMessageButtonExtraWrapperActive #tradeBoxProposeMessageButton {
+  background-color: #ab742b;
   transform: translate(0, 0);
 }
 
@@ -2974,7 +3031,7 @@
 #tradeBoxCloseMessagesContainer {
   position: absolute;
   top: -40px;
-  right: -170px;
+  right: -320px;
 }
 
 #tradeBoxCloseMessagesContainer > div:last-child > div {
@@ -2990,9 +3047,9 @@
 }
 
 #tradeMessageReceivedExtraWrapper {
-  width: 200px;
+  width: 300px;
   position: absolute;
-  top: 100px;
+  top: -20px;
   right: -200px;
 }
 
@@ -3101,7 +3158,7 @@
 }
 
 .tradeMessageMiddle {
-  padding: 10px 0px 15px 15px !important;
+  padding: 10px 5px 15px 5px !important;
 }
 
 #tradeBoxMessagesContainer {
@@ -3109,16 +3166,16 @@
   top: -25px;
 }
 
-#tradeBoxMessagesContainer > .propose-page > div > div {
-  transform: scale(-1, -1);
+#tradeBoxMessagesContainer > div > div {
+  transform: scale(1, -1);
 }
 
-#tradeBoxMessagesContainer > .propose-page > div > div > div {
-  transform: scale(-1, -1);
+#tradeBoxMessagesContainer > div > div > div {
+  transform: scale(1, -1);
 }
 
-#tradeBoxMessagesContainer > .propose-page > div:hover > div {
-  transform: scale(-1, -1) translate(-2px, 2px);
+#tradeBoxMessagesContainer > div > div:hover {
+  transform: scale(1, -1) translate(2px, 2px);
 }
 
 #tradeMessageReceivedExtraWrapper {

@@ -190,8 +190,15 @@ export class TradeView {
     this.tradeBoxCloseMessagesContainer = document.createElement('div')
     this.tradeBoxCloseMessagesContainer.id = 'tradeBoxCloseMessagesContainer'
 
-    this.tradeBoxCloseMessagesContainer.appendChild(this.createMessageButton("close one"))
-    this.tradeBoxCloseMessagesContainer.appendChild(this.createMessageButton("close two"))
+    const closePage1 = this.createMessagePage("first msg", "second msg", false, false, 'tradeCancel-page')
+    closePage1.id = 'cancel-page-active'
+    const closePage2 = this.createMessagePage("third msg", "forth msg", false, false, 'tradeCancel-page')
+
+    this.tradeBoxCloseMessagesContainer.appendChild(closePage1)
+    this.tradeBoxCloseMessagesContainer.appendChild(closePage2)
+
+    const closePaginationBar = this.createPaginationBar(this.tradeBoxCloseMessagesContainer, 'tradeCancel-page', 'cancel-page-active', 0)
+    this.tradeBoxCloseMessagesContainer.appendChild(closePaginationBar)
 
     tradeBoxHeaderWrapper.appendChild(this.tradeBoxCloseMessagesContainer)
 
@@ -308,64 +315,64 @@ export class TradeView {
 
     tradeBoxProposeContainer.appendChild(this.tradeBoxProposeButtonExtraWrapper)
 
-    // Show/Hide propose messages button
-    this.tradeBoxProposeMessageButtonExtraWrapper = document.createElement('div')
-    this.tradeBoxProposeMessageButtonExtraWrapper.id = 'tradeBoxProposeMessageButtonExtraWrapper'
-    const tradeBoxProposeMessageButtonWrapper = document.createElement('div')
-    tradeBoxProposeMessageButtonWrapper.id = 'tradeBoxProposeMessageButtonWrapper'
-    const tradeBoxProposeMessageButton = document.createElement('button')
-    tradeBoxProposeMessageButton.id = 'tradeBoxProposeMessageButton'
-    tradeBoxProposeMessageButton.addEventListener('click', () => {
-      this.tradeBoxProposeMessagesContainer.style.display =
-        this.tradeBoxProposeMessagesContainer.style.display === 'block' ? 'none' : 'block'
-      this.tradeBoxProposeMessageButtonExtraWrapper.id =
-        this.tradeBoxProposeMessageButtonExtraWrapper.id ===
-        'tradeBoxProposeMessageButtonExtraWrapper'
-          ? 'tradeBoxProposeMessageButtonExtraWrapperActive'
-          : 'tradeBoxProposeMessageButtonExtraWrapper'
-      this.tradeBoxProposeButtonExtraWrapper.className =
-        this.tradeBoxProposeButtonExtraWrapper.className ===
-        'tradeBoxMiddleButtonExtraWrapperEnabledActive'
-          ? 'tradeBoxMiddleButtonExtraWrapperEnabled'
-          : 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
-      this.tradeBoxProposeButtonWrapper.className =
-        this.tradeBoxProposeButtonWrapper.className === 'tradeBoxMiddleButtonWrapperEnabledActive'
-          ? 'tradeBoxMiddleButtonWrapperEnabled'
-          : 'tradeBoxMiddleButtonWrapperEnabledActive'
-      this.tradeBoxProposeButton.className =
-        this.tradeBoxProposeButton.className === 'tradeBoxMiddleButtonEnabledActive'
-          ? 'tradeBoxMiddleButtonEnabled'
-          : 'tradeBoxMiddleButtonEnabledActive'
-    })
-    const ProposeChatIcon = document.createElement('i')
-    ProposeChatIcon.className = 'fa fa-comment'
-    ProposeChatIcon.ariaHidden = 'true'
-    ProposeChatIcon.style.color = 'black'
-    tradeBoxProposeMessageButton.appendChild(ProposeChatIcon)
-    tradeBoxProposeMessageButtonWrapper.appendChild(tradeBoxProposeMessageButton)
-    this.tradeBoxProposeMessageButtonExtraWrapper.appendChild(tradeBoxProposeMessageButtonWrapper)
+  // Show/Hide propose messages button
+  this.tradeBoxProposeMessageButtonExtraWrapper = document.createElement('div')
+  this.tradeBoxProposeMessageButtonExtraWrapper.id = 'tradeBoxProposeMessageButtonExtraWrapper'
+  const tradeBoxProposeMessageButtonWrapper = document.createElement('div')
+  tradeBoxProposeMessageButtonWrapper.id = 'tradeBoxProposeMessageButtonWrapper'
+  const tradeBoxProposeMessageButton = document.createElement('button')
+  tradeBoxProposeMessageButton.id = 'tradeBoxProposeMessageButton'
+  tradeBoxProposeMessageButton.addEventListener('click', () => {
+    this.tradeBoxProposeMessagesContainer.style.display =
+      this.tradeBoxProposeMessagesContainer.style.display === 'block' ? 'none' : 'block'
+    this.tradeBoxProposeMessageButtonExtraWrapper.id =
+      this.tradeBoxProposeMessageButtonExtraWrapper.id ===
+      'tradeBoxProposeMessageButtonExtraWrapper'
+        ? 'tradeBoxProposeMessageButtonExtraWrapperActive'
+        : 'tradeBoxProposeMessageButtonExtraWrapper'
+    this.tradeBoxProposeButtonExtraWrapper.className =
+      this.tradeBoxProposeButtonExtraWrapper.className ===
+      'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+        ? 'tradeBoxMiddleButtonExtraWrapperEnabled'
+        : 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+    this.tradeBoxProposeButtonWrapper.className =
+      this.tradeBoxProposeButtonWrapper.className === 'tradeBoxMiddleButtonWrapperEnabledActive'
+        ? 'tradeBoxMiddleButtonWrapperEnabled'
+        : 'tradeBoxMiddleButtonWrapperEnabledActive'
+    this.tradeBoxProposeButton.className =
+      this.tradeBoxProposeButton.className === 'tradeBoxMiddleButtonEnabledActive'
+        ? 'tradeBoxMiddleButtonEnabled'
+        : 'tradeBoxMiddleButtonEnabledActive'
+  })
+  const ProposeChatIcon = document.createElement('i')
+  ProposeChatIcon.className = 'fa fa-comment'
+  ProposeChatIcon.ariaHidden = 'true'
+  ProposeChatIcon.style.color = 'black'
+  tradeBoxProposeMessageButton.appendChild(ProposeChatIcon)
+  tradeBoxProposeMessageButtonWrapper.appendChild(tradeBoxProposeMessageButton)
+  this.tradeBoxProposeMessageButtonExtraWrapper.appendChild(tradeBoxProposeMessageButtonWrapper)
 
-    tradeBoxProposeContainer.appendChild(this.tradeBoxProposeMessageButtonExtraWrapper)
+  tradeBoxProposeContainer.appendChild(this.tradeBoxProposeMessageButtonExtraWrapper)
 
-    tradeBoxContentMiddle.appendChild(tradeBoxProposeContainer)
+  tradeBoxContentMiddle.appendChild(tradeBoxProposeContainer)
 
-    // Propose messages
-    this.tradeBoxProposeMessagesContainer = document.createElement('div')
-    this.tradeBoxProposeMessagesContainer.id = 'tradeBoxMessagesContainer'
+  // Propose messages
+  this.tradeBoxProposeMessagesContainer = document.createElement('div')
+  this.tradeBoxProposeMessagesContainer.id = 'tradeBoxMessagesContainer'
+  
+  const page1 = this.createMessagePage("first msg", "second msg", false, true, 'tradePropose-page')
+  page1.id = 'propose-page-active'
+  const page2 = this.createMessagePage("third msg", "forth msg", false, true, 'tradePropose-page')
+  const page3 = this.createMessagePage("fifth msg", null, false, true, 'tradePropose-page')
 
-    const page1 = this.createMessagePage("first msg", "second msg", false)
-    page1.id = 'propose-page-active'
-    const page2 = this.createMessagePage("third msg", "forth msg", false)
-    const page3 = this.createMessagePage("fifth msg", "sixth msg", false)
+  this.tradeBoxProposeMessagesContainer.appendChild(page1)
+  this.tradeBoxProposeMessagesContainer.appendChild(page2)
+  this.tradeBoxProposeMessagesContainer.appendChild(page3)
 
-    this.tradeBoxProposeMessagesContainer.appendChild(page1)
-    this.tradeBoxProposeMessagesContainer.appendChild(page2)
-    this.tradeBoxProposeMessagesContainer.appendChild(page3)
+  const paginationBar = this.createPaginationBar(this.tradeBoxProposeMessagesContainer, 'tradePropose-page', 'propose-page-active', 0)
+  this.tradeBoxProposeMessagesContainer.appendChild(paginationBar)
 
-    const paginationBar = this.createPaginationBar(this.tradeBoxProposeMessagesContainer, 'propose-page', 'propose-page-active', 0)
-    this.tradeBoxProposeMessagesContainer.appendChild(paginationBar)
-
-    tradeBoxContentMiddle.appendChild(this.tradeBoxProposeMessagesContainer)
+  tradeBoxContentMiddle.appendChild(this.tradeBoxProposeMessagesContainer)
 
     // Accept button
     this.tradeBoxAcceptButtonExtraWrapper = document.createElement('div')
@@ -1659,14 +1666,14 @@ export class TradeView {
     this.hideProposeMessages()
   }
 
-  private createMessageButton(message: string): HTMLDivElement {
+  private createMessageButton(message: string, propose: boolean): HTMLDivElement {
     const tradeBoxProposeMessageExtraWrapper = document.createElement('div')
     tradeBoxProposeMessageExtraWrapper.classList.add(
       'tradeMessageExtraWrapper',
       'tradeMessageClickable',
     )
     tradeBoxProposeMessageExtraWrapper.addEventListener('click', () => {
-      this.handlePropose(message)
+      propose ? this.handlePropose(message) : this.handleClose(message)
     })
     const tradeBoxProposeMessageWrapper = document.createElement('div')
     tradeBoxProposeMessageWrapper.className = 'tradeMessageWrapper'
@@ -1678,17 +1685,17 @@ export class TradeView {
     return tradeBoxProposeMessageExtraWrapper
   }
 
-  private createMessagePage(msgFirst: string, msgSecond: string | null, row?: boolean): HTMLDivElement {
+  private createMessagePage(msgFirst: string, msgSecond: string | null, row: boolean, propose: boolean, className: string): HTMLDivElement {
     const page = document.createElement('div')
-    page.className = 'propose-page'
+    page.className = className
     page.style.display = 'flex'
     page.style.flexDirection = row ? 'row' : 'column'
     page.style.justifyContent = 'space-around'
-    const firstModal = this.createMessageButton(msgFirst)
+    const firstModal = this.createMessageButton(msgFirst, propose)
     page.appendChild(firstModal)
     if (msgSecond) {
       page.style.justifyContent = 'flex-start'
-      const secondModal = this.createMessageButton(msgSecond)
+      const secondModal = this.createMessageButton(msgSecond, propose)
       page.appendChild(secondModal)
     }
     return page
@@ -1696,16 +1703,16 @@ export class TradeView {
 
   private createPaginationBar(parent: HTMLDivElement, defaultClass: string, choosenId: string, startingPage: number): HTMLDivElement {
     const bar = document.createElement('div')
-    bar.id = 'propose-pagination-bar'
+    bar.id = 'pagination-bar'
     const pageCounter = parent.querySelectorAll(`.${defaultClass}`).length
     let page = startingPage
     const pages = parent.querySelectorAll(`.${defaultClass}`)
 
     const buttonUpWrapper = document.createElement('div')
-    buttonUpWrapper.id = 'propose-pagination-buttonUpWrapper'
+    buttonUpWrapper.id = 'pagination-buttonUpWrapper'
     const buttonUp = document.createElement('button')
     const buttonDownWrapper = document.createElement('div')
-    buttonDownWrapper.id = 'propose-pagination-buttonDownWrapper'
+    buttonDownWrapper.id = 'pagination-buttonDownWrapper'
     const buttonDown = document.createElement('button')
     const dots: HTMLDivElement[] = []
     for(let i=0; i<pageCounter; i++) {
@@ -1734,13 +1741,13 @@ export class TradeView {
     bar.appendChild(buttonUpWrapper)
     for(let i=0; i<pageCounter; i++) {
       bar.appendChild(dots[i])
-    }
+    } 
     bar.appendChild(buttonDownWrapper)
     buttonUpWrapper.appendChild(buttonUp)
     buttonDownWrapper.appendChild(buttonDown)
 
     const barWrapper = document.createElement('div')
-    barWrapper.id = 'propose-pagination-bar-wrapper'
+    barWrapper.id = 'pagination-bar-wrapper'
     barWrapper.appendChild(bar)
     return barWrapper
   }
