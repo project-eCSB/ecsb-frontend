@@ -12,6 +12,7 @@ export enum IncomingTradeMessageType {
   TradeServerBid = 'trade/system/trade_bid',
   TradeServerFinish = 'trade/system/finish_trade',
   TradeServerCancel = 'trade/system/cancel_trade',
+  TradeServerRemind = 'trade/system/remind',
 }
 
 export interface TradeServerProposeMessage {
@@ -37,6 +38,7 @@ export interface TradeServerBidMessage {
     type: IncomingTradeMessageType.TradeServerBid
     tradeBid: TradeBid
     receiverId: string
+    message: string
   }
 }
 
@@ -53,6 +55,14 @@ export interface TradeServerCancelMessage {
   message: {
     type: IncomingTradeMessageType.TradeServerCancel
     receiverId: string
+    message: string
+  }
+}
+
+export interface TradeServerRemindMessage {
+  senderId: string
+  message: {
+    type: IncomingTradeMessageType.TradeServerRemind
   }
 }
 
@@ -62,6 +72,7 @@ export type IncomingTradeMessage =
   | TradeServerBidMessage
   | TradeServerFinishMessage
   | TradeServerCancelMessage
+  | TradeServerRemindMessage
 
 export enum OutcomingTradeMessageType {
   TradeBuy = 'trade/buy',
@@ -72,6 +83,7 @@ export enum OutcomingTradeMessageType {
   TradeBid = 'trade/trade_bid',
   TradeBidAck = 'trade/trade_bid_ack',
   TradeCancel = 'trade/cancel_trade',
+  TradeRemind = 'trade/remind',
 }
 
 export interface TradeBuyMessage {
@@ -98,6 +110,7 @@ export interface TradeBidMessage {
   type: OutcomingTradeMessageType.TradeBid
   tradeBid: TradeBid
   receiverId: string
+  message: string
 }
 
 export interface TradeMinorChangeMessage {
@@ -114,6 +127,12 @@ export interface TradeFinishMessage {
 
 export interface TradeCancelMessage {
   type: OutcomingTradeMessageType.TradeCancel
+  message: string
+}
+
+export interface TradeRemindMessage {
+  type: OutcomingTradeMessageType.TradeRemind
+  receiverId: string
 }
 
 export type OutcomingTradeMessage =
@@ -125,6 +144,7 @@ export type OutcomingTradeMessage =
   | TradeFinishMessage
   | TradeCancelMessage
   | TradeMinorChangeMessage
+  | TradeRemindMessage
 
 export const sendTradeMessage = (socket: Websocket, message: OutcomingTradeMessage): void => {
   try {

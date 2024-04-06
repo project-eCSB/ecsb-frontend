@@ -51,7 +51,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
             ))}
           </div>
           <div className='summary-travels-travel-reward'>
-            <p>Time token regeneration: {(travel.regenTime)}</p>
+            <p>Time token regeneration: {travel.regenTime}</p>
             <p>Min Reward: {travel.minReward}</p>
             <p>Max Reward: {travel.maxReward}</p>
           </div>

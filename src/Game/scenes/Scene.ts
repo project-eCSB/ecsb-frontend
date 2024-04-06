@@ -599,16 +599,23 @@ export class Scene extends Phaser.Scene {
         this.createTradeWindow(msg.senderId, msg.message.myTurn)
         break
       case IncomingTradeMessageType.TradeServerCancel:
-        this.tradeWindow?.close(false)
+        this.tradeWindow?.close(false, msg.message.message)
         if (msg.senderId !== this.playerId) {
           this.showErrorPopup(`Gracz ${msg.senderId} przerwał handel`)
         }
         break
       case IncomingTradeMessageType.TradeServerBid:
-        this.updateTradeDialog(msg.message.tradeBid.senderRequest, msg.message.tradeBid.senderOffer)
+        this.updateTradeDialog(
+          msg.message.tradeBid.senderRequest,
+          msg.message.tradeBid.senderOffer,
+          msg.message.message,
+        )
         break
       case IncomingTradeMessageType.TradeServerFinish:
-        this.tradeWindow?.close(true)
+        this.tradeWindow?.close(true, '')
+        break
+      case IncomingTradeMessageType.TradeServerRemind:
+        this.tradeWindow?.onRemind()
         break
       case IncomingWorkshopMessageType.WorkshopAccept:
         this.loadingBarBuilder!.setCoordinates(
@@ -1072,7 +1079,7 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  sendTradeBid(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
+  sendTradeBid(ourSide: TradeEquipment, otherSide: TradeEquipment, msg: string): void {
     sendTradeMessage(this.chatWs, {
       type: OutcomingTradeMessageType.TradeBid,
       tradeBid: {
@@ -1080,15 +1087,23 @@ export class Scene extends Phaser.Scene {
         senderRequest: otherSide,
       },
       receiverId: this.otherPlayerId!,
+      message: msg,
     })
     this.tradeWindow?.disableProposeButton()
     this.tradeWindow?.disableAcceptButton()
   }
 
-  updateTradeDialog(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
+  sendRemind(): void {
+    sendTradeMessage(this.chatWs, {
+      type: OutcomingTradeMessageType.TradeRemind,
+      receiverId: this.otherPlayerId!,
+    })
+  }
+
+  updateTradeDialog(ourSide: TradeEquipment, otherSide: TradeEquipment, msg: string): void {
     if (!this.tradeWindow) return
     this.tradeWindow.setCurrPlayerTurn(true)
-    this.tradeWindow.update(ourSide, otherSide)
+    this.tradeWindow.update(ourSide, otherSide, msg)
     this.tradeWindow.updatePlayerTurnElements()
   }
 
@@ -1103,9 +1118,10 @@ export class Scene extends Phaser.Scene {
     })
   }
 
-  cancelTrade(): void {
+  cancelTrade(msg: string): void {
     sendTradeMessage(this.chatWs, {
       type: OutcomingTradeMessageType.TradeCancel,
+      message: msg,
     })
     this.otherPlayerId = undefined
   }

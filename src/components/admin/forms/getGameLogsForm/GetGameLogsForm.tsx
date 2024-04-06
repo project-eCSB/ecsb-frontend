@@ -48,7 +48,7 @@ const GetGameLogsForm = () => {
         URL.revokeObjectURL(a.href)
       })
       .catch((err) => {
-        console.log(err)
+        console.error(err)
       })
 
     setIsLoading(false)
