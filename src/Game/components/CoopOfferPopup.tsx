@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import { type Scene } from '../../Game/scenes/Scene'
+import { type Scene } from '../scenes/Scene'
 import './CoopOfferPopup.css'
 import { ERROR_TIMEOUT, RANGE, TOAST_DISMISS_TIMEOUT } from '../GameUtils'
 import { ErrorView } from '../views/ErrorView'

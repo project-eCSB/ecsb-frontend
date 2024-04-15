@@ -6,7 +6,7 @@ import CreateGameForm from './forms/createGameForm/CreateGameForm'
 import './Admin.css'
 import GetGameLogsForm from './forms/getGameLogsForm/GetGameLogsForm'
 import StartGameForm from './forms/startGameForm/StartGameForm'
-import CopyGameForm from './forms/copyGameForm/copyGameForm'
+import CopyGameForm from './forms/copyGameForm/CopyGameForm'
 
 enum FormType {
   CreateGame,
@@ -94,9 +94,7 @@ const Admin = () => {
             Home
           </button>
           <button
-            onClick={() => {
-              handleLogOut()
-            }}
+            onClick={handleLogOut}
           >
             Log Out
           </button>

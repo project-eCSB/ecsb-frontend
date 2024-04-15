@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import gameService from '../../../../services/game/GameService'
-import type { GameSettings } from '../../../../services/game/Types'
+import type { GameSettings } from '../../../../apis/game/Types'
 import './GetGameSettingsForm.css'
 import Settings from './settings/Settings'
 import LoadingSpinner from '../../../common/spinner/LoadingSpinner'
@@ -64,33 +64,18 @@ const GetGameSettingsForm = () => {
     <>
       <form className='game-settings-form' onSubmit={handleSubmit}>
         <label htmlFor='gameSessionId'>Game Session ID</label>
-        <input
-          id='gameSessionId'
-          type='number'
-          value={gameSessionId}
-          min={1}
-          onChange={(e) => {
-            handleGameSessionIdChange(e)
-          }}
-          required
-        />
-        <button
-          ref={submitButton}
-          type='submit'
-          className={`${gameSessionId < 1 ? 'disabled' : ''}`}
-          disabled={gameSessionId < 1}
-        >
+        <input id='gameSessionId' type='number' value={gameSessionId} min={1} required onChange={(e) => {
+          handleGameSessionIdChange(e)
+        }} />
+        <button ref={submitButton} type='submit' className={`${gameSessionId < 1 ? 'disabled' : ''}`}
+                disabled={gameSessionId < 1}>
           Get Settings
         </button>
       </form>
       {showSettings && (
-        <Settings
-          settings={modalSettings}
-          errorMessage={modalErrorMessage}
-          onClose={() => {
-            setShowSettings(false)
-          }}
-        />
+        <Settings settings={modalSettings} errorMessage={modalErrorMessage} onClose={() => {
+          setShowSettings(false)
+        }} />
       )}
       {isLoading && <LoadingSpinner />}
     </>

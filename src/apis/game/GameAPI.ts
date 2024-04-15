@@ -1,119 +1,78 @@
-import { authTokenAuthAndManagementAPI, gameTokenAPI, gameTokenSelfInteractionsAPI } from '../apis'
+import {
+  authTokenAuthAndManagementAPI,
+  authTokenAuthAndManagementOctetAPI,
+  gameTokenAPI,
+  gameTokenSelfInteractionsAPI,
+} from '../apis'
 import type {
-  AdminGameSettingsRequest,
-  GameSettingsResponse,
-  AssetConfigRequest,
-  AssetConfigResponse,
-  AssetRequest,
-  AssetResponse,
+  AssetConfig,
+  AssetId,
+  AssetURL,
+  CopyGameRequest,
   CreateGameRequest,
-  NewGameResponse,
+  DefaultAssetsResponse, EndGameStatus, Equipment,
+  FileType,
+  GameSessionId,
+  GameSettings,
   GameTokenRequest,
   GameTokenResponse,
-  SavedAssetsRequest,
   SavedAssetsResponse,
   UploadAssetRequest,
-  UploadAssetResponse,
   UserGameStatusResponse,
-  CopyGameRequest,
-  DefaultAssetsResponse,
 } from './Types'
 import { GameResponseError } from './Types'
-import type { EndGameStatus, Equipment } from '../../services/game/Types'
+import { type AxiosResponse } from 'axios'
 
-const createGame = async (data: CreateGameRequest): Promise<NewGameResponse> => {
+function handleError(error: any): any | undefined {
+  if (error.response) {
+    throw new GameResponseError(error.response.status, error.response.data)
+  } else {
+    throw new GameResponseError(0, error.message)
+  }
+}
+
+function standardThen(response: AxiosResponse): any {
+  if (response.status !== 200) {
+    throw new GameResponseError(response.status, response.data)
+  }
+  return response.data
+}
+
+const createGame = async (data: CreateGameRequest): Promise<GameSessionId> => {
   return await authTokenAuthAndManagementAPI
     .post('/admin/createGame', data)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        gameSessionId: response.data,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const getAdminGameSettings = async (
-  data: AdminGameSettingsRequest,
-): Promise<GameSettingsResponse> => {
+const getAdminGameSettings = async (gameSessionId: GameSessionId): Promise<GameSettings> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/admin/settings/${data.gameSessionId}`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        timeForGame: response.data.timeForGame,
-        walkingSpeed: response.data.walkingSpeed,
-        classResourceRepresentation: response.data.classResourceRepresentation,
-        travels: response.data.travels,
-        gameSessionId: response.data.gameSessionId,
-        name: response.data.name,
-        shortName: response.data.shortName,
-        gameAssets: response.data.gameAssets,
-        interactionRadius: response.data.interactionRadius,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .get(`/admin/settings/${gameSessionId}`)
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const startGame = async (data: AdminGameSettingsRequest): Promise<void> => {
+const startGame = async (gameSessionId: GameSessionId): Promise<void> => {
   await authTokenAuthAndManagementAPI
-    .post(`/admin/startGame/${data.gameSessionId}`)
+    .post(`/admin/startGame/${gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
       }
     })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .catch(handleError)
 }
 
-const copyGame = async (data: CopyGameRequest): Promise<NewGameResponse> => {
+const copyGame = async (data: CopyGameRequest): Promise<GameSessionId> => {
   return await authTokenAuthAndManagementAPI
     .post(`/admin/copyGame/${data.gameSessionId}?gameName=${data.gameName}`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        gameSessionId: response.data,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const getAdminGameLogs = async (data: AdminGameSettingsRequest): Promise<string> => {
+const getAdminGameLogs = async (gameSessionId: number): Promise<string> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/getLogs/${data.gameSessionId}`)
+    .get(`/getLogs/${gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
         console.error(response.status)
@@ -128,227 +87,80 @@ const getAdminGameLogs = async (data: AdminGameSettingsRequest): Promise<string>
 const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> => {
   return await authTokenAuthAndManagementAPI
     .post('/getGameToken', data)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        gameToken: response.data.gameToken,
-        gameSessionId: response.data.gameSessionId,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const getUserGameSettings = async (): Promise<GameSettingsResponse> => {
+const getUserGameSettings = async (): Promise<GameSettings> => {
   return await gameTokenAPI
     .get('/settings')
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        timeForGame: response.data.timeForGame,
-        walkingSpeed: response.data.walkingSpeed,
-        classResourceRepresentation: response.data.classResourceRepresentation,
-        travels: response.data.travels,
-        gameSessionId: response.data.gameSessionId,
-        name: response.data.name,
-        shortName: response.data.shortName,
-        gameAssets: response.data.gameAssets,
-        interactionRadius: response.data.interactionRadius,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
 const getPlayerEquipment = async (): Promise<Equipment> => {
   return await gameTokenSelfInteractionsAPI
     .get('/equipment')
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return response.data
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
 const getPlayerResults = async (): Promise<EndGameStatus> => {
   return await gameTokenAPI
     .get('/results')
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return response.data
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
 const getUserGameStatus = async (): Promise<UserGameStatusResponse> => {
   return await gameTokenAPI
     .get('/gameStatus')
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        coords: response.data.coords,
-        direction: response.data.direction,
-        className: response.data.className,
-        playerId: response.data.playerId,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const uploadAsset = async (
-  uploadAssetRequest: UploadAssetRequest,
-): Promise<UploadAssetResponse> => {
-  return await authTokenAuthAndManagementAPI
+const uploadAsset = async (uploadAssetRequest: UploadAssetRequest): Promise<AssetId> => {
+  return await authTokenAuthAndManagementOctetAPI
     .post(
       `/assets?fileName=${uploadAssetRequest.fileName}&fileType=${uploadAssetRequest.fileType}`,
       uploadAssetRequest.file,
-      {
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-      },
     )
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return {
-        assetId: response.data,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const getAssetConfig = async (
-  assetConfigRequest: AssetConfigRequest,
-): Promise<AssetConfigResponse> => {
+const getAssetConfig = async (assetId: AssetId): Promise<AssetConfig> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/assets/config/${assetConfigRequest.assetId}`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return response.data as AssetConfigResponse
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .get(`/assets/config/${assetId}`)
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const getSavedAssets = async (request: SavedAssetsRequest): Promise<SavedAssetsResponse> => {
+const getSavedAssets = async (fileType: FileType): Promise<SavedAssetsResponse> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/assets?fileType=${request.fileType}`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-      return response.data
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .get(`/assets?fileType=${fileType}`)
+    .then(standardThen)
+    .catch(handleError)
 }
 
-const getAsset = async (request: AssetRequest): Promise<AssetResponse> => {
+const getAsset = async (assetId: AssetId): Promise<AssetURL> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/assets/${request.assetId}`, { responseType: 'arraybuffer' })
+    .get(`/assets/${assetId}`, { responseType: 'arraybuffer' })
     .then((response) => {
       if (response.status !== 200) {
         throw new GameResponseError(response.status, response.data)
       }
-
       const blob = new Blob([response.data], { type: response.headers['content-type'] })
-      const url = URL.createObjectURL(blob)
-
-      return {
-        assetURL: url,
-      }
+      return URL.createObjectURL(blob)
     })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .catch(handleError)
 }
 
 const getDefaultAssets = async (): Promise<DefaultAssetsResponse> => {
   return await authTokenAuthAndManagementAPI
     .get(`/assets/default`)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new GameResponseError(response.status, response.data)
-      }
-
-      return response.data as DefaultAssetsResponse
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new GameResponseError(error.response.status, error.response.data)
-      } else {
-        throw new GameResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
 /**

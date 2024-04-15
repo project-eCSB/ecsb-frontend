@@ -6,11 +6,8 @@ export const parseMovementMessage = (message: string): MovementMessage | null =>
 
     switch (parsed.message.type) {
       case MovementMessageType.PlayerAdded:
-        return parsed.message
       case MovementMessageType.PlayerRemoved:
-        return parsed.message
       case MovementMessageType.PlayerMoved:
-        return parsed.message
       case MovementMessageType.PlayerSyncing:
         return parsed.message
       default:

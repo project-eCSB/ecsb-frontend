@@ -21,99 +21,52 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
 
     switch (parsed.message.type) {
       case IncomingTradeMessageType.TradeServerPropose:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingTradeMessageType.TradeServerStart:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingTradeMessageType.TradeServerBid:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingTradeMessageType.TradeServerCancel:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingTradeMessageType.TradeServerFinish:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopStartPlanning:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopSimpleJoinPlanning:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopGatheringJoinPlanning:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopProposeOwnTravel:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopStartNegotiation:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopNegotiationBid:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopFinishNegotiation:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopResourceChange:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopWaitForTravel:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopGoToTravel:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopTravelAccept:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopTravelDeny:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopFinish:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancel:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancelNegotiation:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingCoopMessageType.CoopCancelPlanning:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingWorkshopMessageType.WorkshopAccept:
-        return { senderId: parsed.senderId, message: parsed.message }
       case IncomingWorkshopMessageType.WorkshopDeny:
-        return { senderId: parsed.senderId, message: parsed.message }
       case BackendWarningMessageType.UserWarning:
-        return { senderId: parsed.senderId, message: parsed.message }
       case EquipmentMessageType.EquipmentChange:
-        return { senderId: parsed.senderId, message: parsed.message }
       case EquipmentMessageType.QueueProcessed:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationAdvertisementBuy:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationAdvertisementSell:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTradeStart:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTradeEnd:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTravelStart:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTravelEnd:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTravelChoosingStart:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationTravelChoosingStop:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationWorkshopChoosingStart:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationWorkshopChoosingStop:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationProductionStart:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationProductionEnd:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationStartAdvertiseCoop:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationStopAdvertiseCoop:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationStartNegotiation:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationStopNegotiation:
-        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.SyncResponse:
-        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.End:
-        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.Remaining:
-        return { senderId: parsed.senderId, message: parsed.message }
       case TimeMessageType.PlayerRegen:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationSyncTradeResponse:
-        return { senderId: parsed.senderId, message: parsed.message }
       case NotificationMessageType.NotificationSyncCoopResponse:
         return { senderId: parsed.senderId, message: parsed.message }
       default:

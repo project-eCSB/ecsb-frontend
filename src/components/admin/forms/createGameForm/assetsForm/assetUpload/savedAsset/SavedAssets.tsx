@@ -1,4 +1,4 @@
-import { type SavedAssetData, type CreateGameFormData } from '../../../CreateGameForm'
+import { type CreateGameFormData, type SavedAssetData } from '../../../CreateGameForm'
 import './SavedAssets.css'
 
 interface SavedAssetsProps {
@@ -8,13 +8,10 @@ interface SavedAssetsProps {
 }
 
 const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClose, data }) => {
-  const handleClose = () => {
-    onClose()
-  }
 
   const handleSelectAsset = (index: number) => {
     setCreateGameFormData((prevState: CreateGameFormData) => {
-      const newFormData = {
+      return {
         ...prevState,
         assets: {
           ...prevState.assets,
@@ -25,15 +22,13 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
           },
         },
       }
-      return newFormData
     })
-
-    handleClose()
+    onClose()
   }
 
   const handleSelectDefaultAsset = () => {
     setCreateGameFormData((prevState: CreateGameFormData) => {
-      const newFormData = {
+      return {
         ...prevState,
         assets: {
           ...prevState.assets,
@@ -44,10 +39,9 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
           },
         },
       }
-      return newFormData
     })
 
-    handleClose()
+    onClose()
   }
 
   return (
@@ -57,19 +51,16 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
           {Object.values(data.assets).map((asset, index) => (
             <div key={index} className='saved-asset-item'>
               <div className='saved-asset-name'>{asset.name}</div>
-              <button
-                className='saved-asset-select'
-                onClick={() => {
-                  handleSelectAsset(index)
-                }}
-              >
+              <button className='saved-asset-select' onClick={() => {
+                handleSelectAsset(index)
+              }}>
                 Select
               </button>
             </div>
           ))}
         </div>
         <div className='saved-assets-buttons'>
-          <button className='saved-assets-close' onClick={handleClose}>
+          <button className='saved-assets-close' onClick={onClose}>
             Close
           </button>
           <button className='saved-assets-default' onClick={handleSelectDefaultAsset}>

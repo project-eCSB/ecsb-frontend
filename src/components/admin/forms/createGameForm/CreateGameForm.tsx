@@ -1,9 +1,5 @@
 import { useState } from 'react'
-import {
-  type SavedAssetsResponse,
-  type AssetConfigResponse,
-  type DefaultAssetsResponse,
-} from '../../../../apis/game/Types'
+import { type AssetConfig, type DefaultAssetsResponse, type SavedAssetsResponse } from '../../../../apis/game/Types'
 import GameResourcesForm from './resourcesForm/GameResourcesForm'
 import GameTravelsForm from './travelsForm/GameTravelsForm'
 import ModifyTravel from './travelsForm/modifyTravel/ModifyTravel'
@@ -84,7 +80,8 @@ export interface ModifyTravelData {
 
 const CreateGameForm = () => {
   const [page, setPage] = useState(1)
-  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>({
+
+  const emptyForm: CreateGameFormData = {
     classResources: [],
     lowTravels: [],
     mediumTravels: [],
@@ -118,7 +115,10 @@ const CreateGameForm = () => {
     maxTimeTokens: 0,
     interactionRadius: 0,
     defaultMoney: 0,
-  })
+
+  }
+
+  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(emptyForm)
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false)
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
   const [modifyTravelData, setModifyTravelData] = useState<ModifyTravelData>({
@@ -174,41 +174,7 @@ const CreateGameForm = () => {
   }
 
   const resetForm = () => {
-    setCreateGameFormData({
-      classResources: [],
-      lowTravels: [],
-      mediumTravels: [],
-      highTravels: [],
-      gameName: '',
-      gameFullTime: 0,
-      minPlayersToStart: 0,
-      assets: {
-        [FileType.CHARACTER]: {
-          id: null,
-          file: null,
-          name: null,
-        },
-        [FileType.RESOURCE]: {
-          id: null,
-          file: null,
-          name: null,
-        },
-        [FileType.TILE]: {
-          id: null,
-          file: null,
-          name: null,
-        },
-        [FileType.MAP]: {
-          id: null,
-          file: null,
-          name: null,
-        },
-      },
-      movingSpeed: 0,
-      maxTimeTokens: 0,
-      interactionRadius: 0,
-      defaultMoney: 0,
-    })
+    setCreateGameFormData(emptyForm)
     setPage(1)
   }
 
@@ -274,7 +240,7 @@ const CreateGameForm = () => {
     />,
     <SubmitForm
       key={5}
-      createGameFormData={createGameFormData}
+      formData={createGameFormData}
       setCreateGameFormData={setCreateGameFormData}
       setAndShowResultModal={setAndShowResultModal}
       setRequestInProgress={setRequestInProgress}
@@ -312,11 +278,7 @@ const CreateGameForm = () => {
         )
       case 2:
         for (const classResource of createGameFormData.classResources) {
-          if (
-            characterMappings.has(classResource.characterMapping) ||
-            classResource.characterMapping < 1 ||
-            classResource.characterMapping > createGameFormData.classResources.length
-          ) {
+          if (checkMappings(characterMappings, classResource)) {
             return true
           }
 
@@ -328,11 +290,7 @@ const CreateGameForm = () => {
             return true
           }
 
-          if (
-            itemMappings.has(classResource.itemMapping) ||
-            classResource.itemMapping < 1 ||
-            classResource.itemMapping > createGameFormData.classResources.length
-          ) {
+          if (checkMappings(itemMappings, classResource)) {
             return true
           }
 
@@ -350,58 +308,25 @@ const CreateGameForm = () => {
           }
         }
 
-        if (createGameFormData.movingSpeed <= 0) {
-          return true
-        }
+        return checkFormDataValues(createGameFormData)
 
-        if (createGameFormData.maxTimeTokens <= 0) {
-          return true
-        }
-
-        if (createGameFormData.interactionRadius <= 0) {
-          return true
-        }
-
-        if (createGameFormData.defaultMoney < 0) {
-          return true
-        }
-
-        return false
       case 3:
         if (
           createGameFormData.lowTravels.length === 0 ||
           createGameFormData.mediumTravels.length === 0 ||
-          createGameFormData.highTravels.length === 0 ||
-          createGameFormData.lowTravels.some((travel) => travel.townName === '') ||
-          createGameFormData.mediumTravels.some((travel) => travel.townName === '') ||
-          createGameFormData.highTravels.some((travel) => travel.townName === '')
+          createGameFormData.highTravels.length === 0
         ) {
           return true
         }
 
-        for (const travel of createGameFormData.lowTravels) {
-          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0 || travel.regenTime === 0) {
-            return true
-          }
-        }
-
-        for (const travel of createGameFormData.mediumTravels) {
-          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0 || travel.regenTime === 0) {
-            return true
-          }
-        }
-
-        for (const travel of createGameFormData.highTravels) {
-          if (travel.cost.length === 0 || travel.minReward === 0 || travel.maxReward === 0 || travel.regenTime === 0) {
-            return true
-          }
-        }
-
-        if (allTravelNames.length !== uniqueTravelNames.size) {
+        if (createGameFormData.lowTravels.concat(createGameFormData.mediumTravels, createGameFormData.highTravels)
+          .some(travel => Math.min(travel.cost.length, travel.minReward, travel.maxReward, travel.regenTime) === 0 || travel.townName === '')) {
           return true
         }
 
-        return false
+        return allTravelNames.length !== uniqueTravelNames.size
+
+
       case 4:
         return createGameFormData.gameName === '' || createGameFormData.gameFullTime <= 0
       default:
@@ -409,26 +334,29 @@ const CreateGameForm = () => {
     }
   }
 
+  function checkMappings(characterMappings: Set<number>, classResource: ClassResource) {
+    return characterMappings.has(classResource.characterMapping) ||
+      classResource.characterMapping < 1 ||
+      classResource.characterMapping > createGameFormData.classResources.length
+  }
+
+  function checkFormDataValues(formData: CreateGameFormData): boolean {
+    return Math.min(formData.maxTimeTokens, formData.interactionRadius, formData.movingSpeed) <= 0 || formData.defaultMoney < 0
+  }
+
   const uploadCharacterAssetFile = async () => {
     await new Promise((resolve, reject) => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (
-          !e ||
-          !e.target ||
-          !e.target.result ||
-          !createGameFormData.assets[FileType.CHARACTER]!.file
-        )
-          return
+        if (!e || !e.target || !e.target.result || !createGameFormData.assets[FileType.CHARACTER]!.file) return
 
         await gameService
           .uploadAsset(
             e.target.result as ArrayBuffer,
             createGameFormData.assets[FileType.CHARACTER]!.name!,
             FileType.CHARACTER,
-          )
-          .then(
+          ).then(
             (assetId: number) => {
               if (showResultModal) return
 
@@ -442,9 +370,7 @@ const CreateGameForm = () => {
             },
             (error: Error) => {
               if (showResultModal) return
-
               setAndShowResultModal(error.message)
-
               reject(error)
             },
           )
@@ -464,12 +390,7 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (
-          !e ||
-          !e.target ||
-          !e.target.result ||
-          !createGameFormData.assets[FileType.RESOURCE]!.file
-        )
+        if (!e || !e.target || !e.target.result || !createGameFormData.assets[FileType.RESOURCE]!.file)
           return
 
         await gameService
@@ -477,8 +398,7 @@ const CreateGameForm = () => {
             e.target.result as ArrayBuffer,
             createGameFormData.assets[FileType.RESOURCE]!.name!,
             FileType.RESOURCE,
-          )
-          .then(
+          ).then(
             (assetId: number) => {
               if (showResultModal) return
 
@@ -492,9 +412,7 @@ const CreateGameForm = () => {
             },
             (error: Error) => {
               if (showResultModal) return
-
               setAndShowResultModal(error.message)
-
               reject(error)
             },
           )
@@ -522,8 +440,7 @@ const CreateGameForm = () => {
             e.target.result as ArrayBuffer,
             createGameFormData.assets[FileType.TILE]!.name!,
             FileType.TILE,
-          )
-          .then(
+          ).then(
             (assetId: number) => {
               if (showResultModal) return
 
@@ -537,9 +454,7 @@ const CreateGameForm = () => {
             },
             (error: Error) => {
               if (showResultModal) return
-
               setAndShowResultModal(error.message)
-
               reject(error)
             },
           )
@@ -582,9 +497,7 @@ const CreateGameForm = () => {
             },
             (error: Error) => {
               if (showResultModal) return
-
               setAndShowResultModal(error.message)
-
               reject(error)
             },
           )
@@ -658,7 +571,7 @@ const CreateGameForm = () => {
       }
 
       await gameService.getAssetConfig(createGameFormData.assets[FileType.MAP].id).then(
-        (response: AssetConfigResponse) => {
+        (response: AssetConfig) => {
           const classResources: ClassResource[] = []
 
           for (const resource in response.professionWorkshops) {
@@ -710,9 +623,7 @@ const CreateGameForm = () => {
         <div className='create-game-form-pages-buttons'>
           <button
             id={'reset-btn'}
-            onClick={() => {
-              resetForm()
-            }}
+            onClick={resetForm}
           >
             <p className='text'>Reset</p>
           </button>

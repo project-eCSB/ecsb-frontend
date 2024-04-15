@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import gameService from '../../../../services/game/GameService'
-import './copyGameForm.css'
+import './CopyGameForm.css'
 import LoadingSpinner from '../../../common/spinner/LoadingSpinner'
 import MessageModal from '../createGameForm/messageModal/MessageModal'
 
@@ -9,7 +9,6 @@ const CopyGameForm = () => {
   const [gameSessionId, setGameSessionId] = useState<number>(0)
   const [gameName, setGameName] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   const [showResultModal, setShowResultModal] = useState<boolean>(false)
   const [modalMessage, setModalMessage] = useState<string>('')
 
@@ -32,7 +31,6 @@ const CopyGameForm = () => {
     if (newGameSessionId < 1) {
       return
     }
-
     setGameSessionId(Number(e.target.value))
   }
 
@@ -66,42 +64,22 @@ const CopyGameForm = () => {
     <>
       <form className='game-settings-form' onSubmit={handleSubmit}>
         <label htmlFor='gameSessionId'>Game Session ID</label>
-        <input
-          id='gameSessionId'
-          type='number'
-          value={gameSessionId}
-          min={1}
-          onChange={(e) => {
-            handleGameSessionIdChange(e)
-          }}
-          required
-        />
+        <input id='gameSessionId' type='number' value={gameSessionId} min={1} required onChange={(e) => {
+          handleGameSessionIdChange(e)
+        }} />
         <label htmlFor='gameName'>Game Name</label>
-        <input
-          id='gameName'
-          type='string'
-          value={gameName}
-          onChange={(e) => {
-            handleGameNameChange(e)
-          }}
-          required
-        />
-        <button
-          ref={submitButton}
-          type='submit'
-          className={`${gameSessionId < 1 ? 'disabled' : ''}`}
-          disabled={gameSessionId < 1}
-        >
+        <input id='gameName' type='string' value={gameName} required onChange={(e) => {
+          handleGameNameChange(e)
+        }} />
+        <button ref={submitButton} type='submit' className={`${gameSessionId < 1 ? 'disabled' : ''}`}
+                disabled={gameSessionId < 1}>
           Copy
         </button>
       </form>
       {showResultModal && (
-        <MessageModal
-          message={modalMessage}
-          onClose={() => {
-            setShowResultModal(false)
-          }}
-        />
+        <MessageModal message={modalMessage} onClose={() => {
+          setShowResultModal(false)
+        }} />
       )}
       {isLoading && <LoadingSpinner />}
     </>

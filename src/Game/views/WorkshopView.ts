@@ -3,7 +3,7 @@ import {
   RESOURCE_ICON_SCALE,
   RESOURCE_ICON_WIDTH,
   SPACE_PRESS_ACTION_PREFIX,
-  getResourceMapping,
+  getResourceMapping, RESOURCE_ICON_HEIGHT,
 } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
@@ -64,7 +64,7 @@ export class WorkshopView {
 
     const itemIcon = this.cropper.crop(
       RESOURCE_ICON_WIDTH,
-      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_HEIGHT,
       RESOURCE_ICON_SCALE,
       this.resourceURL,
       this.resourceRepresentation.length,
@@ -73,7 +73,7 @@ export class WorkshopView {
     )
     const itemIconReversed = this.cropper.crop(
       RESOURCE_ICON_WIDTH,
-      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_HEIGHT,
       RESOURCE_ICON_SCALE,
       this.resourceURL,
       this.resourceRepresentation.length,
@@ -127,7 +127,7 @@ export class WorkshopView {
         `${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`,
       )
       this.scene.informationActionPopup.show()
-      this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
+      this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     })
     const XIcon = document.createElement('i')
     XIcon.className = 'fa fa-times'
@@ -471,7 +471,7 @@ export class WorkshopView {
     sendWorkshopMessage(this.scene.chatWs, {
       type: OutcomingWorkshopMessageType.WorkshopChoosingStart,
     })
-    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.WORK)
+    this.scene.interactionCloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.WORK)
     window.document.body.appendChild(this.workshopBoxWrapper)
     this.scene.workshopView = this
     this.scene.movingEnabled = false
@@ -482,7 +482,7 @@ export class WorkshopView {
       type: OutcomingWorkshopMessageType.WorkshopChoosingStop,
     })
     document.getElementById(WorkshopView.workshopBoxWrapperID)?.remove()
-    this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
+    this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     this.scene.workshopView = null
   }
 }

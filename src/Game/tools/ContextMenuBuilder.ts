@@ -1,14 +1,8 @@
 import { toast } from 'react-toastify'
 import { type Scene } from '../scenes/Scene'
-import {
-  OutcomingTradeMessageType,
-  sendTradeMessage,
-} from '../webSocketMessage/chat/TradeMessageHandler'
+import { OutcomingTradeMessageType, sendTradeMessage } from '../webSocketMessage/chat/TradeMessageHandler'
 import { TOAST_INVITE_MSG, TOAST_INVITE_MSG_COOP } from '../GameUtils'
-import {
-  OutcomingCoopMessageType,
-  sendCoopMessage,
-} from '../webSocketMessage/chat/CoopMessageHandler'
+import { OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
 
 export class ContextMenuBuilder {
   private static readonly buttonPartnershipWrapperID = 'buttonPartnershipWrapper'
@@ -28,14 +22,9 @@ export class ContextMenuBuilder {
       scene.plannedTravel &&
       scene.plannedTravel.travel.value.name === scene.playerAdvertisedTravel[id]
     ) {
-      const otherTravel = document.createElement('div')
-      otherTravel.id = ContextMenuBuilder.buttonWithCloudID
-      const buttonGetIntoPartnership = document.createElement('button')
-      buttonGetIntoPartnership.style.width = '50px'
-      buttonGetIntoPartnership.style.height = '45px'
-      const imgGetIntoPartnership = document.createElement('img')
-      imgGetIntoPartnership.src = '/assets/coopCustomIcon.png'
-      imgGetIntoPartnership.style.width = '35px'
+      const otherTravel = this.configureOtherTravel()
+      const imgGetIntoPartnership = this.configureImage()
+      const buttonGetIntoPartnership = this.configureButton()
       buttonGetIntoPartnership.appendChild(imgGetIntoPartnership)
       buttonGetIntoPartnership.onclick = (_: Event) => {
         window.document.getElementById('btns')?.remove()
@@ -48,25 +37,11 @@ export class ContextMenuBuilder {
         })
         this.coopInviteConfirmation()
       }
-      const cityCloud = document.createElement('div')
-      cityCloud.id = ContextMenuBuilder.cityCloudID
-      const cityText = document.createElement('h3')
-      cityText.textContent = scene.playerAdvertisedTravel[id]
-      cityCloud.appendChild(cityText)
-      otherTravel.appendChild(cityCloud)
-      const buttonGetIntoPartnershipWrapper = document.createElement('div')
-      buttonGetIntoPartnershipWrapper.id = ContextMenuBuilder.buttonPartnershipWrapperID
-      buttonGetIntoPartnershipWrapper.appendChild(buttonGetIntoPartnership)
-      otherTravel.appendChild(buttonGetIntoPartnershipWrapper)
-      divInside.appendChild(otherTravel)
+      this.addCity(scene, id, otherTravel, divInside, buttonGetIntoPartnership)
     } else {
       if (scene.plannedTravel) {
-        const buttonProposePartnership = document.createElement('button')
-        buttonProposePartnership.style.width = '50px'
-        buttonProposePartnership.style.height = '45px'
-        const imgProposePartnership = document.createElement('img')
-        imgProposePartnership.src = '/assets/coopCustomIcon.png'
-        imgProposePartnership.style.width = '35px'
+        const imgProposePartnership = this.configureImage()
+        const buttonProposePartnership = this.configureButton()
         if (scene.playerAdvertisedTravel[id]) {
           imgProposePartnership.src = '/assets/coopProposeCustomIcon.png'
           imgProposePartnership.style.width = '25px'
@@ -90,14 +65,9 @@ export class ContextMenuBuilder {
       }
 
       if (scene.playerAdvertisedTravel[id]) {
-        const otherTravel = document.createElement('div')
-        otherTravel.id = ContextMenuBuilder.buttonWithCloudID
-        const buttonGetIntoPartnership = document.createElement('button')
-        buttonGetIntoPartnership.style.width = '50px'
-        buttonGetIntoPartnership.style.height = '45px'
-        const imgGetIntoPartnership = document.createElement('img')
-        imgGetIntoPartnership.src = '/assets/coopCustomIcon.png'
-        imgGetIntoPartnership.style.width = '35px'
+        const otherTravel = this.configureOtherTravel()
+        const imgGetIntoPartnership = this.configureImage()
+        const buttonGetIntoPartnership = this.configureButton()
         if (scene.plannedTravel) {
           imgGetIntoPartnership.src = '/assets/coopJoinCustomIcon.png'
           imgGetIntoPartnership.style.width = '25px'
@@ -121,23 +91,11 @@ export class ContextMenuBuilder {
             this.coopInviteConfirmation()
           }
         }
-        const cityCloud = document.createElement('div')
-        cityCloud.id = ContextMenuBuilder.cityCloudID
-        const cityText = document.createElement('h3')
-        cityText.textContent = scene.playerAdvertisedTravel[id]
-        cityCloud.appendChild(cityText)
-        otherTravel.appendChild(cityCloud)
-        const buttonGetIntoPartnershipWrapper = document.createElement('div')
-        buttonGetIntoPartnershipWrapper.id = ContextMenuBuilder.buttonPartnershipWrapperID
-        buttonGetIntoPartnershipWrapper.appendChild(buttonGetIntoPartnership)
-        otherTravel.appendChild(buttonGetIntoPartnershipWrapper)
-        divInside.appendChild(otherTravel)
+        this.addCity(scene, id, otherTravel, divInside, buttonGetIntoPartnership)
       }
     }
 
-    const buttonTrade = document.createElement('button')
-    buttonTrade.style.width = '50px'
-    buttonTrade.style.height = '45px'
+    const buttonTrade = this.configureButton()
     const imgTrade = document.createElement('img')
     imgTrade.src = '/assets/tradeCustomIcon.png'
     imgTrade.style.width = '25px'
@@ -181,5 +139,39 @@ export class ContextMenuBuilder {
       draggable: false,
       progress: undefined,
     })
+  }
+
+  addCity(scene: Scene, id: string, otherTravel: HTMLDivElement, divInside: HTMLDivElement, buttonGetIntoPartnership: HTMLButtonElement): void {
+    const cityCloud = document.createElement('div')
+    cityCloud.id = ContextMenuBuilder.cityCloudID
+    const cityText = document.createElement('h3')
+    cityText.textContent = scene.playerAdvertisedTravel[id]
+    cityCloud.appendChild(cityText)
+    otherTravel.appendChild(cityCloud)
+    const buttonGetIntoPartnershipWrapper = document.createElement('div')
+    buttonGetIntoPartnershipWrapper.id = ContextMenuBuilder.buttonPartnershipWrapperID
+    buttonGetIntoPartnershipWrapper.appendChild(buttonGetIntoPartnership)
+    otherTravel.appendChild(buttonGetIntoPartnershipWrapper)
+    divInside.appendChild(otherTravel)
+  }
+
+  configureOtherTravel(): HTMLDivElement {
+    const otherTravel = document.createElement('div')
+    otherTravel.id = ContextMenuBuilder.buttonWithCloudID
+    return otherTravel
+  }
+
+  configureButton(): HTMLButtonElement {
+    const button = document.createElement('button')
+    button.style.width = '50px'
+    button.style.height = '45px'
+    return button
+  }
+
+  configureImage(): HTMLImageElement {
+    const img = document.createElement('img')
+    img.src = '/assets/coopCustomIcon.png'
+    img.style.width = '35px'
+    return img
   }
 }

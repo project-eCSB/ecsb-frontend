@@ -3,13 +3,11 @@ export interface AuthRequest {
   password: string
 }
 
-export interface AuthResponse {
+export interface UserData {
+  id: number
+  email: string
   jwtToken: string
   roles: string[]
-  user: {
-    id: number
-    email: string
-  }
 }
 
 /**

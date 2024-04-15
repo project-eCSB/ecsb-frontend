@@ -1,4 +1,4 @@
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping, RESOURCE_ICON_HEIGHT } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { ImageCropper } from './ImageCropper'
 
@@ -60,7 +60,7 @@ export class AdvertisementInfoBuilder {
 
     const resourceImg = this.cropper.crop(
       RESOURCE_ICON_WIDTH,
-      RESOURCE_ICON_WIDTH,
+      RESOURCE_ICON_HEIGHT,
       RESOURCE_ICON_SCALE,
       this.scene.resourceUrl,
       this.scene.settings.classResourceRepresentation.length,
@@ -127,7 +127,7 @@ export class AdvertisementInfoBuilder {
 
   showIfCloudNotVisible(): void {
     document.querySelectorAll('.adBubbleWrapper').forEach((el) => {
-      if (!this.scene.interactionCloudBuiler.isVisible(el.id)) {
+      if (!this.scene.interactionCloudBuilder.isVisible(el.id)) {
         el.classList.remove('hidden')
         el.classList.add('visible')
       } else {

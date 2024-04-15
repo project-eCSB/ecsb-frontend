@@ -1,5 +1,4 @@
-import { type Travel, type ClassResourceRepresentation } from '../../apis/game/Types'
-import { type GameResourceDto } from '../../services/game/Types'
+import { type Travel, type ClassResourceRepresentation, type GameResourceDto } from '../../apis/game/Types'
 import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
@@ -1021,14 +1020,14 @@ export class ResourceNegotiationView {
   }
 
   public show(): void {
-    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TALK)
+    this.scene.interactionCloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.TALK)
     window.document.body.appendChild(this.resourceNegotiationBoxWrapper)
     this.scene.movingEnabled = false
   }
 
   public close(success: boolean): void {
     document.getElementById(ResourceNegotiationView.resourceNegotiationBoxWrapperID)?.remove()
-    this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
+    this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
     this.scene.resourceNegotiationView = null
 
     if (success) {

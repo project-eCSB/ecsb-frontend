@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import type React from 'react'
+import { useState } from 'react'
 import { validateConfirmPassword, validateEmail, validatePassword } from './Validation'
 import type { RegisterFormData } from './Types'
-import { Link, useNavigate } from 'react-router-dom'
 import type { NavigateFunction } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import authService from '../../services/auth/AuthService'
-import type { UserData } from '../../services/auth/Types'
 import './Form.css'
 
 const RegisterForm = () => {
@@ -41,7 +40,7 @@ const RegisterForm = () => {
     }
 
     authService.register(formData.email, formData.password).then(
-      (response: UserData) => {
+      () => {
         navigate('/')
       },
       (error: Error) => {
@@ -68,38 +67,19 @@ const RegisterForm = () => {
     <div className='auth-form-container md:col-span-4'>
       <form className='auth-form' onSubmit={handleSubmit}>
         <label htmlFor='email'>Email:</label>
-        <input
-          type='email'
-          id='email'
-          name='email'
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-        />
+        <input type='email' id='email' name='email'
+               value={formData.email} onChange={handleInputChange} required />
         {errors.email && <span className='auth-error'>{errors.email}</span>}
         <label htmlFor='password'>Password:</label>
-        <input
-          type='password'
-          id='password'
-          name='password'
-          value={formData.password}
-          onChange={handleInputChange}
-          required
-        />
+        <input type='password' id='password' name='password'
+               value={formData.password} onChange={handleInputChange} required />
         {errors.password && <span className='auth-error'>{errors.password}</span>}
         <label htmlFor='confirm-password'>Confirm Password:</label>
-        <input
-          type='password'
-          id='confirm-password'
-          name='confirmPassword'
-          value={formData.confirmPassword}
-          onChange={handleInputChange}
-          required
-        />
+        <input type='password' id='confirm-password' name='confirmPassword'
+               value={formData.confirmPassword} onChange={handleInputChange} required />
         {errors.confirmPassword && <span className='auth-error'>{errors.confirmPassword}</span>}
         {registerStatus !== '' && registerStatus !== 'success' && (
-          <span className='auth-error'>{registerStatus}</span>
-        )}
+          <span className='auth-error'>{registerStatus}</span>)}
         <button className='auth-btn-submit' type='submit'>
           Register
         </button>

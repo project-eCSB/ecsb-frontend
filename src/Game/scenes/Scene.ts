@@ -12,12 +12,13 @@ import type {
   GameSettings,
   GameStatus,
   TradeEquipment,
-} from '../../services/game/Types'
+  Travel,
+} from '../../apis/game/Types'
 import {
   CloudType,
-  type PlannedTravel,
   type Controls,
   type Coordinates,
+  type PlannedTravel,
   type PlayerId,
   type PlayerState,
 } from './Types'
@@ -62,6 +63,7 @@ import {
   MAP_ASSET_KEY,
   PLAYER_DESC_OFFSET_LEFT,
   RANGE,
+  RESOURCE_ICON_HEIGHT,
   RESOURCE_ICON_SCALE,
   RESOURCE_ICON_WIDTH,
   SPACE_PRESS_ACTION_PREFIX,
@@ -78,8 +80,7 @@ import { TimeView } from '../views/TimeView'
 import { SettingsView } from '../views/SettingsView'
 import { StatusAndCoopView } from '../views/StatusAndCoopView'
 import { AdvertisementInfoBuilder } from '../tools/AdvertisementInfoBuilder'
-import Key = Phaser.Input.Keyboard.Key
-import { TimeMessageType, sendTimeMessage } from '../webSocketMessage/chat/TimeMessage'
+import { sendTimeMessage, TimeMessageType } from '../webSocketMessage/chat/TimeMessage'
 import { LeaderboardView } from '../views/LeaderboardView'
 import { parseLobbyMessage } from '../webSocketMessage/lobby/MessageParser'
 import { LobbyMessageType } from '../webSocketMessage/lobby/LobbyMessage'
@@ -91,19 +92,17 @@ import {
   sendCoopMessage,
 } from '../webSocketMessage/chat/CoopMessageHandler'
 import { IncomingWorkshopMessageType } from '../webSocketMessage/chat/WorkshopMessageHandler'
-import { type Travel } from '../../apis/game/Types'
 import { InformationView } from '../views/InformationView'
 import { CoopOfferPopup } from '../components/CoopOfferPopup'
 import { ResourceNegotiationView } from '../views/ResourceNegotiationView'
 import { clearOverlayWindows } from '../Game'
 import { FileType } from '../../components/admin/forms/createGameForm/CreateGameForm'
+import Key = Phaser.Input.Keyboard.Key
 
-const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env
-  .VITE_ECSB_MOVEMENT_WS_API_URL as string
+const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env.VITE_ECSB_MOVEMENT_WS_API_URL as string
 const VITE_ECSB_CHAT_WS_API_URL: string = import.meta.env.VITE_ECSB_CHAT_WS_API_URL as string
 const VITE_ECSB_LOBBY_WS_API_URL: string = import.meta.env.VITE_ECSB_LOBBY_WS_API_URL as string
-const VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL: string = import.meta.env
-  .VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL
+const VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL: string = import.meta.env.VITE_ECSB_HTTP_AUTH_AND_MANAGEMENT_API_URL
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -123,7 +122,7 @@ export class Scene extends Phaser.Scene {
   private readonly playerWorkshopsCoordinates: Coordinates[]
   public playerCloudMovement!: Map<PlayerId, boolean>
   public playerWorkshopUnitPrice = 0
-  public playerWorkshopResouseName = ''
+  public playerWorkshopResourceName = ''
   public playerWorkshopMaxProduction = 0
   public readonly players: Record<PlayerId, PlayerState>
   public playersClasses!: Map<PlayerId, string>
@@ -141,7 +140,7 @@ export class Scene extends Phaser.Scene {
   public leaderboardView: LeaderboardView | null
   public lobbyView: LobbyView | null
   public resourceNegotiationView: ResourceNegotiationView | null
-  public interactionCloudBuiler!: InteractionCloudBuilder
+  public interactionCloudBuilder!: InteractionCloudBuilder
   public advertisementInfoBuilder!: AdvertisementInfoBuilder
   public contextMenuBuilder!: ContextMenuBuilder
   public imageCropper!: ImageCropper
@@ -201,7 +200,7 @@ export class Scene extends Phaser.Scene {
     this.playerAdvertisedTravel = {}
     this.playerCloudType = {}
     this.playerHasCloud = {}
-    this.interactionCloudBuiler = new InteractionCloudBuilder()
+    this.interactionCloudBuilder = new InteractionCloudBuilder()
     this.advertisementInfoBuilder = new AdvertisementInfoBuilder(this)
     this.contextMenuBuilder = new ContextMenuBuilder()
     this.imageCropper = new ImageCropper()
@@ -219,7 +218,7 @@ export class Scene extends Phaser.Scene {
     settings.classResourceRepresentation.forEach((dto) => {
       if (dto.key === userStatus.className) {
         this.playerWorkshopUnitPrice = dto.value.unitPrice
-        this.playerWorkshopResouseName = dto.value.gameResourceName
+        this.playerWorkshopResourceName = dto.value.gameResourceName
         this.playerWorkshopMaxProduction = dto.value.maxProduction
       }
     })
@@ -246,11 +245,7 @@ export class Scene extends Phaser.Scene {
       layer!.scale = LAYER_SCALE
     }
 
-    this.loadingBarBuilder = new LoadingBarAndResultBuilder(
-      tilemap.tileWidth,
-      tilemap.tileHeight,
-      this,
-    )
+    this.loadingBarBuilder = new LoadingBarAndResultBuilder(tilemap.tileWidth, tilemap.tileHeight, this)
 
     const playerSprite = this.add.sprite(0, 0, CHARACTER_ASSET_KEY)
     const text = this.add.text(PLAYER_DESC_OFFSET_LEFT, ALL_PLAYERS_DESC_OFFSET_TOP, 'You')
@@ -260,16 +255,11 @@ export class Scene extends Phaser.Scene {
     this.playerCloudMovement.set(this.playerId, false)
     this.playersClasses.set(this.playerId, this.status.className)
 
-    const cloud = this.interactionCloudBuiler.build(this, this.playerId)
+    const cloud = this.interactionCloudBuilder.build(this, this.playerId)
     const adBubble = this.advertisementInfoBuilder.build(this.playerId)
     this.advertisementInfoBuilder.setMarginAndVisibility(this.playerId)
 
-    this.cameras.main.setBounds(
-      0,
-      0,
-      tilemap.widthInPixels * LAYER_SCALE,
-      tilemap.heightInPixels * LAYER_SCALE,
-    )
+    this.cameras.main.setBounds(0, 0, tilemap.widthInPixels * LAYER_SCALE, tilemap.heightInPixels * LAYER_SCALE)
 
     const container = this.add.container(0, 0, [playerSprite, text, cloud, adBubble])
 
@@ -308,10 +298,7 @@ export class Scene extends Phaser.Scene {
 
         sendMovementMessage(this.movementWs, {
           type: MovementMessageType.Move,
-          coords: {
-            x: enterTile.x,
-            y: enterTile.y,
-          },
+          coords: { x: enterTile.x, y: enterTile.y },
           direction: direction,
         })
 
@@ -326,31 +313,19 @@ export class Scene extends Phaser.Scene {
         return
       }
 
+      const checkCoords = (coord: Coordinates): boolean => coord.x === enterTile.x && coord.y === enterTile.y
+
       if (charId === this.playerId) {
-        if (
-          this.playerWorkshopsCoordinates.some(
-            (coord) => coord.x === enterTile.x && coord.y === enterTile.y,
-          )
-        ) {
-          this.informationActionPopup.setText(
-            `${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`,
-          )
+        if (this.playerWorkshopsCoordinates.some(checkCoords)) {
+          this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`)
           this.informationActionPopup.show()
-        } else if (
-          this.lowTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
-        ) {
+        } else if (this.lowTravels.some(checkCoords)) {
           this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć krótką podróż...`)
           this.informationActionPopup.show()
-        } else if (
-          this.mediumTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
-        ) {
-          this.informationActionPopup.setText(
-            `${SPACE_PRESS_ACTION_PREFIX} odbyć średnią podróż...`,
-          )
+        } else if (this.mediumTravels.some(checkCoords)) {
+          this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć średnią podróż...`)
           this.informationActionPopup.show()
-        } else if (
-          this.highTravels.some((coord) => coord.x === enterTile.x && coord.y === enterTile.y)
-        ) {
+        } else if (this.highTravels.some(checkCoords)) {
           this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć długą podróż...`)
           this.informationActionPopup.show()
         } else {
@@ -358,6 +333,7 @@ export class Scene extends Phaser.Scene {
         }
       }
     })
+
 
     this.input.on(
       'pointerdown',
@@ -369,8 +345,7 @@ export class Scene extends Phaser.Scene {
       },
     )
 
-    gameService
-      .getPlayerEquipment()
+    gameService.getPlayerEquipment()
       .then((eq: Equipment) => {
         this.equipment = eq
         this.equipmentView = new EquipmentView(
@@ -386,10 +361,9 @@ export class Scene extends Phaser.Scene {
           this,
         )
         this.statusAndCoopView.show()
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+      }).catch((err) => {
+      console.error(err)
+    })
 
     this.userDataView.show()
 
@@ -401,54 +375,33 @@ export class Scene extends Phaser.Scene {
 
     this.scale.resize(window.innerWidth, window.innerHeight)
 
-    if (
-      this.playerWorkshopsCoordinates.some(
-        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
-      )
-    ) {
+    if (this.playerWorkshopsCoordinates.some((coords) => this.checkCoords(coords, this.status))) {
       this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} rozpocząć wytwarzanie...`)
       this.informationActionPopup.show()
-    } else if (
-      this.lowTravels.some(
-        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
-      )
-    ) {
+    } else if (this.lowTravels.some((coords) => this.checkCoords(coords, this.status))) {
       this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć krótką podróż...`)
       this.informationActionPopup.show()
-    } else if (
-      this.mediumTravels.some(
-        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
-      )
-    ) {
+    } else if (this.mediumTravels.some((coords) => this.checkCoords(coords, this.status))) {
       this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć średnią podróż...`)
       this.informationActionPopup.show()
-    } else if (
-      this.highTravels.some(
-        (coord) => coord.x === this.status.coords.x && coord.y === this.status.coords.y,
-      )
-    ) {
+    } else if (this.highTravels.some((coords) => this.checkCoords(coords, this.status))) {
       this.informationActionPopup.setText(`${SPACE_PRESS_ACTION_PREFIX} odbyć długą podróż...`)
       this.informationActionPopup.show()
     }
   }
 
+  checkCoords(coord: Coordinates, status:GameStatus): boolean {
+    return coord.x === status.coords.x && coord.y === status.coords.y
+  }
+
   createTradeWindow = (targetId: string, isUserTurn: boolean): void => {
-    this.tradeWindow = new TradeView(
-      this,
-      isUserTurn,
-      this.playerId,
-      this.equipment!,
-      targetId,
-      this.resourceUrl,
-      this.settings.classResourceRepresentation,
-    )
+    this.tradeWindow = new TradeView(this, isUserTurn, this.playerId,
+      this.equipment!, targetId, this.resourceUrl, this.settings.classResourceRepresentation)
     this.tradeWindow.show()
   }
 
   configureLobbyWebSocket(): void {
-    this.lobbyWs = new WebsocketBuilder(
-      `${VITE_ECSB_LOBBY_WS_API_URL}/ws?gameToken=${this.gameToken}`,
-    )
+    this.lobbyWs = new WebsocketBuilder(`${VITE_ECSB_LOBBY_WS_API_URL}/ws?gameToken=${this.gameToken}`)
       .onOpen((i, ev) => {
         console.log('lobbyWs opened')
       })
@@ -507,10 +460,7 @@ export class Scene extends Phaser.Scene {
     )
       .onOpen((i, ev) => {
         console.log('movementWs opened')
-
-        sendMovementMessage(this.movementWs, {
-          type: MovementMessageType.SyncRequest,
-        })
+        sendMovementMessage(this.movementWs, { type: MovementMessageType.SyncRequest })
       })
       .onClose((i, ev) => {
         console.log('movementWs closed')
@@ -621,7 +571,6 @@ export class Scene extends Phaser.Scene {
           while (this.chatQueue.length > 0) {
             const msg = this.chatQueue.shift()
             if (!msg) return
-
             this.handleChatMessage(msg)
           }
 
@@ -631,7 +580,6 @@ export class Scene extends Phaser.Scene {
             this.chatQueue.push(msg)
             return
           }
-
           this.handleChatMessage(msg)
         }
       })
@@ -890,10 +838,10 @@ export class Scene extends Phaser.Scene {
         this.adBubblesTrade(msg.message.states)
         break
       case NotificationMessageType.NotificationStartNegotiation:
-        this.interactionCloudBuiler.showInteractionCloud(msg.senderId, CloudType.TALK)
+        this.interactionCloudBuilder.showInteractionCloud(msg.senderId, CloudType.TALK)
         break
       case NotificationMessageType.NotificationStopNegotiation:
-        this.interactionCloudBuiler.hideInteractionCloud(msg.senderId, CloudType.TALK)
+        this.interactionCloudBuilder.hideInteractionCloud(msg.senderId, CloudType.TALK)
         break
       case EquipmentMessageType.QueueProcessed:
         this.loadingBarBuilder!.setCoordinates(
@@ -903,7 +851,7 @@ export class Scene extends Phaser.Scene {
         if (msg.message.context === 'workshop') {
           const img = this.imageCropper.crop(
             RESOURCE_ICON_WIDTH,
-            RESOURCE_ICON_WIDTH,
+            RESOURCE_ICON_HEIGHT,
             RESOURCE_ICON_SCALE,
             this.resourceUrl,
             this.settings.classResourceRepresentation.length,
@@ -931,8 +879,7 @@ export class Scene extends Phaser.Scene {
         this.chatWs.close()
         this.movementWs.close()
 
-        gameService
-          .getPlayerResults()
+        gameService.getPlayerResults()
           .then((leaderboard: EndGameStatus) => {
             this.movingEnabled = false
             this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {
@@ -1028,7 +975,7 @@ export class Scene extends Phaser.Scene {
     this.playerCloudMovement.set(id, false)
     this.playersClasses.set(id, characterClass)
 
-    const cloud = this.interactionCloudBuiler.build(this, id)
+    const cloud = this.interactionCloudBuilder.build(this, id)
     const adBubble = this.advertisementInfoBuilder.build(id)
     this.advertisementInfoBuilder.setMarginAndVisibility(id)
 
@@ -1060,8 +1007,8 @@ export class Scene extends Phaser.Scene {
     const container = this.add.container(0, 0, [sprite, text, cloud, adBubble])
 
     this.gridEngine.addCharacter({
-      id: id,
-      sprite: sprite,
+      id,
+      sprite,
       container,
       facingDirection: direction,
       walkingAnimationMapping: getPlayerMapping(this.settings.classResourceRepresentation)(
@@ -1083,14 +1030,12 @@ export class Scene extends Phaser.Scene {
     this.gridEngine.getSprite(id)?.destroy()
     this.gridEngine.getContainer(id)?.destroy()
     this.gridEngine.removeCharacter(id)
-
     delete this.players[id]
   }
 
   movePlayer(id: string, coords: Coordinates, direction: Direction): void {
     this.gridEngine.moveTo(id, coords, { algorithm: 'JPS' })
-
-    this.interactionCloudBuiler.purgeUnnecessaryIcons(id)
+    this.interactionCloudBuilder.purgeUnnecessaryIcons(id)
     this.players[id].coords = coords
     this.players[id].direction = direction
   }
@@ -1142,7 +1087,6 @@ export class Scene extends Phaser.Scene {
 
   updateTradeDialog(ourSide: TradeEquipment, otherSide: TradeEquipment): void {
     if (!this.tradeWindow) return
-
     this.tradeWindow.setCurrPlayerTurn(true)
     this.tradeWindow.update(ourSide, otherSide)
     this.tradeWindow.updatePlayerTurnElements()
@@ -1415,13 +1359,13 @@ export class Scene extends Phaser.Scene {
         this.playerCloudType[key] &&
         Math.sqrt(
           Math.pow(this.players[this.playerId].coords.x - this.players[key].coords.x, 2) +
-            Math.pow(this.players[this.playerId].coords.y - this.players[key].coords.y, 2),
+          Math.pow(this.players[this.playerId].coords.y - this.players[key].coords.y, 2),
         ) <= this.settings.interactionRadius
       ) {
         if (!this.playerHasCloud[key])
-          this.interactionCloudBuiler.showInteractionCloud(key, this.playerCloudType[key])
+          this.interactionCloudBuilder.showInteractionCloud(key, this.playerCloudType[key])
       } else {
-        if (key !== this.playerId) this.interactionCloudBuiler.clearInteractionCloud(key)
+        if (key !== this.playerId) this.interactionCloudBuilder.clearInteractionCloud(key)
       }
     }
 
@@ -1454,80 +1398,32 @@ export class Scene extends Phaser.Scene {
     ]
 
     if (controls.action.isDown && Phaser.Input.Keyboard.JustDown(controls.action)) {
-      if (
-        this.playerWorkshopsCoordinates.some(
-          (coords) =>
-            this.players[this.playerId].coords.x === coords.x &&
-            this.players[this.playerId].coords.y === coords.y,
-        ) &&
-        this.equipment
-      ) {
-        this.workshopView = new WorkshopView(
-          this,
-          this.resourceUrl,
-          this.settings.classResourceRepresentation,
-        )
+      if (this.playerWorkshopsCoordinates.some(this.checkPlayerCoords) && this.equipment) {
+        this.workshopView = new WorkshopView(this, this.resourceUrl, this.settings.classResourceRepresentation)
         this.workshopView.show()
-
-        this.informationActionPopup.close()
-      } else if (
-        this.lowTravels.some(
-          (coords) =>
-            this.players[this.playerId].coords.x === coords.x &&
-            this.players[this.playerId].coords.y === coords.y,
-        )
-      ) {
-        this.travelView = new TravelView(
-          this,
-          TravelType.LOW,
-          this.resourceUrl,
-          this.settings.classResourceRepresentation,
-        )
+      } else if (this.lowTravels.some(this.checkPlayerCoords)) {
+        this.travelView = new TravelView(this, TravelType.LOW, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
-
-        this.informationActionPopup.close()
-      } else if (
-        this.mediumTravels.some(
-          (coords) =>
-            this.players[this.playerId].coords.x === coords.x &&
-            this.players[this.playerId].coords.y === coords.y,
-        )
-      ) {
-        this.travelView = new TravelView(
-          this,
-          TravelType.MEDIUM,
-          this.resourceUrl,
-          this.settings.classResourceRepresentation,
-        )
+      } else if (this.mediumTravels.some(this.checkPlayerCoords)) {
+        this.travelView = new TravelView(this, TravelType.MEDIUM, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
-
-        this.informationActionPopup.close()
-      } else if (
-        this.highTravels.some(
-          (coords) =>
-            this.players[this.playerId].coords.x === coords.x &&
-            this.players[this.playerId].coords.y === coords.y,
-        )
-      ) {
-        this.travelView = new TravelView(
-          this,
-          TravelType.HIGH,
-          this.resourceUrl,
-          this.settings.classResourceRepresentation,
-        )
+      } else if (this.highTravels.some(this.checkPlayerCoords)) {
+        this.travelView = new TravelView(this, TravelType.HIGH, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
-
-        this.informationActionPopup.close()
       }
-
+      this.informationActionPopup.close()
       return
     }
 
     const foundMapping = moveMapping.find((mapping) => this.areAllKeysDown(mapping.keys))
     if (foundMapping) {
       this.gridEngine.move(this.playerId, foundMapping.direction)
-      this.interactionCloudBuiler.purgeUnnecessaryIcons(this.playerId)
+      this.interactionCloudBuilder.purgeUnnecessaryIcons(this.playerId)
     }
+  }
+
+  checkPlayerCoords(coords: Coordinates): boolean {
+    return this.players[this.playerId].coords.x === coords.x && this.players[this.playerId].coords.y === coords.y
   }
 
   destroy(): void {

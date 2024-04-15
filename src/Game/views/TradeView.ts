@@ -1,7 +1,6 @@
 import { type Scene } from '../scenes/Scene'
-import { type TradeEquipment } from '../../services/game/Types'
 import { CloudType } from '../scenes/Types'
-import { type ClassResourceRepresentation } from '../../apis/game/Types'
+import { type ClassResourceRepresentation, type TradeEquipment } from '../../apis/game/Types'
 import { ImageCropper } from '../tools/ImageCropper'
 import { getResourceMapping } from '../GameUtils'
 import { TradeSuccessView } from './TradeSuccessView'
@@ -762,7 +761,7 @@ export class TradeView {
       if (
         !this.isFirstOffer &&
         resource.value !==
-          this.youOfferPrevious.resources.find((r) => r.key === resource.key)!.value
+        this.youOfferPrevious.resources.find((r) => r.key === resource.key)!.value
       ) {
         exclamationMark.style.display = 'block'
       } else {
@@ -1365,7 +1364,7 @@ export class TradeView {
   }
 
   public show(): void {
-    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TALK)
+    this.scene.interactionCloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.TALK)
     window.document.body.appendChild(this.tradeBoxWrapper)
     this.scene.movingEnabled = false
   }
@@ -1382,7 +1381,7 @@ export class TradeView {
         this.otherPlayerId,
         this.youGet,
         () => {
-          this.scene.interactionCloudBuiler.hideInteractionCloud(
+          this.scene.interactionCloudBuilder.hideInteractionCloud(
             this.scene.playerId,
             CloudType.TALK,
           )
@@ -1393,7 +1392,7 @@ export class TradeView {
       )
       succesView.show()
     } else {
-      this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
+      this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
       this.scene.tradeWindow = null
       this.scene.movingEnabled = true
       this.scene.otherPlayerId = undefined

@@ -1,51 +1,36 @@
-import type { AuthRequest, AuthResponse } from './Types'
+import type { AuthRequest, UserData } from './Types'
 import { AuthResponseError } from './Types'
 import { authTokenAuthAndManagementAPI } from '../apis'
+import { type AxiosResponse } from 'axios'
+import { GameResponseError } from '../game/Types'
 
-const login = async (data: AuthRequest): Promise<AuthResponse> => {
-  return await authTokenAuthAndManagementAPI
-    .post('/login', data)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new AuthResponseError(response.status, response.data)
-      }
-
-      return {
-        jwtToken: response.data.jwtToken,
-        roles: response.data.roles,
-        user: response.data.loginUserDTO,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new AuthResponseError(error.response.status, error.response.data)
-      } else {
-        throw new AuthResponseError(0, error.message)
-      }
-    })
+function standardThen(response: AxiosResponse): any {
+  if (response.status !== 200) {
+    throw new GameResponseError(response.status, response.data)
+  }
+  return response.data
 }
 
-const register = async (data: AuthRequest): Promise<AuthResponse> => {
+function handleError(error: any): any | undefined {
+  if (error.response) {
+    throw new AuthResponseError(error.response.status, error.response.data)
+  } else {
+    throw new AuthResponseError(0, error.message)
+  }
+}
+
+const login = async (data: AuthRequest): Promise<UserData> => {
+  return await authTokenAuthAndManagementAPI
+    .post('/login', data)
+    .then(standardThen)
+    .catch(handleError)
+}
+
+const register = async (data: AuthRequest): Promise<UserData> => {
   return await authTokenAuthAndManagementAPI
     .post('/register', data)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new AuthResponseError(response.status, response.data)
-      }
-
-      return {
-        jwtToken: response.data.jwtToken,
-        roles: response.data.roles,
-        user: response.data.loginUserDTO,
-      }
-    })
-    .catch((error) => {
-      if (error.response) {
-        throw new AuthResponseError(error.response.status, error.response.data)
-      } else {
-        throw new AuthResponseError(0, error.message)
-      }
-    })
+    .then(standardThen)
+    .catch(handleError)
 }
 
 /**
