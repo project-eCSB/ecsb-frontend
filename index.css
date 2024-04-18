@@ -19,10 +19,8 @@
 
 /* Settings */
 
-#settingsButton {
-  padding: 0.5rem;
-  padding-bottom: 0.3rem;
-  background-color: #edb872;
+#settingsButton, #settingsButtonActive {
+  padding: 0.5rem 0.5rem 0.3rem;
   clip-path: polygon(
     3.05% 90%,
     24.63% 92.01%,
@@ -67,68 +65,27 @@
   transition: 0.2s ease-in-out;
 }
 
+#settingsButton {
+  background-color: #edb872;
+}
+
 #settingsButtonActive {
-  padding: 0.5rem;
-  padding-bottom: 0.3rem;
   background-color: #ab742b;
-  clip-path: polygon(
-    3.05% 90%,
-    24.63% 92.01%,
-    27.36% 88.02%,
-    30.45% 93.05%,
-    39.53% 93.09%,
-    54.54% 95.18%,
-    72.51% 95.37%,
-    91.71% 94.74%,
-    94.61% 93.11%,
-    96.73% 91.49%,
-    97.29% 88.24%,
-    98.11% 82%,
-    98.4% 64.77%,
-    97.93% 49.3%,
-    97.51% 29.37%,
-    96.68% 9.5%,
-    89.4% 9.64%,
-    82.38% 8.28%,
-    75.41% 7.56%,
-    72.98% 14.11%,
-    70.73% 7.23%,
-    61.53% 6.45%,
-    49.95% 5.9%,
-    41.43% 4.81%,
-    31.72% 5.61%,
-    21.73% 5.22%,
-    13.26% 5.44%,
-    7.33% 6.88%,
-    4.36% 7.76%,
-    2.44% 11.26%,
-    1.58% 18.28%,
-    0.98% 27.79%,
-    0.91% 39.31%,
-    1.09% 51.32%,
-    1.59% 62.1%,
-    2.09% 76.88%
-  );
-  color: black;
-  border: none;
-  cursor: pointer;
+}
+
+#settingsButtonWrapper, #settingsButtonWrapperActive {
+  position: fixed;
+  top: 10px;
+  right: 10px;
   transition: 0.2s ease-in-out;
 }
 
 #settingsButtonWrapper {
-  position: fixed;
-  top: 10px;
-  right: 10px;
   filter: drop-shadow(-3px 4px #835211);
-  transition: 0.2s ease-in-out;
 }
 
 #settingsButtonWrapperActive {
-  position: fixed;
-  top: 10px;
-  right: 10px;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
-  transition: 0.2s ease-in-out;
 }
 
 #settingsButtonWrapper:hover #settingsButton {
@@ -290,7 +247,7 @@
   font-size: large;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #settingsContainerControls > div > h3 {
     font-size: medium;
   }
@@ -318,7 +275,7 @@
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #settingsContainerControls > div > h3 {
     font-size: small;
   }
@@ -423,13 +380,13 @@
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #userDataBoxWrapper {
     transform: scale(0.85) translateX(-10%) translateY(-10%);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #userDataBoxWrapper {
     transform: scale(0.7) translateX(-20%) translateY(-20%);
   }
@@ -496,13 +453,13 @@
   top: calc(110px + 0.4rem);
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #statusAndCoopContainer {
     top: 100px;
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #statusAndCoopContainer {
     top: 90px;
   }
@@ -516,7 +473,6 @@
 
 #statusButtonWrapperActive,
 #coopButtonWrapperActive {
-  filter: none;
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
@@ -524,8 +480,7 @@
 #statusButton,
 #coopButton {
   width: 110px;
-  margin: 0.5rem 0;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0 1rem;
   padding: 0.2rem 0.5rem;
   font-size: 1rem;
   background-color: #edb872;
@@ -580,8 +535,7 @@
 #statusButtonActive,
 #coopButtonActive {
   width: 110px;
-  margin: 0.5rem 0;
-  margin-bottom: 1rem;
+  margin: 0.5rem 0 1rem;
   padding: 0.2rem 0.5rem;
   font-size: 1rem;
   background-color: #ab742b;
@@ -1583,7 +1537,7 @@
   transform: none;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   .coopDialogExtraWrapper {
     transform: scale(0.85) translateX(-10%) translateY(-10%);
   }
@@ -1593,7 +1547,7 @@
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   .coopDialogExtraWrapper {
     transform: scale(0.7) translateX(-20%) translateY(-20%);
   }
@@ -1673,7 +1627,7 @@
   z-index: 10;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #timerBoxWrapper {
     transform: scale(0.85) translateX(10%) translateY(10%);
   }
@@ -1683,7 +1637,7 @@
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #timerBoxWrapper {
     transform: scale(0.7) translateX(20%) translateY(20%);
   }
@@ -1875,8 +1829,7 @@
   height: 9rem;
   bottom: -18px;
   left: -15px;
-  padding: 1.7rem;
-  padding-left: 2.5rem;
+  padding: 1.7rem 1.7rem 1.7rem 2.5rem;
   background-color: #edb872;
   clip-path: polygon(
     3.05% 90%,
@@ -1918,13 +1871,13 @@
   );
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #equipmentBox {
     transform: scale(0.85) translateX(-10%) translateY(10%);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #equipmentBox {
     transform: scale(0.7) translateX(-20%) translateY(20%);
   }
@@ -2067,7 +2020,7 @@
   );
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #equipmentHoverBox{
     left: -8px;
   }
@@ -2081,7 +2034,7 @@
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #equipmentHoverBox{
     left: -4px;
   }
@@ -2525,7 +2478,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  text-align: center;
   width: 42px;
   height: 42px;
   background-color: #f6dcb8;
@@ -2968,13 +2920,13 @@
   transform: none;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #tradeBoxWrapper {
     transform: scale(0.85);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #tradeBoxWrapper {
     transform: scale(0.7);
   }
@@ -3097,8 +3049,7 @@
   background-color: #F6DCB8;
   position: relative;
   height: 45px;
-  padding: 0.5rem 1rem;
-  padding-bottom: 1rem;
+  padding: 0.5rem 1rem 1rem;
   max-width: none;
 }
 
@@ -3415,7 +3366,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  font-size: 1.2rem;
 }
 
 /* TradeSuccessBox - Ok button */
@@ -3454,7 +3404,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
-  border: none;
   font-size: 1.2rem;
   transition: 0.2s all ease-in-out;
   color: #000;
@@ -3522,13 +3471,13 @@
   transform: translate(-5px, 6px);
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #tradeSuccessBox {
     transform: scale(0.85);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #tradeSuccessBox {
     transform: scale(0.7);
   }
@@ -4174,13 +4123,13 @@
   transform: translate(0, 0);
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #workshopBoxWrapper {
     transform: scale(0.85);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #workshopBoxWrapper {
     transform: scale(0.7);
   }
@@ -4376,7 +4325,7 @@
 }
 
 #travelWarningBox {
-  padding: 20px 0px 30px 0px;
+  padding: 20px 0 30px 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -4851,13 +4800,13 @@
   transform: translate(0, 0);
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #travelBoxWrapper {
     transform: scale(0.85);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #travelBoxWrapper {
     transform: scale(0.7);
   }
@@ -4916,13 +4865,13 @@
   left: 1rem;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #errorsAndInfo {
     transform: scale(0.85) translateX(calc(-10% - 5px)) translateY(calc(10% + 30px));
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #errorsAndInfo {
     transform: scale(0.7) translateX(calc(-20% - 10px)) translateY(calc(20% + 60px));
   }
@@ -5166,7 +5115,6 @@
   width: 35px;
   height: 35px;
   border-radius: 50%;
-  background-color: #677818;
   text-align: center;
   padding-top: 2px;
   font-size: x-large;
@@ -5242,13 +5190,13 @@
   filter: none;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #leaderboard {
     transform: scale(0.85);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #leaderboard {
     transform: scale(0.7);
   }
@@ -5430,13 +5378,13 @@
   }
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #lobby {
     transform: scale(0.85);
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #lobby {
     transform: scale(0.7);
   }
@@ -5618,7 +5566,7 @@
 }
 
 .bubble-0 {
-  padding-bottom: 0%;
+  padding-bottom: 0;
   display: none;
 }
 
@@ -5682,13 +5630,13 @@
   z-index: 9999;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #resourceNegotiationBoxWrapper {
     transform: scale(0.85);
   }
 }
-  
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #resourceNegotiationBoxWrapper {
     transform: scale(0.7);
   }
@@ -6556,13 +6504,13 @@
   z-index: 9999;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   #resourceNegotiationSuccessBox {
     transform: scale(0.85);
   }
 }
   
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   #resourceNegotiationSuccessBox {
     transform: scale(0.7);
   }
@@ -6914,7 +6862,6 @@
 #resourceNegotiationSuccessOkButton {
   border: none;
   padding: 0.5rem 1.5rem;
-  border: none;
   font-size: 1.2rem;
   transition: 0.2s all ease-in-out;
   color: #000;
@@ -6987,13 +6934,13 @@
   top: -95px;
 }
 
-@media only screen and ((max-width: 1450px) or (max-height: 800px)) {
+@media only screen and (max-width: 1450px), only screen and (max-height: 800px) {
   .Toastify__toast {
     top: -75px;
   }
 }
 
-@media only screen and ((max-width: 1050px) or (max-height: 600px)) {
+@media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
   .Toastify__toast {
     top: -55px;
   }

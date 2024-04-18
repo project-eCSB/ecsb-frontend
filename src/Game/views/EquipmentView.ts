@@ -1,5 +1,4 @@
-import { type ClassResourceRepresentation } from '../../apis/game/Types'
-import { type Equipment } from '../../services/game/Types'
+import { type ClassResourceRepresentation, type Equipment } from '../../apis/game/Types'
 import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { ImageCropper } from '../tools/ImageCropper'
 

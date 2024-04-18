@@ -496,7 +496,7 @@ export class TravelView {
     sendTravelChoosingMessage(this.scene.chatWs, {
       type: TravelChoosingMessageType.TravelStart,
     })
-    this.scene.interactionCloudBuiler.showInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
+    this.scene.interactionCloudBuilder.showInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     window.document.body.appendChild(this.travelBoxWrapper)
     this.scene.travelView = this
     this.scene.movingEnabled = false
@@ -506,7 +506,7 @@ export class TravelView {
     sendTravelChoosingMessage(this.scene.chatWs, {
       type: TravelChoosingMessageType.TravelStop,
     })
-    this.scene.interactionCloudBuiler.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
+    this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TRAVEL)
     document.getElementById(TravelView.travelBoxWrapperID)?.remove()
     this.scene.travelView = null
 

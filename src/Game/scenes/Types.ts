@@ -1,5 +1,4 @@
-import { type Travel } from '../../apis/game/Types'
-import { type Equipment } from '../../services/game/Types'
+import { type Travel, type Equipment } from '../../apis/game/Types'
 import { type Direction } from 'grid-engine'
 import Key = Phaser.Input.Keyboard.Key
 

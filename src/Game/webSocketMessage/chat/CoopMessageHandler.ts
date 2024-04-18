@@ -1,4 +1,4 @@
-import { type CoopEquipmentDto, type GameResourceDto } from '../../../services/game/Types'
+import { type CoopEquipmentDto, type GameResourceDto } from '../../../apis/game/Types'
 import { type Websocket } from 'websocket-ts'
 
 export interface CoopBid {

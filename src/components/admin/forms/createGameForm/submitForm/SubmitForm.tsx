@@ -1,27 +1,22 @@
 import { type CreateGameRequest } from '../../../../../apis/game/Types'
 import gameService from '../../../../../services/game/GameService'
-import {
-  FileType,
-  type ClassResource,
-  type CreateGameFormData,
-  type Travel,
-} from '../CreateGameForm'
+import { type ClassResource, type CreateGameFormData, FileType, type Travel } from '../CreateGameForm'
 import './SubmitForm.css'
-import type React from "react";
+import type React from 'react'
 
 interface SubmitFormProps {
-  createGameFormData: CreateGameFormData
+  formData: CreateGameFormData
   setCreateGameFormData: React.Dispatch<React.SetStateAction<CreateGameFormData>>
   setAndShowResultModal: (message: string) => void
   setRequestInProgress: (requestInProgress: boolean) => void
 }
 
 const SubmitForm: React.FC<SubmitFormProps> = ({
-  createGameFormData,
-  setCreateGameFormData,
-  setAndShowResultModal,
-  setRequestInProgress,
-}) => {
+                                                 formData,
+                                                 setCreateGameFormData,
+                                                 setAndShowResultModal,
+                                                 setRequestInProgress,
+                                               }) => {
   const renderClassResources = (classResources: ClassResource[]) => {
     return classResources.map((resource, index) => (
       <>
@@ -51,9 +46,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
             <p>Cost:</p>
             {travel.cost.map((cost, i) => (
               <div key={i}>
-                <p>
-                  {cost.itemName} - {cost.itemCost}
-                </p>
+                <p>{cost.itemName} - {cost.itemCost}</p>
               </div>
             ))}
           </div>
@@ -158,7 +151,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         to: travel.maxReward,
       },
       time: travel.cost[travel.cost.length - 1].itemCost,
-      regenTime: travel.regenTime * 1000
+      regenTime: travel.regenTime * 1000,
     }
   }
 
@@ -171,14 +164,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       return
     }
 
-    let parsedValue = parseInt(value)
-    if (parsedValue <= 0) {
-      parsedValue = 0
-    }
-    if (parsedValue >= 60) {
-      parsedValue = 60
-    }
-
+    const parsedValue = Math.min(Math.max(0, parseInt(value)), 60)
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
       gameFullTime: parsedValue,
@@ -194,14 +180,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       return
     }
 
-    let parsedValue = parseInt(value)
-    if (parsedValue <= 0) {
-      parsedValue = 0
-    }
-    if (parsedValue >= 30) {
-      parsedValue = 30
-    }
-
+    const parsedValue = Math.min(Math.max(0, parseInt(value)), 30)
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
       minPlayersToStart: parsedValue,
@@ -211,20 +190,9 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   const handleSubmit = () => {
     setRequestInProgress(true)
 
-    const transformedData = transformFormData(createGameFormData)
+    const transformedData = transformFormData(formData)
     gameService
-      .createGame(
-        transformedData.classResourceRepresentation,
-        transformedData.gameName,
-        transformedData.travels,
-        transformedData.assets,
-        transformedData.timeForGame,
-        transformedData.maxTimeTokens,
-        transformedData.walkingSpeed,
-        transformedData.interactionRadius,
-        transformedData.defaultMoney,
-        transformedData.minPlayersToStart,
-      )
+      .createGame(transformedData)
       .then((gameSessionId: number) => {
         setRequestInProgress(false)
         setAndShowResultModal(`Game created successfully! Game ID: ${gameSessionId}`)
@@ -246,85 +214,54 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         <div className='summary-files'>
           <h5>Assets</h5>
           <div>
-            <p>Character Asset File: {createGameFormData.assets[FileType.CHARACTER]?.name}</p>
-            <p>Resource Asset File: {createGameFormData.assets[FileType.RESOURCE]?.name}</p>
-            <p>Tile Asset File: {createGameFormData.assets[FileType.TILE]?.name}</p>
-            <p>Map Asset File: {createGameFormData.assets[FileType.MAP]?.name}</p>
+            <p>Character Asset File: {formData.assets[FileType.CHARACTER]?.name}</p>
+            <p>Resource Asset File: {formData.assets[FileType.RESOURCE]?.name}</p>
+            <p>Tile Asset File: {formData.assets[FileType.TILE]?.name}</p>
+            <p>Map Asset File: {formData.assets[FileType.MAP]?.name}</p>
           </div>
         </div>
         <div className='summary-class-resources'>
           <h5>Class Resources</h5>
-          <div className='summary-class-resources-container'>
-            {renderClassResources(createGameFormData.classResources)}
-          </div>
+          <div className='summary-class-resources-container'>{renderClassResources(formData.classResources)}</div>
         </div>
         <div className='summary-travels'>
           <h5>Low Travels</h5>
-          <div className='summary-travels-container'>
-            {renderTravels(createGameFormData.lowTravels)}
-          </div>
+          <div className='summary-travels-container'>{renderTravels(formData.lowTravels)}</div>
         </div>
         <div className='summary-travels'>
           <h5>Medium Travels</h5>
-          <div className='summary-travels-container'>
-            {renderTravels(createGameFormData.mediumTravels)}
-          </div>
+          <div className='summary-travels-container'>{renderTravels(formData.mediumTravels)}</div>
         </div>
         <div className='summary-travels'>
           <h5>High Travels</h5>
-          <div className='summary-travels-container'>
-            {renderTravels(createGameFormData.highTravels)}
-          </div>
+          <div className='summary-travels-container'>{renderTravels(formData.highTravels)}</div>
         </div>
       </div>
       <div className='game-submit-form-input'>
         <label htmlFor=''>Game name</label>
-        <input
-          minLength={3}
-          maxLength={254}
-          value={createGameFormData.gameName}
-          onChange={(e) => {
-            setCreateGameFormData({ ...createGameFormData, gameName: e.target.value })
-          }}
-          type='text'
-        />
+        <input minLength={3} maxLength={254} value={formData.gameName} type='text'
+               onChange={(e) => {
+                 setCreateGameFormData({ ...formData, gameName: e.target.value })
+               }} />
       </div>
       <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
         <label htmlFor=''>Game Full Time (in minutes)</label>
-        <input
-          min={1}
-          max={60}
-          value={createGameFormData.gameFullTime}
-          onChange={(e) => {
-            handleChangeGameFullTime(e.target.value)
-          }}
-          type='number'
-        />
+        <input min={1} max={60} value={formData.gameFullTime} type='number'
+               onChange={(e) => {
+                 handleChangeGameFullTime(e.target.value)
+               }} />
       </div>
       <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
         <label htmlFor=''>Minimum number of players to start</label>
-        <input
-          min={1}
-          max={30}
-          value={createGameFormData.minPlayersToStart}
-          onChange={(e) => {
-            handleChangeNumberOfPlayers(e.target.value)
-          }}
-          type='number'
-        />
+        <input min={1} max={30} value={formData.minPlayersToStart} type='number'
+               onChange={(e) => {
+                 handleChangeNumberOfPlayers(e.target.value)
+               }} />
       </div>
       <div className='submit-form-button'>
-        <button
-          disabled={createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1}
-          className={`${
-            createGameFormData.gameName.length < 3 || createGameFormData.gameFullTime < 1
-              ? 'disabled'
-              : ''
-          }`}
-          onClick={() => {
-            handleSubmit()
-          }}
-        >
+        <button onClick={handleSubmit}
+                disabled={formData.gameName.length < 3 || formData.gameFullTime < 1}
+                className={`${formData.gameName.length < 3 || formData.gameFullTime < 1 ? 'disabled' : ''}`}>
           Submit
         </button>
       </div>

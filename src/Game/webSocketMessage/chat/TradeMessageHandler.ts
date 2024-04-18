@@ -1,5 +1,5 @@
 import { type Websocket } from 'websocket-ts'
-import { type TradeEquipment } from '../../../services/game/Types'
+import { type TradeEquipment } from '../../../apis/game/Types'
 
 export interface TradeBid {
   senderOffer: TradeEquipment

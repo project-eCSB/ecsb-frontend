@@ -64,6 +64,14 @@ export const authTokenAuthAndManagementAPI: AxiosInstance = axios.create({
   },
 })
 
+export const authTokenAuthAndManagementOctetAPI: AxiosInstance = axios.create({
+  baseURL: AUTH_AND_MANAGEMENT_API_URL,
+  headers: {
+    'Content-Type': 'application/octet-stream',
+    Authorization: `Bearer ${getAuthToken()}` || '',
+  },
+})
+
 export const gameTokenSelfInteractionsAPI: AxiosInstance = axios.create({
   baseURL: SELF_INTERACTIONS_API_URL,
   headers: {

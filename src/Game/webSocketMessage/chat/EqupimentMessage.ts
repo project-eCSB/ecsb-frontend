@@ -1,4 +1,4 @@
-import { type GameResourceDto, type Equipment } from '../../../services/game/Types'
+import { type GameResourceDto, type Equipment } from '../../../apis/game/Types'
 
 export enum EquipmentMessageType {
   EquipmentChange = 'equipment/change',

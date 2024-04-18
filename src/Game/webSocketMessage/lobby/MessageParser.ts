@@ -6,9 +6,7 @@ export const parseLobbyMessage = (message: string): LobbyMessage | null => {
 
     switch (parsed.message.type) {
       case LobbyMessageType.LobbyChange:
-        return parsed.message
       case LobbyMessageType.LobbyStart:
-        return parsed.message
       case LobbyMessageType.LobbyEnd:
         return parsed.message
       default:

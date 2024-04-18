@@ -1,4 +1,4 @@
-import { type EndGameStatus } from '../../services/game/Types'
+import { type EndGameStatus } from '../../apis/game/Types'
 
 export class LeaderboardView {
   public static readonly leaderboardID = 'leaderboard'

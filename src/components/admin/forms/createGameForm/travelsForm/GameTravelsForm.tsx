@@ -1,4 +1,4 @@
-import type React from 'react';
+import type React from 'react'
 import { useState } from 'react'
 import { type CreateGameFormData, type Travel } from '../CreateGameForm'
 import './GameTravelsForm.css'
@@ -10,10 +10,10 @@ interface GameTravelsFormProps {
 }
 
 const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
-  createGameFormData,
-  setCreateGameFormData,
-  showModifyTravelModalForm,
-}) => {
+                                                           createGameFormData,
+                                                           setCreateGameFormData,
+                                                           showModifyTravelModalForm,
+                                                         }) => {
   const [selectedTab, setSelectedTab] = useState('low')
 
   const handleTabChange = (tab: string) => {
@@ -128,7 +128,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       cost: [],
       minReward: 0,
       maxReward: 0,
-      regenTime: 0
+      regenTime: 0,
     })
 
     for (const resource of createGameFormData.classResources) {
@@ -157,7 +157,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       cost: [],
       minReward: 0,
       maxReward: 0,
-      regenTime: 0
+      regenTime: 0,
     })
 
     for (const resource of createGameFormData.classResources) {
@@ -186,7 +186,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       cost: [],
       minReward: 0,
       maxReward: 0,
-      regenTime: 0
+      regenTime: 0,
     })
 
     for (const resource of createGameFormData.classResources) {
@@ -286,11 +286,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       </div>
       <div className='travels'>{renderTravels()}</div>
       <div className='add-travel'>
-        <button
-          onClick={() => {
-            addTravel()
-          }}
-        >
+        <button onClick={addTravel}>
           Add travel
         </button>
       </div>

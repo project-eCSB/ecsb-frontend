@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import GridEngine from 'grid-engine'
 import { Scene } from './scenes/Scene'
-import type { AssetConfig, GameSettings, GameStatus } from '../services/game/Types'
+import type { AssetConfig, GameSettings, GameStatus } from '../apis/game/Types'
 
 export interface GameData {
   game: Phaser.Game
