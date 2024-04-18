@@ -1,5 +1,11 @@
-import { useState } from 'react'
-import { type AssetConfig, type DefaultAssetsResponse, type SavedAssetsResponse } from '../../../../apis/game/Types'
+import { useRef, useState } from 'react'
+import type {
+  AssetConfig,
+  DefaultAssetsResponse,
+  GameSettings,
+  GameSettingsTravels,
+  SavedAssetsResponse,
+} from '../../../../apis/game/Types'
 import GameResourcesForm from './resourcesForm/GameResourcesForm'
 import GameTravelsForm from './travelsForm/GameTravelsForm'
 import ModifyTravel from './travelsForm/modifyTravel/ModifyTravel'
@@ -79,8 +85,6 @@ export interface ModifyTravelData {
 }
 
 const CreateGameForm = () => {
-  const [page, setPage] = useState(1)
-
   const emptyForm: CreateGameFormData = {
     classResources: [],
     lowTravels: [],
@@ -115,11 +119,11 @@ const CreateGameForm = () => {
     maxTimeTokens: 0,
     interactionRadius: 0,
     defaultMoney: 0,
-
   }
 
-  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(emptyForm)
+  const [page, setPage] = useState(1)
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false)
+  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(emptyForm)
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
   const [modifyTravelData, setModifyTravelData] = useState<ModifyTravelData>({
     index: 0,
@@ -133,6 +137,9 @@ const CreateGameForm = () => {
   })
   const [showResultModal, setShowResultModal] = useState<boolean>(false)
   const [modalMessage, setModalMessage] = useState<string>('')
+  const submitButton = useRef<HTMLButtonElement>(null)
+  const [isConfigLoading, setIsConfigLoading] = useState<boolean>(false)
+  const [gameSessionId, setGameSessionId] = useState<number>(0)
 
   const setAndShowSavedAssetModalForm = (fileType: string) => {
     gameService
@@ -174,7 +181,7 @@ const CreateGameForm = () => {
   }
 
   const resetForm = () => {
-    setCreateGameFormData(emptyForm)
+    setCreateGameFormData(JSON.parse(JSON.stringify(emptyForm)))
     setPage(1)
   }
 
@@ -319,14 +326,23 @@ const CreateGameForm = () => {
           return true
         }
 
-        if (createGameFormData.lowTravels.concat(createGameFormData.mediumTravels, createGameFormData.highTravels)
-          .some(travel => Math.min(travel.cost.length, travel.minReward, travel.maxReward, travel.regenTime) === 0 || travel.townName === '')) {
+        if (
+          createGameFormData.lowTravels
+            .concat(createGameFormData.mediumTravels, createGameFormData.highTravels)
+            .some(
+              (travel) =>
+                Math.min(
+                  travel.cost.length,
+                  travel.minReward,
+                  travel.maxReward,
+                  travel.regenTime,
+                ) === 0 || travel.townName === '',
+            )
+        ) {
           return true
         }
 
         return allTravelNames.length !== uniqueTravelNames.size
-
-
       case 4:
         return createGameFormData.gameName === '' || createGameFormData.gameFullTime <= 0
       default:
@@ -335,13 +351,18 @@ const CreateGameForm = () => {
   }
 
   function checkMappings(characterMappings: Set<number>, classResource: ClassResource) {
-    return characterMappings.has(classResource.characterMapping) ||
+    return (
+      characterMappings.has(classResource.characterMapping) ||
       classResource.characterMapping < 1 ||
       classResource.characterMapping > createGameFormData.classResources.length
+    )
   }
 
   function checkFormDataValues(formData: CreateGameFormData): boolean {
-    return Math.min(formData.maxTimeTokens, formData.interactionRadius, formData.movingSpeed) <= 0 || formData.defaultMoney < 0
+    return (
+      Math.min(formData.maxTimeTokens, formData.interactionRadius, formData.movingSpeed) <= 0 ||
+      formData.defaultMoney < 0
+    )
   }
 
   const uploadCharacterAssetFile = async () => {
@@ -349,14 +370,21 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (!e || !e.target || !e.target.result || !createGameFormData.assets[FileType.CHARACTER]!.file) return
+        if (
+          !e ||
+          !e.target ||
+          !e.target.result ||
+          !createGameFormData.assets[FileType.CHARACTER]!.file
+        )
+          return
 
         await gameService
           .uploadAsset(
             e.target.result as ArrayBuffer,
             createGameFormData.assets[FileType.CHARACTER]!.name!,
             FileType.CHARACTER,
-          ).then(
+          )
+          .then(
             (assetId: number) => {
               if (showResultModal) return
 
@@ -390,7 +418,12 @@ const CreateGameForm = () => {
       const reader = new FileReader()
 
       reader.onload = async (e) => {
-        if (!e || !e.target || !e.target.result || !createGameFormData.assets[FileType.RESOURCE]!.file)
+        if (
+          !e ||
+          !e.target ||
+          !e.target.result ||
+          !createGameFormData.assets[FileType.RESOURCE]!.file
+        )
           return
 
         await gameService
@@ -398,7 +431,8 @@ const CreateGameForm = () => {
             e.target.result as ArrayBuffer,
             createGameFormData.assets[FileType.RESOURCE]!.name!,
             FileType.RESOURCE,
-          ).then(
+          )
+          .then(
             (assetId: number) => {
               if (showResultModal) return
 
@@ -440,7 +474,8 @@ const CreateGameForm = () => {
             e.target.result as ArrayBuffer,
             createGameFormData.assets[FileType.TILE]!.name!,
             FileType.TILE,
-          ).then(
+          )
+          .then(
             (assetId: number) => {
               if (showResultModal) return
 
@@ -557,10 +592,10 @@ const CreateGameForm = () => {
       }
 
       if (
-        !createGameFormData.assets[FileType.CHARACTER]?.id ||
-        !createGameFormData.assets[FileType.RESOURCE]?.id ||
-        !createGameFormData.assets[FileType.TILE]?.id ||
-        !createGameFormData.assets[FileType.MAP]?.id
+        !createGameFormData.assets[FileType.CHARACTER]!.id ||
+        !createGameFormData.assets[FileType.RESOURCE]!.id ||
+        !createGameFormData.assets[FileType.TILE]!.id ||
+        !createGameFormData.assets[FileType.MAP]!.id
       ) {
         if (!showResultModal) {
           setAndShowResultModal('Something went wrong while uploading assets')
@@ -570,27 +605,28 @@ const CreateGameForm = () => {
         return
       }
 
-      await gameService.getAssetConfig(createGameFormData.assets[FileType.MAP].id).then(
+      await gameService.getAssetConfig(createGameFormData.assets[FileType.MAP]!.id).then(
         (response: AssetConfig) => {
-          const classResources: ClassResource[] = []
+          if (createGameFormData.classResources.length === 0) {
+            const classResources: ClassResource[] = []
+            for (const resource in response.professionWorkshops) {
+              classResources.push({
+                className: resource,
+                classTokenRegeneration: 0,
+                characterMapping: 0,
+                itemName: '',
+                itemMapping: 0,
+                costPerItem: 0,
+                itemPerWorkshop: 0,
+                itemBuyout: 0,
+              })
+            }
 
-          for (const resource in response.professionWorkshops) {
-            classResources.push({
-              className: resource,
-              classTokenRegeneration: 0,
-              characterMapping: 0,
-              itemName: '',
-              itemMapping: 0,
-              costPerItem: 0,
-              itemPerWorkshop: 0,
-              itemBuyout: 0,
+            setCreateGameFormData({
+              ...createGameFormData,
+              classResources: classResources,
             })
           }
-
-          setCreateGameFormData({
-            ...createGameFormData,
-            classResources: classResources,
-          })
 
           setPage(page + 1)
         },
@@ -607,6 +643,111 @@ const CreateGameForm = () => {
     setRequestInProgress(false)
   }
 
+  const disableSubmitButton = () => {
+    if (submitButton.current) {
+      submitButton.current.disabled = true
+      submitButton.current.classList.add('disabled')
+    }
+  }
+
+  const enableSubmitButton = () => {
+    if (submitButton.current) {
+      submitButton.current.disabled = false
+      submitButton.current.classList.remove('disabled')
+    }
+  }
+
+  const copyConfigFromGivenSession = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    setIsConfigLoading(true)
+    disableSubmitButton()
+
+    await gameService
+      .getAdminGameSettings(gameSessionId)
+      .then((res: GameSettings) => {
+        setCreateGameFormData({
+          ...createGameFormData,
+          assets: Object.fromEntries(
+            res.gameAssets.map((entry) => [
+              entry.key,
+              {
+                id: entry.value,
+                file: null,
+                name: null,
+              },
+            ]),
+          ),
+          classResources: res.classResourceRepresentation.map((repr) => ({
+            className: repr.key,
+            classTokenRegeneration: repr.value.regenTime / 1000,
+            characterMapping: repr.value.classAsset,
+            itemName: repr.value.gameResourceName,
+            itemMapping: repr.value.resourceAsset,
+            costPerItem: repr.value.unitPrice,
+            itemPerWorkshop: repr.value.maxProduction,
+            itemBuyout: repr.value.buyoutPrice,
+          })),
+          lowTravels: res.travels
+            .find((entry: GameSettingsTravels) => entry.key === 'low')!
+            .value.map((travel) => ({
+              type: 'low',
+              townName: travel.value.name,
+              cost: travel.value.resources.map((resource) => ({
+                itemName: resource.key,
+                itemCost: resource.value,
+              })),
+              minReward: travel.value.moneyRange.from,
+              maxReward: travel.value.moneyRange.to,
+              regenTime: travel.value.regenTime,
+            })),
+          mediumTravels: res.travels
+            .find((entry: GameSettingsTravels) => entry.key === 'medium')!
+            .value.map((travel) => ({
+              type: 'medium',
+              townName: travel.value.name,
+              cost: travel.value.resources.map((resource) => ({
+                itemName: resource.key,
+                itemCost: resource.value,
+              })),
+              minReward: travel.value.moneyRange.from,
+              maxReward: travel.value.moneyRange.to,
+              regenTime: travel.value.regenTime,
+            })),
+          highTravels: res.travels
+            .find((entry: GameSettingsTravels) => entry.key === 'high')!
+            .value.map((travel) => ({
+              type: 'high',
+              townName: travel.value.name,
+              cost: travel.value.resources.map((resource) => ({
+                itemName: resource.key,
+                itemCost: resource.value,
+              })),
+              minReward: travel.value.moneyRange.from,
+              maxReward: travel.value.moneyRange.to,
+              regenTime: travel.value.regenTime,
+            })),
+          gameName: res.name,
+          gameFullTime: res.timeForGame / 60000,
+          minPlayersToStart: res.minPlayersToStart,
+          movingSpeed: res.walkingSpeed,
+          maxTimeTokens: res.maxTimeTokens,
+          interactionRadius: res.interactionRadius,
+          defaultMoney: res.defaultMoney,
+        })
+        setIsConfigLoading(false)
+        setModalMessage(`Game config from session ${gameSessionId} loaded`)
+        setShowResultModal(true)
+      })
+      .catch((err) => {
+        setModalMessage(`Error occurred while loading config - ${err}`)
+        setShowResultModal(true)
+      })
+
+    setIsConfigLoading(false)
+    enableSubmitButton()
+  }
+
   return (
     <>
       <div className={'create-game-form'}>
@@ -618,13 +759,38 @@ const CreateGameForm = () => {
           ))}
         </div>
         <div className={'line'}></div>
+        {page === 1 && (
+          <>
+            <div className={'load-previous-config'}>
+              <form className='game-settings-form' onSubmit={copyConfigFromGivenSession}>
+                <label htmlFor='gameSessionId'>Game Session ID</label>
+                <input
+                  id='gameSessionId'
+                  type='number'
+                  value={gameSessionId}
+                  min={1}
+                  onChange={(e) => {
+                    setGameSessionId(Number(e.target.value))
+                  }}
+                  required
+                />
+                <button
+                  ref={submitButton}
+                  type='submit'
+                  className={`${gameSessionId < 1 ? 'disabled' : ''}`}
+                  disabled={gameSessionId < 1}
+                >
+                  Copy
+                </button>
+              </form>
+            </div>
+            <div className={'line'}></div>
+          </>
+        )}
         {formPages[page - 1]}
         <div className={'line'}></div>
         <div className='create-game-form-pages-buttons'>
-          <button
-            id={'reset-btn'}
-            onClick={resetForm}
-          >
+          <button id={'reset-btn'} onClick={resetForm}>
             <p className='text'>Reset</p>
           </button>
           <button
@@ -665,7 +831,7 @@ const CreateGameForm = () => {
           }}
         />
       )}
-      {requestInProgress && <LoadingSpinner />}
+      {(requestInProgress || isConfigLoading) && <LoadingSpinner />}
     </>
   )
 }

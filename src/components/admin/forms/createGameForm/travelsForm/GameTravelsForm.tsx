@@ -10,10 +10,10 @@ interface GameTravelsFormProps {
 }
 
 const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
-                                                           createGameFormData,
-                                                           setCreateGameFormData,
-                                                           showModifyTravelModalForm,
-                                                         }) => {
+  createGameFormData,
+  setCreateGameFormData,
+  showModifyTravelModalForm,
+}) => {
   const [selectedTab, setSelectedTab] = useState('low')
 
   const handleTabChange = (tab: string) => {
@@ -286,9 +286,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
       </div>
       <div className='travels'>{renderTravels()}</div>
       <div className='add-travel'>
-        <button onClick={addTravel}>
-          Add travel
-        </button>
+        <button onClick={addTravel}>Add travel</button>
       </div>
     </div>
   )

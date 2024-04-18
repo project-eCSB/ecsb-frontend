@@ -14,13 +14,13 @@ interface AssetUploadProps {
 }
 
 const AssetUpload: FC<AssetUploadProps> = ({
-                                             createGameFormData,
-                                             setCreateGameFormData,
-                                             fileExtension,
-                                             fileType,
-                                             title,
-                                             setAndShowSavedAssetModalForm,
-                                           }) => {
+  createGameFormData,
+  setCreateGameFormData,
+  fileExtension,
+  fileType,
+  title,
+  setAndShowSavedAssetModalForm,
+}) => {
   const [url, setURL] = useState<string | null>(null)
   const uuid = uuidv4()
 
@@ -86,18 +86,28 @@ const AssetUpload: FC<AssetUploadProps> = ({
           {url && <img className={'asset-image'} src={url} alt={fileName} />}
         </div>
       )}
+      {!fileName && url && <img className={'asset-image'} src={url} alt={''} />}
       <div className={'asset-buttons'}>
         <div className={'simple-button'}>
           <label htmlFor={uuid} className={'text'}>
             Upload
           </label>
-          <input accept={fileExtension} hidden={true} id={uuid} type={'file'} onChange={(e) => {
-            selectFiles(e.target.files)
-          }} />
+          <input
+            accept={fileExtension}
+            hidden={true}
+            id={uuid}
+            type={'file'}
+            onChange={(e) => {
+              selectFiles(e.target.files)
+            }}
+          />
         </div>
-        <button className={'cta-button'} onClick={() => {
-          setAndShowSavedAssetModalForm(fileType)
-        }}>
+        <button
+          className={'cta-button'}
+          onClick={() => {
+            setAndShowSavedAssetModalForm(fileType)
+          }}
+        >
           <p className={'text'}>Saved Assets</p>
         </button>
       </div>

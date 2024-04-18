@@ -59,9 +59,13 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
   const renderAssets = (assets: GameAsset[]) => {
     return (
       <div className='modal-assets-settings'>
-        <h2><strong>Assets</strong></h2>
+        <h2>
+          <strong>Assets</strong>
+        </h2>
         {assets.map((asset: GameAsset) => (
-          <h3 key={asset.key}>{asset.key}: {asset.value}</h3>
+          <h3 key={asset.key}>
+            {asset.key}: {asset.value}
+          </h3>
         ))}
       </div>
     )
@@ -87,7 +91,6 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
                   <strong>Money reward range:</strong> {travelValue.value.moneyRange.from} -{' '}
                   {travelValue.value.moneyRange.to}
                 </p>
-                <p><strong>Money reward range:</strong> {travelValue.value.moneyRange.from} - {travelValue.value.moneyRange.to}</p>
               </div>
             ))}
           </div>
@@ -104,9 +107,15 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
           <h1>Settings</h1>
           <div className='modal-settings'>
             <div className='modal-main-settings'>
-              <p><strong>Name:</strong> {settings.name}</p>
-              <p><strong>Short Name:</strong> {settings.shortName}</p>
-              <p><strong>Game Session ID:</strong> {settings.gameSessionId}</p>
+              <p>
+                <strong>Name:</strong> {settings.name}
+              </p>
+              <p>
+                <strong>Short Name:</strong> {settings.shortName}
+              </p>
+              <p>
+                <strong>Game Session ID:</strong> {settings.gameSessionId}
+              </p>
             </div>
             {renderClassRepresentation(settings.classResourceRepresentation)}
             {renderTravels(settings.travels)}
@@ -123,7 +132,9 @@ const Settings: React.FC<SettingsProps> = ({ settings, errorMessage, onClose }) 
           <h1>Error while getting settings</h1>
           <div className='modal-settings'>
             <div className='modal-main-settings'>
-              <p><strong>{errorMessage}</strong></p>
+              <p>
+                <strong>{errorMessage}</strong>
+              </p>
             </div>
           </div>
           <div className='error-button'>

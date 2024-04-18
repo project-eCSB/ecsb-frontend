@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { GameData } from '../Game/Game'
+import type { GameData } from '../game/Game'
 
 interface GameState {
   gameData: GameData | null

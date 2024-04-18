@@ -58,18 +58,32 @@ const StartGameForm = () => {
     <>
       <form className='game-settings-form' onSubmit={handleSubmit}>
         <label htmlFor='gameSessionId'>Game Session ID</label>
-        <input id='gameSessionId' type='number' value={gameSessionId} min={1} required onChange={(e) => {
-          handleGameSessionIdChange(e)
-        }} />
-        <button ref={submitButton} type='submit' className={`${gameSessionId < 1 ? 'disabled' : ''}`}
-                disabled={gameSessionId < 1}>
+        <input
+          id='gameSessionId'
+          type='number'
+          value={gameSessionId}
+          min={1}
+          required
+          onChange={(e) => {
+            handleGameSessionIdChange(e)
+          }}
+        />
+        <button
+          ref={submitButton}
+          type='submit'
+          className={`${gameSessionId < 1 ? 'disabled' : ''}`}
+          disabled={gameSessionId < 1}
+        >
           Start Game
         </button>
       </form>
       {showResultModal && (
-        <MessageModal message={modalMessage} onClose={() => {
-          setShowResultModal(false)
-        }} />
+        <MessageModal
+          message={modalMessage}
+          onClose={() => {
+            setShowResultModal(false)
+          }}
+        />
       )}
       {isLoading && <LoadingSpinner />}
     </>
