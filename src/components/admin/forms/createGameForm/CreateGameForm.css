@@ -102,3 +102,7 @@
     min-width: 300px;
   }
 }
+
+.load-previous-config > form {
+  width: 100%;
+}

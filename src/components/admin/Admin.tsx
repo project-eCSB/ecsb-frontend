@@ -93,11 +93,7 @@ const Admin = () => {
           >
             Home
           </button>
-          <button
-            onClick={handleLogOut}
-          >
-            Log Out
-          </button>
+          <button onClick={handleLogOut}>Log Out</button>
         </div>
       </div>
       <div className='admin-container-form'>

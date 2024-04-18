@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { stopGame } from '../../Game/Game'
+import { stopGame } from '../../game/Game'
 import './Game.css'
 import { useGameStore } from '../../store/GameStore'
 import { Navigate } from 'react-router-dom'

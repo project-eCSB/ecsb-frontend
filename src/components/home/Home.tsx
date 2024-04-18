@@ -6,7 +6,7 @@ import { getAuthToken, getGameToken } from '../../apis/apis'
 import './Home.css'
 import HomeNavbar from './HomeNavbar'
 import { useGameStore } from '../../store/GameStore'
-import { startGame } from '../../Game/Game'
+import { startGame } from '../../game/Game'
 import LoadingSpinner from '../common/spinner/LoadingSpinner'
 import { FileType } from '../admin/forms/createGameForm/CreateGameForm'
 

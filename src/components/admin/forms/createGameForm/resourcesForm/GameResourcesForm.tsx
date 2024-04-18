@@ -8,9 +8,9 @@ interface GameResourcesFormProps {
 }
 
 const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
-                                                               createGameFormData,
-                                                               setCreateGameFormData,
-                                                             }) => {
+  createGameFormData,
+  setCreateGameFormData,
+}) => {
   const handleChangeClassTokenRegeneration = (index: number, value: string) => {
     if (value.length === 0) {
       setCreateGameFormData((prevFormData) => ({
@@ -201,90 +201,150 @@ const GameResourcesForm: React.FC<GameResourcesFormProps> = ({
       </h6>
       <table>
         <thead>
-        <tr>
-          <th>Class Name</th>
-          <th>Character Mapping</th>
-          <th>Resource Name</th>
-          <th>Resource Mapping</th>
-          <th>Resource Unit Price</th>
-          <th>Resource Max Production</th>
-          <th>Resource Buyout Price</th>
-          <th>Token Regeneration Time (in seconds)</th>
-        </tr>
+          <tr>
+            <th>Class Name</th>
+            <th>Character Mapping</th>
+            <th>Resource Name</th>
+            <th>Resource Mapping</th>
+            <th>Resource Unit Price</th>
+            <th>Resource Max Production</th>
+            <th>Resource Buyout Price</th>
+            <th>Token Regeneration Time (in seconds)</th>
+          </tr>
         </thead>
         <tbody>
-        {createGameFormData.classResources.map((resource, index) => (
-          <tr key={index}>
-            <td>
-              <span>{resource.className}</span>
-            </td>
-            <td>
-              <input min={1} max={createGameFormData.classResources.length} type='number'
-                     value={resource.characterMapping} onChange={(e) => {
-                handleChangeCharacterMapping(index, parseInt(e.target.value))
-              }} />
-            </td>
-            <td>
-              <input type='text' value={resource.itemName} onChange={(e) => {
-                handleChangeItemName(index, e.target.value)
-              }} />
-            </td>
-            <td>
-              <input min={1} max={createGameFormData.classResources.length} type='number'
-                     value={resource.itemMapping} onChange={(e) => {
-                handleChangeItemMapping(index, parseInt(e.target.value))
-              }} />
-            </td>
-            <td>
-              <input min={1} max={1000000} type='number' value={resource.costPerItem} onChange={(e) => {
-                handleChangeCostPerItem(index, parseInt(e.target.value))
-              }} />
-            </td>
-            <td>
-              <input min={1} max={1000000} type='number' value={resource.itemPerWorkshop} onChange={(e) => {
-                handleChangeItemPerWorkshop(index, parseInt(e.target.value))
-              }} />
-            </td>
-            <td>
-              <input type='number' value={resource.itemBuyout} onChange={(e) => {
-                handleChangeItemBuyout(index, e.target.value)
-              }} />
-            </td>
-            <td>
-              <input min={1} max={60} type='number' value={resource.classTokenRegeneration} onChange={(e) => {
-                handleChangeClassTokenRegeneration(index, e.target.value)
-              }} />
-            </td>
-          </tr>
-        ))}
+          {createGameFormData.classResources.map((resource, index) => (
+            <tr key={index}>
+              <td>
+                <span>{resource.className}</span>
+              </td>
+              <td>
+                <input
+                  min={1}
+                  max={createGameFormData.classResources.length}
+                  type='number'
+                  value={resource.characterMapping}
+                  onChange={(e) => {
+                    handleChangeCharacterMapping(index, parseInt(e.target.value))
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  type='text'
+                  value={resource.itemName}
+                  onChange={(e) => {
+                    handleChangeItemName(index, e.target.value)
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  min={1}
+                  max={createGameFormData.classResources.length}
+                  type='number'
+                  value={resource.itemMapping}
+                  onChange={(e) => {
+                    handleChangeItemMapping(index, parseInt(e.target.value))
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  min={1}
+                  max={1000000}
+                  type='number'
+                  value={resource.costPerItem}
+                  onChange={(e) => {
+                    handleChangeCostPerItem(index, parseInt(e.target.value))
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  min={1}
+                  max={1000000}
+                  type='number'
+                  value={resource.itemPerWorkshop}
+                  onChange={(e) => {
+                    handleChangeItemPerWorkshop(index, parseInt(e.target.value))
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  type='number'
+                  value={resource.itemBuyout}
+                  onChange={(e) => {
+                    handleChangeItemBuyout(index, e.target.value)
+                  }}
+                />
+              </td>
+              <td>
+                <input
+                  min={1}
+                  max={60}
+                  type='number'
+                  value={resource.classTokenRegeneration}
+                  onChange={(e) => {
+                    handleChangeClassTokenRegeneration(index, e.target.value)
+                  }}
+                />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div className='input-container'>
         <div>
           <label htmlFor=''>Walking speed</label>
-          <input min={0} max={1000000} value={createGameFormData.movingSpeed} type='number' onChange={(e) => {
-            handleChangeMovingSpeed(e.target.value)
-          }} />
+          <input
+            min={0}
+            max={1000000}
+            value={createGameFormData.movingSpeed}
+            type='number'
+            onChange={(e) => {
+              handleChangeMovingSpeed(e.target.value)
+            }}
+          />
         </div>
         <div>
           <label htmlFor=''>Interaction radius</label>
-          <input min={0} max={1000000} value={createGameFormData.interactionRadius} type='number' onChange={(e) => {
-            handleChangeInteractionRadius(e.target.value)
-          }} />
+          <input
+            min={0}
+            max={1000000}
+            value={createGameFormData.interactionRadius}
+            type='number'
+            onChange={(e) => {
+              handleChangeInteractionRadius(e.target.value)
+            }}
+          />
         </div>
       </div>
       <div className='input-container'>
         <div>
           <label htmlFor=''>Default money</label>
-          <input min={0} max={1000000} value={createGameFormData.defaultMoney} type='number' onChange={(e) => {
-            handleChangeDefaultMoney(e.target.value)
-          }} />
+          <input
+            min={0}
+            max={1000000}
+            value={createGameFormData.defaultMoney}
+            type='number'
+            onChange={(e) => {
+              handleChangeDefaultMoney(e.target.value)
+            }}
+          />
         </div>
         <div>
           <label htmlFor=''>Maximum number of time slots</label>
-          <input min={0} max={100} value={createGameFormData.maxTimeTokens} type='number' onChange={(e) => {
-            handleChangeTimeAmount(createGameFormData.maxTimeTokens, e.target.value)
-          }} />
+          <input
+            min={0}
+            max={100}
+            value={createGameFormData.maxTimeTokens}
+            type='number'
+            onChange={(e) => {
+              handleChangeTimeAmount(createGameFormData.maxTimeTokens, e.target.value)
+            }}
+          />
         </div>
       </div>
     </div>

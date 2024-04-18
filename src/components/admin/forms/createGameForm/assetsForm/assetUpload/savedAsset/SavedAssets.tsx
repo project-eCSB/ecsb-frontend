@@ -8,7 +8,6 @@ interface SavedAssetsProps {
 }
 
 const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClose, data }) => {
-
   const handleSelectAsset = (index: number) => {
     setCreateGameFormData((prevState: CreateGameFormData) => {
       return {
@@ -51,9 +50,12 @@ const SavedAssets: React.FC<SavedAssetsProps> = ({ setCreateGameFormData, onClos
           {Object.values(data.assets).map((asset, index) => (
             <div key={index} className='saved-asset-item'>
               <div className='saved-asset-name'>{asset.name}</div>
-              <button className='saved-asset-select' onClick={() => {
-                handleSelectAsset(index)
-              }}>
+              <button
+                className='saved-asset-select'
+                onClick={() => {
+                  handleSelectAsset(index)
+                }}
+              >
                 Select
               </button>
             </div>

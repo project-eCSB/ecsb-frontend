@@ -1414,16 +1414,16 @@ export class Scene extends Phaser.Scene {
     ]
 
     if (controls.action.isDown && Phaser.Input.Keyboard.JustDown(controls.action)) {
-      if (this.playerWorkshopsCoordinates.some(this.checkPlayerCoords) && this.equipment) {
+      if (this.playerWorkshopsCoordinates.some((coords) => this.checkPlayerCoords(coords, this.players, this.playerId)) && this.equipment) {
         this.workshopView = new WorkshopView(this, this.resourceUrl, this.settings.classResourceRepresentation)
         this.workshopView.show()
-      } else if (this.lowTravels.some(this.checkPlayerCoords)) {
+      } else if (this.lowTravels.some((coords) => this.checkPlayerCoords(coords, this.players, this.playerId))) {
         this.travelView = new TravelView(this, TravelType.LOW, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
-      } else if (this.mediumTravels.some(this.checkPlayerCoords)) {
+      } else if (this.mediumTravels.some((coords) => this.checkPlayerCoords(coords, this.players, this.playerId))) {
         this.travelView = new TravelView(this, TravelType.MEDIUM, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
-      } else if (this.highTravels.some(this.checkPlayerCoords)) {
+      } else if (this.highTravels.some((coords) => this.checkPlayerCoords(coords, this.players, this.playerId))) {
         this.travelView = new TravelView(this, TravelType.HIGH, this.resourceUrl, this.settings.classResourceRepresentation)
         this.travelView.show()
       }
@@ -1438,8 +1438,8 @@ export class Scene extends Phaser.Scene {
     }
   }
 
-  checkPlayerCoords(coords: Coordinates): boolean {
-    return this.players[this.playerId].coords.x === coords.x && this.players[this.playerId].coords.y === coords.y
+  checkPlayerCoords(coords: Coordinates, players: Record<string, PlayerState>, playerId: string): boolean {
+    return players[playerId].coords.x === coords.x && players[playerId].coords.y === coords.y
   }
 
   destroy(): void {

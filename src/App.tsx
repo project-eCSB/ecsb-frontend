@@ -17,26 +17,14 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Navigate to='/home' replace />} />
         <Route path='/login' element={<NoAuthTokenProtectedRoute children={<LoginForm />} />} />
-        <Route
-          path='/register'
-          element={<NoAuthTokenProtectedRoute children={<RegisterForm />} />}
-        />
-        <Route
-          path='/home'
-          element={<AuthTokenProtectedRoute children={<Home />} roles={['USER']} />}
-        />
-        <Route
-          path='/admin'
-          element={<AuthTokenProtectedRoute children={<Admin />} roles={['ADMIN']} />}
-        />
-        <Route
-          path='/game/:gameId'
-          element={
-            <AuthTokenProtectedRoute
-              children={<GameTokenProtectedRoute children={<Game />} roles={['USER']} />}
-              roles={['USER']}
-            />
-          }
+        <Route path='/register' element={<NoAuthTokenProtectedRoute children={<RegisterForm />} />} />
+        <Route path='/home' element={<AuthTokenProtectedRoute children={<Home />} roles={['USER']} />} />
+        <Route path='/admin' element={<AuthTokenProtectedRoute children={<Admin />} roles={['ADMIN']} />} />
+        <Route path='/game/:gameId'
+               element={
+                 <AuthTokenProtectedRoute children={<GameTokenProtectedRoute children={<Game />} roles={['USER']} />}
+                                          roles={['USER']} />
+               }
         />
         <Route path='*' element={<Navigate to='/home' replace />} />
       </Routes>
