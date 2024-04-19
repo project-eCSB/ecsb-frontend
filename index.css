@@ -2260,15 +2260,15 @@
 
 #tradeBoxCloseButton,
 #tradeBoxCloseButtonActive {
-  top: -7px;
-  right: -7px;
+  top: -10px;
+  right: -10px;
 }
 
 #tradeBoxCloseMessageButton,
 #tradeBoxCloseMessageButtonActive {
-  transform: scale(0.66);
-  top: 0;
-  right: -26px;
+  transform: scale(0.7);
+  top: 3px;
+  right: -33px;
 }
 
 #tradeBoxCloseButton:hover,
@@ -2295,22 +2295,23 @@
   transform: scale(0.66) translate(0, 0);
 }
 
-#tradeBoxProposeMessageButtonWrapper,
-#tradeBoxProposeMessageButtonExtraWrapper {
-  width: 30px;
-  height: 30px;
-}
 
 #tradeBoxProposeMessageButtonExtraWrapper,
 #tradeBoxProposeMessageButtonExtraWrapperActive {
+  display: flex;
+  justify-content: flex-end;
   position: relative;
-  top: -6px;
-  left: 5px;
+  top: -5px;
+  right: -120px;
+  width: 30px;
+  height: 30px;
 }
 
 #tradeBoxProposeMessageButtonWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
+  width: 100%;
+  height: 100%;
 }
 
 #tradeBoxProposeMessageButtonExtraWrapper {
@@ -3031,7 +3032,7 @@
 #tradeBoxCloseMessagesContainer {
   position: absolute;
   top: -40px;
-  right: -320px;
+  right: -170px;
 }
 
 #tradeBoxCloseMessagesContainer > div:last-child > div {
@@ -3047,9 +3048,9 @@
 }
 
 #tradeMessageReceivedExtraWrapper {
-  width: 300px;
+  width: 200px;
   position: absolute;
-  top: -20px;
+  top: 100px;
   right: -200px;
 }
 
@@ -3158,7 +3159,7 @@
 }
 
 .tradeMessageMiddle {
-  padding: 10px 5px 15px 5px !important;
+  padding: 10px 0px 15px 15px !important;
 }
 
 #tradeBoxMessagesContainer {
@@ -3166,16 +3167,16 @@
   top: -25px;
 }
 
-#tradeBoxMessagesContainer > div > div {
-  transform: scale(1, -1);
+#tradeBoxMessagesContainer > .propose-page > div > div {
+  transform: scale(-1, -1);
 }
 
-#tradeBoxMessagesContainer > div > div > div {
-  transform: scale(1, -1);
+#tradeBoxMessagesContainer > .propose-page > div > div > div {
+  transform: scale(-1, -1);
 }
 
-#tradeBoxMessagesContainer > div > div:hover {
-  transform: scale(1, -1) translate(2px, 2px);
+#tradeBoxMessagesContainer > .propose-page > div:hover > div {
+  transform: scale(-1, -1) translate(-2px, 2px);
 }
 
 #tradeMessageReceivedExtraWrapper {
