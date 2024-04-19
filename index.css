@@ -2226,8 +2226,8 @@
 #tradeBoxCloseMessageButtonActive,
 #tradeBoxProposeMessageButton {
   border: none;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   color: #000;
   font-style: normal;
@@ -2245,21 +2245,30 @@
   transition: 0.1s ease-in-out all;
 }
 
+#tradeBoxCloseButton > i,
+#tradeBoxCloseButtonActive > i,
+#tradeBoxCloseMessageButton > i,
+#tradeBoxCloseMessageButtonActive > i {
+  font-size: large;
+}
+
 #tradeBoxProposeMessageButton {
   filter: none;
+  width: 30px;
+  height: 30px;
 }
 
 #tradeBoxCloseButton,
 #tradeBoxCloseButtonActive {
-  top: -7px;
-  right: -7px;
+  top: -10px;
+  right: -10px;
 }
 
 #tradeBoxCloseMessageButton,
 #tradeBoxCloseMessageButtonActive {
-  transform: scale(0.66);
-  top: 0;
-  right: -26px;
+  transform: scale(0.7);
+  top: 3px;
+  right: -33px;
 }
 
 #tradeBoxCloseButton:hover,
@@ -2286,22 +2295,23 @@
   transform: scale(0.66) translate(0, 0);
 }
 
-#tradeBoxProposeMessageButtonWrapper,
-#tradeBoxProposeMessageButtonExtraWrapper {
-  width: 30px;
-  height: 30px;
-}
 
 #tradeBoxProposeMessageButtonExtraWrapper,
 #tradeBoxProposeMessageButtonExtraWrapperActive {
+  display: flex;
+  justify-content: flex-end;
   position: relative;
-  top: -6px;
-  left: 5px;
+  top: -5px;
+  right: -120px;
+  width: 30px;
+  height: 30px;
 }
 
 #tradeBoxProposeMessageButtonWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
+  width: 100%;
+  height: 100%;
 }
 
 #tradeBoxProposeMessageButtonExtraWrapper {
@@ -2343,7 +2353,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 #tradeBoxContentLeftExtraWrapper,
@@ -3006,6 +3016,7 @@
   color: #000;
   transition: 0.2s all ease-in-out;
   transform: translate(-5px, 6px);
+  cursor: pointer;
 }
 
 .tradeBoxMiddleButtonDisabled {
@@ -3021,7 +3032,7 @@
 #tradeBoxCloseMessagesContainer {
   position: absolute;
   top: -40px;
-  right: -320px;
+  right: -170px;
 }
 
 #tradeBoxCloseMessagesContainer > div:last-child > div {
@@ -3037,9 +3048,9 @@
 }
 
 #tradeMessageReceivedExtraWrapper {
-  width: 300px;
+  width: 200px;
   position: absolute;
-  top: -20px;
+  top: 100px;
   right: -200px;
 }
 
@@ -3049,6 +3060,7 @@
 
 .tradeMessageExtraWrapper {
   filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s ease-in-out all;
 }
 
 .tradeMessageWrapper {
@@ -3123,6 +3135,7 @@
   );
   width: 100%;
   height: 100%;
+  transition: 0.2s ease-in-out all;
 }
 
 .tradeMessageExtraWrapper:hover {
@@ -3146,7 +3159,7 @@
 }
 
 .tradeMessageMiddle {
-  padding: 10px 5px 15px 5px !important;
+  padding: 10px 0px 15px 15px !important;
 }
 
 #tradeBoxMessagesContainer {
@@ -3154,16 +3167,16 @@
   top: -25px;
 }
 
-#tradeBoxMessagesContainer > div > div {
-  transform: scale(1, -1);
+#tradeBoxMessagesContainer > .propose-page > div > div {
+  transform: scale(-1, -1);
 }
 
-#tradeBoxMessagesContainer > div > div > div {
-  transform: scale(1, -1);
+#tradeBoxMessagesContainer > .propose-page > div > div > div {
+  transform: scale(-1, -1);
 }
 
-#tradeBoxMessagesContainer > div > div:hover {
-  transform: scale(1, -1) translate(2px, 2px);
+#tradeBoxMessagesContainer > .propose-page > div:hover > div {
+  transform: scale(-1, -1) translate(-2px, 2px);
 }
 
 #tradeMessageReceivedExtraWrapper {
@@ -7252,3 +7265,99 @@
     top: -55px;
   }
 }
+
+/* pagination - propose*/
+
+.propose-page {
+  position: absolute;
+  width: 150px;
+  top: 700px;
+  left: -77px;
+  transition: 0.3s ease-in-out all;
+}
+
+#propose-page-active {
+  top: 0;
+}
+
+#propose-pagination-bar-wrapper {
+  height: 130px;
+  position: absolute;
+  right: -100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#propose-pagination-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+#propose-pagination-bar > #pagination-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #e3c296;
+  opacity: 0.4;
+}
+
+#propose-pagination-bar > #pagination-dot-active {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #e3c296;
+  opacity: 0.8;
+}
+
+#propose-pagination-buttonUpWrapper > button {
+  width: 20px;
+  height: 20px;
+  clip-path: polygon(0% 60%, 30% 60%, 30% 100%, 70% 100%, 70% 60%, 100% 60%, 50% 0%);
+  background-color: #EDB872;
+  border: none;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+#propose-pagination-buttonDownWrapper > button {
+  margin-top: 3px;
+  width: 20px;
+  height: 20px;
+  clip-path: polygon(100% 40%, 70% 40%, 70% 0%, 30% 0%, 30% 40%, 0% 40%, 50% 100%);
+  background-color: #EDB872;
+  border: none;
+  transition: 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+#propose-pagination-buttonUpWrapper,
+#propose-pagination-buttonDownWrapper {
+  transition: 0.2s ease-in-out;
+  filter: drop-shadow(-1px 2px #835211);
+}
+
+#propose-pagination-buttonUpWrapper:hover > button,
+#propose-pagination-buttonDownWrapper:hover > button {
+  transform: translate(1px, -1px);
+}
+
+#propose-pagination-buttonUpWrapper:hover,
+#propose-pagination-buttonDownWrapper:hover {
+  filter: drop-shadow(-2px 3px #835211);
+}
+
+#propose-pagination-buttonUpWrapper > button:active,
+#propose-pagination-buttonDownWrapper > button:active {
+  transform: translate(-1px, 2px);
+  background-color: #835211;
+}
+
+#propose-pagination-buttonUpWrapper:active,
+#propose-pagination-buttonDownWrapper:active {
+  filter: none;
+}
+
