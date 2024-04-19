@@ -28,6 +28,7 @@
 #buttonWrapper {
   filter: drop-shadow(-3px 4px #835211);
   width: 40%;
+  transition: 0.2s ease-in-out all;
 }
 
 #buttonWrapper:hover {
@@ -79,6 +80,7 @@
   cursor: pointer;
   font-family: Rowdies;
   border: none;
+  transition: 0.2s ease-in-out all;
 }
 
 #buttonWrapper:hover .decisionButton {
