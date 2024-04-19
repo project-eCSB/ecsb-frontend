@@ -3035,11 +3035,11 @@
   right: -170px;
 }
 
-#tradeBoxCloseMessagesContainer > div:last-child > div {
+#tradeBoxCloseMessagesContainer > .tradeCancel-page > div:last-child > div {
   transform: scale(1, -1);
 }
 
-#tradeBoxCloseMessagesContainer > div:last-child > div > div {
+#tradeBoxCloseMessagesContainer > .tradeCancel-page > div:last-child > div > div {
   transform: scale(1, -1);
 }
 
@@ -3147,6 +3147,7 @@
 }
 
 #tradeBoxCloseMessagesContainer
+  > .tradeCancel-page
   > .tradeMessageExtraWrapper:last-child:hover
   > .tradeMessageWrapper {
   transform: scale(1, -1) translate(2px, 2px);
@@ -3167,15 +3168,15 @@
   top: -25px;
 }
 
-#tradeBoxMessagesContainer > .propose-page > div > div {
+#tradeBoxMessagesContainer > .tradePropose-page > div > div {
   transform: scale(-1, -1);
 }
 
-#tradeBoxMessagesContainer > .propose-page > div > div > div {
+#tradeBoxMessagesContainer > .tradePropose-page > div > div > div {
   transform: scale(-1, -1);
 }
 
-#tradeBoxMessagesContainer > .propose-page > div:hover > div {
+#tradeBoxMessagesContainer > .tradePropose-page > div:hover > div {
   transform: scale(-1, -1) translate(-2px, 2px);
 }
 
@@ -3568,6 +3569,22 @@
   flex-direction: row;
   justify-content: center;
   align-items: start;
+}
+
+/* #tradeFailureBoxContentBox > div > .tra */
+
+#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper {
+  filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transform: scale(-1, 1);
+}
+
+#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper:hover > .tradeMessageWrapper {
+  transform: none;
+}
+
+#tradeFailureBoxContentBox .tradeMessage > p {
+  transform: scale(-1, 1);
+  margin-right: 15px;
 }
 
 #tradeSuccessBoxContentBox > h2 {
@@ -7218,7 +7235,7 @@
 
 /* pagination - propose*/
 
-.propose-page {
+.tradePropose-page {
   position: absolute;
   width: 150px;
   top: 700px;
@@ -7230,16 +7247,35 @@
   top: 0;
 }
 
-#propose-pagination-bar-wrapper {
+.tradeCancel-page {
+  position: absolute;
+  width: 150px;
+  top: -600px;
+  left: -130px;
+  transition: 0.3s ease-in-out all;
+}
+
+#cancel-page-active {
+  top: 0;
+}
+
+#pagination-bar-wrapper {
   height: 130px;
   position: absolute;
-  right: -100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-#propose-pagination-bar {
+#tradeBoxMessagesContainer > #pagination-bar-wrapper {
+  right: -100px;
+}
+
+#tradeBoxCloseMessagesContainer > #pagination-bar-wrapper {
+  right: -50px;
+}
+
+#pagination-bar {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -7247,7 +7283,7 @@
   gap: 0.4rem;
 }
 
-#propose-pagination-bar > #pagination-dot {
+#pagination-bar > #pagination-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -7255,7 +7291,7 @@
   opacity: 0.4;
 }
 
-#propose-pagination-bar > #pagination-dot-active {
+#pagination-bar > #pagination-dot-active {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -7263,7 +7299,7 @@
   opacity: 0.8;
 }
 
-#propose-pagination-buttonUpWrapper > button {
+#pagination-buttonUpWrapper > button {
   width: 20px;
   height: 20px;
   clip-path: polygon(0% 60%, 30% 60%, 30% 100%, 70% 100%, 70% 60%, 100% 60%, 50% 0%);
@@ -7273,7 +7309,7 @@
   cursor: pointer;
 }
 
-#propose-pagination-buttonDownWrapper > button {
+#pagination-buttonDownWrapper > button {
   margin-top: 3px;
   width: 20px;
   height: 20px;
@@ -7284,30 +7320,30 @@
   cursor: pointer;
 }
 
-#propose-pagination-buttonUpWrapper,
-#propose-pagination-buttonDownWrapper {
+#pagination-buttonUpWrapper,
+#pagination-buttonDownWrapper {
   transition: 0.2s ease-in-out;
   filter: drop-shadow(-1px 2px #835211);
 }
 
-#propose-pagination-buttonUpWrapper:hover > button,
-#propose-pagination-buttonDownWrapper:hover > button {
+#pagination-buttonUpWrapper:hover > button,
+#pagination-buttonDownWrapper:hover > button {
   transform: translate(1px, -1px);
 }
 
-#propose-pagination-buttonUpWrapper:hover,
-#propose-pagination-buttonDownWrapper:hover {
+#pagination-buttonUpWrapper:hover,
+#pagination-buttonDownWrapper:hover {
   filter: drop-shadow(-2px 3px #835211);
 }
 
-#propose-pagination-buttonUpWrapper > button:active,
-#propose-pagination-buttonDownWrapper > button:active {
+#pagination-buttonUpWrapper > button:active,
+#pagination-buttonDownWrapper > button:active {
   transform: translate(-1px, 2px);
   background-color: #835211;
 }
 
-#propose-pagination-buttonUpWrapper:active,
-#propose-pagination-buttonDownWrapper:active {
+#pagination-buttonUpWrapper:active,
+#pagination-buttonDownWrapper:active {
   filter: none;
 }
 

@@ -406,6 +406,7 @@ export class TradeView {
 
     this.tradeBoxAcceptButtonWrapper.appendChild(this.tradeBoxAcceptButton)
     this.tradeBoxAcceptButtonExtraWrapper.appendChild(this.tradeBoxAcceptButtonWrapper)
+    tradeBoxContentMiddle.appendChild(this.tradeBoxAcceptButtonExtraWrapper)
 
     // Remind button
     this.tradeBoxRemindButtonExtraWrapper = document.createElement('div')
@@ -1553,6 +1554,7 @@ export class TradeView {
   }
 
   public hideProposeMessagesButton(): void {
+    this.tradeBoxProposeMessageButtonExtraWrapper.id = 'tradeBoxProposeMessageButtonExtraWrapper'
     this.tradeBoxProposeMessageButtonExtraWrapper.style.display = 'none'
   }
 
@@ -1647,9 +1649,18 @@ export class TradeView {
     this.tradeBoxProposeButton.disabled = false
 
     this.tradeBoxProposeButtonExtraWrapper.style.display = 'block'
-    this.tradeBoxProposeButtonExtraWrapper.className = 'tradeBoxMiddleButtonExtraWrapperEnabled'
-    this.tradeBoxProposeButtonWrapper.className = 'tradeBoxMiddleButtonWrapperEnabled'
-    this.tradeBoxProposeButton.className = 'tradeBoxMiddleButtonEnabled'
+    this.tradeBoxProposeButtonExtraWrapper.className = 
+      (this.tradeBoxProposeMessageButtonExtraWrapper.id == 'tradeBoxProposeMessageButtonExtraWrapperActive') 
+      ? 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
+      : 'tradeBoxMiddleButtonExtraWrapperEnabled'
+    this.tradeBoxProposeButtonWrapper.className = 
+      (this.tradeBoxProposeMessageButtonExtraWrapper.id == 'tradeBoxProposeMessageButtonExtraWrapperActive')
+      ? 'tradeBoxMiddleButtonWrapperEnabledActive'
+      : 'tradeBoxMiddleButtonWrapperEnabled'
+    this.tradeBoxProposeButton.className = 
+      (this.tradeBoxProposeMessageButtonExtraWrapper.id == 'tradeBoxProposeMessageButtonExtraWrapperActive') 
+      ? 'tradeBoxMiddleButtonEnabledActive'
+      : 'tradeBoxMiddleButtonEnabled'
 
     this.showProposeMessagesButton()
   }
@@ -1759,8 +1770,6 @@ export class TradeView {
   }
 
   public close(success: boolean, message: string): void {
-    // TODO: show message if not empty
-
     document.getElementById(TradeView.tradeBoxWrapperID)?.remove()
 
     if (success) {
