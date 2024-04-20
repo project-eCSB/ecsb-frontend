@@ -123,7 +123,7 @@ const CreateGameForm = () => {
 
   const [page, setPage] = useState(1)
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false)
-  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(emptyForm)
+  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(JSON.parse(JSON.stringify(emptyForm)))
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
   const [modifyTravelData, setModifyTravelData] = useState<ModifyTravelData>({
     index: 0,
@@ -182,6 +182,7 @@ const CreateGameForm = () => {
 
   const resetForm = () => {
     setCreateGameFormData(JSON.parse(JSON.stringify(emptyForm)))
+    setGameSessionId(0)
     setPage(1)
   }
 

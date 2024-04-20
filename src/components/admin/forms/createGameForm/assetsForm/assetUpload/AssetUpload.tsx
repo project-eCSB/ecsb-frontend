@@ -25,45 +25,23 @@ const AssetUpload: FC<AssetUploadProps> = ({
   const uuid = uuidv4()
 
   const selectFiles = (fileList: FileList | null) => {
-    if (!fileList) {
-      return
-    }
+    if (!fileList || fileList.length !== 1) return
 
-    if (fileList.length === 1) {
-      setCreateGameFormData((prevState: CreateGameFormData) => {
-        return {
-          ...prevState,
-          assets: {
-            ...prevState.assets,
-            [fileType]: {
-              id: null,
-              file: fileList.item(0)!,
-              name: fileList.item(0)!.name,
-            },
-          },
-        }
-      })
-    }
+    const file = fileList[0]
+    setCreateGameFormData((prevState: CreateGameFormData) => ({
+      ...prevState,
+      assets: {
+        ...prevState.assets,
+        [fileType]: {
+          id: null,
+          file,
+          name: file.name,
+        },
+      },
+    }))
   }
 
-  const selectedFileId = (): number | null => {
-    const asset = createGameFormData.assets[fileType]
-    return asset ? asset.id : null
-  }
-
-  const selectedFileName = (): string | null => {
-    const asset = createGameFormData.assets[fileType]
-    return asset ? asset.name : null
-  }
-
-  const selectedFile = (): File | null => {
-    const asset = createGameFormData.assets[fileType]
-    return asset ? asset.file : null
-  }
-
-  const fileId = selectedFileId()
-  const fileName = selectedFileName()
-  const file = selectedFile()
+  const { id: fileId, name: fileName, file } = createGameFormData.assets[fileType] || {}
 
   useEffect(() => {
     if (fileId) {
@@ -71,48 +49,55 @@ const AssetUpload: FC<AssetUploadProps> = ({
         .getAsset(fileId)
         .then(setURL)
         .catch((error) => {
-          console.error('Error fetching asset:', error)
-        })
+          console.error('Error fetching asset:', error);
+        });
+    } else {
+      setURL(null)
     }
-  }, [fileId])
+  }, [fileId]);
 
   return (
-    <div className={'asset-upload-container'}>
-      <h5 className={'asset-title'}>{title}</h5>
+    <div className="asset-upload-container">
+      <h5 className="asset-title">{title}</h5>
       {fileName && (
-        <div className='asset-file'>
+        <div className="asset-file">
           <h5>Currently selected file: {fileName}</h5>
-          {file && <img className={'asset-image'} src={URL.createObjectURL(file)} alt={fileName} />}
-          {url && <img className={'asset-image'} src={url} alt={fileName} />}
+          {file && <img className="asset-image" src={URL.createObjectURL(file)} alt={fileName} />}
+          {url && <img className="asset-image" src={url} alt={fileName} />}
         </div>
       )}
-      {!fileName && url && <img className={'asset-image'} src={url} alt={''} />}
-      <div className={'asset-buttons'}>
-        <div className={'simple-button'}>
-          <label htmlFor={uuid} className={'text'}>
+      {!fileName && url && (
+        <>
+          <h5>Currently selected file: {fileId}</h5>
+          <img className="asset-image" src={url} alt="" />
+        </>
+      )}
+      <div className="asset-buttons">
+        <div className="simple-button">
+          <label htmlFor={uuid} className="text">
             Upload
           </label>
           <input
             accept={fileExtension}
-            hidden={true}
+            hidden
             id={uuid}
-            type={'file'}
+            type="file"
             onChange={(e) => {
-              selectFiles(e.target.files)
+              selectFiles(e.target.files);
             }}
           />
         </div>
         <button
-          className={'cta-button'}
+          className="cta-button"
           onClick={() => {
-            setAndShowSavedAssetModalForm(fileType)
+            setAndShowSavedAssetModalForm(fileType);
           }}
         >
-          <p className={'text'}>Saved Assets</p>
+          <p className="text">Saved Assets</p>
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AssetUpload
+export default AssetUpload;
