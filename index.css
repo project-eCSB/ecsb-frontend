@@ -2500,35 +2500,6 @@
   margin-bottom: 3px;
 }
 
-#tradeBoxContentLeft,
-#tradeBoxContentRight {
-  scrollbar-width: thin;
-  scrollbar-color: #e3c296 #835211;
-}
-
-/* Works on Chrome, Edge, and Safari */
-#tradeBoxContentLeft ::-webkit-scrollbar,
-#tradeBoxContentRight ::-webkit-scrollbar {
-  width: 14px;
-}
-
-#tradeBoxContentLeft ::-webkit-scrollbar-track-piece,
-#tradeBoxContentRight ::-webkit-scrollbar-track-piece {
-  background-color: #835211;
-  border-color: #edb872;
-  border-width: 1px 6px 1px 6px;
-  border-style: solid;
-}
-
-#tradeBoxContentLeft ::-webkit-scrollbar-thumb,
-#tradeBoxContentRight ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: #835211;
-  border-color: #835211;
-  border-style: solid;
-  border-width: 1px 4px 1px 4px;
-}
-
 #tradeBoxContentLeftResources,
 #tradeBoxContentRightResources {
   display: flex;
@@ -2792,35 +2763,6 @@
     1.59% 62.1%,
     2.09% 76.88%
   );
-}
-
-#tradeBoxContentLeftResultExtraWrapper,
-#tradeBoxContentRightResultExtraWrapper {
-  scrollbar-width: thin;
-  scrollbar-color: #e3c296 #835211;
-}
-
-/* Works on Chrome, Edge, and Safari */
-#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar,
-#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar {
-  width: 12px;
-}
-
-#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar-track-piece,
-#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar-track-piece {
-  background-color: #835211;
-  border-color: #e3c296;
-  border-width: 1px 5px 1px 5px;
-  border-style: solid;
-}
-
-#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar-thumb,
-#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: #835211;
-  border-color: #835211;
-  border-style: solid;
-  border-width: 1px 3px 1px 3px;
 }
 
 #tradeBoxContentMiddle {
@@ -4602,32 +4544,6 @@
   align-items: center;
 }
 
-/* Works on Firefox */
-#travelBoxContentWrapper {
-  scrollbar-width: thin;
-  scrollbar-color: #e3c296 #835211;
-}
-
-/* Works on Chrome, Edge, and Safari */
-#travelBoxContentWrapper ::-webkit-scrollbar {
-  width: 20px;
-}
-
-#travelBoxContentWrapper ::-webkit-scrollbar-track-piece {
-  background-color: #835211;
-  border-color: #edb872;
-  border-width: 1px 9px 1px 9px;
-  border-style: solid;
-}
-
-#travelBoxContentWrapper ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: #835211;
-  border-color: #835211;
-  border-style: solid;
-  border-width: 1px 7px 1px 7px;
-}
-
 #travelBoxContent {
   max-width: 1320px;
   height: 330px;
@@ -5338,30 +5254,6 @@
   height: 90%;
   overflow-y: scroll;
   gap: 0.3rem;
-}
-
-#leaderboardContentBox {
-  scrollbar-width: thin;
-  scrollbar-color: #e3c296 #835211;
-}
-
-#leaderboardContentBox ::-webkit-scrollbar {
-  width: 14px;
-}
-
-#leaderboardContentBox ::-webkit-scrollbar-track-piece {
-  background-color: #835211;
-  border-color: #edb872;
-  border-width: 1px 6px 1px 6px;
-  border-style: solid;
-}
-
-#leaderboardContentBox ::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background-color: #835211;
-  border-color: #835211;
-  border-style: solid;
-  border-width: 1px 4px 1px 4px;
 }
 
 #leaderboardContentBox > div > div {
@@ -7361,3 +7253,127 @@
   filter: none;
 }
 
+/* CUSTOM SCROLLBARS */
+
+/* CUSTOM SCROLLBAR - TRAVEL */
+/* Works on Chrome, Edge, and Safari */
+#travelBoxContentExtraWrapper * ::-webkit-scrollbar {
+  width: 20px;
+}
+
+#travelBoxContentExtraWrapper * ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #edb872;
+  border-width: 1px 9px 1px 9px;
+  border-style: solid;
+}
+
+#travelBoxContentExtraWrapper * ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 7px 1px 7px;
+}
+
+/* Works on Firefox */
+@supports (-moz-appearance:none) {
+  #travelBoxContentExtraWrapper * {
+    scrollbar-width: thin;
+    scrollbar-color: #e3c296 #835211;
+  }
+}
+
+/* CUSTOM SCROLLBAR - TRADE */
+/* Works on Chrome, Edge, and Safari */
+#tradeBoxContentLeft ::-webkit-scrollbar,
+#tradeBoxContentRight ::-webkit-scrollbar {
+  width: 14px;
+}
+
+#tradeBoxContentLeft ::-webkit-scrollbar-track-piece,
+#tradeBoxContentRight ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #edb872;
+  border-width: 1px 6px 1px 6px;
+  border-style: solid;
+}
+
+#tradeBoxContentLeft ::-webkit-scrollbar-thumb,
+#tradeBoxContentRight ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 4px 1px 4px;
+}
+
+/* Works on Firefox */
+@supports (-moz-appearance:none) {
+  #tradeBoxContentLeft,
+  #tradeBoxContentRight {
+    scrollbar-width: thin;
+    scrollbar-color: #e3c296 #835211;
+  }
+}
+
+/* CUSTOM SCROLLBAR - TRADERESULT */
+/* Works on Chrome, Edge, and Safari */
+#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar,
+#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar {
+  width: 12px;
+}
+
+#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar-track-piece,
+#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #e3c296;
+  border-width: 1px 5px 1px 5px;
+  border-style: solid;
+}
+
+#tradeBoxContentLeftResultExtraWrapper ::-webkit-scrollbar-thumb,
+#tradeBoxContentRightResultExtraWrapper ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 3px 1px 3px;
+}
+
+/* Works on Firefox */
+@supports (-moz-appearance:none) {
+  #tradeBoxContentLeftResultExtraWrapper,
+  #tradeBoxContentRightResultExtraWrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #e3c296 #835211;
+  }
+}
+
+/* CUSTOM SCROLLBAR - LEADERBOARD */
+#leaderboardContentBox ::-webkit-scrollbar {
+  width: 14px;
+}
+
+#leaderboardContentBox ::-webkit-scrollbar-track-piece {
+  background-color: #835211;
+  border-color: #edb872;
+  border-width: 1px 6px 1px 6px;
+  border-style: solid;
+}
+
+#leaderboardContentBox ::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #835211;
+  border-color: #835211;
+  border-style: solid;
+  border-width: 1px 4px 1px 4px;
+}
+
+/* Works on Firefox */
+@supports (-moz-appearance:none) {
+  #leaderboardContentBox {
+    scrollbar-width: thin;
+    scrollbar-color: #e3c296 #835211;
+  }
+}
