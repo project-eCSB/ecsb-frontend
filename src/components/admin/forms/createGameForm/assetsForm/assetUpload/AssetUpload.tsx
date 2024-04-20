@@ -41,7 +41,7 @@ const AssetUpload: FC<AssetUploadProps> = ({
     }))
   }
 
-  const { id: fileId, name: fileName, file } = createGameFormData.assets[fileType] || {}
+  const { id: fileId, name: fileName, file } = createGameFormData.assets[fileType] ?? {}
 
   useEffect(() => {
     if (fileId) {
