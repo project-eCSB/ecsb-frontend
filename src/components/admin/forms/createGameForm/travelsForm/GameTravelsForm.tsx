@@ -235,7 +235,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
               modifyTravel(travel, index)
             }}
             disabled={travel.townName === ''}
-            className={`${travel.townName ? 'disabled' : ''}`}
+            className={`${travel.townName ? '' : 'disabled'}`}
           >
             <p>Modify</p>
           </button>

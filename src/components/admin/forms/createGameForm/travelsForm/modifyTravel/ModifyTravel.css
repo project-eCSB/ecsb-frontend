@@ -67,14 +67,20 @@
   gap: 0;
 }
 
-.modify-travel-modal-rewards h5 {
+.modify-travel-modal-rewards h5,
+.modify-travel-modal-token-regeneration h5 {
   font-size: 1.2rem;
+  margin-bottom: 0.7rem;
 }
 
 .modify-travel-modal-rewards .rewards {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modify-travel-modal-rewards .reward {
+  display: flex;
 }
 
 .modify-travel-modal-rewards .rewards .reward .token-reg {
@@ -83,11 +89,14 @@
   gap: 0.5rem;
 }
 
-.modify-travel-modal-rewards .rewards .reward label .token-reg {
+.modify-travel-modal-rewards .rewards .reward label {
+  display: block;
+  width: 3rem;
   font-size: 1rem;
 }
 
-.modify-travel-modal-rewards .rewards .reward input .token-reg {
+.modify-travel-modal-rewards .rewards .reward input,
+.token-reg input {
   font-size: 1rem;
 }
 
