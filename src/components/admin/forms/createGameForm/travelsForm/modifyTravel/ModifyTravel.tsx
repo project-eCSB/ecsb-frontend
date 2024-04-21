@@ -83,7 +83,7 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
           <div className='token-reg'>
             <input
               min={0}
-              max={60}
+              max={1000}
               type='number'
               value={travelData.travel.regenTime}
               onChange={(e) => {
