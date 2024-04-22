@@ -352,7 +352,7 @@ export class TradeView {
     // Propose messages
     this.tradeBoxProposeMessagesContainer = document.createElement('div')
     this.tradeBoxProposeMessagesContainer.id = 'tradeBoxMessagesContainer'
-
+    
     const page1 = this.createMessagePage("first msg", "second msg", false)
     page1.id = 'propose-page-active'
     const page2 = this.createMessagePage("third msg", "forth msg", false)
@@ -457,7 +457,7 @@ export class TradeView {
     if (!this.isCurrPlayerTurn) {
       this.remindButtonTimeoutID = setTimeout(() => {
         this.enableRemindButton()
-      }, 20000)
+      }, 60000)
     }
   }
 
@@ -1734,7 +1734,7 @@ export class TradeView {
     bar.appendChild(buttonUpWrapper)
     for(let i=0; i<pageCounter; i++) {
       bar.appendChild(dots[i])
-    }
+    } 
     bar.appendChild(buttonDownWrapper)
     buttonUpWrapper.appendChild(buttonUp)
     buttonDownWrapper.appendChild(buttonDown)
