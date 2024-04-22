@@ -190,8 +190,40 @@ export class TradeView {
     this.tradeBoxCloseMessagesContainer = document.createElement('div')
     this.tradeBoxCloseMessagesContainer.id = 'tradeBoxCloseMessagesContainer'
 
-    this.tradeBoxCloseMessagesContainer.appendChild(this.createMessageButton("close one"))
-    this.tradeBoxCloseMessagesContainer.appendChild(this.createMessageButton("close two"))
+    const tradeBoxCloseMessageOneExtraWrapper = document.createElement('div')
+    tradeBoxCloseMessageOneExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxCloseMessageOneExtraWrapper.addEventListener('click', () => {
+      this.handleClose('Muszę iść wyprodukować zasób')
+    })
+    const tradeBoxCloseMessageOneWrapper = document.createElement('div')
+    tradeBoxCloseMessageOneWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxCloseMessageOne = document.createElement('div')
+    tradeBoxCloseMessageOne.className = 'tradeMessage'
+    tradeBoxCloseMessageOne.innerText = 'Muszę iść wyprodukować zasób'
+    tradeBoxCloseMessageOneExtraWrapper.appendChild(tradeBoxCloseMessageOneWrapper)
+    tradeBoxCloseMessageOneWrapper.appendChild(tradeBoxCloseMessageOne)
+
+    const tradeBoxCloseMessageTwoExtraWrapper = document.createElement('div')
+    tradeBoxCloseMessageTwoExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxCloseMessageTwoExtraWrapper.addEventListener('click', () => {
+      this.handleClose('Nie mam tego co chcesz')
+    })
+    const tradeBoxCloseMessageTwoWrapper = document.createElement('div')
+    tradeBoxCloseMessageTwoWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxCloseMessageTwo = document.createElement('div')
+    tradeBoxCloseMessageTwo.className = 'tradeMessage'
+    tradeBoxCloseMessageTwo.innerText = 'Nie mam tego co chcesz'
+    tradeBoxCloseMessageTwoExtraWrapper.appendChild(tradeBoxCloseMessageTwoWrapper)
+    tradeBoxCloseMessageTwoWrapper.appendChild(tradeBoxCloseMessageTwo)
+
+    this.tradeBoxCloseMessagesContainer.appendChild(tradeBoxCloseMessageOneExtraWrapper)
+    this.tradeBoxCloseMessagesContainer.appendChild(tradeBoxCloseMessageTwoExtraWrapper)
 
     tradeBoxHeaderWrapper.appendChild(this.tradeBoxCloseMessagesContainer)
 
@@ -352,18 +384,58 @@ export class TradeView {
     // Propose messages
     this.tradeBoxProposeMessagesContainer = document.createElement('div')
     this.tradeBoxProposeMessagesContainer.id = 'tradeBoxMessagesContainer'
-    
-    const page1 = this.createMessagePage("first msg", "second msg", false)
-    page1.id = 'propose-page-active'
-    const page2 = this.createMessagePage("third msg", "forth msg", false)
-    const page3 = this.createMessagePage("fifth msg", "sixth msg", false)
 
-    this.tradeBoxProposeMessagesContainer.appendChild(page1)
-    this.tradeBoxProposeMessagesContainer.appendChild(page2)
-    this.tradeBoxProposeMessagesContainer.appendChild(page3)
+    const tradeBoxProposeMessageOneExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageOneExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxProposeMessageOneExtraWrapper.addEventListener('click', () => {
+      this.handlePropose('Nie mam tego')
+    })
+    const tradeBoxProposeMessageOneWrapper = document.createElement('div')
+    tradeBoxProposeMessageOneWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxProposeMessageOne = document.createElement('div')
+    tradeBoxProposeMessageOne.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessageOne.innerText = 'Nie mam tego'
+    tradeBoxProposeMessageOneExtraWrapper.appendChild(tradeBoxProposeMessageOneWrapper)
+    tradeBoxProposeMessageOneWrapper.appendChild(tradeBoxProposeMessageOne)
 
-    const paginationBar = this.createPaginationBar(this.tradeBoxProposeMessagesContainer, 'propose-page', 'propose-page-active', 0)
-    this.tradeBoxProposeMessagesContainer.appendChild(paginationBar)
+    const tradeBoxProposeMessageTwoExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageTwoExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxProposeMessageTwoExtraWrapper.addEventListener('click', () => {
+      this.handlePropose('Nie chce tego')
+    })
+    const tradeBoxProposeMessageTwoWrapper = document.createElement('div')
+    tradeBoxProposeMessageTwoWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxProposeMessageTwo = document.createElement('div')
+    tradeBoxProposeMessageTwo.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessageTwo.innerText = 'Nie chce tego'
+    tradeBoxProposeMessageTwoExtraWrapper.appendChild(tradeBoxProposeMessageTwoWrapper)
+    tradeBoxProposeMessageTwoWrapper.appendChild(tradeBoxProposeMessageTwo)
+
+    const tradeBoxProposeMessageThreeExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageThreeExtraWrapper.classList.add(
+      'tradeMessageExtraWrapper',
+      'tradeMessageClickable',
+    )
+    tradeBoxProposeMessageThreeExtraWrapper.addEventListener('click', () => {
+      this.handlePropose('Chce ten zasób')
+    })
+    const tradeBoxProposeMessageThreeWrapper = document.createElement('div')
+    tradeBoxProposeMessageThreeWrapper.className = 'tradeMessageWrapper'
+    const tradeBoxProposeMessageThree = document.createElement('div')
+    tradeBoxProposeMessageThree.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessageThree.innerText = 'Chce ten zasób'
+    tradeBoxProposeMessageThreeExtraWrapper.appendChild(tradeBoxProposeMessageThreeWrapper)
+    tradeBoxProposeMessageThreeWrapper.appendChild(tradeBoxProposeMessageThree)
+
+    this.tradeBoxProposeMessagesContainer.appendChild(tradeBoxProposeMessageOneExtraWrapper)
+    this.tradeBoxProposeMessagesContainer.appendChild(tradeBoxProposeMessageTwoExtraWrapper)
+    this.tradeBoxProposeMessagesContainer.appendChild(tradeBoxProposeMessageThreeExtraWrapper)
 
     tradeBoxContentMiddle.appendChild(this.tradeBoxProposeMessagesContainer)
 
@@ -1542,7 +1614,7 @@ export class TradeView {
   }
 
   public showProposeMessagesButton(): void {
-    this.tradeBoxProposeMessageButtonExtraWrapper.style.display = 'flex'
+    this.tradeBoxProposeMessageButtonExtraWrapper.style.display = 'block'
   }
 
   public hideProposeMessagesButton(): void {
@@ -1657,92 +1729,6 @@ export class TradeView {
 
     this.hideProposeMessagesButton()
     this.hideProposeMessages()
-  }
-
-  private createMessageButton(message: string): HTMLDivElement {
-    const tradeBoxProposeMessageExtraWrapper = document.createElement('div')
-    tradeBoxProposeMessageExtraWrapper.classList.add(
-      'tradeMessageExtraWrapper',
-      'tradeMessageClickable',
-    )
-    tradeBoxProposeMessageExtraWrapper.addEventListener('click', () => {
-      this.handlePropose(message)
-    })
-    const tradeBoxProposeMessageWrapper = document.createElement('div')
-    tradeBoxProposeMessageWrapper.className = 'tradeMessageWrapper'
-    const tradeBoxProposeMessage = document.createElement('div')
-    tradeBoxProposeMessage.classList.add('tradeMessage', 'tradeMessageMiddle')
-    tradeBoxProposeMessage.innerText = message
-    tradeBoxProposeMessageExtraWrapper.appendChild(tradeBoxProposeMessageWrapper)
-    tradeBoxProposeMessageWrapper.appendChild(tradeBoxProposeMessage)
-    return tradeBoxProposeMessageExtraWrapper
-  }
-
-  private createMessagePage(msgFirst: string, msgSecond: string | null, row?: boolean): HTMLDivElement {
-    const page = document.createElement('div')
-    page.className = 'propose-page'
-    page.style.display = 'flex'
-    page.style.flexDirection = row ? 'row' : 'column'
-    page.style.justifyContent = 'space-around'
-    const firstModal = this.createMessageButton(msgFirst)
-    page.appendChild(firstModal)
-    if (msgSecond) {
-      page.style.justifyContent = 'flex-start'
-      const secondModal = this.createMessageButton(msgSecond)
-      page.appendChild(secondModal)
-    }
-    return page
-  }
-
-  private createPaginationBar(parent: HTMLDivElement, defaultClass: string, choosenId: string, startingPage: number): HTMLDivElement {
-    const bar = document.createElement('div')
-    bar.id = 'propose-pagination-bar'
-    const pageCounter = parent.querySelectorAll(`.${defaultClass}`).length
-    let page = startingPage
-    const pages = parent.querySelectorAll(`.${defaultClass}`)
-
-    const buttonUpWrapper = document.createElement('div')
-    buttonUpWrapper.id = 'propose-pagination-buttonUpWrapper'
-    const buttonUp = document.createElement('button')
-    const buttonDownWrapper = document.createElement('div')
-    buttonDownWrapper.id = 'propose-pagination-buttonDownWrapper'
-    const buttonDown = document.createElement('button')
-    const dots: HTMLDivElement[] = []
-    for(let i=0; i<pageCounter; i++) {
-      const dot = document.createElement('div')
-      dot.id = 'pagination-dot'
-      dots.push(dot)
-    }
-    dots[startingPage].id = 'pagination-dot-active'
-
-    buttonUp.addEventListener('click', () => {
-      pages[page].id = ''
-      dots[page].id = 'pagination-dot'
-      page = ((page - 1) + pageCounter) % pageCounter
-      pages[page].id = choosenId
-      dots[page].id = 'pagination-dot-active'
-    })
-
-    buttonDown.addEventListener('click', () => {
-      pages[page].id = ''
-      dots[page].id = 'pagination-dot'
-      page = ((page + 1) + pageCounter) % pageCounter
-      pages[page].id = choosenId
-      dots[page].id = 'pagination-dot-active'
-    })
-
-    bar.appendChild(buttonUpWrapper)
-    for(let i=0; i<pageCounter; i++) {
-      bar.appendChild(dots[i])
-    } 
-    bar.appendChild(buttonDownWrapper)
-    buttonUpWrapper.appendChild(buttonUp)
-    buttonDownWrapper.appendChild(buttonDown)
-
-    const barWrapper = document.createElement('div')
-    barWrapper.id = 'propose-pagination-bar-wrapper'
-    barWrapper.appendChild(bar)
-    return barWrapper
   }
 
   public show(): void {
