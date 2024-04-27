@@ -1,0 +1,24 @@
+#no-auth-roles-container {
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    display: flex;
+    padding: 1rem;
+}
+
+#no-auth-roles-container button {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #423bc8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+  }
+
+#no-auth-roles-container button:hover {
+    background-color: #3730a3;
+  }

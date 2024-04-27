@@ -15,6 +15,9 @@ const AuthTokenProtectedRoute = ({
   }
 
   const decodedToken = decodeAuthToken(token)
+  if (decodedToken.roles.length === 0) {
+    return <Navigate to='/no-auth-roles' replace />
+  }
   if (!roles.every((role) => decodedToken.roles.includes(role))) {
     return <Navigate to='/' replace />
   }
