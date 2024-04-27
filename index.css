@@ -2824,8 +2824,10 @@
 }
 
 #tradeBoxContentMiddle {
+  position: relative;
+  top: -20px;
   display: flex;
-  gap: 2rem;
+  gap: 15px;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -2912,6 +2914,10 @@
 #tradeBoxProposeButtonExtraWrapper,
 #tradeBoxAcceptButtonExtraWrapper {
   position: relative;
+}
+
+#tradeBoxAcceptButtonExtraWrapper {
+  top: -15px;
 }
 
 #tradeBoxProposeButton,
@@ -3041,6 +3047,14 @@
 
 #tradeBoxCloseMessagesContainer > .tradeCancel-page > div:last-child > div > div {
   transform: scale(1, -1);
+}
+
+#tradeBoxCloseMessagesContainer > .tradeCancel-page > div:first-child > div {
+  transform: none;
+}
+
+#tradeBoxCloseMessagesContainer > .tradeCancel-page > div:first-child > div > div {
+  transform: none;
 }
 
 #tradeBoxCloseMessagesContainer > .tradeMessageExtraWrapper {
@@ -7244,7 +7258,7 @@
 }
 
 #propose-page-active {
-  top: 0;
+  top: 10px;
 }
 
 .tradeCancel-page {
@@ -7260,7 +7274,6 @@
 }
 
 #pagination-bar-wrapper {
-  height: 130px;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -7269,10 +7282,13 @@
 
 #tradeBoxMessagesContainer > #pagination-bar-wrapper {
   right: -100px;
+  top: 15px;
+  height: 185px;
 }
 
 #tradeBoxCloseMessagesContainer > #pagination-bar-wrapper {
   right: -50px;
+  height: 130px;
 }
 
 #pagination-bar {

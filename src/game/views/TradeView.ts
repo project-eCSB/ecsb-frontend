@@ -190,12 +190,14 @@ export class TradeView {
     this.tradeBoxCloseMessagesContainer = document.createElement('div')
     this.tradeBoxCloseMessagesContainer.id = 'tradeBoxCloseMessagesContainer'
 
-    const closePage1 = this.createMessagePage("first msg", "second msg", false, false, 'tradeCancel-page')
+    const closePage1 = this.createMessagePage("first msg", ["second msg"], false, false, 'tradeCancel-page')
     closePage1.id = 'cancel-page-active'
-    const closePage2 = this.createMessagePage("third msg", "forth msg", false, false, 'tradeCancel-page')
+    const closePage2 = this.createMessagePage("third msg", ["forth msg"], false, false, 'tradeCancel-page')
+    const closePage3 = this.createMessagePage("fifth msg", [], false, false, 'tradeCancel-page')
 
     this.tradeBoxCloseMessagesContainer.appendChild(closePage1)
     this.tradeBoxCloseMessagesContainer.appendChild(closePage2)
+    this.tradeBoxCloseMessagesContainer.appendChild(closePage3)
 
     const closePaginationBar = this.createPaginationBar(this.tradeBoxCloseMessagesContainer, 'tradeCancel-page', 'cancel-page-active', 0)
     this.tradeBoxCloseMessagesContainer.appendChild(closePaginationBar)
@@ -360,14 +362,12 @@ export class TradeView {
   this.tradeBoxProposeMessagesContainer = document.createElement('div')
   this.tradeBoxProposeMessagesContainer.id = 'tradeBoxMessagesContainer'
   
-  const page1 = this.createMessagePage("first msg", "second msg", false, true, 'tradePropose-page')
+  const page1 = this.createMessagePage("first msg", ["second msg", "third msg"], false, true, 'tradePropose-page')
   page1.id = 'propose-page-active'
-  const page2 = this.createMessagePage("third msg", "forth msg", false, true, 'tradePropose-page')
-  const page3 = this.createMessagePage("fifth msg", null, false, true, 'tradePropose-page')
+  const page2 = this.createMessagePage("forth msg", ["fifth msg"], false, true, 'tradePropose-page')
 
   this.tradeBoxProposeMessagesContainer.appendChild(page1)
   this.tradeBoxProposeMessagesContainer.appendChild(page2)
-  this.tradeBoxProposeMessagesContainer.appendChild(page3)
 
   const paginationBar = this.createPaginationBar(this.tradeBoxProposeMessagesContainer, 'tradePropose-page', 'propose-page-active', 0)
   this.tradeBoxProposeMessagesContainer.appendChild(paginationBar)
@@ -1696,7 +1696,7 @@ export class TradeView {
     return tradeBoxProposeMessageExtraWrapper
   }
 
-  private createMessagePage(msgFirst: string, msgSecond: string | null, row: boolean, propose: boolean, className: string): HTMLDivElement {
+  private createMessagePage(msgFirst: string, msgTail: string[], row: boolean, propose: boolean, className: string): HTMLDivElement {
     const page = document.createElement('div')
     page.className = className
     page.style.display = 'flex'
@@ -1704,11 +1704,13 @@ export class TradeView {
     page.style.justifyContent = 'space-around'
     const firstModal = this.createMessageButton(msgFirst, propose)
     page.appendChild(firstModal)
-    if (msgSecond) {
-      page.style.justifyContent = 'flex-start'
-      const secondModal = this.createMessageButton(msgSecond, propose)
-      page.appendChild(secondModal)
-    }
+    msgTail.forEach(element => {
+      if (element) {
+        page.style.justifyContent = 'flex-start'
+        const secondModal = this.createMessageButton(element, propose)
+        page.appendChild(secondModal)
+      }
+    });
     return page
   }
 
