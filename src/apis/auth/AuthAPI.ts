@@ -26,7 +26,7 @@ const login = async (data: AuthRequest): Promise<UserData> => {
     .catch(handleError)
 }
 
-const register = async (data: AuthRequest): Promise<UserData> => {
+const register = async (data: AuthRequest): Promise<string> => {
   return await authTokenAuthAndManagementAPI
     .post('/register', data)
     .then(standardThen)

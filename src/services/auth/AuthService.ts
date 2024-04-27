@@ -21,7 +21,6 @@ const login = async (email: string, password: string): Promise<UserData> => {
 const register = async (email: string, password: string): Promise<UserData> => {
   return await authAPI
     .register({ email, password })
-    .then(authThen)
     .catch(authError)
 }
 
