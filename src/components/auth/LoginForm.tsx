@@ -3,11 +3,16 @@ import { useState } from 'react'
 import { validateEmail } from './Validation'
 import type { LoginFormData } from './Types'
 import type { NavigateFunction } from 'react-router-dom'
-import { Link, useNavigate } from 'react-router-dom'
+
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import authService from '../../services/auth/AuthService'
 import './Form.css'
 
 const LoginForm = () => {
+  const { state } = useLocation();
+  const message = state ? "Check your email" : ""
+  window.history.replaceState({}, '')
+
   const navigate: NavigateFunction = useNavigate()
 
   const [formData, setFormData] = useState<LoginFormData>({ email: '', password: '' })
@@ -91,6 +96,7 @@ const LoginForm = () => {
           Create an account
         </Link>
       </p>
+      <h1 id='email-notification-information'>{message}</h1>
     </div>
   )
 }

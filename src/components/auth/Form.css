@@ -66,3 +66,8 @@ input {
 .link:hover {
   text-decoration: underline;
 }
+
+#email-notification-information {
+  margin-top: 2rem;
+  color: rgb(0, 100, 0);
+}

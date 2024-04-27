@@ -1,7 +1,6 @@
 import type { AuthResponseError, UserData } from '../../apis/auth/Types'
 import { removeAuthToken, removeGameToken, setAuthToken } from '../../apis/apis'
 import authAPI from '../../apis/auth/AuthAPI'
-import { redirect } from 'react-router-dom'
 
 function authThen(res: UserData): UserData {
   setAuthToken(res.jwtToken)
@@ -22,10 +21,6 @@ const login = async (email: string, password: string): Promise<UserData> => {
 const register = async (email: string, password: string): Promise<UserData> => {
   return await authAPI
     .register({ email, password })
-    .then((message) => {
-      alert("Check your mailbox and confirm email")
-      redirect("/login")
-    })
     .catch(authError)
 }
 
