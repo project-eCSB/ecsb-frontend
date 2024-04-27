@@ -1650,15 +1650,15 @@ export class TradeView {
 
     this.tradeBoxProposeButtonExtraWrapper.style.display = 'block'
     this.tradeBoxProposeButtonExtraWrapper.className = 
-      (this.tradeBoxProposeMessageButtonExtraWrapper.id == 'tradeBoxProposeMessageButtonExtraWrapperActive') 
+      (this.tradeBoxProposeMessageButtonExtraWrapper.id === 'tradeBoxProposeMessageButtonExtraWrapperActive') 
       ? 'tradeBoxMiddleButtonExtraWrapperEnabledActive'
       : 'tradeBoxMiddleButtonExtraWrapperEnabled'
     this.tradeBoxProposeButtonWrapper.className = 
-      (this.tradeBoxProposeMessageButtonExtraWrapper.id == 'tradeBoxProposeMessageButtonExtraWrapperActive')
+      (this.tradeBoxProposeMessageButtonExtraWrapper.id === 'tradeBoxProposeMessageButtonExtraWrapperActive')
       ? 'tradeBoxMiddleButtonWrapperEnabledActive'
       : 'tradeBoxMiddleButtonWrapperEnabled'
     this.tradeBoxProposeButton.className = 
-      (this.tradeBoxProposeMessageButtonExtraWrapper.id == 'tradeBoxProposeMessageButtonExtraWrapperActive') 
+      (this.tradeBoxProposeMessageButtonExtraWrapper.id === 'tradeBoxProposeMessageButtonExtraWrapperActive') 
       ? 'tradeBoxMiddleButtonEnabledActive'
       : 'tradeBoxMiddleButtonEnabled'
 
