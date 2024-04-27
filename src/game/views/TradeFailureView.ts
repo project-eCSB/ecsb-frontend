@@ -89,9 +89,11 @@ export class TradeFailureView {
     messageCloudWrapper.className = 'tradeMessageWrapper'
     const messageCloud = document.createElement('div')
     messageCloud.className = 'tradeMessage'
-    messageCloud.innerText = message
+    const messageTag = document.createElement('p')
+    messageTag.textContent = message
     messageCloudExtraWrapper.appendChild(messageCloudWrapper)
     messageCloudWrapper.appendChild(messageCloud)
+    messageCloud.appendChild(messageTag)
 
     messageContainer.appendChild(messageCloudExtraWrapper)
 
@@ -102,9 +104,9 @@ export class TradeFailureView {
     otherUserId.innerText = otherPlayerId
     otherUserIdContainer.appendChild(otherUserId)
 
-    tradeFailureBoxContentBox.appendChild(otherUserIdContainer)
-    tradeFailureBoxContentBox.appendChild(messageContainer)
     tradeFailureBoxContentBox.appendChild(currentUserIdContainer)
+    tradeFailureBoxContentBox.appendChild(messageContainer)
+    tradeFailureBoxContentBox.appendChild(otherUserIdContainer)
 
     tradeFailureBoxContentBoxWrapper.appendChild(tradeFailureBoxContentBox)
     tradeFailureBoxContentBoxExtraWrapper.appendChild(tradeFailureBoxContentBoxWrapper)
