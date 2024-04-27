@@ -10,6 +10,7 @@ import './App.css'
 import Admin from './components/admin/Admin'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import NoAuthRoles from './components/noauthroles/NoAuthRoles'
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
                                           roles={['USER']} />
                }
         />
+        <Route path='/no-auth-roles' element={<NoAuthRoles />}/>
         <Route path='*' element={<Navigate to='/home' replace />} />
       </Routes>
       <ToastContainer
