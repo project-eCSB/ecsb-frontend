@@ -24,6 +24,7 @@ export enum IncomingCoopMessageType {
   CoopCancel = 'coop/system/cancel_coop', // done
   CoopCancelNegotiation = 'coop/system/cancel_negotiation', // done
   CoopCancelPlanning = 'coop/system/cancel_planning', // done
+  CoopServerRemind = 'coop/system/remind',
 }
 
 export interface CoopStartPlanningMessage {
@@ -76,6 +77,7 @@ export interface CoopNegotiationBidMessage {
     type: IncomingCoopMessageType.CoopNegotiationBid
     receiverId: string
     coopBid: CoopBid
+    message: string
   }
 }
 
@@ -158,6 +160,7 @@ export interface CoopCancelNegotiationMessage {
   message: {
     type: IncomingCoopMessageType.CoopCancelNegotiation
     receiverId: string
+    message: string
   }
 }
 
@@ -166,6 +169,13 @@ export interface CoopCancelPlanningMessage {
   message: {
     type: IncomingCoopMessageType.CoopCancelPlanning
     receiverId: string
+  }
+}
+
+export interface CoopServerRemindMessage {
+  senderId: string
+  message: {
+    type: IncomingCoopMessageType.CoopServerRemind
   }
 }
 
@@ -186,6 +196,7 @@ export type IncomingCoopMessage =
   | CoopCancelMessage
   | CoopCancelNegotiationMessage
   | CoopCancelPlanningMessage
+  | CoopServerRemindMessage
 
 export enum OutcomingCoopMessageType {
   StartPlanning = 'coop/start_planning', // done
@@ -204,6 +215,7 @@ export enum OutcomingCoopMessageType {
   CancelPlanning = 'coop/cancel_planning', // done
   StartPlannedTravel = 'coop/start_planned_travel', // done
   StartSimpleTravel = 'coop/start_simple_travel', // done
+  CoopRemind = 'coop/remind',
 }
 
 export interface StartPlanningMessage {
@@ -255,6 +267,7 @@ export interface ProposeOwnTravelAckMessage {
 export interface ResourceDecideMessage {
   type: OutcomingCoopMessageType.ResourceDecide
   yourBid: CoopBid
+  message: string
 }
 
 export interface ResourceDecideAckMessage {
@@ -268,6 +281,7 @@ export interface CancelCoopMessage {
 
 export interface CancelNegotiationMessage {
   type: OutcomingCoopMessageType.CancelNegotiation
+  message: string
 }
 
 export interface CancelPlanningMessage {
@@ -283,6 +297,12 @@ export interface StartSimpleTravelMessage {
   type: OutcomingCoopMessageType.StartSimpleTravel
   travelName: string
 }
+
+export interface CoopRemindMessage {
+  type: OutcomingCoopMessageType.CoopRemind
+  receiverId: string
+}
+
 
 export type OutcomingCoopMessage =
   | StartPlanningMessage
@@ -301,6 +321,7 @@ export type OutcomingCoopMessage =
   | CancelPlanningMessage
   | StartPlannedTravelMessage
   | StartSimpleTravelMessage
+  | CoopRemindMessage
 
 export const sendCoopMessage = (socket: Websocket, message: OutcomingCoopMessage): void => {
   try {

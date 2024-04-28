@@ -42,6 +42,7 @@ export const parseChatMessage = (message: string): ChatMessage | null => {
       case IncomingCoopMessageType.CoopCancel:
       case IncomingCoopMessageType.CoopCancelNegotiation:
       case IncomingCoopMessageType.CoopCancelPlanning:
+      case IncomingCoopMessageType.CoopServerRemind:
       case IncomingWorkshopMessageType.WorkshopAccept:
       case IncomingWorkshopMessageType.WorkshopDeny:
       case BackendWarningMessageType.UserWarning:
