@@ -192,6 +192,7 @@ export class ResourceNegotiationView {
     this.resourceNegotiationCloseButton.addEventListener('click', () => {
       sendCoopMessage(this.scene.chatWs, {
         type: OutcomingCoopMessageType.CancelNegotiation,
+        message: 'empty for now'
       })
       this.close(false)
     })
@@ -378,6 +379,7 @@ export class ResourceNegotiationView {
           moneyRatio: this.newPlayerBid.moneyRatio,
           resources: this.newPlayerBid.resources,
         },
+        message: 'empty for now'
       })
 
       this.resourceNegotiationButtonsProposeButtonExtraWrapper.className =
