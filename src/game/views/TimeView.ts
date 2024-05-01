@@ -1,4 +1,5 @@
 import { ONE_SECOND } from '../GameUtils'
+import { createDivWithId } from './ViewUtils'
 
 export class TimeView {
   public static readonly timeTokenBoxID = 'timeTokenBox'
@@ -24,49 +25,33 @@ export class TimeView {
       this.tokens.push(true)
     }
 
-    this.timeTokenBox = document.createElement('div')
-    this.timeTokenBox.id = TimeView.timeTokenBoxID
-
-    this.timeTokenBoxWrapper = document.createElement('div')
-    this.timeTokenBoxWrapper.id = TimeView.timeTokenBoxWrapperID
-
+    this.timeTokenBox = createDivWithId(TimeView.timeTokenBoxID)
+    this.timeTokenBoxWrapper = createDivWithId(TimeView.timeTokenBoxWrapperID)
     for (let i = 1; i <= columns; i++) {
       const col = document.createElement('div')
 
-      const token1 = document.createElement('div')
-      token1.id = `timeToken-${i}-1`
+      const token1 = createDivWithId(`timeToken-${i}-1`)
       const token1Wrapper = document.createElement('div')
       token1Wrapper.appendChild(token1)
 
-      const token2 = document.createElement('div')
-      token2.id = `timeToken-${i}-2`
+      const token2 = createDivWithId(`timeToken-${i}-2`)
       const token2Wrapper = document.createElement('div')
       token2Wrapper.appendChild(token2)
 
       const tokenClockFace1 = document.createElement('div')
-      tokenClockFace1.appendChild(document.createElement('span'))
-      tokenClockFace1.appendChild(document.createElement('span'))
-      tokenClockFace1.appendChild(document.createElement('span'))
+      tokenClockFace1.append(document.createElement('span'), document.createElement('span'), document.createElement('span'))
       const tokenClockFace2 = document.createElement('div')
-      tokenClockFace2.appendChild(document.createElement('span'))
-      tokenClockFace2.appendChild(document.createElement('span'))
-      tokenClockFace2.appendChild(document.createElement('span'))
+      tokenClockFace2.append(document.createElement('span'), document.createElement('span'), document.createElement('span'))
 
       token1.appendChild(tokenClockFace1)
       token2.appendChild(tokenClockFace2)
-      col.appendChild(token1Wrapper)
-      col.appendChild(token2Wrapper)
+      col.append(token1Wrapper, token2Wrapper)
       this.timeTokenBox.appendChild(col)
     }
 
-    this.timerBox = document.createElement('div')
-    this.timerBox.id = TimeView.timerBoxID
-
-    this.timerBoxWrapper = document.createElement('div')
-    this.timerBoxWrapper.id = TimeView.timerBoxWrapperID
-
-    this.clock = document.createElement('div')
-    this.clock.id = 'clock'
+    this.timerBox = createDivWithId(TimeView.timerBoxID)
+    this.timerBoxWrapper = createDivWithId(TimeView.timerBoxWrapperID)
+    this.clock = createDivWithId('clock')
     const clockFace = document.createElement('div')
     this.time = document.createElement('span')
     clockFace.appendChild(this.time)
@@ -77,8 +62,7 @@ export class TimeView {
   }
 
   show(): void {
-    window.document.body.appendChild(this.timeTokenBoxWrapper)
-    window.document.body.appendChild(this.timerBoxWrapper)
+    window.document.body.append(this.timeTokenBoxWrapper, this.timerBoxWrapper)
   }
 
   close(): void {

@@ -1,6 +1,6 @@
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping, RESOURCE_ICON_HEIGHT } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { ImageCropper } from './ImageCropper'
+import { createCrop } from '../views/ViewUtils'
 
 export class AdvertisementInfoBuilder {
   scene: Scene
@@ -58,15 +58,8 @@ export class AdvertisementInfoBuilder {
 
     if (resourceName === '') return
 
-    const resourceImg = this.cropper.crop(
-      RESOURCE_ICON_WIDTH,
-      RESOURCE_ICON_HEIGHT,
-      RESOURCE_ICON_SCALE,
-      this.scene.resourceUrl,
-      this.scene.settings.classResourceRepresentation.length,
-      getResourceMapping(this.scene.settings.classResourceRepresentation)(resourceName),
-      false,
-    )
+    const resourceImg = createCrop(this.cropper, this.scene.resourceUrl,
+      this.scene.settings.classResourceRepresentation, resourceName)
 
     const iconImg = document.createElement('img')
     if (buying) {

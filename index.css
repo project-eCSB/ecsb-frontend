@@ -4305,12 +4305,12 @@
   align-items: center;
 }
 
-.workshopBoxContentBoxButtonsBoxButtonEnabled {
+.workshopBoxContentBoxButtonsBoxEnabled {
   background-color: #835211;
   cursor: pointer;
 }
 
-.workshopBoxContentBoxButtonsBoxButtonDisabled {
+.workshopBoxContentBoxButtonsBoxDisabled {
   background-color: #e9d3b7;
   cursor: auto;
 }

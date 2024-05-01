@@ -1,16 +1,21 @@
-import { type Travel, type ClassResourceRepresentation } from '../../apis/game/Types'
-import { SPACE_PRESS_ACTION_PREFIX, getResourceMapping } from '../GameUtils'
+import { type ClassResourceRepresentation, type Travel } from '../../apis/game/Types'
+import { SPACE_PRESS_ACTION_PREFIX } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
+import { OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
+import { sendTravelChoosingMessage, TravelChoosingMessageType } from '../webSocketMessage/chat/TravelChoosingMessage'
 import {
-  OutcomingCoopMessageType,
-  sendCoopMessage,
-} from '../webSocketMessage/chat/CoopMessageHandler'
-import {
-  TravelChoosingMessageType,
-  sendTravelChoosingMessage,
-} from '../webSocketMessage/chat/TravelChoosingMessage'
+  createButtonWithId,
+  createButtonWithInnerText,
+  createDivWithClassName,
+  createDivWithId,
+  createHeading,
+  createIconWithAll, createIconWithWidth,
+  createIElementWithColor,
+  createTradeCrop,
+  getClassName,
+} from './ViewUtils'
 
 export enum TravelType {
   LOW = 'low',
@@ -27,32 +32,23 @@ export class TravelView {
   private readonly resourceRepresentation: ClassResourceRepresentation[]
   private readonly cropper: ImageCropper
 
-  public static readonly travelBoxWrapperID = 'travelBoxWrapper'
-
+  private static readonly travelBoxWrapperID = 'travelBoxWrapper'
   private static readonly travelBoxHeaderWrapperID = 'travelBoxHeaderWrapper'
   private static readonly travelBoxHeaderID = 'travelBoxHeader'
   private static readonly travelBoxCloseButtonID = 'travelBoxCloseButton'
-
   private static readonly travelBoxContentExtraWrapperID = 'travelBoxContentExtraWrapper'
   private static readonly travelBoxContentWrapperID = 'travelBoxContentWrapper'
   private static readonly travelBoxContentID = 'travelBoxContent'
-
   private static readonly travelBoxButtonsContainerID = 'travelBoxButtonsContainer'
+  private static readonly travelBoxButtonsContainerButtonExtraWrapperID = 'travelBoxButtonsContainerButtonExtraWrapper'
+  private static readonly travelBoxButtonsContainerButtonWrapperID = 'travelBoxButtonsContainerButtonWrapper'
+  private static readonly travelBoxButtonsContainerButtonID = 'travelBoxButtonsContainerButton'
   private static readonly travelBoxPlanButtonID = 'travelBoxPlanButton'
   private static readonly travelBoxTravelButtonID = 'travelBoxTravelButton'
-
   private static readonly travelWarningBoxID = 'travelWarningBox'
-
   private readonly travelBoxWrapper: HTMLDivElement
-
-  private readonly travelBoxHeaderWrapper: HTMLDivElement
-  private readonly travelBoxHeader: HTMLDivElement
-
-  private readonly travelBoxContentExtraWrapper: HTMLDivElement
   private readonly travelBoxContentWrapper: HTMLDivElement
   private readonly travelBoxContent: HTMLDivElement
-
-  private readonly travelBoxButtonsContainer: HTMLDivElement
   private readonly travelBoxPlanButtonExtraWrapper: HTMLDivElement
   private readonly travelBoxPlanButtonWrapper: HTMLDivElement
   private readonly travelBoxPlanButton: HTMLButtonElement
@@ -75,23 +71,17 @@ export class TravelView {
     this.cropper = new ImageCropper()
 
     // Wrapper
-    this.travelBoxWrapper = document.createElement('div')
-    this.travelBoxWrapper.id = TravelView.travelBoxWrapperID
+    this.travelBoxWrapper = createDivWithId(TravelView.travelBoxWrapperID)
 
     // Header
-    this.travelBoxHeaderWrapper = document.createElement('div')
-    this.travelBoxHeaderWrapper.id = TravelView.travelBoxHeaderWrapperID
+    const travelBoxHeaderWrapper = createDivWithId(TravelView.travelBoxHeaderWrapperID)
+    const travelBoxHeader = createDivWithId(TravelView.travelBoxHeaderID)
 
-    this.travelBoxHeader = document.createElement('div')
-    this.travelBoxHeader.id = TravelView.travelBoxHeaderID
-
-    const travelBoxHeaderMainTitle = document.createElement('h1')
-    travelBoxHeaderMainTitle.innerText = 'WYPRAWY'
+    const travelBoxHeaderMainTitle = createHeading('h1', 'WYPRAWY')
 
     const timeIcon = document.createElement('img')
     timeIcon.style.transform = 'translateX(-15px)'
 
-    const travelBoxHeaderSideTitle = document.createElement('h2')
     let sideTitle: string
     switch (travelType) {
       case TravelType.LOW:
@@ -113,44 +103,28 @@ export class TravelView {
         sideTitle = 'Travel'
         console.error('TravelType not found')
     }
-    travelBoxHeaderSideTitle.innerText = sideTitle
+    const travelBoxHeaderSideTitle = createHeading('h2', sideTitle)
 
-    const trainIcon = document.createElement('img')
-    trainIcon.src = '/assets/trainCustomIcon.png'
-    trainIcon.style.width = '56px'
-
+    const trainIcon = createIconWithWidth('/assets/trainCustomIcon.png', '56px')
     const titlesWrapper = document.createElement('div')
-    titlesWrapper.appendChild(travelBoxHeaderMainTitle)
-    titlesWrapper.appendChild(travelBoxHeaderSideTitle)
+    titlesWrapper.append(travelBoxHeaderMainTitle, travelBoxHeaderSideTitle)
 
-    const closeButton = document.createElement('button')
-    closeButton.id = TravelView.travelBoxCloseButtonID
+    const closeButton = createButtonWithId(TravelView.travelBoxCloseButtonID)
     closeButton.addEventListener('click', () => {
       this.close()
       this.scene.movingEnabled = true
     })
-    const XIcon = document.createElement('i')
-    XIcon.className = 'fa fa-times'
-    XIcon.ariaHidden = 'true'
-    XIcon.style.color = 'black'
+    const XIcon = createIElementWithColor('times', 'black')
     closeButton.appendChild(XIcon)
 
-    this.travelBoxHeader.appendChild(trainIcon)
-    this.travelBoxHeader.appendChild(titlesWrapper)
-    this.travelBoxHeader.appendChild(timeIcon)
-
-    this.travelBoxHeaderWrapper.appendChild(this.travelBoxHeader)
-    this.travelBoxHeaderWrapper.appendChild(closeButton)
+    travelBoxHeader.append(trainIcon, titlesWrapper, timeIcon)
+    travelBoxHeaderWrapper.append(travelBoxHeader, closeButton)
 
     // Content
-    this.travelBoxContentExtraWrapper = document.createElement('div')
-    this.travelBoxContentExtraWrapper.id = TravelView.travelBoxContentExtraWrapperID
+    const travelBoxContentExtraWrapper = createDivWithId(TravelView.travelBoxContentExtraWrapperID)
 
-    this.travelBoxContentWrapper = document.createElement('div')
-    this.travelBoxContentWrapper.id = TravelView.travelBoxContentWrapperID
-
-    this.travelBoxContent = document.createElement('div')
-    this.travelBoxContent.id = TravelView.travelBoxContentID
+    this.travelBoxContentWrapper = createDivWithId(TravelView.travelBoxContentWrapperID)
+    this.travelBoxContent = createDivWithId(TravelView.travelBoxContentID)
 
     let correctGate = false
     this.scene.settings.travels.forEach((travel) => {
@@ -161,17 +135,12 @@ export class TravelView {
           }
 
           // Item
-          const travelItemContainerWrapper = document.createElement('div')
-          travelItemContainerWrapper.className = 'travelBoxContentItemWrapper'
-          const travelItemContainer = document.createElement('div')
-          travelItemContainer.className = 'travelBoxContentItem'
+          const travelItemContainerWrapper = createDivWithClassName('travelBoxContentItemWrapper')
+          const travelItemContainer = createDivWithClassName('travelBoxContentItem')
 
           // Item - Header
-          const travelItemHeader = document.createElement('div')
-          travelItemHeader.className = 'travelBoxContentItemHeader'
-
-          const travelItemTitle = document.createElement('h2')
-          travelItemTitle.innerText = travelItem.value.name
+          const travelItemHeader = createDivWithClassName('travelBoxContentItemHeader')
+          const travelItemTitle = createHeading('h2', travelItem.value.name)
 
           const travelItemCheckbox = document.createElement('input')
           travelItemCheckbox.type = 'radio'
@@ -197,82 +166,49 @@ export class TravelView {
             }
             this.enablePlanButton()
           })
-          travelItemHeader.appendChild(travelItemCheckbox)
-          travelItemHeader.appendChild(travelItemTitle)
-
-          travelItemContainer.appendChild(travelItemHeader)
-
-          // Item - Line
-          travelItemContainer.appendChild(document.createElement('hr'))
+          travelItemHeader.append(travelItemCheckbox, travelItemTitle)
+          travelItemContainer.append(travelItemHeader, document.createElement('hr'))
 
           // Item - Content
-          const travelItemContent = document.createElement('div')
-          travelItemContent.className = 'travelBoxContentItemContent'
+          const travelItemContent = createDivWithId('travelBoxContentItemContent')
 
           // Item - Content Left
-          const travelItemContentLeft = document.createElement('div')
-          travelItemContentLeft.className = 'travelBoxContentItemContentLeft'
-
-          const travelItemContentLeftHeader = document.createElement('h3')
-          travelItemContentLeftHeader.innerText = 'Koszt:'
+          const travelItemContentLeft = createDivWithId('travelBoxContentItemContentLeft')
+          const travelItemContentLeftHeader = createHeading('h3', 'Koszt:')
           travelItemContentLeft.appendChild(travelItemContentLeftHeader)
 
-          const travelItemContentTimes = document.createElement('div')
-          travelItemContentTimes.className = 'travelBoxContentItemContentLeftTimes'
+          const travelItemContentTimes = createDivWithClassName('travelBoxContentItemContentLeftTimes')
           for (let i = 0; i < travelItem.value.time; i++) {
             const timeIconExtraWrapper = document.createElement('div')
             const timeIconWrapper = document.createElement('div')
-            const timeIcon = document.createElement('img')
-            timeIcon.src = '/assets/timeCustomIcon.png'
-            timeIcon.style.width = '25px'
-            timeIcon.style.height = '25px'
+            const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '25px')
             timeIconWrapper.appendChild(timeIcon)
             timeIconExtraWrapper.appendChild(timeIconWrapper)
             travelItemContentTimes.appendChild(timeIconExtraWrapper)
 
-            if (
-              this.plannedTravel &&
-              (this.plannedTravel?.value.name !== travelItem.value.name ||
-                !this.isPlannedTravelReady())
-            ) {
+            if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
               timeIconWrapper.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
               timeIcon.style.opacity = '0.4'
             }
           }
           travelItemContentLeft.appendChild(travelItemContentTimes)
 
-          const travelItemContentResources = document.createElement('div')
-          travelItemContentResources.className = 'travelBoxContentItemContentLeftResources'
+          const travelItemContentResources = createDivWithClassName('travelBoxContentItemContentLeftResources')
           travelItem.value.resources.forEach((resource) => {
             if (resource.value !== 0) {
               const itemContainer = document.createElement('div')
-
               const itemIconWrapper = document.createElement('div')
-              const itemIcon = this.cropper.crop(
-                25,
-                25,
-                1,
-                this.resourceURL,
-                resourceRepresentation.length,
-                getResourceMapping(this.resourceRepresentation)(resource.key),
-                false,
-              )
+              const itemIcon = createTradeCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
               itemIconWrapper.appendChild(itemIcon)
-              itemContainer.appendChild(itemIconWrapper)
-
               const itemValueWrapper = document.createElement('div')
-              const itemValue = document.createElement('h4')
-              itemValue.innerText = `${resource.value}`
+              const itemValue = createHeading('h4', `${resource.value}`)
               itemValueWrapper.appendChild(itemValue)
-              itemContainer.appendChild(itemValueWrapper)
+
+              itemContainer.append(itemIconWrapper, itemValueWrapper)
 
               travelItemContentResources.appendChild(itemContainer)
 
-              if (
-                this.plannedTravel &&
-                (this.plannedTravel?.value.name !== travelItem.value.name ||
-                  !this.isPlannedTravelReady())
-              ) {
+              if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
                 itemValue.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
                 itemValue.style.color = 'rgba(0, 0, 0, 0.7)'
                 itemIcon.style.opacity = '0.4'
@@ -282,44 +218,30 @@ export class TravelView {
           travelItemContentLeft.appendChild(travelItemContentResources)
 
           // Item - Content Right
-          const travelItemContentRight = document.createElement('div')
-          travelItemContentRight.className = 'travelBoxContentItemContentRight'
+          const travelItemContentRight = createDivWithClassName('travelBoxContentItemContentRight')
 
-          const travelItemContentRightHeader = document.createElement('h3')
-          travelItemContentRightHeader.innerText = 'Zysk:'
-          travelItemContentRight.appendChild(travelItemContentRightHeader)
-
+          const travelItemContentRightHeader = createHeading('h3', 'Zysk:')
           const travelItemContentRightResult = document.createElement('div')
 
           const moneyIconWrapper = document.createElement('div')
-          const moneyIcon = document.createElement('img')
-          moneyIcon.src = '/assets/coinCustomIcon.png'
-          moneyIcon.style.width = '25px'
-          moneyIcon.style.height = '25px'
-          moneyIconWrapper.appendChild(moneyIcon)
 
+          const moneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '25px')
+          moneyIconWrapper.appendChild(moneyIcon)
           const resultWrapper = document.createElement('div')
-          const result = document.createElement('h4')
-          result.innerText = `${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to}`
+
+          const result = createHeading('h4', `${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to}`)
           resultWrapper.appendChild(result)
 
-          travelItemContentRightResult.appendChild(moneyIconWrapper)
-          travelItemContentRightResult.appendChild(resultWrapper)
-          travelItemContentRight.appendChild(travelItemContentRightResult)
+          travelItemContentRightResult.append(moneyIconWrapper, resultWrapper)
+          travelItemContentRight.append(travelItemContentRightHeader, travelItemContentRightResult)
 
-          travelItemContent.appendChild(travelItemContentLeft)
-          travelItemContent.appendChild(travelItemContentRight)
+          travelItemContent.append(travelItemContentLeft, travelItemContentRight)
           travelItemContainer.appendChild(travelItemContent)
-
           travelItemContainerWrapper.appendChild(travelItemContainer)
 
           this.travelBoxContent.appendChild(travelItemContainerWrapper)
 
-          if (
-            this.plannedTravel &&
-            (this.plannedTravel?.value.name !== travelItem.value.name ||
-              !this.isPlannedTravelReady())
-          ) {
+          if (this.plannedTravel && (this.plannedTravel?.value.name !== travelItem.value.name || !this.isPlannedTravelReady())) {
             travelItemCheckbox.disabled = true
             travelItemCheckbox.style.cursor = 'auto'
             travelItemCheckbox.style.backgroundColor = 'rgba(246, 220, 184, 0.4)'
@@ -345,34 +267,18 @@ export class TravelView {
     })
 
     this.travelBoxContentWrapper.appendChild(this.travelBoxContent)
-    this.travelBoxContentExtraWrapper.appendChild(this.travelBoxContentWrapper)
+    travelBoxContentExtraWrapper.appendChild(this.travelBoxContentWrapper)
 
     // Buttons
-    this.travelBoxButtonsContainer = document.createElement('div')
-    this.travelBoxButtonsContainer.id = TravelView.travelBoxButtonsContainerID
+    const travelBoxButtonsContainer = createDivWithId(TravelView.travelBoxButtonsContainerID)
 
     this.travelBoxPlanButtonExtraWrapper = document.createElement('div')
     this.travelBoxPlanButtonWrapper = document.createElement('div')
-    this.travelBoxPlanButton = document.createElement('button')
-    this.travelBoxPlanButton.id = TravelView.travelBoxPlanButtonID
-    this.travelBoxPlanButton.innerText = 'ZAPLANUJ'
+    this.travelBoxPlanButton = createButtonWithInnerText(TravelView.travelBoxPlanButtonID, 'ZAPLANUJ')
     this.travelBoxPlanButton.addEventListener('click', () => {
-      this.travelBoxPlanButtonExtraWrapper.className =
-        this.travelBoxPlanButtonExtraWrapper.className ===
-        'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
-          ? 'travelBoxButtonsContainerButtonExtraWrapperEnabled'
-          : 'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
-
-      this.travelBoxPlanButtonWrapper.className =
-        this.travelBoxPlanButtonWrapper.className ===
-        'travelBoxButtonsContainerButtonWrapperEnabledActive'
-          ? 'travelBoxButtonsContainerButtonWrapperEnabled'
-          : 'travelBoxButtonsContainerButtonWrapperEnabledActive'
-
-      this.travelBoxPlanButton.className =
-        this.travelBoxPlanButton.className === 'travelBoxButtonsContainerButtonEnabledActive'
-          ? 'travelBoxButtonsContainerButtonEnabled'
-          : 'travelBoxButtonsContainerButtonEnabledActive'
+      this.travelBoxPlanButtonExtraWrapper.className = getClassName(this.travelBoxPlanButtonExtraWrapper, TravelView.travelBoxButtonsContainerButtonExtraWrapperID)
+      this.travelBoxPlanButtonWrapper.className = getClassName(this.travelBoxPlanButtonWrapper, TravelView.travelBoxButtonsContainerButtonWrapperID)
+      this.travelBoxPlanButton.className = getClassName(this.travelBoxPlanButton, TravelView.travelBoxButtonsContainerButtonID)
 
       sendCoopMessage(this.scene.chatWs, {
         type: OutcomingCoopMessageType.StartPlanning,
@@ -386,30 +292,16 @@ export class TravelView {
 
     this.travelBoxTravelButtonExtraWrapper = document.createElement('div')
     this.travelBoxTravelButtonWrapper = document.createElement('div')
-    this.travelBoxTravelButton = document.createElement('button')
-    this.travelBoxTravelButton.id = TravelView.travelBoxTravelButtonID
-    this.travelBoxTravelButton.innerText = 'JEDŹ'
+    this.travelBoxTravelButton = createButtonWithInnerText(TravelView.travelBoxTravelButtonID, 'JEDŹ')
     this.travelBoxTravelButton.addEventListener('click', () => {
       this.disableTravelButton()
 
       this.scene.loadingView.show()
 
-      this.travelBoxTravelButtonExtraWrapper.className =
-        this.travelBoxTravelButtonExtraWrapper.className ===
-        'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
-          ? 'travelBoxButtonsContainerButtonExtraWrapperEnabled'
-          : 'travelBoxButtonsContainerButtonExtraWrapperEnabledActive'
+      this.travelBoxTravelButtonExtraWrapper.className = getClassName(this.travelBoxTravelButtonExtraWrapper, TravelView.travelBoxButtonsContainerButtonExtraWrapperID)
+      this.travelBoxTravelButtonWrapper.className = getClassName(this.travelBoxTravelButtonWrapper, TravelView.travelBoxButtonsContainerButtonWrapperID)
+      this.travelBoxTravelButton.className = getClassName(this.travelBoxTravelButton, TravelView.travelBoxButtonsContainerButtonID)
 
-      this.travelBoxTravelButtonWrapper.className =
-        this.travelBoxTravelButtonWrapper.className ===
-        'travelBoxButtonsContainerButtonWrapperEnabledActive'
-          ? 'travelBoxButtonsContainerButtonWrapperEnabled'
-          : 'travelBoxButtonsContainerButtonWrapperEnabledActive'
-
-      this.travelBoxTravelButton.className =
-        this.travelBoxTravelButton.className === 'travelBoxButtonsContainerButtonEnabledActive'
-          ? 'travelBoxButtonsContainerButtonEnabled'
-          : 'travelBoxButtonsContainerButtonEnabledActive'
 
       if (this.plannedTravel && correctGate && this.isPlannedTravelReady()) {
         sendCoopMessage(scene.chatWs, {
@@ -428,12 +320,9 @@ export class TravelView {
     this.travelBoxTravelButtonWrapper.appendChild(this.travelBoxTravelButton)
     this.travelBoxTravelButtonExtraWrapper.appendChild(this.travelBoxTravelButtonWrapper)
 
-    this.travelBoxButtonsContainer.appendChild(this.travelBoxPlanButtonExtraWrapper)
-    this.travelBoxButtonsContainer.appendChild(this.travelBoxTravelButtonExtraWrapper)
+    travelBoxButtonsContainer.append(this.travelBoxPlanButtonExtraWrapper, this.travelBoxTravelButtonExtraWrapper)
 
-    this.travelBoxWrapper.appendChild(this.travelBoxHeaderWrapper)
-    this.travelBoxWrapper.appendChild(this.travelBoxContentExtraWrapper)
-    this.travelBoxWrapper.appendChild(this.travelBoxButtonsContainer)
+    this.travelBoxWrapper.append(travelBoxHeaderWrapper, travelBoxContentExtraWrapper, travelBoxButtonsContainer)
 
     this.disablePlanButton()
     this.disableTravelButton()
@@ -464,34 +353,30 @@ export class TravelView {
 
   public disableTravelButton(): void {
     this.travelBoxTravelButton.disabled = true
-    this.travelBoxTravelButtonExtraWrapper.className =
-      'travelBoxButtonsContainerButtonExtraWrapperDisabled'
-    this.travelBoxTravelButtonWrapper.className = 'travelBoxButtonsContainerButtonWrapperDisabled'
-    this.travelBoxTravelButton.className = 'travelBoxButtonsContainerButtonDisabled'
+    this.travelBoxTravelButton.className = TravelView.travelBoxButtonsContainerButtonID + 'Disabled'
+    this.travelBoxTravelButtonExtraWrapper.className = TravelView.travelBoxButtonsContainerButtonExtraWrapperID + 'Disabled'
+    this.travelBoxTravelButtonWrapper.className = TravelView.travelBoxButtonsContainerButtonWrapperID + 'Disabled'
   }
 
   public enableTravelButton(): void {
     this.travelBoxTravelButton.disabled = false
-    this.travelBoxTravelButtonExtraWrapper.className =
-      'travelBoxButtonsContainerButtonExtraWrapperEnabled'
-    this.travelBoxTravelButtonWrapper.className = 'travelBoxButtonsContainerButtonWrapperEnabled'
-    this.travelBoxTravelButton.className = 'travelBoxButtonsContainerButtonEnabled'
+    this.travelBoxTravelButton.className = TravelView.travelBoxButtonsContainerButtonID + 'Enabled'
+    this.travelBoxTravelButtonExtraWrapper.className = TravelView.travelBoxButtonsContainerButtonExtraWrapperID + 'Enabled'
+    this.travelBoxTravelButtonWrapper.className = TravelView.travelBoxButtonsContainerButtonWrapperID + 'Enabled'
   }
 
   public disablePlanButton(): void {
     this.travelBoxPlanButton.disabled = true
-    this.travelBoxPlanButtonExtraWrapper.className =
-      'travelBoxButtonsContainerButtonExtraWrapperDisabled'
-    this.travelBoxPlanButtonWrapper.className = 'travelBoxButtonsContainerButtonWrapperDisabled'
-    this.travelBoxPlanButton.className = 'travelBoxButtonsContainerButtonDisabled'
+    this.travelBoxPlanButton.className = TravelView.travelBoxButtonsContainerButtonID + 'Disabled'
+    this.travelBoxPlanButtonExtraWrapper.className = TravelView.travelBoxButtonsContainerButtonExtraWrapperID + 'Disabled'
+    this.travelBoxPlanButtonWrapper.className = TravelView.travelBoxButtonsContainerButtonWrapperID + 'Disabled'
   }
 
   public enablePlanButton(): void {
     this.travelBoxPlanButton.disabled = false
-    this.travelBoxPlanButtonExtraWrapper.className =
-      'travelBoxButtonsContainerButtonExtraWrapperEnabled'
-    this.travelBoxPlanButtonWrapper.className = 'travelBoxButtonsContainerButtonWrapperEnabled'
-    this.travelBoxPlanButton.className = 'travelBoxButtonsContainerButtonEnabled'
+    this.travelBoxPlanButton.className = TravelView.travelBoxButtonsContainerButtonID + 'Enabled'
+    this.travelBoxPlanButtonExtraWrapper.className = TravelView.travelBoxButtonsContainerButtonExtraWrapperID + 'Enabled'
+    this.travelBoxPlanButtonWrapper.className = TravelView.travelBoxButtonsContainerButtonWrapperID + 'Enabled'
   }
 
   public show(): void {
@@ -573,23 +458,16 @@ export class TravelView {
   }
 
   private setWarning(text: string): void {
-    const warningBox = document.createElement('div')
-    const warningText = document.createElement('h5')
-    warningText.innerHTML = text
-    const icon = document.createElement('i')
-    icon.className = 'fa fa-question-circle'
-    icon.ariaHidden = 'true'
-    icon.style.color = '#835211'
-    warningBox.appendChild(icon)
-    warningBox.appendChild(warningText)
-    warningBox.id = TravelView.travelWarningBoxID
+    const warningBox = createDivWithId(TravelView.travelWarningBoxID)
+    const warningText = createHeading('h5', text)
+    const icon = createIElementWithColor('question-circle', '#835211')
+    warningBox.append(icon, warningText)
     const travels = this.travelBoxContent.childNodes.length
     if (travels === 1) {
       warningBox.style.maxWidth = '410px'
     } else if (travels === 2) {
       warningBox.style.maxWidth = '820px'
     }
-    this.travelBoxContentWrapper.appendChild(document.createElement('hr'))
-    this.travelBoxContentWrapper.appendChild(warningBox)
+    this.travelBoxContentWrapper.append(document.createElement('hr'), warningBox)
   }
 }

@@ -1,3 +1,5 @@
+import { createDivWithId, createHeading } from './ViewUtils'
+
 export class UserDataView {
   public static readonly userDataBoxWrapperID = 'userDataBoxWrapper'
   public static readonly userDataBoxID = 'userDataBox'
@@ -8,20 +10,11 @@ export class UserDataView {
   private readonly userDataBoxWrapper: HTMLDivElement
 
   constructor(userName: string, userClassName: string) {
-    this.userDataBox = document.createElement('div')
-    this.userDataBox.id = UserDataView.userDataBoxID
-
-    this.userName = document.createElement('h1')
-    this.userName.innerText = userName
-
-    this.userClassName = document.createElement('h2')
-    this.userClassName.innerText = userClassName
-
-    this.userDataBox.appendChild(this.userName)
-    this.userDataBox.appendChild(this.userClassName)
-
-    this.userDataBoxWrapper = document.createElement('div')
-    this.userDataBoxWrapper.id = UserDataView.userDataBoxWrapperID
+    this.userDataBox = createDivWithId(UserDataView.userDataBoxID)
+    this.userName = createHeading('h1', userName)
+    this.userClassName = createHeading('h2', userClassName)
+    this.userDataBox.append(this.userName, this.userClassName)
+    this.userDataBoxWrapper = createDivWithId(UserDataView.userDataBoxWrapperID)
     this.userDataBoxWrapper.appendChild(this.userDataBox)
   }
 

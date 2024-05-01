@@ -1,17 +1,21 @@
 import { type ClassResourceRepresentation } from '../../apis/game/Types'
-import {
-  RESOURCE_ICON_SCALE,
-  RESOURCE_ICON_WIDTH,
-  SPACE_PRESS_ACTION_PREFIX,
-  getResourceMapping, RESOURCE_ICON_HEIGHT,
-} from '../GameUtils'
+import { getResourceMapping, SPACE_PRESS_ACTION_PREFIX } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
+import { OutcomingWorkshopMessageType, sendWorkshopMessage } from '../webSocketMessage/chat/WorkshopMessageHandler'
 import {
-  OutcomingWorkshopMessageType,
-  sendWorkshopMessage,
-} from '../webSocketMessage/chat/WorkshopMessageHandler'
+  createButtonWithId,
+  createButtonWithInnerText,
+  createCrop,
+  createDivWithId,
+  createHeading,
+  createIconWithAll,
+  createIElement,
+  createIElementWithColor,
+  createSpan,
+  getClassName,
+} from './ViewUtils'
 
 export class WorkshopView {
   public static readonly workshopBoxWrapperID = 'workshopBoxWrapper'
@@ -28,9 +32,7 @@ export class WorkshopView {
   public static readonly workshopBoxContentBoxCostBoxID = 'workshopBoxContentBoxCostBox'
   public static readonly workshopBoxContentBoxResultBoxID = 'workshopBoxContentBoxResultBox'
   public static readonly workshopBoxContentBoxButtonsBoxID = 'workshopBoxContentBoxButtonsBox'
-  public static readonly workshopBoxCostBoxID = 'workshopBoxCostBox'
-  public static readonly workshopBoxSubmitButtonExtraWrapperID =
-    'workshopBoxSubmitButtonExtraWrapper'
+  public static readonly workshopBoxSubmitButtonExtraWrapperID = 'workshopBoxSubmitButtonExtraWrapper'
   public static readonly workshopBoxSubmitButtonWrapperID = 'workshopBoxSubmitButtonWrapper'
   public static readonly workshopBoxSubmitButtonID = 'workshopBoxSubmitButton'
   public static readonly workshopBoxCloseButtonID = 'workshopBoxCloseButton'
@@ -62,62 +64,31 @@ export class WorkshopView {
       }
     }
 
-    const itemIcon = this.cropper.crop(
-      RESOURCE_ICON_WIDTH,
-      RESOURCE_ICON_HEIGHT,
-      RESOURCE_ICON_SCALE,
-      this.resourceURL,
-      this.resourceRepresentation.length,
-      getResourceMapping(this.resourceRepresentation)(resourceName),
-      false,
-    )
-    const itemIconReversed = this.cropper.crop(
-      RESOURCE_ICON_WIDTH,
-      RESOURCE_ICON_HEIGHT,
-      RESOURCE_ICON_SCALE,
-      this.resourceURL,
-      this.resourceRepresentation.length,
-      getResourceMapping(this.resourceRepresentation)(resourceName),
-      true,
-    )
+    const itemIcon = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resourceName)
+    const itemIconReversed = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resourceName)
 
     // Wrapper
-    this.workshopBoxWrapper = document.createElement('div')
-    this.workshopBoxWrapper.id = WorkshopView.workshopBoxWrapperID
+    this.workshopBoxWrapper = createDivWithId(WorkshopView.workshopBoxWrapperID)
 
     // Container
-    const workshopBox = document.createElement('div')
-    workshopBox.id = WorkshopView.workshopBoxID
+    const workshopBox = createDivWithId(WorkshopView.workshopBoxID)
 
     // Header
-    const workshopBoxHeaderBoxExtraWrapper = document.createElement('div')
-    workshopBoxHeaderBoxExtraWrapper.id = WorkshopView.workshopBoxHeaderBoxExtraWrapperID
-
-    const workshopBoxHeaderBoxWrapper = document.createElement('div')
-    workshopBoxHeaderBoxWrapper.id = WorkshopView.workshopBoxHeaderBoxWrapperID
-
-    const workshopBoxHeaderBox = document.createElement('div')
-    workshopBoxHeaderBox.id = WorkshopView.workshopBoxHeaderBoxID
-    const workshopTitleHeader = document.createElement('h1')
-    workshopTitleHeader.innerText = 'WARSZTAT'
-
+    const workshopBoxHeaderBoxExtraWrapper = createDivWithId(WorkshopView.workshopBoxHeaderBoxExtraWrapperID)
+    const workshopBoxHeaderBoxWrapper = createDivWithId(WorkshopView.workshopBoxHeaderBoxWrapperID)
+    const workshopBoxHeaderBox = createDivWithId(WorkshopView.workshopBoxHeaderBoxID)
+    const workshopTitleHeader = createHeading('h1', 'WARSZTAT')
     const workshopTitleClassWrapper = document.createElement('div')
 
-    const workshopTitleClass = document.createElement('h2')
-    workshopTitleClass.innerText = `${this.scene.status.className.toUpperCase()}A`
+    const workshopTitleClass = createHeading('h2', `${this.scene.status.className.toUpperCase()}A`)
     const leftIcon = itemIconReversed.cloneNode(true)
     const rightIcon = itemIcon.cloneNode(true)
 
-    workshopTitleClassWrapper.appendChild(leftIcon)
-    workshopTitleClassWrapper.appendChild(workshopTitleClass)
-    workshopTitleClassWrapper.appendChild(rightIcon)
-
-    workshopBoxHeaderBox.appendChild(workshopTitleHeader)
-    workshopBoxHeaderBox.appendChild(workshopTitleClassWrapper)
+    workshopTitleClassWrapper.append(leftIcon, workshopTitleClass, rightIcon)
+    workshopBoxHeaderBox.append(workshopTitleHeader, workshopTitleClassWrapper)
 
     // Close button
-    const workshopBoxCloseButton = document.createElement('button')
-    workshopBoxCloseButton.id = WorkshopView.workshopBoxCloseButtonID
+    const workshopBoxCloseButton = createButtonWithId(WorkshopView.workshopBoxCloseButtonID)
     workshopBoxCloseButton.addEventListener('click', () => {
       this.close()
       this.scene.workshopView = null
@@ -129,25 +100,18 @@ export class WorkshopView {
       this.scene.informationActionPopup.show()
       this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.WORK)
     })
-    const XIcon = document.createElement('i')
-    XIcon.className = 'fa fa-times'
-    XIcon.ariaHidden = 'true'
+    const XIcon = createIElementWithColor('times', 'black')
     XIcon.style.color = 'black'
     workshopBoxCloseButton.appendChild(XIcon)
 
-    workshopBoxHeaderBoxWrapper.appendChild(workshopBoxCloseButton)
-    workshopBoxHeaderBoxWrapper.appendChild(workshopBoxHeaderBox)
+    workshopBoxHeaderBoxWrapper.append(workshopBoxCloseButton, workshopBoxHeaderBox)
     workshopBoxHeaderBoxExtraWrapper.appendChild(workshopBoxHeaderBoxWrapper)
 
     // Math
-    const workshopBoxMathBoxWrapper = document.createElement('div')
-    workshopBoxMathBoxWrapper.id = WorkshopView.workshopBoxMathBoxWrapperID
+    const workshopBoxMathBoxWrapper = createDivWithId(WorkshopView.workshopBoxMathBoxWrapperID)
+    const workshopBoxMathBox = createDivWithId(WorkshopView.workshopBoxMathBoxID)
 
-    const workshopBoxMathBox = document.createElement('div')
-    workshopBoxMathBox.id = WorkshopView.workshopBoxMathBoxID
-
-    const resourceAmountElement = document.createElement('span')
-    resourceAmountElement.innerText = `${this.scene.playerWorkshopMaxProduction}`
+    const resourceAmountElement = createSpan(`${this.scene.workshopMaxProduction}`)
     const resourceIconElement = this.cropper.crop(
       20,
       20,
@@ -157,106 +121,63 @@ export class WorkshopView {
       getResourceMapping(this.resourceRepresentation)(resourceName),
       false,
     )
-    const equalsElement = document.createElement('span')
-    equalsElement.innerText = ' = '
+    const equalsElement = createSpan(' = ')
+    const moneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '20px')
+    const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+    const moneySpan = createSpan(`${this.scene.workshopUnitPrice * this.scene.workshopMaxProduction}`)
+    const timeSpan = createSpan(`+ ${1}`)
 
-    const moneyIcon = document.createElement('img')
-    moneyIcon.src = '/assets/coinCustomIcon.png'
-    moneyIcon.style.width = '20px'
-    moneyIcon.style.height = '20px'
-    const timeIcon = document.createElement('img')
-    timeIcon.src = '/assets/timeCustomIcon.png'
-    timeIcon.style.width = '20px'
-    timeIcon.style.height = '20px'
-    const moneySpan = document.createElement('span')
-    moneySpan.innerText = `${
-      this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction
-    }`
-    const timeSpan = document.createElement('span')
-    timeSpan.innerText = `+ ${1}`
-
-    workshopBoxMathBox.appendChild(resourceAmountElement)
-    workshopBoxMathBox.appendChild(resourceIconElement)
-    workshopBoxMathBox.appendChild(equalsElement)
-    workshopBoxMathBox.appendChild(moneySpan)
-    workshopBoxMathBox.appendChild(moneyIcon)
-    workshopBoxMathBox.appendChild(timeSpan)
-    workshopBoxMathBox.appendChild(timeIcon)
+    workshopBoxMathBox.append(
+      resourceAmountElement, resourceIconElement, equalsElement,
+      moneySpan, moneyIcon, timeSpan, timeIcon,
+    )
 
     workshopBoxMathBoxWrapper.appendChild(workshopBoxMathBox)
 
     // Content
-    const workshopBoxContentBoxWrapper = document.createElement('div')
-    workshopBoxContentBoxWrapper.id = WorkshopView.workshopBoxContentBoxWrapperID
-
-    const workshopBoxContentBox = document.createElement('div')
-    workshopBoxContentBox.id = WorkshopView.workshopBoxContentBoxID
-
+    const workshopBoxContentBoxWrapper = createDivWithId(WorkshopView.workshopBoxContentBoxWrapperID)
+    const workshopBoxContentBox = createDivWithId(WorkshopView.workshopBoxContentBoxID)
     // Left
-    const workshopBoxContentBoxLeft = document.createElement('div')
-    workshopBoxContentBoxLeft.id = WorkshopView.workshopBoxContentBoxLeftID
-
+    const workshopBoxContentBoxLeft = createDivWithId(WorkshopView.workshopBoxContentBoxLeftID)
     // Left - CostBox
-    const workshopBoxContentBoxCostBox = document.createElement('div')
-    workshopBoxContentBoxCostBox.id = WorkshopView.workshopBoxContentBoxCostBoxID
+    const workshopBoxContentBoxCostBox = createDivWithId(WorkshopView.workshopBoxContentBoxCostBoxID)
 
     const pMoneyIconWrapper = document.createElement('div')
-    const pMoneyIcon = document.createElement('img')
-    pMoneyIcon.src = '/assets/coinCustomIcon.png'
-    pMoneyIcon.style.width = '38px'
-    pMoneyIcon.style.height = '38px'
+    const pMoneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '38px')
     pMoneyIconWrapper.appendChild(pMoneyIcon)
 
     const pMoneyInputWrapper = document.createElement('div')
-    const pMoneyInput = document.createElement('h4')
-    pMoneyInput.innerText = '0'
+    const pMoneyInput = createHeading('h4', '0')
     pMoneyInputWrapper.appendChild(pMoneyInput)
     const pMoney = document.createElement('div')
-    pMoney.appendChild(pMoneyInputWrapper)
-    pMoney.appendChild(pMoneyIconWrapper)
+    pMoney.append(pMoneyInputWrapper, pMoneyIconWrapper)
 
-    this.pTime = document.createElement('div')
-    this.pTime.id = 'pTime'
+    this.pTime = createDivWithId('pTime')
 
-    const costHeader = document.createElement('h2')
-    costHeader.innerText = `Koszt`
+    const costHeader = createHeading('h2', 'Koszt')
     const costResources = document.createElement('div')
-    costResources.appendChild(pMoney)
-    costResources.appendChild(this.pTime)
+    costResources.append(pMoney, this.pTime)
 
-    workshopBoxContentBoxCostBox.appendChild(costHeader)
-    workshopBoxContentBoxCostBox.appendChild(costResources)
+    workshopBoxContentBoxCostBox.append(costHeader, costResources)
 
     // Left - ResultBox
-    const workshopBoxContentBoxResultBox = document.createElement('div')
-    workshopBoxContentBoxResultBox.id = WorkshopView.workshopBoxContentBoxResultBoxID
+    const workshopBoxContentBoxResultBox = createDivWithId(WorkshopView.workshopBoxContentBoxResultBoxID)
 
-    const pWantLabel = document.createElement('h1')
-    pWantLabel.innerText = `Wyprodukujesz`
-
+    const pWantLabel = createHeading('h1', 'Wyprodukujesz')
     const pWantInputWrapper = document.createElement('div')
-    const pWantInput = document.createElement('h2')
-    pWantInput.innerText = '0'
+    const pWantInput = createHeading('h2', '0')
     pWantInputWrapper.appendChild(pWantInput)
 
-    workshopBoxContentBoxResultBox.appendChild(pWantLabel)
-
     const inputWrapper = document.createElement('div')
-    inputWrapper.appendChild(itemIcon)
-    inputWrapper.appendChild(pWantInputWrapper)
-    workshopBoxContentBoxResultBox.appendChild(inputWrapper)
 
-    workshopBoxContentBoxLeft.appendChild(workshopBoxContentBoxCostBox)
-    workshopBoxContentBoxLeft.appendChild(workshopBoxContentBoxResultBox)
+    inputWrapper.append(itemIcon, pWantInputWrapper)
+    workshopBoxContentBoxResultBox.append(pWantLabel, inputWrapper)
+    workshopBoxContentBoxLeft.append(workshopBoxContentBoxCostBox, workshopBoxContentBoxResultBox)
 
     // Right
-    const workshopBoxContentBoxRight = document.createElement('div')
-    workshopBoxContentBoxRight.id = WorkshopView.workshopBoxContentBoxRightID
+    const workshopBoxContentBoxRight = createDivWithId(WorkshopView.workshopBoxContentBoxRightID)
 
     this.workshopBoxPlusButton = document.createElement('button')
-    const iconPlus = document.createElement('i')
-    iconPlus.className = 'fa fa-plus'
-    iconPlus.ariaHidden = 'true'
 
     this.workshopBoxPlusButton.addEventListener('click', () => {
       this.enableMinusButton()
@@ -264,18 +185,15 @@ export class WorkshopView {
 
       const costTime = this.pTime.children.length + 1
       const costMoney =
-        costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-      const resource = costTime * this.scene.playerWorkshopMaxProduction
+        costTime * (this.scene.workshopUnitPrice * this.scene.workshopMaxProduction)
+      const resource = costTime * this.scene.workshopMaxProduction
 
       pWantInput.innerText = `${resource}`
       pMoneyInput.innerText = `${costMoney}`
 
       const pTimeIconExtraWrapper = document.createElement('div')
       const pTimeIconWrapper = document.createElement('div')
-      const pTimeIcon = document.createElement('img')
-      pTimeIcon.src = '/assets/timeCustomIcon.png'
-      pTimeIcon.style.width = '25px'
-      pTimeIcon.style.height = '25px'
+      const pTimeIcon = createIconWithAll('/assets/timeCustomIcon.png', '25px')
       pTimeIconWrapper.appendChild(pTimeIcon)
       pTimeIconExtraWrapper.appendChild(pTimeIconWrapper)
       this.pTime.appendChild(pTimeIconExtraWrapper)
@@ -287,7 +205,7 @@ export class WorkshopView {
 
       const costTimeMore = costTime + 1
       const costMoneyMore =
-        costTimeMore * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
+        costTimeMore * (this.scene.workshopUnitPrice * this.scene.workshopMaxProduction)
       if (
         costMoneyMore > this.scene.equipment!.money ||
         costTimeMore > this.scene.timeView!.getAvailableTokens() ||
@@ -299,20 +217,16 @@ export class WorkshopView {
       this.enablePlusButton()
     })
 
-    this.workshopBoxPlusButton.appendChild(iconPlus)
+    this.workshopBoxPlusButton.appendChild(createIElement('plus'))
 
     this.workshopBoxMinusButton = document.createElement('button')
-    const iconMinus = document.createElement('i')
-    iconMinus.className = 'fa fa-minus'
-    iconMinus.ariaHidden = 'true'
-
     this.workshopBoxMinusButton.addEventListener('click', () => {
       this.enablePlusButton()
 
       const costTime = this.pTime.children.length - 1
       const costMoney =
-        costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-      const resource = costTime * this.scene.playerWorkshopMaxProduction
+        costTime * (this.scene.workshopUnitPrice * this.scene.workshopMaxProduction)
+      const resource = costTime * this.scene.workshopMaxProduction
 
       pWantInput.innerText = `${resource}`
       pMoneyInput.innerText = `${costMoney}`
@@ -334,48 +248,24 @@ export class WorkshopView {
       }
     })
 
-    this.workshopBoxMinusButton.appendChild(iconMinus)
+    this.workshopBoxMinusButton.appendChild(createIElement('minus'))
 
-    const buttons = document.createElement('div')
-    buttons.id = WorkshopView.workshopBoxContentBoxButtonsBoxID
-    buttons.appendChild(this.workshopBoxPlusButton)
-    buttons.appendChild(this.workshopBoxMinusButton)
-
+    const buttons = createDivWithId(WorkshopView.workshopBoxContentBoxButtonsBoxID)
+    buttons.append(this.workshopBoxPlusButton, this.workshopBoxMinusButton)
     workshopBoxContentBoxRight.appendChild(buttons)
-
-    workshopBoxContentBox.appendChild(workshopBoxContentBoxLeft)
-    workshopBoxContentBox.appendChild(document.createElement('hr'))
-    workshopBoxContentBox.appendChild(workshopBoxContentBoxRight)
-
+    workshopBoxContentBox.append(workshopBoxContentBoxLeft, document.createElement('hr'), workshopBoxContentBoxRight)
     workshopBoxContentBoxWrapper.appendChild(workshopBoxContentBox)
 
     // Submit button
-    this.workshopBoxSubmitButtonExtraWrapper = document.createElement('div')
-    this.workshopBoxSubmitButtonExtraWrapper.id = WorkshopView.workshopBoxSubmitButtonExtraWrapperID
+    this.workshopBoxSubmitButtonExtraWrapper = createDivWithId(WorkshopView.workshopBoxSubmitButtonExtraWrapperID)
+    this.workshopBoxSubmitButtonWrapper = createDivWithId(WorkshopView.workshopBoxSubmitButtonWrapperID)
 
-    this.workshopBoxSubmitButtonWrapper = document.createElement('div')
-    this.workshopBoxSubmitButtonWrapper.id = WorkshopView.workshopBoxSubmitButtonWrapperID
-
-    this.workshopBoxSubmitButton = document.createElement('button')
-    this.workshopBoxSubmitButton.id = WorkshopView.workshopBoxSubmitButtonID
-    this.workshopBoxSubmitButton.innerText = 'Produkuj'
+    this.workshopBoxSubmitButton = createButtonWithInnerText(WorkshopView.workshopBoxSubmitButtonID, 'Produkuj')
     this.workshopBoxSubmitButton.addEventListener('click', () => {
       this.disableSubmitBtn()
-
-      this.workshopBoxSubmitButtonExtraWrapper.className =
-        this.workshopBoxSubmitButtonExtraWrapper.className ===
-        'workshopBoxSubmitButtonExtraWrapperEnabledActive'
-          ? 'workshopBoxSubmitButtonExtraWrapperEnabled'
-          : 'workshopBoxSubmitButtonExtraWrapperEnabledActive'
-      this.workshopBoxSubmitButtonWrapper.className =
-        this.workshopBoxSubmitButtonWrapper.className ===
-        'workshopBoxSubmitButtonWrapperEnabledActive'
-          ? 'workshopBoxSubmitButtonWrapperEnabled'
-          : 'workshopBoxSubmitButtonWrapperEnabledActive'
-      this.workshopBoxSubmitButton.className =
-        this.workshopBoxSubmitButtonWrapper.className === 'workshopBoxSubmitButtonEnabledActive'
-          ? 'workshopBoxSubmitButtonEnabled'
-          : 'workshopBoxSubmitButtonEnabledActive'
+      this.workshopBoxSubmitButtonExtraWrapper.className = getClassName(this.workshopBoxSubmitButtonExtraWrapper, WorkshopView.workshopBoxSubmitButtonExtraWrapperID)
+      this.workshopBoxSubmitButtonWrapper.className = getClassName(this.workshopBoxSubmitButtonWrapper, WorkshopView.workshopBoxSubmitButtonWrapperID)
+      this.workshopBoxSubmitButton.className = getClassName(this.workshopBoxSubmitButton, WorkshopView.workshopBoxSubmitButtonID)
 
       sendWorkshopMessage(scene.chatWs, {
         type: OutcomingWorkshopMessageType.WorkshopStart,
@@ -384,23 +274,16 @@ export class WorkshopView {
     })
 
     this.workshopBoxSubmitButtonWrapper.appendChild(this.workshopBoxSubmitButton)
-
     this.workshopBoxSubmitButtonExtraWrapper.appendChild(this.workshopBoxSubmitButtonWrapper)
 
-    workshopBox.appendChild(workshopBoxHeaderBoxExtraWrapper)
-    workshopBox.appendChild(workshopBoxMathBoxWrapper)
-    workshopBox.appendChild(workshopBoxContentBoxWrapper)
-    workshopBox.appendChild(this.workshopBoxSubmitButtonExtraWrapper)
+    workshopBox.append(workshopBoxHeaderBoxExtraWrapper, workshopBoxMathBoxWrapper,
+      workshopBoxContentBoxWrapper, this.workshopBoxSubmitButtonExtraWrapper)
 
     this.workshopBoxWrapper.appendChild(workshopBox)
 
     const costTime = 1
-    const costMoney =
-      costTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-    if (
-      costMoney > this.scene.equipment!.money ||
-      costTime > this.scene.timeView!.getAvailableTokens()
-    ) {
+    const costMoney = costTime * (this.scene.workshopUnitPrice * this.scene.workshopMaxProduction)
+    if (costMoney > this.scene.equipment!.money || costTime > this.scene.timeView!.getAvailableTokens()) {
       this.disablePlusButton()
     } else {
       this.enablePlusButton()
@@ -413,13 +296,9 @@ export class WorkshopView {
     const currentCostTime = this.pTime.children.length
 
     const nextCostTime = currentCostTime + 1
-    const nextCostMoney =
-      nextCostTime * (this.scene.playerWorkshopUnitPrice * this.scene.playerWorkshopMaxProduction)
-    if (
-      nextCostMoney > this.scene.equipment!.money ||
-      nextCostTime > this.scene.timeView!.getAvailableTokens() ||
-      nextCostTime === 11
-    ) {
+    const nextCostMoney = nextCostTime * (this.scene.workshopUnitPrice * this.scene.workshopMaxProduction)
+    if (nextCostMoney > this.scene.equipment!.money ||
+      nextCostTime > this.scene.timeView!.getAvailableTokens() || nextCostTime === 11) {
       this.disablePlusButton()
       return
     }
@@ -433,38 +312,36 @@ export class WorkshopView {
 
   private enablePlusButton(): void {
     this.workshopBoxPlusButton.disabled = false
-    this.workshopBoxPlusButton.className = 'workshopBoxContentBoxButtonsBoxButtonEnabled'
+    this.workshopBoxPlusButton.className = WorkshopView.workshopBoxContentBoxButtonsBoxID + 'Enabled'
   }
 
   private disablePlusButton(): void {
     this.workshopBoxPlusButton.disabled = true
-    this.workshopBoxPlusButton.className = 'workshopBoxContentBoxButtonsBoxButtonDisabled'
+    this.workshopBoxPlusButton.className = WorkshopView.workshopBoxContentBoxButtonsBoxID + 'Disabled'
   }
 
   private enableMinusButton(): void {
     this.workshopBoxMinusButton.disabled = false
-    this.workshopBoxMinusButton.className = 'workshopBoxContentBoxButtonsBoxButtonEnabled'
+    this.workshopBoxMinusButton.className = WorkshopView.workshopBoxContentBoxButtonsBoxID + 'Enabled'
   }
 
   private disableMinusButton(): void {
     this.workshopBoxMinusButton.disabled = true
-    this.workshopBoxMinusButton.className = 'workshopBoxContentBoxButtonsBoxButtonDisabled'
+    this.workshopBoxMinusButton.className = WorkshopView.workshopBoxContentBoxButtonsBoxID + 'Disabled'
   }
 
   private disableSubmitBtn(): void {
     this.workshopBoxSubmitButton.disabled = true
-    this.workshopBoxSubmitButtonExtraWrapper.className =
-      'workshopBoxSubmitButtonExtraWrapperDisabled'
-    this.workshopBoxSubmitButtonWrapper.className = 'workshopBoxSubmitButtonWrapperDisabled'
-    this.workshopBoxSubmitButton.className = 'workshopBoxSubmitButtonDisabled'
+    this.workshopBoxSubmitButton.className = WorkshopView.workshopBoxSubmitButtonID + 'Disabled'
+    this.workshopBoxSubmitButtonExtraWrapper.className = WorkshopView.workshopBoxSubmitButtonExtraWrapperID +'Disabled'
+    this.workshopBoxSubmitButtonWrapper.className = WorkshopView.workshopBoxSubmitButtonWrapperID +'Disabled'
   }
 
   private enableSubmitBtn(): void {
     this.workshopBoxSubmitButton.disabled = false
-    this.workshopBoxSubmitButtonExtraWrapper.className =
-      'workshopBoxSubmitButtonExtraWrapperEnabled'
-    this.workshopBoxSubmitButtonWrapper.className = 'workshopBoxSubmitButtonWrapperEnabled'
-    this.workshopBoxSubmitButton.className = 'workshopBoxSubmitButtonEnabled'
+    this.workshopBoxSubmitButton.className = WorkshopView.workshopBoxSubmitButtonID + 'Enabled'
+    this.workshopBoxSubmitButtonExtraWrapper.className = WorkshopView.workshopBoxSubmitButtonExtraWrapperID +'Enabled'
+    this.workshopBoxSubmitButtonWrapper.className = WorkshopView.workshopBoxSubmitButtonWrapperID +'Enabled'
   }
 
   public show(): void {

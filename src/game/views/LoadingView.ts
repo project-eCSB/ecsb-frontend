@@ -1,3 +1,5 @@
+import { createDivWithId } from './ViewUtils'
+
 export class LoadingView {
   public static readonly loadingBoxID = 'loadingBox'
   public static readonly loadingBoxSpinnerContainerID = 'loadingBoxSpinnerContainer'
@@ -6,15 +8,9 @@ export class LoadingView {
   private readonly loadingBox: HTMLDivElement
 
   constructor() {
-    this.loadingBox = document.createElement('div')
-    this.loadingBox.id = LoadingView.loadingBoxID
-
-    const spinnerContainer = document.createElement('div')
-    spinnerContainer.id = LoadingView.loadingBoxSpinnerContainerID
-
-    const spinner = document.createElement('div')
-    spinner.id = LoadingView.loadingBoxSpinnerID
-
+    this.loadingBox = createDivWithId(LoadingView.loadingBoxID)
+    const spinnerContainer = createDivWithId(LoadingView.loadingBoxSpinnerContainerID)
+    const spinner = createDivWithId(LoadingView.loadingBoxSpinnerID)
     spinnerContainer.appendChild(spinner)
     this.loadingBox.appendChild(spinnerContainer)
   }

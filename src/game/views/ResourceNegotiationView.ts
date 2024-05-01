@@ -1,64 +1,56 @@
-import { type Travel, type ClassResourceRepresentation, type GameResourceDto } from '../../apis/game/Types'
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import { type ClassResourceRepresentation, type GameResourceDto, type Travel } from '../../apis/game/Types'
+import { getResourceMapping } from '../GameUtils'
 import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
-import {
-  sendCoopMessage,
-  type CoopBid,
-  OutcomingCoopMessageType,
-} from '../webSocketMessage/chat/CoopMessageHandler'
+import { type CoopBid, OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
 import { ResourceNegotiationSuccessView } from './ResourceNegotiationSuccessView'
+import {
+  createButtonWithId,
+  createButtonWithInnerText,
+  createCrop,
+  createDivWithClassName,
+  createDivWithId,
+  createHeading,
+  createHeadingWithId,
+  createIconWithAll, createIconWithWidth,
+  createIElementWithColor,
+  createSpan,
+  getClassName,
+  getTimeContainer,
+} from './ViewUtils'
 
 export class ResourceNegotiationView {
   public static readonly resourceNegotiationBoxWrapperID = 'resourceNegotiationBoxWrapper'
   public static readonly resourceNegotiationBoxID = 'resourceNegotiationBox'
-  public static readonly resourceNegotiationHeaderBoxExtraWrapperID =
-    'resourceNegotiationHeaderBoxExtraWrapper'
-  public static readonly resourceNegotiationHeaderBoxWrapperID =
-    'resourceNegotiationHeaderBoxWrapper'
+  public static readonly resourceNegotiationHeaderBoxExtraWrapperID = 'resourceNegotiationHeaderBoxExtraWrapper'
+  public static readonly resourceNegotiationHeaderBoxWrapperID = 'resourceNegotiationHeaderBoxWrapper'
   public static readonly resourceNegotiationHeaderBoxID = 'resourceNegotiationHeaderBox'
   public static readonly resourceNegotiationCloseButtonID = 'resourceNegotiationCloseButton'
   public static readonly resourceNegotiationResultBoxID = 'resourceNegotiationResultBox'
-  public static readonly resourceNegotiationResultCostBoxWrapperID =
-    'resourceNegotiationResultCostBoxWrapper'
+  public static readonly resourceNegotiationResultCostBoxWrapperID = 'resourceNegotiationResultCostBoxWrapper'
   public static readonly resourceNegotiationResultCostBoxID = 'resourceNegotiationResultCostBox'
-  public static readonly resourceNegotiationResultProfitBoxWrapperID =
-    'resourceNegotiationResultProfitBoxWrapper'
+  public static readonly resourceNegotiationResultProfitBoxWrapperID = 'resourceNegotiationResultProfitBoxWrapper'
   public static readonly resourceNegotiationResultProfitBoxID = 'resourceNegotiationResultProfitBox'
-  public static readonly resourceNegotiationPlayerTurnBoxWrapperID =
-    'resourceNegotiationPlayerTurnBoxWrapper'
+  public static readonly resourceNegotiationPlayerTurnBoxWrapperID = 'resourceNegotiationPlayerTurnBoxWrapper'
   public static readonly resourceNegotiationPlayerTurnBoxID = 'resourceNegotiationPlayerTurnBox'
-  public static readonly resourceNegotiationContentBoxExtraWrapperID =
-    'resourceNegotiationContentBoxExtraWrapper'
-  public static readonly resourceNegotiationContentBoxWrapperID =
-    'resourceNegotiationContentBoxWrapper'
+  public static readonly resourceNegotiationContentBoxExtraWrapperID = 'resourceNegotiationContentBoxExtraWrapper'
+  public static readonly resourceNegotiationContentBoxWrapperID = 'resourceNegotiationContentBoxWrapper'
   public static readonly resourceNegotiationContentBoxID = 'resourceNegotiationContentBox'
-  public static readonly resourceNegotiationContentBoxResourcesID =
-    'resourceNegotiationContentBoxResources'
-  public static readonly resourceNegotiationContentBoxPlayerTimeID =
-    'resourceNegotiationContentBoxPlayerTime'
-  public static readonly resourceNegotiationContentBoxProfitID =
-    'resourceNegotiationContentBoxProfit'
-  public static readonly resourceNegotiationPlayerNameWrapperID =
-    'resourceNegotiationPlayerNameWrapper'
+  public static readonly resourceNegotiationContentBoxResourcesID = 'resourceNegotiationContentBoxResources'
+  public static readonly resourceNegotiationContentBoxPlayerTimeID = 'resourceNegotiationContentBoxPlayerTime'
+  public static readonly resourceNegotiationContentBoxProfitID = 'resourceNegotiationContentBoxProfit'
+  public static readonly resourceNegotiationPlayerNameWrapperID = 'resourceNegotiationPlayerNameWrapper'
   public static readonly resourceNegotiationPlayerNameID = 'resourceNegotiationPlayerName'
-  public static readonly resourceNegotiationPartnerNameWrapperID =
-    'resourceNegotiationPartnerNameWrapper'
+  public static readonly resourceNegotiationPartnerNameWrapperID = 'resourceNegotiationPartnerNameWrapper'
   public static readonly resourceNegotiationPartnerNameID = 'resourceNegotiationPartnerName'
   public static readonly resourceNegotiationButtonsID = 'resourceNegotiationButtons'
-  public static readonly resourceNegotiationButtonsProposeButtonExtraWrapperID =
-    'resourceNegotiationButtonsProposeButtonExtraWrapper'
-  public static readonly resourceNegotiationButtonsProposeButtonWrapperID =
-    'resourceNegotiationButtonsProposeButtonWrapper'
-  public static readonly resourceNegotiationButtonsProposeButtonID =
-    'resourceNegotiationButtonsProposeButton'
-  public static readonly resourceNegotiationButtonsAcceptButtonExtraWrapperID =
-    'resourceNegotiationButtonsAcceptButtonExtraWrapper'
-  public static readonly resourceNegotiationButtonsAcceptButtonWrapperID =
-    'resourceNegotiationButtonsAcceptButtonWrapper'
-  public static readonly resourceNegotiationButtonsAcceptButtonID =
-    'resourceNegotiationButtonsAcceptButton'
+  public static readonly resourceNegotiationButtonsProposeButtonExtraWrapperID = 'resourceNegotiationButtonsProposeButtonExtraWrapper'
+  public static readonly resourceNegotiationButtonsProposeButtonWrapperID = 'resourceNegotiationButtonsProposeButtonWrapper'
+  public static readonly resourceNegotiationButtonsProposeButtonID = 'resourceNegotiationButtonsProposeButton'
+  public static readonly resourceNegotiationButtonsAcceptButtonExtraWrapperID = 'resourceNegotiationButtonsAcceptButtonExtraWrapper'
+  public static readonly resourceNegotiationButtonsAcceptButtonWrapperID = 'resourceNegotiationButtonsAcceptButtonWrapper'
+  public static readonly resourceNegotiationButtonsAcceptButtonID = 'resourceNegotiationButtonsAcceptButton'
 
   // CONTAINER
   private readonly resourceNegotiationBoxWrapper: HTMLDivElement
@@ -166,71 +158,40 @@ export class ResourceNegotiationView {
     }
 
     // Wrapper
-    this.resourceNegotiationBoxWrapper = document.createElement('div')
-    this.resourceNegotiationBoxWrapper.id = ResourceNegotiationView.resourceNegotiationBoxWrapperID
+    this.resourceNegotiationBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationBoxWrapperID)
     // Container
-    this.resourceNegotiationBox = document.createElement('div')
-    this.resourceNegotiationBox.id = ResourceNegotiationView.resourceNegotiationBoxID
+    this.resourceNegotiationBox = createDivWithId(ResourceNegotiationView.resourceNegotiationBoxID)
     // Header
-    this.resourceNegotiationHeaderBoxExtraWrapper = document.createElement('div')
-    this.resourceNegotiationHeaderBoxExtraWrapper.id =
-      ResourceNegotiationView.resourceNegotiationHeaderBoxExtraWrapperID
-    this.resourceNegotiationHeaderBoxWrapper = document.createElement('div')
-    this.resourceNegotiationHeaderBoxWrapper.id =
-      ResourceNegotiationView.resourceNegotiationHeaderBoxWrapperID
-    this.resourceNegotiationHeaderBox = document.createElement('div')
-    this.resourceNegotiationHeaderBox.id = ResourceNegotiationView.resourceNegotiationHeaderBoxID
+    this.resourceNegotiationHeaderBoxExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationHeaderBoxExtraWrapperID)
+    this.resourceNegotiationHeaderBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationHeaderBoxWrapperID)
+    this.resourceNegotiationHeaderBox = createDivWithId(ResourceNegotiationView.resourceNegotiationHeaderBoxID)
 
-    const resourceNegotiationHeaderTitle = document.createElement('h1')
-    resourceNegotiationHeaderTitle.innerText = 'WYPRAWA'
-    const resourceNegotiationHeaderSubtitle = document.createElement('h2')
-    resourceNegotiationHeaderSubtitle.innerText = 'PODZIAŁ WKŁADU i ZYSKU'
-
-    this.resourceNegotiationCloseButton = document.createElement('button')
-    this.resourceNegotiationCloseButton.id =
-      ResourceNegotiationView.resourceNegotiationCloseButtonID
+    const resourceNegotiationHeaderTitle = createHeading('h1', 'WYPRAWA')
+    const resourceNegotiationHeaderSubtitle = createHeading('h2', 'PODZIAŁ WKŁADU i ZYSKU')
+    this.resourceNegotiationCloseButton = createButtonWithId(ResourceNegotiationView.resourceNegotiationCloseButtonID)
     this.resourceNegotiationCloseButton.addEventListener('click', () => {
       sendCoopMessage(this.scene.chatWs, {
         type: OutcomingCoopMessageType.CancelNegotiation,
-        message: 'empty for now'
+        message: 'empty for now',
       })
       this.close(false)
     })
-    const XIcon = document.createElement('i')
-    XIcon.className = 'fa fa-times'
-    XIcon.ariaHidden = 'true'
-    XIcon.style.color = 'black'
+    const XIcon = createIElementWithColor('times', 'black')
     this.resourceNegotiationCloseButton.appendChild(XIcon)
-
-    this.resourceNegotiationHeaderBox.appendChild(resourceNegotiationHeaderTitle)
-    this.resourceNegotiationHeaderBox.appendChild(resourceNegotiationHeaderSubtitle)
-
-    this.resourceNegotiationHeaderBoxWrapper.appendChild(this.resourceNegotiationHeaderBox)
-    this.resourceNegotiationHeaderBoxWrapper.appendChild(this.resourceNegotiationCloseButton)
-    this.resourceNegotiationHeaderBoxExtraWrapper.appendChild(
-      this.resourceNegotiationHeaderBoxWrapper,
-    )
-
+    this.resourceNegotiationHeaderBox.append(resourceNegotiationHeaderTitle, resourceNegotiationHeaderSubtitle)
+    this.resourceNegotiationHeaderBoxWrapper.append(this.resourceNegotiationHeaderBox, this.resourceNegotiationCloseButton)
+    this.resourceNegotiationHeaderBoxExtraWrapper.appendChild(this.resourceNegotiationHeaderBoxWrapper)
     this.resourceNegotiationBox.append(this.resourceNegotiationHeaderBoxExtraWrapper)
     // Result
-    this.resourceNegotiationResultBox = document.createElement('div')
-    this.resourceNegotiationResultBox.id = ResourceNegotiationView.resourceNegotiationResultBoxID
+    this.resourceNegotiationResultBox = createDivWithId(ResourceNegotiationView.resourceNegotiationResultBoxID)
     // Result - cost
-    this.resourceNegotiationResultCostBoxWrapper = document.createElement('div')
-    this.resourceNegotiationResultCostBoxWrapper.id =
-      ResourceNegotiationView.resourceNegotiationResultCostBoxWrapperID
-    this.resourceNegotiationResultCostBox = document.createElement('div')
-    this.resourceNegotiationResultCostBox.id =
-      ResourceNegotiationView.resourceNegotiationResultCostBoxID
-
-    const resourceNegotiationResultCostBoxCostSpan = document.createElement('span')
-    resourceNegotiationResultCostBoxCostSpan.innerText = 'Koszt wyprawy:'
-    this.resourceNegotiationResultCostBox.appendChild(resourceNegotiationResultCostBoxCostSpan)
+    this.resourceNegotiationResultCostBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationResultCostBoxWrapperID)
+    this.resourceNegotiationResultCostBox = createDivWithId(ResourceNegotiationView.resourceNegotiationResultCostBoxID)
+    this.resourceNegotiationResultCostBox.appendChild(createSpan('Koszt wyprawy'))
 
     for (const resource of this.travel.value.resources) {
       const resourceContainer = document.createElement('div')
-      const resourceValue = document.createElement('span')
-      resourceValue.innerText = `${resource.value}`
+      const resourceValue = createSpan(`${resource.value}`)
       const resourceIcon = this.cropper.crop(
         20,
         20,
@@ -240,30 +201,19 @@ export class ResourceNegotiationView {
         getResourceMapping(this.resourceRepresentation)(resource.key),
         false,
       )
-      resourceContainer.appendChild(resourceValue)
-      resourceContainer.appendChild(resourceIcon)
+      resourceContainer.append(resourceValue, resourceIcon)
       this.resourceNegotiationResultCostBox.appendChild(resourceContainer)
-      const plusIcon = document.createElement('span')
-      plusIcon.innerText = ' + '
-      this.resourceNegotiationResultCostBox.appendChild(plusIcon)
+      this.resourceNegotiationResultCostBox.appendChild(createSpan(' + '))
     }
 
     const timeContainer = document.createElement('div')
     if (this.travel.value.time > 3) {
-      const timeValue = document.createElement('span')
-      timeValue.innerText = `${this.travel.value.time}`
-      const timeIcon = document.createElement('img')
-      timeIcon.src = '/assets/timeCustomIcon.png'
-      timeIcon.style.width = '20px'
-      timeIcon.style.height = '20px'
-      timeContainer.appendChild(timeValue)
-      timeContainer.appendChild(timeIcon)
+      const timeValue = createSpan(`${this.travel.value.time}`)
+      const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+      timeContainer.append(timeValue, timeIcon)
     } else {
       for (let i = 0; i < this.travel.value.time; i++) {
-        const timeIcon = document.createElement('img')
-        timeIcon.src = '/assets/timeCustomIcon.png'
-        timeIcon.style.width = '20px'
-        timeIcon.style.height = '20px'
+        const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
         timeContainer.appendChild(timeIcon)
       }
     }
@@ -272,155 +222,84 @@ export class ResourceNegotiationView {
 
     this.resourceNegotiationResultCostBoxWrapper.appendChild(this.resourceNegotiationResultCostBox)
     // Result - profit
-    this.resourceNegotiationResultProfitBoxWrapper = document.createElement('div')
-    this.resourceNegotiationResultProfitBoxWrapper.id =
-      ResourceNegotiationView.resourceNegotiationResultProfitBoxWrapperID
-    this.resourceNegotiationResultProfitBox = document.createElement('div')
-    this.resourceNegotiationResultProfitBox.id =
-      ResourceNegotiationView.resourceNegotiationResultProfitBoxID
-
-    const resourceNegotiationResultProfitBoxProfitSpan = document.createElement('span')
-    resourceNegotiationResultProfitBoxProfitSpan.innerText = `Zysk:`
-    this.resourceNegotiationResultProfitBox.appendChild(
-      resourceNegotiationResultProfitBoxProfitSpan,
-    )
+    this.resourceNegotiationResultProfitBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationResultProfitBoxWrapperID)
+    this.resourceNegotiationResultProfitBox = createDivWithId(ResourceNegotiationView.resourceNegotiationResultProfitBoxID)
+    this.resourceNegotiationResultProfitBox.appendChild(createSpan(`Zysk:`))
 
     const moneyContainer = document.createElement('div')
-    const moneyValue = document.createElement('span')
-    moneyValue.innerText = `${this.travel.value.moneyRange.from}-${this.travel.value.moneyRange.to}`
-    const moneyIcon = document.createElement('img')
-    moneyIcon.src = '/assets/coinCustomIcon.png'
-    moneyIcon.style.width = '20px'
-    moneyIcon.style.height = '20px'
-    moneyContainer.appendChild(moneyValue)
-    moneyContainer.appendChild(moneyIcon)
+    const moneyValue = createSpan(`${this.travel.value.moneyRange.from}-${this.travel.value.moneyRange.to}`)
+    const moneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '20px')
+    moneyContainer.append(moneyValue, moneyIcon)
     this.resourceNegotiationResultProfitBox.appendChild(moneyContainer)
 
-    this.resourceNegotiationResultProfitBoxWrapper.appendChild(
-      this.resourceNegotiationResultProfitBox,
-    )
+    this.resourceNegotiationResultProfitBoxWrapper.appendChild(this.resourceNegotiationResultProfitBox)
     // Result - player turn
-    this.resourceNegotiationPlayerTurnBoxWrapper = document.createElement('div')
-    this.resourceNegotiationPlayerTurnBoxWrapper.id =
-      ResourceNegotiationView.resourceNegotiationPlayerTurnBoxWrapperID
-    this.resourceNegotiationPlayerTurnBox = document.createElement('h3')
-    this.resourceNegotiationPlayerTurnBox.id =
-      ResourceNegotiationView.resourceNegotiationPlayerTurnBoxID
+    this.resourceNegotiationPlayerTurnBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationPlayerTurnBoxWrapperID)
 
+    this.resourceNegotiationPlayerTurnBox = createHeadingWithId('h3', ResourceNegotiationView.resourceNegotiationPlayerTurnBoxID, '')
     this.resourceNegotiationPlayerTurnBoxWrapper.appendChild(this.resourceNegotiationPlayerTurnBox)
 
-    this.resourceNegotiationResultBox.appendChild(this.resourceNegotiationResultCostBoxWrapper)
-    this.resourceNegotiationResultBox.appendChild(this.resourceNegotiationResultProfitBoxWrapper)
-    this.resourceNegotiationResultBox.appendChild(this.resourceNegotiationPlayerTurnBoxWrapper)
+    this.resourceNegotiationResultBox.append(
+      this.resourceNegotiationResultCostBoxWrapper,
+      this.resourceNegotiationResultProfitBoxWrapper,
+      this.resourceNegotiationPlayerTurnBoxWrapper,
+    )
 
     this.resourceNegotiationBox.append(this.resourceNegotiationResultBox)
     // Content
-    this.resourceNegotiationContentBoxExtraWrapper = document.createElement('div')
-    this.resourceNegotiationContentBoxExtraWrapper.id =
-      ResourceNegotiationView.resourceNegotiationContentBoxExtraWrapperID
-    this.resourceNegotiationContentBoxWrapper = document.createElement('div')
-    this.resourceNegotiationContentBoxWrapper.id =
-      ResourceNegotiationView.resourceNegotiationContentBoxWrapperID
-    this.resourceNegotiationContentBox = document.createElement('div')
-    this.resourceNegotiationContentBox.id = ResourceNegotiationView.resourceNegotiationContentBoxID
+    this.resourceNegotiationContentBoxExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxExtraWrapperID)
+    this.resourceNegotiationContentBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxWrapperID)
+    this.resourceNegotiationContentBox = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxID)
     // Content - Player names
-    const resourceNegotiationPlayerNameWrapper = document.createElement('div')
-    resourceNegotiationPlayerNameWrapper.id =
-      ResourceNegotiationView.resourceNegotiationPlayerNameWrapperID
-    const resourceNegotiationPlayerName = document.createElement('h3')
-    resourceNegotiationPlayerName.id = ResourceNegotiationView.resourceNegotiationPlayerNameID
-    resourceNegotiationPlayerName.innerText = `${this.scene.playerId}`
+    const resourceNegotiationPlayerNameWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationPlayerNameWrapperID)
+    const resourceNegotiationPlayerName = createHeadingWithId('h3', ResourceNegotiationView.resourceNegotiationPlayerNameID, `${this.scene.playerId}`)
     resourceNegotiationPlayerNameWrapper.appendChild(resourceNegotiationPlayerName)
-    const resourceNegotiationPartnerNameWrapper = document.createElement('div')
-    resourceNegotiationPartnerNameWrapper.id =
-      ResourceNegotiationView.resourceNegotiationPartnerNameWrapperID
-    const resourceNegotiationPartnerName = document.createElement('h3')
-    resourceNegotiationPartnerName.id = ResourceNegotiationView.resourceNegotiationPartnerNameID
-    resourceNegotiationPartnerName.innerText = `${this.partner}`
+    const resourceNegotiationPartnerNameWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationPartnerNameWrapperID)
+    const resourceNegotiationPartnerName = createHeadingWithId('h3', ResourceNegotiationView.resourceNegotiationPartnerNameID, `${this.partner}`)
     resourceNegotiationPartnerNameWrapper.appendChild(resourceNegotiationPartnerName)
 
     this.resourceNegotiationContentBoxWrapper.appendChild(this.resourceNegotiationContentBox)
-    this.resourceNegotiationContentBoxExtraWrapper.appendChild(
-      this.resourceNegotiationContentBoxWrapper,
-    )
-    this.resourceNegotiationContentBoxExtraWrapper.appendChild(resourceNegotiationPlayerNameWrapper)
-    this.resourceNegotiationContentBoxExtraWrapper.appendChild(
-      resourceNegotiationPartnerNameWrapper,
-    )
-
+    this.resourceNegotiationContentBoxExtraWrapper.append(this.resourceNegotiationContentBoxWrapper, resourceNegotiationPlayerNameWrapper, resourceNegotiationPartnerNameWrapper)
     this.resourceNegotiationBox.append(this.resourceNegotiationContentBoxExtraWrapper)
 
     // Buttons
-    this.resourceNegotiationButtons = document.createElement('div')
-    this.resourceNegotiationButtons.id = ResourceNegotiationView.resourceNegotiationButtonsID
+    this.resourceNegotiationButtons = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsID)
 
     // Buttons - propose
-    this.resourceNegotiationButtonsProposeButtonExtraWrapper = document.createElement('div')
-    this.resourceNegotiationButtonsProposeButtonExtraWrapper.id =
-      ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID
-    this.resourceNegotiationButtonsProposeButtonWrapper = document.createElement('div')
-    this.resourceNegotiationButtonsProposeButtonWrapper.id =
-      ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID
-    this.resourceNegotiationButtonsProposeButton = document.createElement('button')
-    this.resourceNegotiationButtonsProposeButton.id =
-      ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID
-    this.resourceNegotiationButtonsProposeButton.innerText = 'ZAPROPONUJ'
+    this.resourceNegotiationButtonsProposeButtonExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
+    this.resourceNegotiationButtonsProposeButtonWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
+    this.resourceNegotiationButtonsProposeButton = createButtonWithInnerText(ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID, 'ZAPROPONUJ')
     this.resourceNegotiationButtonsProposeButton.addEventListener('click', () => {
       this.disableAcceptBtn()
       this.disableProposeButton()
-
       sendCoopMessage(this.scene.chatWs, {
         type: OutcomingCoopMessageType.ResourceDecide,
         yourBid: {
-          travelerId:
-            this.newPlayerBid.travelerId !== ''
-              ? this.newPlayerBid.travelerId
-              : this.newPartnerBid.travelerId,
+          travelerId: this.newPlayerBid.travelerId !== '' ? this.newPlayerBid.travelerId : this.newPartnerBid.travelerId,
           moneyRatio: this.newPlayerBid.moneyRatio,
           resources: this.newPlayerBid.resources,
         },
-        message: 'empty for now'
+        message: 'empty for now',
       })
-
-      this.resourceNegotiationButtonsProposeButtonExtraWrapper.className =
-        this.resourceNegotiationButtonsProposeButtonExtraWrapper.className ===
-        'resourceNegotiationButtonsProposeButtonExtraWrapperEnabledActive'
-          ? 'resourceNegotiationButtonsProposeButtonExtraWrapperEnabled'
-          : 'resourceNegotiationButtonsProposeButtonExtraWrapperEnabledActive'
-      this.resourceNegotiationButtonsProposeButtonWrapper.className =
-        this.resourceNegotiationButtonsProposeButtonWrapper.className ===
-        'resourceNegotiationButtonsProposeButtonWrapperEnabledActive'
-          ? 'resourceNegotiationButtonsProposeButtonWrapperEnabled'
-          : 'resourceNegotiationButtonsProposeButtonWrapperEnabledActive'
-      this.resourceNegotiationButtonsProposeButton.className =
-        this.resourceNegotiationButtonsProposeButton.className ===
-        'resourceNegotiationButtonsProposeButtonEnabledActive'
-          ? 'resourceNegotiationButtonsProposeButtonEnabled'
-          : 'resourceNegotiationButtonsProposeButtonEnabledActive'
-
+      this.resourceNegotiationButtonsProposeButtonExtraWrapper.className = getClassName(
+        this.resourceNegotiationButtonsProposeButtonExtraWrapper,
+        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
+      this.resourceNegotiationButtonsProposeButtonWrapper.className = getClassName(
+        this.resourceNegotiationButtonsProposeButtonWrapper,
+        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
+      this.resourceNegotiationButtonsProposeButton.className = getClassName(
+        this.resourceNegotiationButtonsProposeButton,
+        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID)
       this.update(false, this.newPlayerBid)
     })
 
-    this.resourceNegotiationButtonsProposeButtonWrapper.appendChild(
-      this.resourceNegotiationButtonsProposeButton,
-    )
-    this.resourceNegotiationButtonsProposeButtonExtraWrapper.appendChild(
-      this.resourceNegotiationButtonsProposeButtonWrapper,
-    )
-    this.resourceNegotiationButtons.appendChild(
-      this.resourceNegotiationButtonsProposeButtonExtraWrapper,
-    )
+    this.resourceNegotiationButtonsProposeButtonWrapper.appendChild(this.resourceNegotiationButtonsProposeButton)
+    this.resourceNegotiationButtonsProposeButtonExtraWrapper.appendChild(this.resourceNegotiationButtonsProposeButtonWrapper)
+    this.resourceNegotiationButtons.appendChild(this.resourceNegotiationButtonsProposeButtonExtraWrapper)
     // Buttons - accept
-    this.resourceNegotiationButtonsAcceptButtonExtraWrapper = document.createElement('div')
-    this.resourceNegotiationButtonsAcceptButtonExtraWrapper.id =
-      ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonExtraWrapperID
-    this.resourceNegotiationButtonsAcceptButtonWrapper = document.createElement('div')
-    this.resourceNegotiationButtonsAcceptButtonWrapper.id =
-      ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonWrapperID
-    this.resourceNegotiationButtonsAcceptButton = document.createElement('button')
-    this.resourceNegotiationButtonsAcceptButton.id =
-      ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonID
-    this.resourceNegotiationButtonsAcceptButton.innerText = 'POTWIERDŹ'
+    this.resourceNegotiationButtonsAcceptButtonExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonExtraWrapperID)
+    this.resourceNegotiationButtonsAcceptButtonWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonWrapperID)
+    this.resourceNegotiationButtonsAcceptButton = createButtonWithInnerText(ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonID, 'POTWIERDŹ')
     this.resourceNegotiationButtonsAcceptButton.addEventListener('click', () => {
       this.disableAcceptBtn()
       this.disableProposeButton()
@@ -428,46 +307,28 @@ export class ResourceNegotiationView {
       sendCoopMessage(this.scene.chatWs, {
         type: OutcomingCoopMessageType.ResourceDecideAck,
         yourBid: {
-          travelerId:
-            this.newPlayerBid.travelerId !== ''
-              ? this.newPlayerBid.travelerId
-              : this.newPartnerBid.travelerId,
+          travelerId: this.newPlayerBid.travelerId !== '' ? this.newPlayerBid.travelerId : this.newPartnerBid.travelerId,
           moneyRatio: this.newPlayerBid.moneyRatio,
           resources: this.newPlayerBid.resources,
         },
       })
 
       this.scene.loadingView.show()
-
-      this.resourceNegotiationButtonsAcceptButtonExtraWrapper.className =
-        this.resourceNegotiationButtonsAcceptButtonExtraWrapper.className ===
-        'resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive'
-          ? 'resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled'
-          : 'resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive'
-      this.resourceNegotiationButtonsAcceptButtonWrapper.className =
-        this.resourceNegotiationButtonsAcceptButtonWrapper.className ===
-        'resourceNegotiationButtonsAcceptButtonWrapperEnabledActive'
-          ? 'resourceNegotiationButtonsAcceptButtonWrapperEnabled'
-          : 'resourceNegotiationButtonsAcceptButtonWrapperEnabledActive'
-      this.resourceNegotiationButtonsAcceptButton.className =
-        this.resourceNegotiationButtonsAcceptButton.className ===
-        'resourceNegotiationButtonsAcceptButtonEnabledActive'
-          ? 'resourceNegotiationButtonsAcceptButtonEnabled'
-          : 'resourceNegotiationButtonsAcceptButtonEnabledActive'
+      this.resourceNegotiationButtonsAcceptButtonExtraWrapper.className = getClassName(
+        this.resourceNegotiationButtonsAcceptButtonExtraWrapper,
+        ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonExtraWrapperID)
+      this.resourceNegotiationButtonsAcceptButtonWrapper.className = getClassName(
+        this.resourceNegotiationButtonsAcceptButtonWrapper,
+        ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonWrapperID)
+      this.resourceNegotiationButtonsAcceptButton.className = getClassName(
+        this.resourceNegotiationButtonsAcceptButton,
+        ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonID)
     })
 
-    this.resourceNegotiationButtonsAcceptButtonWrapper.appendChild(
-      this.resourceNegotiationButtonsAcceptButton,
-    )
-    this.resourceNegotiationButtonsAcceptButtonExtraWrapper.appendChild(
-      this.resourceNegotiationButtonsAcceptButtonWrapper,
-    )
-    this.resourceNegotiationButtons.appendChild(
-      this.resourceNegotiationButtonsAcceptButtonExtraWrapper,
-    )
-
+    this.resourceNegotiationButtonsAcceptButtonWrapper.appendChild(this.resourceNegotiationButtonsAcceptButton)
+    this.resourceNegotiationButtonsAcceptButtonExtraWrapper.appendChild(this.resourceNegotiationButtonsAcceptButtonWrapper)
+    this.resourceNegotiationButtons.appendChild(this.resourceNegotiationButtonsAcceptButtonExtraWrapper)
     this.resourceNegotiationBox.append(this.resourceNegotiationButtons)
-
     this.resourceNegotiationBoxWrapper.appendChild(this.resourceNegotiationBox)
 
     // Content - Negotiation
@@ -534,79 +395,44 @@ export class ResourceNegotiationView {
   private updateContent(): void {
     this.clearContent()
     // Content - Negotiation - Resources
-    const resourceNegotiationContentBoxResources = document.createElement('div')
-    resourceNegotiationContentBoxResources.id =
-      ResourceNegotiationView.resourceNegotiationContentBoxResourcesID
-
-    const resourceNegotiationContentBoxResourcesHeader = document.createElement('h5')
-    resourceNegotiationContentBoxResourcesHeader.innerText = 'Podział kosztów'
-    resourceNegotiationContentBoxResources.appendChild(resourceNegotiationContentBoxResourcesHeader)
-
-    const resourceNegotiationContentBoxResourcesContent = document.createElement('div')
-    resourceNegotiationContentBoxResourcesContent.id =
-      'resourceNegotiationContentBoxResourcesContent'
+    const resourceNegotiationContentBoxResources = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxResourcesID)
+    resourceNegotiationContentBoxResources.appendChild(createHeading('h5', 'Podział kosztów'))
+    const resourceNegotiationContentBoxResourcesContent = createDivWithId('resourceNegotiationContentBoxResourcesContent')
     for (const resource of this.travel.value.resources) {
       const resourceNegotiationContentBoxResourcesContentItem = document.createElement('div')
       // Player
       const playerResourceContainer = document.createElement('div')
-
       const playerResourceIconWrapper = document.createElement('div')
-      const playerResourceIcon = this.cropper.crop(
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
-        this.resourceURL,
-        this.resourceRepresentation.length,
-        getResourceMapping(this.resourceRepresentation)(resource.key),
-        false,
-      )
+      const playerResourceIcon = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
       playerResourceIconWrapper.appendChild(playerResourceIcon)
       playerResourceContainer.appendChild(playerResourceIconWrapper)
 
       const playerResourceValueWrapper = document.createElement('div')
-      const playerResourceValue = document.createElement('h5')
-      playerResourceValue.id = `coop-playerBid-${resource.key}`
-      playerResourceValue.innerText = `${
-        this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value
-      }`
+      const playerValue = this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value
+      const playerResourceValue = createHeadingWithId('h5', `coop-playerBid-${resource.key}`, `${playerValue}`)
       playerResourceValueWrapper.appendChild(playerResourceValue)
       playerResourceContainer.appendChild(playerResourceValueWrapper)
       // Partner
       const partnerResourceContainer = document.createElement('div')
 
       const partnerResourceIconWrapper = document.createElement('div')
-      const partnerResourceIcon = this.cropper.crop(
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
-        this.resourceURL,
-        this.resourceRepresentation.length,
-        getResourceMapping(this.resourceRepresentation)(resource.key),
-        false,
-      )
+      const partnerResourceIcon = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
       partnerResourceIconWrapper.appendChild(partnerResourceIcon)
       partnerResourceContainer.appendChild(partnerResourceIconWrapper)
 
       const partnerResourceValueWrapper = document.createElement('div')
-      const partnerResourceValue = document.createElement('h5')
-      partnerResourceValue.id = `coop-partnerBid-${resource.key}`
-      partnerResourceValue.innerText = `${
-        this.newPartnerBid.resources.find((r) => r.key === resource.key)!.value
-      }`
+      const partnerValue = this.newPartnerBid.resources.find((r) => r.key === resource.key)!.value
+      const partnerResourceValue = createHeadingWithId('h5', `coop-partnerBid-${resource.key}`, `${partnerValue}`)
       partnerResourceValueWrapper.appendChild(partnerResourceValue)
       partnerResourceContainer.appendChild(partnerResourceValueWrapper)
 
-      const resourceRangeSliderContainer = document.createElement('div')
-      resourceRangeSliderContainer.className = 'negotiationRangeSliderContainer'
-
+      const resourceRangeSliderContainer = createDivWithClassName('negotiationRangeSliderContainer')
       const resourceInputRangeBack = document.createElement('input')
       resourceInputRangeBack.className = 'negotiationRangeSliderBack'
       resourceInputRangeBack.type = 'range'
       resourceInputRangeBack.min = '0'
       resourceInputRangeBack.max = `${resource.value}`
-      resourceInputRangeBack.value = `${
-        this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value
-      }`
+      resourceInputRangeBack.value = `${playerValue}`
       resourceInputRangeBack.disabled = true
       if (!this.isPlayerTurn) {
         resourceInputRangeBack.style.cursor = 'auto'
@@ -621,59 +447,31 @@ export class ResourceNegotiationView {
         resourceInputRangeFront.min = '0'
         resourceInputRangeFront.max = `${resource.value}`
         resourceInputRangeFront.step = '1'
-        resourceInputRangeFront.value = `${
-          this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value
-        }`
-        resourceInputRangeFront.addEventListener('change', (event) => {
+        resourceInputRangeFront.value = `${this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value}`
+        const eventListener = (event: Event): void => {
           const newValue = Number((event.target as HTMLInputElement).value)
           this.updateResourceValue(true, resource.key, newValue)
           this.updateResourceValue(false, resource.key, resource.value - newValue)
           this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value = newValue
-          this.newPartnerBid.resources.find((r) => r.key === resource.key)!.value =
-            resource.value - newValue
-
+          this.newPartnerBid.resources.find((r) => r.key === resource.key)!.value = resource.value - newValue
           this.checkBidsChanged()
-        })
-        resourceInputRangeFront.addEventListener('input', (event) => {
-          const newValue = Number((event.target as HTMLInputElement).value)
-          this.updateResourceValue(true, resource.key, newValue)
-          this.updateResourceValue(false, resource.key, resource.value - newValue)
-          this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value = newValue
-          this.newPartnerBid.resources.find((r) => r.key === resource.key)!.value =
-            resource.value - newValue
-
-          this.checkBidsChanged()
-        })
+        }
+        resourceInputRangeFront.addEventListener('change', eventListener)
+        resourceInputRangeFront.addEventListener('input', eventListener)
         resourceRangeSliderContainer.appendChild(resourceInputRangeFront)
       }
 
-      resourceNegotiationContentBoxResourcesContentItem.appendChild(playerResourceContainer)
-      resourceNegotiationContentBoxResourcesContentItem.appendChild(resourceRangeSliderContainer)
-      resourceNegotiationContentBoxResourcesContentItem.appendChild(partnerResourceContainer)
-      resourceNegotiationContentBoxResourcesContent.appendChild(
-        resourceNegotiationContentBoxResourcesContentItem,
-      )
+      resourceNegotiationContentBoxResourcesContentItem.append(playerResourceContainer, resourceRangeSliderContainer, partnerResourceContainer)
+      resourceNegotiationContentBoxResourcesContent.appendChild(resourceNegotiationContentBoxResourcesContentItem)
     }
-    resourceNegotiationContentBoxResources.appendChild(
-      resourceNegotiationContentBoxResourcesContent,
-    )
+    resourceNegotiationContentBoxResources.appendChild(resourceNegotiationContentBoxResourcesContent)
 
     this.resourceNegotiationContentBox.appendChild(resourceNegotiationContentBoxResources)
     // Content - Negotiation - Player & Time
-    const resourceNegotiationContentBoxPlayerTime = document.createElement('div')
-    resourceNegotiationContentBoxPlayerTime.id =
-      ResourceNegotiationView.resourceNegotiationContentBoxPlayerTimeID
+    const resourceNegotiationContentBoxPlayerTime = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxPlayerTimeID)
+    resourceNegotiationContentBoxPlayerTime.appendChild(createHeading('h5', 'Wyjazd i wkład czasu'))
 
-    const resourceNegotiationContentBoxPlayerTimeHeader = document.createElement('h5')
-    resourceNegotiationContentBoxPlayerTimeHeader.innerText = 'Wyjazd i wkład czasu'
-    resourceNegotiationContentBoxPlayerTime.appendChild(
-      resourceNegotiationContentBoxPlayerTimeHeader,
-    )
-
-    const resourceNegotiationContentBoxPlayerTimeContent = document.createElement('div')
-    resourceNegotiationContentBoxPlayerTimeContent.id =
-      'resourceNegotiationContentBoxPlayerTimeContent'
-
+    const resourceNegotiationContentBoxPlayerTimeContent = createDivWithId('resourceNegotiationContentBoxPlayerTimeContent')
     const playerMovesCheckbox = document.createElement('input')
     playerMovesCheckbox.id = 'playerRunsCheckbox'
     playerMovesCheckbox.className = 'runsCheckbox'
@@ -700,34 +498,7 @@ export class ResourceNegotiationView {
     }
 
     resourceNegotiationContentBoxPlayerTimeContent.appendChild(playerMovesCheckbox)
-    const timeContainer = document.createElement('div')
-    if (this.travel.value.time > 3) {
-      const timeIconExtraWrapper = document.createElement('div')
-      const timeIconWrapper = document.createElement('div')
-      const timeIcon = document.createElement('img')
-      timeIcon.src = '/assets/timeCustomIcon.png'
-      timeIcon.style.width = '20px'
-      timeIcon.style.height = '20px'
-      const timeValue = document.createElement('span')
-      timeValue.innerText = `${this.travel.value.time}`
-      timeValue.style.marginLeft = '5px'
-      timeIconWrapper.appendChild(timeIcon)
-      timeIconWrapper.appendChild(timeValue)
-      timeIconExtraWrapper.appendChild(timeIconWrapper)
-      timeContainer.appendChild(timeIconExtraWrapper)
-    } else {
-      for (let i = 0; i < this.travel.value.time; i++) {
-        const timeIconExtraWrapper = document.createElement('div')
-        const timeIconWrapper = document.createElement('div')
-        const timeIcon = document.createElement('img')
-        timeIcon.src = '/assets/timeCustomIcon.png'
-        timeIcon.style.width = '20px'
-        timeIcon.style.height = '20px'
-        timeIconWrapper.appendChild(timeIcon)
-        timeIconExtraWrapper.appendChild(timeIconWrapper)
-        timeContainer.appendChild(timeIconExtraWrapper)
-      }
-    }
+    const timeContainer = getTimeContainer(this.travel.value.time, 'resourceNegotiationSuccessContentBoxResourcesTime')
     resourceNegotiationContentBoxPlayerTimeContent.appendChild(timeContainer)
 
     const partnerMovesCheckbox = document.createElement('input')
@@ -756,59 +527,36 @@ export class ResourceNegotiationView {
     }
 
     resourceNegotiationContentBoxPlayerTimeContent.appendChild(partnerMovesCheckbox)
-
-    resourceNegotiationContentBoxPlayerTime.appendChild(
-      resourceNegotiationContentBoxPlayerTimeContent,
-    )
+    resourceNegotiationContentBoxPlayerTime.appendChild(resourceNegotiationContentBoxPlayerTimeContent)
 
     this.resourceNegotiationContentBox.appendChild(resourceNegotiationContentBoxPlayerTime)
     // Content - Negotiation - Separator
     this.resourceNegotiationContentBox.appendChild(document.createElement('hr'))
     // Content - Negotiation - Profit
-    const resourceNegotiationContentBoxProfit = document.createElement('div')
-    resourceNegotiationContentBoxProfit.id =
-      ResourceNegotiationView.resourceNegotiationContentBoxProfitID
-
-    const resourceNegotiationContentBoxProfitHeader = document.createElement('h5')
-    resourceNegotiationContentBoxProfitHeader.innerText = 'Podział zysków'
-    resourceNegotiationContentBoxProfit.appendChild(resourceNegotiationContentBoxProfitHeader)
-
-    const resourceNegotiationContentBoxProfitContent = document.createElement('div')
-    resourceNegotiationContentBoxProfitContent.id = 'resourceNegotiationContentBoxProfitContent'
+    const resourceNegotiationContentBoxProfit = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxProfitID)
+    resourceNegotiationContentBoxProfit.appendChild(createHeading('h5', 'Podział zysków'))
+    const resourceNegotiationContentBoxProfitContent = createDivWithId('resourceNegotiationContentBoxProfitContent')
 
     const playerProfit = document.createElement('div')
     const playerMoneyIconWrapper = document.createElement('div')
-    const playerMoneyIcon = document.createElement('img')
-    playerMoneyIcon.src = '/assets/coinCustomIcon.png'
-    playerMoneyIcon.style.width = '38px'
+    const playerMoneyIcon = createIconWithWidth('/assets/coinCustomIcon.png', '38px')
     playerMoneyIconWrapper.appendChild(playerMoneyIcon)
     playerProfit.appendChild(playerMoneyIconWrapper)
 
     const playerMoneyValueContainer = document.createElement('div')
     const playerMoneyValuePercentageWrapper = document.createElement('div')
-    const playerMoneyValuePercentage = document.createElement('h5')
-    playerMoneyValuePercentage.innerText = `${this.newPlayerBid.moneyRatio}%`
-    playerMoneyValuePercentage.id = `coop-playerBid-money-percentage`
+    const playerMoneyValuePercentage = createHeadingWithId('h5', `coop-playerBid-money-percentage`, `${this.newPlayerBid.moneyRatio}%`)
     playerMoneyValuePercentageWrapper.appendChild(playerMoneyValuePercentage)
     const playerMoneyValueValueWrapper = document.createElement('div')
-    const playerMoneyValueValue = document.createElement('h5')
-    playerMoneyValueValue.innerText = `(${Math.floor(
+    const playerMoneyValueValue = createHeadingWithId('h5', `coop-playerBid-money-value`, `(${Math.floor(
       this.travel.value.moneyRange.from * (this.newPlayerBid.moneyRatio / 100),
-    )}-${Math.ceil(this.travel.value.moneyRange.to * (this.newPlayerBid.moneyRatio / 100))})`
-    playerMoneyValueValue.id = `coop-playerBid-money-value`
+    )}-${Math.ceil(this.travel.value.moneyRange.to * (this.newPlayerBid.moneyRatio / 100))})`)
     playerMoneyValueValueWrapper.appendChild(playerMoneyValueValue)
-
-    playerMoneyValueContainer.appendChild(playerMoneyValuePercentageWrapper)
-    playerMoneyValueContainer.appendChild(playerMoneyValueValueWrapper)
+    playerMoneyValueContainer.append(playerMoneyValuePercentageWrapper, playerMoneyValueValueWrapper)
     playerProfit.appendChild(playerMoneyValueContainer)
     resourceNegotiationContentBoxProfitContent.appendChild(playerProfit)
 
-    const profitRangeSliderContainer = document.createElement('div')
-    profitRangeSliderContainer.className = 'negotiationRangeSliderContainer'
-
-    const resourceRangeSliderContainer = document.createElement('div')
-    resourceRangeSliderContainer.className = 'negotiationRangeSliderContainer'
-
+    const profitRangeSliderContainer = createDivWithClassName('negotiationRangeSliderContainer')
     const profitInputRangeBack = document.createElement('input')
     profitInputRangeBack.className = 'negotiationRangeSliderBack'
     profitInputRangeBack.type = 'range'
@@ -830,7 +578,7 @@ export class ResourceNegotiationView {
       profitInputRangeFront.max = '100'
       profitInputRangeFront.step = '1'
       profitInputRangeFront.value = `${this.newPlayerBid.moneyRatio}`
-      profitInputRangeFront.addEventListener('change', (event) => {
+      const eventListener = (event: Event): void => {
         const newValue = Number((event.target as HTMLInputElement).value)
         this.updateMoneyValue(true, newValue)
         this.updateMoneyValue(false, 100 - newValue)
@@ -838,16 +586,9 @@ export class ResourceNegotiationView {
         this.newPartnerBid.moneyRatio = 100 - newValue
 
         this.checkBidsChanged()
-      })
-      profitInputRangeFront.addEventListener('input', (event) => {
-        const newValue = Number((event.target as HTMLInputElement).value)
-        this.updateMoneyValue(true, newValue)
-        this.updateMoneyValue(false, 100 - newValue)
-        this.newPlayerBid.moneyRatio = newValue
-        this.newPartnerBid.moneyRatio = 100 - newValue
-
-        this.checkBidsChanged()
-      })
+      }
+      profitInputRangeFront.addEventListener('change', eventListener)
+      profitInputRangeFront.addEventListener('input', eventListener)
       profitRangeSliderContainer.appendChild(profitInputRangeFront)
     }
 
@@ -855,28 +596,21 @@ export class ResourceNegotiationView {
 
     const partnerProfit = document.createElement('div')
     const partnerMoneyIconWrapper = document.createElement('div')
-    const partnerMoneyIcon = document.createElement('img')
-    partnerMoneyIcon.src = '/assets/coinCustomIcon.png'
-    partnerMoneyIcon.style.width = '38px'
+    const partnerMoneyIcon = createIconWithWidth('/assets/coinCustomIcon.png', '38px')
     partnerMoneyIconWrapper.appendChild(partnerMoneyIcon)
     partnerProfit.appendChild(partnerMoneyIconWrapper)
 
     const partnerMoneyValueContainer = document.createElement('div')
     const partnerMoneyValuePercentageWrapper = document.createElement('div')
-    const partnerMoneyValuePercentage = document.createElement('h5')
-    partnerMoneyValuePercentage.innerText = `${this.newPartnerBid.moneyRatio}%`
-    partnerMoneyValuePercentage.id = `coop-partnerBid-money-percentage`
+    const partnerMoneyValuePercentage = createHeadingWithId('h5', `coop-partnerBid-money-percentage`, `${this.newPartnerBid.moneyRatio}%`)
     partnerMoneyValuePercentageWrapper.appendChild(partnerMoneyValuePercentage)
     const partnerMoneyValueValueWrapper = document.createElement('div')
-    const partnerMoneyValueValue = document.createElement('h5')
-    partnerMoneyValueValue.innerText = `(${Math.floor(
+    const partnerMoneyValueValue = createHeadingWithId('h5', `coop-partnerBid-money-value`, `(${Math.floor(
       this.travel.value.moneyRange.from * (this.newPartnerBid.moneyRatio / 100),
-    )}-${Math.ceil(this.travel.value.moneyRange.to * (this.newPartnerBid.moneyRatio / 100))})`
-    partnerMoneyValueValue.id = `coop-partnerBid-money-value`
+    )}-${Math.ceil(this.travel.value.moneyRange.to * (this.newPartnerBid.moneyRatio / 100))})`)
     partnerMoneyValueValueWrapper.appendChild(partnerMoneyValueValue)
 
-    partnerMoneyValueContainer.appendChild(partnerMoneyValuePercentageWrapper)
-    partnerMoneyValueContainer.appendChild(partnerMoneyValueValueWrapper)
+    partnerMoneyValueContainer.append(partnerMoneyValuePercentageWrapper, partnerMoneyValueValueWrapper)
     partnerProfit.appendChild(partnerMoneyValueContainer)
     resourceNegotiationContentBoxProfitContent.appendChild(partnerProfit)
 
@@ -1033,7 +767,7 @@ export class ResourceNegotiationView {
     this.scene.resourceNegotiationView = null
 
     if (success) {
-      const succesView = new ResourceNegotiationSuccessView(
+      const successView = new ResourceNegotiationSuccessView(
         this.resourceURL,
         this.resourceRepresentation,
         this.travel,
@@ -1045,7 +779,7 @@ export class ResourceNegotiationView {
           this.scene.movingEnabled = true
         },
       )
-      succesView.show()
+      successView.show()
     } else {
       this.scene.movingEnabled = true
     }
