@@ -1,3 +1,10 @@
+import {
+  createDivWithId,
+  createElWithText,
+  createElWithIdText,
+  createIconWithWidth,
+} from './ViewUtils'
+
 export class LobbyView {
   public static readonly lobbyID = 'lobby'
   public static readonly lobbyLogoID = 'lobbyLogo'
@@ -14,56 +21,36 @@ export class LobbyView {
   private readonly lobbyMessage: HTMLHeadingElement
 
   constructor(amount: number, total: number) {
-    this.lobby = document.createElement('div')
-    this.lobby.id = LobbyView.lobbyID
-
-    const lobbyLogoImg = document.createElement('img')
-    lobbyLogoImg.src = '/assets/logo.png'
-    lobbyLogoImg.style.width = '180px'
-
-    const lobbyLogo = document.createElement('div')
-    lobbyLogo.id = LobbyView.lobbyLogoID
+    this.lobby = createDivWithId(LobbyView.lobbyID)
+    const lobbyLogoImg = createIconWithWidth('/assets/logo.png', '180px')
+    const lobbyLogo = createDivWithId(LobbyView.lobbyLogoID)
     lobbyLogo.appendChild(lobbyLogoImg)
 
-    const lobbyLogoWrapper = document.createElement('div')
-    lobbyLogoWrapper.id = LobbyView.lobbyLogoWrapperID
+    const lobbyLogoWrapper = createDivWithId(LobbyView.lobbyLogoWrapperID)
     lobbyLogoWrapper.appendChild(lobbyLogo)
 
-    const lobbyInfoLabel = document.createElement('h2')
-    lobbyInfoLabel.id = LobbyView.lobbyInfoLabelID
-    lobbyInfoLabel.innerText = 'Ilość graczy:'
+    const lobbyInfoLabel = createElWithIdText('h2', LobbyView.lobbyInfoLabelID, 'Ilość graczy:')
+    this.lobbyInfoCounter = createElWithIdText('h1', LobbyView.lobbyInfoCounterID, `${amount}/${total}`) as HTMLHeadingElement
 
-    this.lobbyInfoCounter = document.createElement('h1')
-    this.lobbyInfoCounter.id = LobbyView.lobbyInfoCounterID
-    this.lobbyInfoCounter.innerText = `${amount}/${total}`
+    const lobbyInfo = createDivWithId(LobbyView.lobbyInfoID)
+    lobbyInfo.append(lobbyInfoLabel,this.lobbyInfoCounter)
 
-    const lobbyInfo = document.createElement('div')
-    lobbyInfo.id = LobbyView.lobbyInfoID
-    lobbyInfo.appendChild(lobbyInfoLabel)
-    lobbyInfo.appendChild(this.lobbyInfoCounter)
-
-    const lobbyInfoWrapper = document.createElement('div')
-    lobbyInfoWrapper.id = LobbyView.lobbyInfoWrapperID
+    const lobbyInfoWrapper = createDivWithId(LobbyView.lobbyInfoWrapperID)
     lobbyInfoWrapper.appendChild(lobbyInfo)
 
-    this.lobbyMessage = document.createElement('h2')
-    this.lobbyMessage.innerText =
+    this.lobbyMessage = createElWithText('h2',
       amount >= total
         ? 'Gra rozpocznie się za kilka sekund.'
-        : 'Gra rozpocznie się po dołączeniu wszystkich graczy.'
+        : 'Gra rozpocznie się po dołączeniu wszystkich graczy.') as HTMLHeadingElement
     this.lobbyMessage.style.color = amount >= total ? '#677818' : '#000000'
 
-    const lobbyGameState = document.createElement('div')
-    lobbyGameState.id = LobbyView.lobbyGameStateID
+    const lobbyGameState = createDivWithId(LobbyView.lobbyGameStateID)
     lobbyGameState.appendChild(this.lobbyMessage)
 
-    const lobbyGameStateWrapper = document.createElement('div')
-    lobbyGameStateWrapper.id = LobbyView.lobbyGameStateWrapperID
+    const lobbyGameStateWrapper = createDivWithId(LobbyView.lobbyGameStateWrapperID)
     lobbyGameStateWrapper.appendChild(lobbyGameState)
 
-    this.lobby.appendChild(lobbyLogoWrapper)
-    this.lobby.appendChild(lobbyInfoWrapper)
-    this.lobby.appendChild(lobbyGameStateWrapper)
+    this.lobby.append(lobbyLogoWrapper, lobbyInfoWrapper, lobbyGameStateWrapper)
   }
 
   public update(amount: number, total: number): void {

@@ -1,3 +1,5 @@
+import { createDivWithClassName, createIElementWithColor } from './ViewUtils'
+
 export class ErrorView {
   public static readonly containerID = 'errorsAndInfo'
   public static readonly errorBoxClassName = 'errorBox'
@@ -10,21 +12,13 @@ export class ErrorView {
   private isHidden: boolean
 
   constructor() {
-    this.errorBox = document.createElement('div')
-    this.errorBox.className = ErrorView.errorBoxClassName
-
-    const icon = document.createElement('i')
-    icon.className = 'fa fa-exclamation-triangle'
-    icon.ariaHidden = 'true'
-    icon.style.color = '#BE0017'
-
+    this.errorBox = createDivWithClassName(ErrorView.errorBoxClassName)
+    const icon = createIElementWithColor('exclamation-triangle', '#BE0017')
     this.errorBoxText = document.createElement('p')
 
-    this.errorBox.appendChild(icon)
-    this.errorBox.appendChild(this.errorBoxText)
+    this.errorBox.append(icon, this.errorBoxText)
 
-    this.errorBoxWrapper = document.createElement('div')
-    this.errorBoxWrapper.className = ErrorView.errorBoxWrapperClassName
+    this.errorBoxWrapper = createDivWithClassName(ErrorView.errorBoxWrapperClassName)
     this.errorBoxWrapper.appendChild(this.errorBox)
 
     this.isHidden = true

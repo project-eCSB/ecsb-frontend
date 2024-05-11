@@ -1,16 +1,28 @@
-import { type Travel, type ClassResourceRepresentation } from '../../apis/game/Types'
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
+import { type ClassResourceRepresentation, type Travel } from '../../apis/game/Types'
 import { ImageCropper } from '../tools/ImageCropper'
 import { type CoopBid } from '../webSocketMessage/chat/CoopMessageHandler'
+import {
+  createButtonWithInnerText,
+  createCrop,
+  createDivWithClassName,
+  createDivWithId,
+  createElWithText,
+  createIconWithWidth,
+  getId,
+  getTimeContainer,
+} from './ViewUtils'
 
 export class ResourceNegotiationSuccessView {
   private static readonly resourceNegotiationSuccessBoxID = 'resourceNegotiationSuccessBox'
-  private static readonly resourceElementWitdh = 105
+  private static readonly resourceElementWidth = 105
   private readonly resourceURL: string
   private readonly resourceRepresentation: ClassResourceRepresentation[]
   private readonly cropper: ImageCropper
   private readonly onClose: () => void
   private readonly resourceNegotiationSuccessBox: HTMLDivElement
+  private static readonly resourceNegotiationSuccessOkButtonExtraWrapperID = 'resourceNegotiationSuccessOkButtonExtraWrapper'
+  private static readonly resourceNegotiationSuccessOkButtonWrapperID = 'resourceNegotiationSuccessOkButtonWrapper'
+  private static readonly resourceNegotiationSuccessOkButtonID = 'resourceNegotiationSuccessOkButton'
 
   constructor(
     resourceURL: string,
@@ -28,279 +40,113 @@ export class ResourceNegotiationSuccessView {
     this.onClose = onClose
 
     const arrowIconWidth =
-      (travel.value.resources.length + 1) * ResourceNegotiationSuccessView.resourceElementWitdh
+      (travel.value.resources.length + 1) * ResourceNegotiationSuccessView.resourceElementWidth
 
     // Container
-    this.resourceNegotiationSuccessBox = document.createElement('div')
-    this.resourceNegotiationSuccessBox.id =
-      ResourceNegotiationSuccessView.resourceNegotiationSuccessBoxID
-
+    this.resourceNegotiationSuccessBox = createDivWithId(ResourceNegotiationSuccessView.resourceNegotiationSuccessBoxID)
     // Header
-    const resourceNegotiationSuccessHeaderWrapper = document.createElement('div')
-    resourceNegotiationSuccessHeaderWrapper.id = 'resourceNegotiationSuccessHeaderBoxWrapper'
-
-    const resourceNegotiationSuccessHeader = document.createElement('div')
-    resourceNegotiationSuccessHeader.id = 'resourceNegotiationSuccessHeaderBox'
-
-    const tradeSucceessBoxHeaderTitle = document.createElement('h1')
-    tradeSucceessBoxHeaderTitle.innerText = 'WYPRAWA'
-
-    resourceNegotiationSuccessHeader.appendChild(tradeSucceessBoxHeaderTitle)
+    const resourceNegotiationSuccessHeaderWrapper = createDivWithId('resourceNegotiationSuccessHeaderBoxWrapper')
+    const resourceNegotiationSuccessHeader = createDivWithId('resourceNegotiationSuccessHeaderBox')
+    const tradeSuccessBoxHeaderTitle = createElWithText('h1', 'WYPRAWA')
+    resourceNegotiationSuccessHeader.appendChild(tradeSuccessBoxHeaderTitle)
     resourceNegotiationSuccessHeaderWrapper.appendChild(resourceNegotiationSuccessHeader)
     this.resourceNegotiationSuccessBox.appendChild(resourceNegotiationSuccessHeaderWrapper)
 
     // Success Information
-    const resourceNegotiationSuccessInformationBoxWrapper = document.createElement('div')
-    resourceNegotiationSuccessInformationBoxWrapper.id =
-      'resourceNegotiationSuccessInformationBoxWrapper'
-    const resourceNegotiationSuccessInformationBox = document.createElement('div')
-    resourceNegotiationSuccessInformationBox.id = 'resourceNegotiationSuccessInformationBox'
-    const resourceNegotiationSuccessInformationBoxText = document.createElement('h2')
-    resourceNegotiationSuccessInformationBoxText.innerText = 'Podział zakończony sukcesem!'
-    const leftSuccessIcon = document.createElement('img')
-    leftSuccessIcon.src = '/assets/successCustomIcon.png'
-    leftSuccessIcon.style.width = '20px'
-    const rightSuccessIcon = document.createElement('img')
-    rightSuccessIcon.src = '/assets/successCustomIcon.png'
-    rightSuccessIcon.style.width = '20px'
+    const resourceNegotiationSuccessInformationBoxWrapper = createDivWithId('resourceNegotiationSuccessInformationBoxWrapper')
+    const resourceNegotiationSuccessInformationBox = createDivWithId('resourceNegotiationSuccessInformationBox')
+    const resourceNegotiationSuccessInformationBoxText = createElWithText('h2', 'Podział zakończony sukcesem!')
+    const leftSuccessIcon = createIconWithWidth('/assets/successCustomIcon.png', '20px')
+    const rightSuccessIcon = createIconWithWidth('/assets/successCustomIcon.png', '20px')
 
-    resourceNegotiationSuccessInformationBox.appendChild(leftSuccessIcon)
-    resourceNegotiationSuccessInformationBox.appendChild(
-      resourceNegotiationSuccessInformationBoxText,
-    )
-    resourceNegotiationSuccessInformationBox.appendChild(rightSuccessIcon)
-
-    resourceNegotiationSuccessInformationBoxWrapper.appendChild(
-      resourceNegotiationSuccessInformationBox,
-    )
+    resourceNegotiationSuccessInformationBox.append(leftSuccessIcon, resourceNegotiationSuccessInformationBoxText, rightSuccessIcon)
+    resourceNegotiationSuccessInformationBoxWrapper.appendChild(resourceNegotiationSuccessInformationBox)
     this.resourceNegotiationSuccessBox.appendChild(resourceNegotiationSuccessInformationBoxWrapper)
 
     // Content
-    const resourceNegotiationSuccessContentBoxExtraWrapper = document.createElement('div')
-    resourceNegotiationSuccessContentBoxExtraWrapper.id =
-      'resourceNegotiationSuccessContentBoxExtraWrapper'
-    const resourceNegotiationSuccessContentBoxWrapper = document.createElement('div')
-    resourceNegotiationSuccessContentBoxWrapper.id = 'resourceNegotiationSuccessContentBoxWrapper'
-    const resourceNegotiationSuccessContentBox = document.createElement('div')
-    resourceNegotiationSuccessContentBox.id = 'resourceNegotiationSuccessContentBox'
-
+    const resourceNegotiationSuccessContentBoxExtraWrapper = createDivWithId('resourceNegotiationSuccessContentBoxExtraWrapper')
+    const resourceNegotiationSuccessContentBoxWrapper = createDivWithId('resourceNegotiationSuccessContentBoxWrapper')
+    const resourceNegotiationSuccessContentBox = createDivWithId('resourceNegotiationSuccessContentBox')
     // Content - Players' names
-    const resourceNegotiationSuccessContentBoxPlayersNames = document.createElement('div')
-    resourceNegotiationSuccessContentBoxPlayersNames.id =
-      'resourceNegotiationSuccessContentBoxPlayersNames'
-    const playerName = document.createElement('h3')
-    playerName.innerText = `${player}`
-    const partnerName = document.createElement('h3')
-    partnerName.innerText = `${partner}`
-    resourceNegotiationSuccessContentBoxPlayersNames.appendChild(playerName)
-    resourceNegotiationSuccessContentBoxPlayersNames.appendChild(partnerName)
-    resourceNegotiationSuccessContentBox.appendChild(
-      resourceNegotiationSuccessContentBoxPlayersNames,
-    )
+    const resourceNegotiationSuccessContentBoxPlayersNames = createDivWithId('resourceNegotiationSuccessContentBoxPlayersNames')
+    resourceNegotiationSuccessContentBoxPlayersNames.append(createElWithText('h3', `${player}`), createElWithText('h3', `${partner}`))
+    resourceNegotiationSuccessContentBox.appendChild(resourceNegotiationSuccessContentBoxPlayersNames)
     // Content - Players' resources
-    const resourceNegotiationSuccessContentBoxPlayersResources = document.createElement('div')
-    resourceNegotiationSuccessContentBoxPlayersResources.id =
-      'resourceNegotiationSuccessContentBoxPlayersResources'
+    const resourceNegotiationSuccessContentBoxPlayersResources = createDivWithId('resourceNegotiationSuccessContentBoxPlayersResources')
 
     const playerResourcesContainer = document.createElement('div')
-    const playerResources = document.createElement('div')
-    playerResources.className = 'resourceNegotiationSuccessContentBoxResources'
+    const playerResources = createDivWithClassName('resourceNegotiationSuccessContentBoxResources')
     for (const resource of playerBid.resources) {
       if (resource.value === 0) continue
 
       const playerResourceItem = document.createElement('div')
 
       const playerResourceIconWrapper = document.createElement('div')
-      const playerResourceIcon = this.cropper.crop(
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
-        this.resourceURL,
-        this.resourceRepresentation.length,
-        getResourceMapping(this.resourceRepresentation)(resource.key),
-        false,
-      )
+      const playerResourceIcon = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
       playerResourceIconWrapper.appendChild(playerResourceIcon)
       playerResourceItem.appendChild(playerResourceIconWrapper)
-
       const playerResourceValueWrapper = document.createElement('div')
-      const playerResourceValue = document.createElement('h5')
-      playerResourceValue.innerText = `${resource.value}`
+      const playerResourceValue = createElWithText('h5', `${resource.value}`)
       playerResourceValueWrapper.appendChild(playerResourceValue)
       playerResourceItem.appendChild(playerResourceValueWrapper)
-
       playerResources.appendChild(playerResourceItem)
     }
     if (playerBid.travelerId !== '') {
-      const timeContainer = document.createElement('div')
-      if (travel.value.time > 3) {
-        const timeIconExtraWrapper = document.createElement('div')
-        const timeIconWrapper = document.createElement('div')
-        timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
-        const timeIcon = document.createElement('img')
-        timeIcon.src = '/assets/timeCustomIcon.png'
-        timeIcon.style.width = '20px'
-        timeIcon.style.height = '20px'
-        const timeValue = document.createElement('span')
-        timeValue.innerText = `${travel.value.time}`
-        timeValue.style.marginLeft = '5px'
-        timeIconWrapper.appendChild(timeIcon)
-        timeIconWrapper.appendChild(timeValue)
-        timeIconExtraWrapper.appendChild(timeIconWrapper)
-        timeContainer.appendChild(timeIconExtraWrapper)
-      } else {
-        for (let i = 0; i < travel.value.time; i++) {
-          const timeIconExtraWrapper = document.createElement('div')
-          const timeIconWrapper = document.createElement('div')
-          timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
-          const timeIcon = document.createElement('img')
-          timeIcon.src = '/assets/timeCustomIcon.png'
-          timeIcon.style.width = '20px'
-          timeIcon.style.height = '20px'
-          timeIconWrapper.appendChild(timeIcon)
-          timeIconExtraWrapper.appendChild(timeIconWrapper)
-          timeContainer.appendChild(timeIconExtraWrapper)
-        }
-      }
+      const timeContainer = getTimeContainer(travel.value.time)
       playerResources.appendChild(timeContainer)
     }
-    const playerArrow = document.createElement('img')
-    playerArrow.src = '/assets/tradeRightArrowCustomIcon.png'
-    playerArrow.style.width = `${arrowIconWidth}px`
-    playerResourcesContainer.appendChild(playerResources)
-    playerResourcesContainer.appendChild(playerArrow)
+    const playerArrow = createIconWithWidth('/assets/tradeRightArrowCustomIcon.png', `${arrowIconWidth}px`)
+    playerResourcesContainer.append(playerResources, playerArrow)
     resourceNegotiationSuccessContentBoxPlayersResources.appendChild(playerResourcesContainer)
 
     const partnerResourcesContainer = document.createElement('div')
-    const partnerResources = document.createElement('div')
-    partnerResources.className = 'resourceNegotiationSuccessContentBoxResources'
+    const partnerResources = createDivWithClassName('resourceNegotiationSuccessContentBoxResources')
     for (const resource of partnerBid.resources) {
       if (resource.value === 0) continue
 
       const partnerResourceItem = document.createElement('div')
-
       const partnerResourceIconWrapper = document.createElement('div')
-      const partnerResourceIcon = this.cropper.crop(
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
-        this.resourceURL,
-        this.resourceRepresentation.length,
-        getResourceMapping(this.resourceRepresentation)(resource.key),
-        false,
-      )
+      const partnerResourceIcon = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
       partnerResourceIconWrapper.appendChild(partnerResourceIcon)
       partnerResourceItem.appendChild(partnerResourceIconWrapper)
-
       const partnerResourceValueWrapper = document.createElement('div')
-      const partnerResourceValue = document.createElement('h5')
-      partnerResourceValue.innerText = `${resource.value}`
+      const partnerResourceValue = createElWithText('h5', `${resource.value}`)
       partnerResourceValueWrapper.appendChild(partnerResourceValue)
       partnerResourceItem.appendChild(partnerResourceValueWrapper)
-
       partnerResources.appendChild(partnerResourceItem)
     }
     if (partnerBid.travelerId !== '') {
-      const timeContainer = document.createElement('div')
-      if (travel.value.time > 3) {
-        const timeIconExtraWrapper = document.createElement('div')
-        const timeIconWrapper = document.createElement('div')
-        timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
-        const timeIcon = document.createElement('img')
-        timeIcon.src = '/assets/timeCustomIcon.png'
-        timeIcon.style.width = '20px'
-        timeIcon.style.height = '20px'
-        const timeValue = document.createElement('span')
-        timeValue.innerText = `${travel.value.time}`
-        timeValue.style.marginLeft = '5px'
-        timeIconWrapper.appendChild(timeIcon)
-        timeIconWrapper.appendChild(timeValue)
-        timeIconExtraWrapper.appendChild(timeIconWrapper)
-        timeContainer.appendChild(timeIconExtraWrapper)
-      } else {
-        for (let i = 0; i < travel.value.time; i++) {
-          const timeIconExtraWrapper = document.createElement('div')
-          const timeIconWrapper = document.createElement('div')
-          timeIconWrapper.className = 'resourceNegotiationSuccessContentBoxResourcesTime'
-          const timeIcon = document.createElement('img')
-          timeIcon.src = '/assets/timeCustomIcon.png'
-          timeIcon.style.width = '20px'
-          timeIcon.style.height = '20px'
-          timeIconWrapper.appendChild(timeIcon)
-          timeIconExtraWrapper.appendChild(timeIconWrapper)
-          timeContainer.appendChild(timeIconExtraWrapper)
-        }
-      }
+      const timeContainer = getTimeContainer(travel.value.time)
       partnerResources.appendChild(timeContainer)
     }
-    const partnerArrow = document.createElement('img')
-    partnerArrow.src = '/assets/tradeRightArrowCustomIcon.png'
-    partnerArrow.style.width = `${arrowIconWidth}px`
-    partnerResourcesContainer.appendChild(partnerResources)
-    partnerResourcesContainer.appendChild(partnerArrow)
-    resourceNegotiationSuccessContentBoxPlayersResources.appendChild(partnerResourcesContainer)
-
-    resourceNegotiationSuccessContentBoxPlayersResources.appendChild(playerResourcesContainer)
-    resourceNegotiationSuccessContentBoxPlayersResources.appendChild(partnerResourcesContainer)
-    resourceNegotiationSuccessContentBox.appendChild(
-      resourceNegotiationSuccessContentBoxPlayersResources,
-    )
+    const partnerArrow = createIconWithWidth('/assets/tradeRightArrowCustomIcon.png', `${arrowIconWidth}px`)
+    partnerResourcesContainer.append(partnerResources, partnerArrow)
+    resourceNegotiationSuccessContentBoxPlayersResources.append(partnerResourcesContainer, playerResourcesContainer, partnerResourcesContainer)
+    resourceNegotiationSuccessContentBox.appendChild(resourceNegotiationSuccessContentBoxPlayersResources)
 
     // Content Right - Travel destination
-    const resourceNegotiationSuccessContentBoxTravelDestination = document.createElement('div')
-    resourceNegotiationSuccessContentBoxTravelDestination.id =
-      'resourceNegotiationSuccessContentBoxTravelDestination'
+    const resourceNegotiationSuccessContentBoxTravelDestination = createDivWithId('resourceNegotiationSuccessContentBoxTravelDestination')
 
-    const trainIcon = document.createElement('img')
-    trainIcon.src = '/assets/trainCustomIcon.png'
-    trainIcon.style.width = '56px'
-
-    const travelName = document.createElement('h3')
-    travelName.innerText = `${travel.value.name}`
-
-    resourceNegotiationSuccessContentBoxTravelDestination.appendChild(trainIcon)
-    resourceNegotiationSuccessContentBoxTravelDestination.appendChild(travelName)
-    resourceNegotiationSuccessContentBox.appendChild(
-      resourceNegotiationSuccessContentBoxTravelDestination,
-    )
-
+    const trainIcon = createIconWithWidth('/assets/trainCustomIcon.png', '56px')
+    const travelName = createElWithText('h3', `${travel.value.name}`)
+    resourceNegotiationSuccessContentBoxTravelDestination.append(trainIcon, travelName)
+    resourceNegotiationSuccessContentBox.appendChild(resourceNegotiationSuccessContentBoxTravelDestination)
     resourceNegotiationSuccessContentBoxWrapper.appendChild(resourceNegotiationSuccessContentBox)
-    resourceNegotiationSuccessContentBoxExtraWrapper.appendChild(
-      resourceNegotiationSuccessContentBoxWrapper,
-    )
+    resourceNegotiationSuccessContentBoxExtraWrapper.appendChild(resourceNegotiationSuccessContentBoxWrapper)
     this.resourceNegotiationSuccessBox.appendChild(resourceNegotiationSuccessContentBoxExtraWrapper)
 
     // OK Button
-    const resourceNegotiationSuccessOkButtonExtraWrapper = document.createElement('div')
-    resourceNegotiationSuccessOkButtonExtraWrapper.id =
-      'resourceNegotiationSuccessOkButtonExtraWrapper'
-    const resourceNegotiationSuccessOkButtonWrapper = document.createElement('div')
-    resourceNegotiationSuccessOkButtonWrapper.id = 'resourceNegotiationSuccessOkButtonWrapper'
-    const resourceNegotiationSuccessOkButton = document.createElement('button')
-    resourceNegotiationSuccessOkButton.id = 'resourceNegotiationSuccessOkButton'
-    resourceNegotiationSuccessOkButton.innerText = 'OK'
+    const resourceNegotiationSuccessOkButtonExtraWrapper = createDivWithId(ResourceNegotiationSuccessView.resourceNegotiationSuccessOkButtonExtraWrapperID)
+    const resourceNegotiationSuccessOkButtonWrapper = createDivWithId(ResourceNegotiationSuccessView.resourceNegotiationSuccessOkButtonWrapperID)
+    const resourceNegotiationSuccessOkButton = createButtonWithInnerText(ResourceNegotiationSuccessView.resourceNegotiationSuccessOkButtonID, 'OK')
     resourceNegotiationSuccessOkButton.addEventListener('click', () => {
-      resourceNegotiationSuccessOkButtonExtraWrapper.id =
-        resourceNegotiationSuccessOkButtonExtraWrapper.id ===
-        'resourceNegotiationSuccessOkButtonExtraWrapperActive'
-          ? 'resourceNegotiationSuccessOkButtonExtraWrapper'
-          : 'resourceNegotiationSuccessOkButtonExtraWrapperActive'
-      resourceNegotiationSuccessOkButtonWrapper.id =
-        resourceNegotiationSuccessOkButtonWrapper.id ===
-        'resourceNegotiationSuccessOkButtonWrapperActive'
-          ? 'resourceNegotiationSuccessOkButtonWrapper'
-          : 'resourceNegotiationSuccessOkButtonWrapperActive'
-      resourceNegotiationSuccessOkButton.id =
-        resourceNegotiationSuccessOkButton.id === 'resourceNegotiationSuccessOkButtonActive'
-          ? 'resourceNegotiationSuccessOkButton'
-          : 'resourceNegotiationSuccessOkButtonActive'
-
+      resourceNegotiationSuccessOkButtonExtraWrapper.id = getId(resourceNegotiationSuccessOkButtonExtraWrapper, ResourceNegotiationSuccessView.resourceNegotiationSuccessOkButtonExtraWrapperID)
+      resourceNegotiationSuccessOkButtonWrapper.id = getId(resourceNegotiationSuccessOkButtonWrapper, ResourceNegotiationSuccessView.resourceNegotiationSuccessOkButtonWrapperID)
+      resourceNegotiationSuccessOkButton.id = getId(resourceNegotiationSuccessOkButton, ResourceNegotiationSuccessView.resourceNegotiationSuccessOkButtonID)
       this.close()
     })
     resourceNegotiationSuccessOkButtonWrapper.appendChild(resourceNegotiationSuccessOkButton)
-    resourceNegotiationSuccessOkButtonExtraWrapper.appendChild(
-      resourceNegotiationSuccessOkButtonWrapper,
-    )
+    resourceNegotiationSuccessOkButtonExtraWrapper.appendChild(resourceNegotiationSuccessOkButtonWrapper)
     this.resourceNegotiationSuccessBox.appendChild(resourceNegotiationSuccessOkButtonExtraWrapper)
   }
 

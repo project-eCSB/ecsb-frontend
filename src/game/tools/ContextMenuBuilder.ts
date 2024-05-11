@@ -26,7 +26,7 @@ export class ContextMenuBuilder {
       const imgGetIntoPartnership = this.configureImage()
       const buttonGetIntoPartnership = this.configureButton()
       buttonGetIntoPartnership.appendChild(imgGetIntoPartnership)
-      buttonGetIntoPartnership.onclick = (_: Event) => {
+      buttonGetIntoPartnership.onclick = (_e: Event) => {
         window.document.getElementById('btns')?.remove()
         scene.actionTrade = null
 
@@ -47,7 +47,7 @@ export class ContextMenuBuilder {
           imgProposePartnership.style.width = '25px'
         }
         buttonProposePartnership.appendChild(imgProposePartnership)
-        buttonProposePartnership.onclick = (_: Event) => {
+        buttonProposePartnership.onclick = (_e: Event) => {
           window.document.getElementById('btns')?.remove()
           scene.actionTrade = null
 
@@ -73,7 +73,7 @@ export class ContextMenuBuilder {
           imgGetIntoPartnership.style.width = '25px'
         }
         buttonGetIntoPartnership.appendChild(imgGetIntoPartnership)
-        buttonGetIntoPartnership.onclick = (_: Event) => {
+        buttonGetIntoPartnership.onclick = (_e: Event) => {
           window.document.getElementById('btns')?.remove()
           scene.actionTrade = null
           if (scene.playerAdvertisedTravel[id] !== undefined) {
@@ -100,7 +100,7 @@ export class ContextMenuBuilder {
     imgTrade.src = '/assets/tradeCustomIcon.png'
     imgTrade.style.width = '25px'
     buttonTrade.appendChild(imgTrade)
-    buttonTrade.onclick = (_: Event) => {
+    buttonTrade.onclick = (_e: Event) => {
       window.document.getElementById('btns')?.remove()
       sendTradeMessage(scene.chatWs, {
         type: OutcomingTradeMessageType.ProposeTrade,

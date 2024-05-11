@@ -1,6 +1,6 @@
 import { type ClassResourceRepresentation, type Equipment } from '../../apis/game/Types'
-import { RESOURCE_ICON_SCALE, RESOURCE_ICON_WIDTH, getResourceMapping } from '../GameUtils'
 import { ImageCropper } from '../tools/ImageCropper'
+import { createCrop, createDivWithClassName, createDivWithId, createIconWithSize, createParagraph } from './ViewUtils'
 
 export class EquipmentView {
   public static readonly equipmentBoxID = 'equipmentBox'
@@ -18,12 +18,8 @@ export class EquipmentView {
     this.resourceRepresentation = resRepresentation
     this.cropper = new ImageCropper()
 
-    this.equipmentBox = document.createElement('div')
-    this.equipmentBox.id = EquipmentView.equipmentBoxID
-
-    this.equipmentHoverBox = document.createElement('div')
-    this.equipmentHoverBox.id = EquipmentView.equipmentHoverBoxID
-
+    this.equipmentBox = createDivWithId(EquipmentView.equipmentBoxID)
+    this.equipmentHoverBox = createDivWithId(EquipmentView.equipmentHoverBoxID)
     this.fillEq(eq)
   }
 
@@ -33,63 +29,35 @@ export class EquipmentView {
   }
 
   private fillEq(eq: Equipment): void {
-    const equipmentBoxContent = document.createElement('div')
-    equipmentBoxContent.id = EquipmentView.equipmentBoxContentID
+    const equipmentBoxContent = createDivWithId(EquipmentView.equipmentBoxContentID)
 
     eq.resources.forEach((item, idx) => {
       const itemBox = document.createElement('div')
-
-      const itemIcon = this.cropper.crop(
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_WIDTH,
-        RESOURCE_ICON_SCALE,
-        this.resourceURL,
-        this.resourceRepresentation.length,
-        getResourceMapping(this.resourceRepresentation)(item.key),
-        false,
-      )
+      const itemIcon = createCrop(this.cropper, this.resourceURL, this.resourceRepresentation, item.key)
       const itemValueWrapper = document.createElement('div')
-      const itemValue = document.createElement('p')
-      itemValue.innerText = item.value.toString()
+      const itemValue = createParagraph(item.value.toString())
 
       itemValueWrapper.appendChild(itemValue)
-      itemBox.appendChild(itemIcon)
-      itemBox.appendChild(itemValueWrapper)
+      itemBox.append(itemIcon, itemValueWrapper)
 
-      const itemHoverWrapper = document.createElement('div')
-      itemHoverWrapper.className = 'equipmentResourceHoverBoxWrapper'
+      const itemHoverWrapper = createDivWithClassName('equipmentResourceHoverBoxWrapper')
       itemHoverWrapper.style.transform = `translateX(${idx * 74}px)`
-
       itemHoverWrapper.style.visibility = 'hidden'
-      const itemHover = document.createElement('div')
-      itemHover.className = 'equipmentResourceHoverBox'
-      const itemHoverContent = document.createElement('div')
-      itemHoverContent.className = 'equipmentResourceHoverBoxContent'
 
+      const itemHover = createDivWithClassName('equipmentResourceHoverBox')
+      const itemHoverContent = createDivWithClassName('equipmentResourceHoverBoxContent')
+      const classResource = this.resourceRepresentation.find((res) => res.value.gameResourceName === item.key)!.value
       const itemHoverContentValues = document.createElement('div')
-      const itemHoverContentValuesText = document.createElement('p')
-      itemHoverContentValuesText.innerText = 'Cena'
-      const itemHoverContentValuesValue = document.createElement('p')
-      itemHoverContentValuesValue.innerText = `${
-        this.resourceRepresentation.find((res) => res.value.gameResourceName === item.key)!.value
-          .unitPrice
-      }`
-      itemHoverContentValues.appendChild(itemHoverContentValuesText)
-      itemHoverContentValues.appendChild(itemHoverContentValuesValue)
+      const itemHoverContentValuesText = createParagraph('Cena')
+      const itemHoverContentValuesValue = createParagraph(`${classResource.unitPrice}`)
+      itemHoverContentValues.append(itemHoverContentValuesText, itemHoverContentValuesValue)
 
       const itemHoverContentBuyouts = document.createElement('div')
-      const itemHoverContentBuyoutsText = document.createElement('p')
-      itemHoverContentBuyoutsText.innerText = 'Wykup'
-      const itemHoverContentBuyoutsValue = document.createElement('p')
-      itemHoverContentBuyoutsValue.innerText = `${
-        this.resourceRepresentation.find((res) => res.value.gameResourceName === item.key)!.value
-          .buyoutPrice
-      }`
-      itemHoverContentBuyouts.appendChild(itemHoverContentBuyoutsText)
-      itemHoverContentBuyouts.appendChild(itemHoverContentBuyoutsValue)
+      const itemHoverContentBuyoutsText = createParagraph('Wykup')
+      const itemHoverContentBuyoutsValue = createParagraph(`${classResource.buyoutPrice}`)
+      itemHoverContentBuyouts.append(itemHoverContentBuyoutsText, itemHoverContentBuyoutsValue)
 
-      itemHoverContent.appendChild(itemHoverContentValues)
-      itemHoverContent.appendChild(itemHoverContentBuyouts)
+      itemHoverContent.append(itemHoverContentValues, itemHoverContentBuyouts)
 
       itemHover.appendChild(itemHoverContent)
       itemHoverWrapper.appendChild(itemHover)
@@ -107,18 +75,12 @@ export class EquipmentView {
       equipmentBoxContent.appendChild(itemBox)
     })
     const moneyBox = document.createElement('div')
-
-    const moneyBoxicon = document.createElement('img')
-    moneyBoxicon.src = '/assets/coinCustomIcon.png'
-    moneyBoxicon.style.width = '38px'
-    moneyBoxicon.style.height = '38px'
+    const moneyBoxIcon = createIconWithSize('/assets/coinCustomIcon.png', '38px')
     const moneyValueWrapper = document.createElement('div')
-    const moneyBoxValue = document.createElement('p')
-    moneyBoxValue.innerText = eq.money.toString()
+    const moneyBoxValue = createParagraph(eq.money.toString())
 
     moneyValueWrapper.appendChild(moneyBoxValue)
-    moneyBox.appendChild(moneyBoxicon)
-    moneyBox.appendChild(moneyValueWrapper)
+    moneyBox.append(moneyBoxIcon, moneyValueWrapper)
 
     equipmentBoxContent.appendChild(moneyBox)
 
@@ -127,8 +89,7 @@ export class EquipmentView {
 
   public show(): void {
     if (!document.getElementById(EquipmentView.equipmentBoxID)) {
-      window.document.body.appendChild(this.equipmentBox)
-      window.document.body.appendChild(this.equipmentHoverBox)
+      window.document.body.append(this.equipmentBox, this.equipmentHoverBox)
     }
   }
 

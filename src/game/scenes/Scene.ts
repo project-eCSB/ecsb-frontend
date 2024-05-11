@@ -57,15 +57,11 @@ import {
   CHARACTER_ASSET_KEY,
   ERROR_TIMEOUT,
   getPlayerMapping,
-  getResourceMapping,
   INFORMATION_TIMEOUT,
   LAYER_SCALE,
   MAP_ASSET_KEY,
   PLAYER_DESC_OFFSET_LEFT,
   RANGE,
-  RESOURCE_ICON_HEIGHT,
-  RESOURCE_ICON_SCALE,
-  RESOURCE_ICON_WIDTH,
   SPACE_PRESS_ACTION_PREFIX,
   SPRITE_HEIGHT,
   SPRITE_WIDTH,
@@ -97,6 +93,7 @@ import { CoopOfferPopup } from '../components/CoopOfferPopup'
 import { ResourceNegotiationView } from '../views/ResourceNegotiationView'
 import { clearOverlayWindows } from '../Game'
 import { FileType } from '../../components/admin/forms/createGameForm/CreateGameForm'
+import { createCrop, createIcon } from '../views/ViewUtils'
 import Key = Phaser.Input.Keyboard.Key
 
 const VITE_ECSB_MOVEMENT_WS_API_URL: string = import.meta.env.VITE_ECSB_MOVEMENT_WS_API_URL as string
@@ -121,9 +118,9 @@ export class Scene extends Phaser.Scene {
   private readonly highTravels: Coordinates[]
   private readonly playerWorkshopsCoordinates: Coordinates[]
   public playerCloudMovement!: Map<PlayerId, boolean>
-  public playerWorkshopUnitPrice = 0
-  public playerWorkshopResourceName = ''
-  public playerWorkshopMaxProduction = 0
+  public workshopUnitPrice = 0
+  public workshopResourceName = ''
+  public workshopMaxProduction = 0
   public readonly players: Record<PlayerId, PlayerState>
   public playersClasses!: Map<PlayerId, string>
   public actionTrade: string | null
@@ -217,9 +214,9 @@ export class Scene extends Phaser.Scene {
 
     settings.classResourceRepresentation.forEach((dto) => {
       if (dto.key === userStatus.className) {
-        this.playerWorkshopUnitPrice = dto.value.unitPrice
-        this.playerWorkshopResourceName = dto.value.gameResourceName
-        this.playerWorkshopMaxProduction = dto.value.maxProduction
+        this.workshopUnitPrice = dto.value.unitPrice
+        this.workshopResourceName = dto.value.gameResourceName
+        this.workshopMaxProduction = dto.value.maxProduction
       }
     })
   }
@@ -390,7 +387,7 @@ export class Scene extends Phaser.Scene {
     }
   }
 
-  checkCoords(coord: Coordinates, status:GameStatus): boolean {
+  checkCoords(coord: Coordinates, status: GameStatus): boolean {
     return coord.x === status.coords.x && coord.y === status.coords.y
   }
 
@@ -402,16 +399,16 @@ export class Scene extends Phaser.Scene {
 
   configureLobbyWebSocket(): void {
     this.lobbyWs = new WebsocketBuilder(`${VITE_ECSB_LOBBY_WS_API_URL}/ws?gameToken=${this.gameToken}`)
-      .onOpen((i, ev) => {
+      .onOpen((_i, _e) => {
         console.log('lobbyWs opened')
       })
-      .onClose((i, ev) => {
+      .onClose((_i, _e) => {
         console.log('lobbyWs closed')
       })
-      .onError((i, ev) => {
+      .onError((_i, _e) => {
         console.error('lobbyWs error')
       })
-      .onMessage((i, ev) => {
+      .onMessage((_i, ev) => {
         const msg = parseLobbyMessage(ev.data)
         if (!msg) return
 
@@ -448,7 +445,7 @@ export class Scene extends Phaser.Scene {
             break
         }
       })
-      .onRetry((i, ev) => {
+      .onRetry((_i, _e) => {
         console.log('retry')
       })
       .build()
@@ -458,11 +455,11 @@ export class Scene extends Phaser.Scene {
     this.movementWs = new WebsocketBuilder(
       `${VITE_ECSB_MOVEMENT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
     )
-      .onOpen((i, ev) => {
+      .onOpen((_i, _e) => {
         console.log('movementWs opened')
         sendMovementMessage(this.movementWs, { type: MovementMessageType.SyncRequest })
       })
-      .onClose((i, ev) => {
+      .onClose((_i, ev) => {
         console.log('movementWs closed')
         console.log(ev)
 
@@ -473,15 +470,15 @@ export class Scene extends Phaser.Scene {
         errorMessage.setText('moveWs closed - please reconnect')
         errorMessage.show()
       })
-      .onError((i, ev) => {
+      .onError((_i, _e) => {
         console.error('movementWs error')
       })
-      .onMessage((i, ev) => {
+      .onMessage((_i, ev) => {
         const msg = parseMovementMessage(ev.data)
         if (!msg) return
         this.handleMovementMessage(msg)
       })
-      .onRetry((i, ev) => {
+      .onRetry((_i, _e) => {
         console.log('retry')
       })
       .build()
@@ -524,7 +521,7 @@ export class Scene extends Phaser.Scene {
     this.chatWs = new WebsocketBuilder(
       `${VITE_ECSB_CHAT_WS_API_URL}/ws?gameToken=${this.gameToken}`,
     )
-      .onOpen((i, ev) => {
+      .onOpen((_i, _e) => {
         this.loadingView.show()
         console.log('chatWs opened')
 
@@ -535,7 +532,7 @@ export class Scene extends Phaser.Scene {
           type: NotificationMessageType.NotificationSyncRequest,
         })
       })
-      .onClose((i, ev) => {
+      .onClose((_i, ev) => {
         console.log('chatWs closed')
         console.log(ev)
 
@@ -546,10 +543,10 @@ export class Scene extends Phaser.Scene {
         errorMessage.setText('chatWs closed - please reconnect')
         errorMessage.show()
       })
-      .onError((i, ev) => {
+      .onError((_i, _e) => {
         console.error('chatWs error')
       })
-      .onMessage((i, ev) => {
+      .onMessage((_i, ev) => {
         const msg = parseChatMessage(ev.data)
         if (!msg) return
 
@@ -583,7 +580,7 @@ export class Scene extends Phaser.Scene {
           this.handleChatMessage(msg)
         }
       })
-      .onRetry((i, ev) => {
+      .onRetry((_i, _e) => {
         console.log('retry')
       })
       .build()
@@ -856,21 +853,11 @@ export class Scene extends Phaser.Scene {
           this.players[this.playerId].coords.y,
         )
         if (msg.message.context === 'workshop') {
-          const img = this.imageCropper.crop(
-            RESOURCE_ICON_WIDTH,
-            RESOURCE_ICON_HEIGHT,
-            RESOURCE_ICON_SCALE,
-            this.resourceUrl,
-            this.settings.classResourceRepresentation.length,
-            getResourceMapping(this.settings.classResourceRepresentation)(
-              msg.message.resources![0].key,
-            ),
-            false,
-          )
+          const img = createCrop(this.imageCropper, this.resourceUrl,
+            this.settings.classResourceRepresentation, msg.message.resources![0].key)
           this.loadingBarBuilder!.showResult(msg.message.resources![0].value, img)
         } else if (msg.message.context === 'travel') {
-          const img = document.createElement('img')
-          img.src = '/assets/coinCustomIcon.png'
+          const img = createIcon('/assets/coinCustomIcon.png')
           this.loadingBarBuilder!.showResult(msg.message.money!, img)
         }
         this.movingEnabled = true

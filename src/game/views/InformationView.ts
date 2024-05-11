@@ -1,3 +1,5 @@
+import { createDivWithClassName, createIElementWithColor } from './ViewUtils'
+
 export class InformationView {
   public static readonly containerID = 'errorsAndInfo'
   public static readonly informationBoxClassName = 'informationBox'
@@ -10,21 +12,14 @@ export class InformationView {
   private isHidden: boolean
 
   constructor() {
-    this.informationBox = document.createElement('div')
-    this.informationBox.className = InformationView.informationBoxClassName
+    this.informationBox = createDivWithClassName(InformationView.informationBoxClassName)
 
-    const icon = document.createElement('i')
-    icon.className = 'fa fa-question-circle'
-    icon.ariaHidden = 'true'
-    icon.style.color = '#835211'
-
+    const icon = createIElementWithColor('question-circle', '#835211')
     this.informationBoxText = document.createElement('p')
 
-    this.informationBox.appendChild(icon)
-    this.informationBox.appendChild(this.informationBoxText)
+    this.informationBox.append(icon, this.informationBoxText)
 
-    this.informationBoxWrapper = document.createElement('div')
-    this.informationBoxWrapper.className = InformationView.informationBoxWrapperClassName
+    this.informationBoxWrapper = createDivWithClassName(InformationView.informationBoxWrapperClassName)
     this.informationBoxWrapper.appendChild(this.informationBox)
 
     this.isHidden = true

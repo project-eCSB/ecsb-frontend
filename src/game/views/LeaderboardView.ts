@@ -1,4 +1,11 @@
 import { type EndGameStatus } from '../../apis/game/Types'
+import {
+  createButtonWithId,
+  createDivWithId,
+  createElWithText,
+  createIcon,
+  createIconWithWidth,
+} from './ViewUtils'
 
 export class LeaderboardView {
   public static readonly leaderboardID = 'leaderboard'
@@ -15,54 +22,26 @@ export class LeaderboardView {
   private readonly leaderboard: HTMLDivElement
 
   constructor(status: EndGameStatus, playerId: string, destroy: () => void) {
-    this.leaderboard = document.createElement('div')
-    this.leaderboard.id = LeaderboardView.leaderboardID
-
-    const leaderboardTitleBoxWrapper = document.createElement('div')
-    leaderboardTitleBoxWrapper.id = LeaderboardView.leaderboardTitleBoxWrapperID
-
-    const leaderboardTitleBox = document.createElement('div')
-    leaderboardTitleBox.id = LeaderboardView.leaderboardTitleBoxID
-
-    const leaderboardHeaderBoxWrapper = document.createElement('div')
-    leaderboardHeaderBoxWrapper.id = LeaderboardView.leaderboardHeaderBoxWrapperID
-
-    const leaderboardHeaderBox = document.createElement('div')
-    leaderboardHeaderBox.id = LeaderboardView.leaderboardHeaderBoxID
-
-    const leaderboardContentBox = document.createElement('div')
-    leaderboardContentBox.id = LeaderboardView.leaderboardContentBoxID
+    this.leaderboard = createDivWithId(LeaderboardView.leaderboardID)
+    const leaderboardTitleBoxWrapper = createDivWithId(LeaderboardView.leaderboardTitleBoxWrapperID)
+    const leaderboardTitleBox = createDivWithId(LeaderboardView.leaderboardTitleBoxID)
+    const leaderboardHeaderBoxWrapper = createDivWithId(LeaderboardView.leaderboardHeaderBoxWrapperID)
+    const leaderboardHeaderBox = createDivWithId(LeaderboardView.leaderboardHeaderBoxID)
+    const leaderboardContentBoxWrapper = createDivWithId(LeaderboardView.leaderboardContentBoxWrapperID)
+    const leaderboardContentBox = createDivWithId(LeaderboardView.leaderboardContentBoxID)
 
     const scrollBox = document.createElement('div')
-
-    const leaderboardContentBoxWrapper = document.createElement('div')
-    leaderboardContentBoxWrapper.id = LeaderboardView.leaderboardContentBoxWrapperID
-
-    const leaderboardButton = document.createElement('button')
-    leaderboardButton.id = LeaderboardView.leaderboardButtonID
-
-    const leaderboardButtonWrapper = document.createElement('div')
-    leaderboardButtonWrapper.id = LeaderboardView.leaderboardButtonWrapperID
-
-    const leaderboardButtonGlow = document.createElement('div')
-    leaderboardButtonGlow.id = LeaderboardView.leaderboardButtonGlowID
+    const leaderboardButton = createButtonWithId(LeaderboardView.leaderboardButtonID)
+    const leaderboardButtonWrapper = createDivWithId(LeaderboardView.leaderboardButtonWrapperID)
+    const leaderboardButtonGlow = createDivWithId(LeaderboardView.leaderboardButtonGlowID)
 
     leaderboardHeaderBoxWrapper.appendChild(leaderboardHeaderBox)
-    const title = document.createElement('h2')
-    title.innerText = 'KONIEC GRY'
-    const subtitle = document.createElement('h4')
-    subtitle.innerText = 'WYNIKI'
-    leaderboardHeaderBox.appendChild(title)
-    leaderboardHeaderBox.appendChild(subtitle)
+    const title = createElWithText('h2', 'KONIEC GRY')
+    const subtitle = createElWithText('h4', 'WYNIKI')
+    leaderboardHeaderBox.append(title, subtitle)
 
     leaderboardTitleBoxWrapper.appendChild(leaderboardTitleBox)
-    const star1 = document.createElement('img')
-    star1.src = '/assets/starCustomIcon.png'
-    const star2 = document.createElement('img')
-    star2.src = '/assets/starCustomIcon.png'
-    leaderboardTitleBox.appendChild(star1)
-    leaderboardTitleBox.appendChild(leaderboardHeaderBoxWrapper)
-    leaderboardTitleBox.appendChild(star2)
+    leaderboardTitleBox.append(createIcon('/assets/starCustomIcon.png'), leaderboardHeaderBoxWrapper, createIcon('/assets/starCustomIcon.png'))
 
     leaderboardContentBoxWrapper.appendChild(leaderboardContentBox)
     leaderboardContentBox.appendChild(scrollBox)
@@ -97,25 +76,18 @@ export class LeaderboardView {
         }
         leftSide.appendChild(position)
       } else {
-        const position = document.createElement('div')
-        position.id = 'playerPosition'
+        const position = createDivWithId('playerPosition')
         position.innerText = counter.toString()
         leftSide.appendChild(position)
       }
-      const name = document.createElement('h6')
-      name.innerText = el.playerId
+      const name = createElWithText('h6', el.playerId)
       leftSide.appendChild(name)
 
-      const money = document.createElement('h6')
-      money.innerText = el.money.toString()
-      const coin = document.createElement('img')
-      coin.src = '/assets/coinCustomIcon.png'
-      coin.style.width = '30px'
-      rightSide.appendChild(coin)
-      rightSide.appendChild(money)
+      const money = createElWithText('h6', el.money.toString())
+      const coin = createIconWithWidth('/assets/coinCustomIcon.png', '30px')
+      rightSide.append(coin, money)
 
-      row.appendChild(leftSide)
-      row.appendChild(rightSide)
+      row.append(leftSide, rightSide)
       rowWrapper.appendChild(row)
       scrollBox.appendChild(rowWrapper)
 
@@ -130,9 +102,7 @@ export class LeaderboardView {
       window.location.href = '/home'
     })
 
-    this.leaderboard.appendChild(leaderboardTitleBoxWrapper)
-    this.leaderboard.appendChild(leaderboardContentBoxWrapper)
-    this.leaderboard.appendChild(leaderboardButtonGlow)
+    this.leaderboard.append(leaderboardTitleBoxWrapper, leaderboardContentBoxWrapper, leaderboardButtonGlow)
   }
 
   public show(): void {

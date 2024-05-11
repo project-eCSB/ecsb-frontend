@@ -1,3 +1,5 @@
+import { createDivWithId, createIcon } from './ViewUtils'
+
 export class SettingsView {
   public static readonly settingsID = 'settingsButton'
   public static readonly settingsWrapperID = 'settingsButtonWrapper'
@@ -15,8 +17,7 @@ export class SettingsView {
   permanentAds: HTMLInputElement
 
   constructor(destroy: () => void) {
-    const image = document.createElement('img')
-    image.src = '/assets/settingsCustomIcon.png'
+    const image = createIcon('/assets/settingsCustomIcon.png')
 
     this.settings = document.createElement('div')
     this.settings.addEventListener('click', () => {
@@ -31,15 +32,11 @@ export class SettingsView {
     })
     this.settings.id = SettingsView.settingsID
 
-    this.settingsWrapper = document.createElement('div')
-    this.settingsWrapper.id = SettingsView.settingsWrapperID
-
+    this.settingsWrapper = createDivWithId(SettingsView.settingsWrapperID)
     this.settings.appendChild(image)
     this.settingsWrapper.appendChild(this.settings)
 
-    this.settingsContainer = document.createElement('div')
-    this.settingsContainer.id = SettingsView.settingsContainerID
-
+    this.settingsContainer = createDivWithId(SettingsView.settingsContainerID)
     this.permanentAds = document.createElement('input')
     this.permanentAds.type = 'checkbox'
     this.permanentAds.checked = true
@@ -50,10 +47,8 @@ export class SettingsView {
     settingsRow.appendChild(permanentAdsLabel)
     this.settingsContainer.appendChild(settingsRow)
 
-    const controlsWrapper = document.createElement('div')
-    controlsWrapper.id = SettingsView.settingsContainerControlsWrapperID
-    const controlsBox = document.createElement('div')
-    controlsBox.id = SettingsView.settingsContainerControlsID
+    const controlsWrapper = createDivWithId(SettingsView.settingsContainerControlsWrapperID)
+    const controlsBox = createDivWithId(SettingsView.settingsContainerControlsID)
     controlsWrapper.appendChild(controlsBox)
     const controlsLabel = document.createElement('h3')
     controlsLabel.textContent = '- Sterowanie -'
@@ -114,14 +109,11 @@ export class SettingsView {
       destroy()
       window.location.href = '/home'
     })
-    const leaveButtonWrapper = document.createElement('div')
-    leaveButtonWrapper.id = SettingsView.leaveButtonWrapperID
+    const leaveButtonWrapper = createDivWithId(SettingsView.leaveButtonWrapperID)
     leaveButtonWrapper.appendChild(leaveButton)
     this.settingsContainer.appendChild(leaveButtonWrapper)
 
-    this.settingsContainerWrapper = document.createElement('div')
-    this.settingsContainerWrapper.id = SettingsView.settingsContainerWrapperID
-
+    this.settingsContainerWrapper = createDivWithId(SettingsView.settingsContainerWrapperID)
     this.settingsContainerWrapper.appendChild(this.settingsContainer)
   }
 
