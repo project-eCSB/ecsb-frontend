@@ -5,7 +5,7 @@ import type { ClassResourceRepresentation } from '../../apis/game/Types'
 export function getTimeIcon(className = ''): HTMLDivElement {
   const timeIconExtraWrapper = document.createElement('div')
   const timeIconWrapper = createDivWithClassName(className)
-  const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+  const timeIcon = createIconWithSize('/assets/timeCustomIcon.png', '20px')
   timeIconWrapper.appendChild(timeIcon)
   timeIconExtraWrapper.appendChild(timeIconWrapper)
   return timeIconExtraWrapper
@@ -14,13 +14,13 @@ export function getTimeIcon(className = ''): HTMLDivElement {
 export function getTimeIconWithValue(innerText: string, span: boolean): HTMLDivElement {
   const timeIconExtraWrapper = document.createElement('div')
   const timeIconWrapper = createDivWithClassName('resourceNegotiationSuccessContentBoxResourcesTime')
-  const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+  const timeIcon = createIconWithSize('/assets/timeCustomIcon.png', '20px')
   let timeValue
   if (span) {
     timeValue = createSpan(innerText)
     timeValue.style.marginLeft = '5px'
   } else {
-    timeValue = createHeading('h4', innerText)
+    timeValue = createElWithText('h4', innerText)
   }
   timeIconWrapper.append(timeIcon, timeValue)
   timeIconExtraWrapper.appendChild(timeIconWrapper)
@@ -87,16 +87,16 @@ export function createIcon(src: string): HTMLImageElement {
   return icon
 }
 
-export function createIconWithAll(src: string, size: string): HTMLImageElement {
+export function createIconWithSize(src: string, size: string): HTMLImageElement {
   const icon = createIcon(src)
   icon.style.width = size
   icon.style.height = size
   return icon
 }
 
-export function createIconWithWidth(src: string, size: string): HTMLImageElement {
+export function createIconWithWidth(src: string, width: string): HTMLImageElement {
   const icon = createIcon(src)
-  icon.style.width = size
+  icon.style.width = width
   return icon
 }
 
@@ -106,7 +106,7 @@ export function createMoneyContainer(innerText: string): HTMLDivElement {
   const moneyIcon = createIconWithWidth('/assets/coinCustomIcon.png', '25px')
   moneyIconWrapper.appendChild(moneyIcon)
   const moneyValueWrapper = document.createElement('div')
-  const moneyValue = createHeading('h4', innerText)
+  const moneyValue = createElWithText('h4', innerText)
   moneyValueWrapper.appendChild(moneyValue)
   moneyContainer.append(moneyIconWrapper, moneyValueWrapper)
   return moneyContainer
@@ -117,7 +117,7 @@ export function createItemContainer(innerText: string, itemIcon: HTMLDivElement)
   const itemIconWrapper = document.createElement('div')
   itemIconWrapper.appendChild(itemIcon)
   const itemValueWrapper = document.createElement('div')
-  const itemValue = createHeading('h4', innerText)
+  const itemValue = createElWithText('h4', innerText)
   itemValueWrapper.appendChild(itemValue)
   itemContainer.append(itemIconWrapper, itemValueWrapper)
   return itemContainer
@@ -135,7 +135,7 @@ export function createDivWithClassName(className: string): HTMLDivElement {
   return div
 }
 
-export function createDivWithAll(id: string, className: string): HTMLDivElement {
+export function createDivWithIdClass(id: string, className: string): HTMLDivElement {
   const div = document.createElement('div')
   div.id = id
   div.className = className
@@ -161,30 +161,30 @@ export function createButtonWithInnerText(id: string, innerText: string): HTMLBu
   return button
 }
 
-export function createHeading(level: string, innerText: string): HTMLHeadingElement {
-  const heading = document.createElement(level)
-  heading.innerText = innerText
-  return heading as HTMLHeadingElement
+export function createElWithText(type: string, innerText: string): HTMLElement {
+  const element = document.createElement(type)
+  element.innerText = innerText
+  return element
 }
 
-export function createHeadingWithId(level: string, id: string, innerText: string): HTMLHeadingElement {
-  const heading = document.createElement(level)
-  heading.id = id
-  heading.innerText = innerText
-  return heading as HTMLHeadingElement
+export function createElWithIdText(type: string, id: string, innerText: string): HTMLElement {
+  const element = document.createElement(type)
+  element.id = id
+  element.innerText = innerText
+  return element
 }
 
-export function createHeadingWithClass(level: string, innerText: string, className: string): HTMLHeadingElement {
-  const heading = document.createElement(level)
-  heading.className = className
-  heading.innerText = innerText
-  return heading as HTMLHeadingElement
+export function createElWithClassText(type: string, innerText: string, className: string): HTMLElement {
+  const element = document.createElement(type)
+  element.className = className
+  element.innerText = innerText
+  return element
 }
 
-export function createHeadingWithAll(level: string, id: string, innerText: string, className: string): HTMLHeadingElement {
-  const heading = createHeadingWithId(level, id, innerText)
-  heading.className = className
-  return heading
+export function createElWithIdClassText(type: string, id: string, innerText: string, className: string): HTMLElement {
+  const element = createElWithIdText(type, id, innerText)
+  element.className = className
+  return element
 }
 
 export function createSpan(innerText: string): HTMLSpanElement {

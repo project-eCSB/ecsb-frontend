@@ -10,8 +10,8 @@ import {
   createButtonWithInnerText,
   createDivWithClassName,
   createDivWithId,
-  createHeading,
-  createIconWithAll, createIconWithWidth,
+  createElWithText,
+  createIconWithSize, createIconWithWidth,
   createIElementWithColor,
   createTradeCrop,
   getClassName,
@@ -77,7 +77,7 @@ export class TravelView {
     const travelBoxHeaderWrapper = createDivWithId(TravelView.travelBoxHeaderWrapperID)
     const travelBoxHeader = createDivWithId(TravelView.travelBoxHeaderID)
 
-    const travelBoxHeaderMainTitle = createHeading('h1', 'WYPRAWY')
+    const travelBoxHeaderMainTitle = createElWithText('h1', 'WYPRAWY')
 
     const timeIcon = document.createElement('img')
     timeIcon.style.transform = 'translateX(-15px)'
@@ -103,7 +103,7 @@ export class TravelView {
         sideTitle = 'Travel'
         console.error('TravelType not found')
     }
-    const travelBoxHeaderSideTitle = createHeading('h2', sideTitle)
+    const travelBoxHeaderSideTitle = createElWithText('h2', sideTitle)
 
     const trainIcon = createIconWithWidth('/assets/trainCustomIcon.png', '56px')
     const titlesWrapper = document.createElement('div')
@@ -140,7 +140,7 @@ export class TravelView {
 
           // Item - Header
           const travelItemHeader = createDivWithClassName('travelBoxContentItemHeader')
-          const travelItemTitle = createHeading('h2', travelItem.value.name)
+          const travelItemTitle = createElWithText('h2', travelItem.value.name)
 
           const travelItemCheckbox = document.createElement('input')
           travelItemCheckbox.type = 'radio'
@@ -174,14 +174,14 @@ export class TravelView {
 
           // Item - Content Left
           const travelItemContentLeft = createDivWithId('travelBoxContentItemContentLeft')
-          const travelItemContentLeftHeader = createHeading('h3', 'Koszt:')
+          const travelItemContentLeftHeader = createElWithText('h3', 'Koszt:')
           travelItemContentLeft.appendChild(travelItemContentLeftHeader)
 
           const travelItemContentTimes = createDivWithClassName('travelBoxContentItemContentLeftTimes')
           for (let i = 0; i < travelItem.value.time; i++) {
             const timeIconExtraWrapper = document.createElement('div')
             const timeIconWrapper = document.createElement('div')
-            const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '25px')
+            const timeIcon = createIconWithSize('/assets/timeCustomIcon.png', '25px')
             timeIconWrapper.appendChild(timeIcon)
             timeIconExtraWrapper.appendChild(timeIconWrapper)
             travelItemContentTimes.appendChild(timeIconExtraWrapper)
@@ -201,7 +201,7 @@ export class TravelView {
               const itemIcon = createTradeCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
               itemIconWrapper.appendChild(itemIcon)
               const itemValueWrapper = document.createElement('div')
-              const itemValue = createHeading('h4', `${resource.value}`)
+              const itemValue = createElWithText('h4', `${resource.value}`)
               itemValueWrapper.appendChild(itemValue)
 
               itemContainer.append(itemIconWrapper, itemValueWrapper)
@@ -220,16 +220,16 @@ export class TravelView {
           // Item - Content Right
           const travelItemContentRight = createDivWithClassName('travelBoxContentItemContentRight')
 
-          const travelItemContentRightHeader = createHeading('h3', 'Zysk:')
+          const travelItemContentRightHeader = createElWithText('h3', 'Zysk:')
           const travelItemContentRightResult = document.createElement('div')
 
           const moneyIconWrapper = document.createElement('div')
 
-          const moneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '25px')
+          const moneyIcon = createIconWithSize('/assets/coinCustomIcon.png', '25px')
           moneyIconWrapper.appendChild(moneyIcon)
           const resultWrapper = document.createElement('div')
 
-          const result = createHeading('h4', `${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to}`)
+          const result = createElWithText('h4', `${travelItem.value.moneyRange.from} - ${travelItem.value.moneyRange.to}`)
           resultWrapper.appendChild(result)
 
           travelItemContentRightResult.append(moneyIconWrapper, resultWrapper)
@@ -459,7 +459,7 @@ export class TravelView {
 
   private setWarning(text: string): void {
     const warningBox = createDivWithId(TravelView.travelWarningBoxID)
-    const warningText = createHeading('h5', text)
+    const warningText = createElWithText('h5', text)
     const icon = createIElementWithColor('question-circle', '#835211')
     warningBox.append(icon, warningText)
     const travels = this.travelBoxContent.childNodes.length

@@ -1,7 +1,7 @@
 import {
   createDivWithId,
-  createHeading,
-  createHeadingWithId,
+  createElWithText,
+  createElWithIdText,
   createIconWithWidth,
 } from './ViewUtils'
 
@@ -29,8 +29,8 @@ export class LobbyView {
     const lobbyLogoWrapper = createDivWithId(LobbyView.lobbyLogoWrapperID)
     lobbyLogoWrapper.appendChild(lobbyLogo)
 
-    const lobbyInfoLabel = createHeadingWithId('h2', LobbyView.lobbyInfoLabelID, 'Ilość graczy:')
-    this.lobbyInfoCounter = createHeadingWithId('h1', LobbyView.lobbyInfoCounterID, `${amount}/${total}`)
+    const lobbyInfoLabel = createElWithIdText('h2', LobbyView.lobbyInfoLabelID, 'Ilość graczy:')
+    this.lobbyInfoCounter = createElWithIdText('h1', LobbyView.lobbyInfoCounterID, `${amount}/${total}`) as HTMLHeadingElement
 
     const lobbyInfo = createDivWithId(LobbyView.lobbyInfoID)
     lobbyInfo.append(lobbyInfoLabel,this.lobbyInfoCounter)
@@ -38,10 +38,10 @@ export class LobbyView {
     const lobbyInfoWrapper = createDivWithId(LobbyView.lobbyInfoWrapperID)
     lobbyInfoWrapper.appendChild(lobbyInfo)
 
-    this.lobbyMessage = createHeading('h2',
+    this.lobbyMessage = createElWithText('h2',
       amount >= total
         ? 'Gra rozpocznie się za kilka sekund.'
-        : 'Gra rozpocznie się po dołączeniu wszystkich graczy.')
+        : 'Gra rozpocznie się po dołączeniu wszystkich graczy.') as HTMLHeadingElement
     this.lobbyMessage.style.color = amount >= total ? '#677818' : '#000000'
 
     const lobbyGameState = createDivWithId(LobbyView.lobbyGameStateID)

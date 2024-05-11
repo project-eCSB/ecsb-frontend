@@ -2,7 +2,7 @@ import { type EndGameStatus } from '../../apis/game/Types'
 import {
   createButtonWithId,
   createDivWithId,
-  createHeading,
+  createElWithText,
   createIcon,
   createIconWithWidth,
 } from './ViewUtils'
@@ -36,8 +36,8 @@ export class LeaderboardView {
     const leaderboardButtonGlow = createDivWithId(LeaderboardView.leaderboardButtonGlowID)
 
     leaderboardHeaderBoxWrapper.appendChild(leaderboardHeaderBox)
-    const title = createHeading('h2', 'KONIEC GRY')
-    const subtitle = createHeading('h4', 'WYNIKI')
+    const title = createElWithText('h2', 'KONIEC GRY')
+    const subtitle = createElWithText('h4', 'WYNIKI')
     leaderboardHeaderBox.append(title, subtitle)
 
     leaderboardTitleBoxWrapper.appendChild(leaderboardTitleBox)
@@ -80,10 +80,10 @@ export class LeaderboardView {
         position.innerText = counter.toString()
         leftSide.appendChild(position)
       }
-      const name = createHeading('h6', el.playerId)
+      const name = createElWithText('h6', el.playerId)
       leftSide.appendChild(name)
 
-      const money = createHeading('h6', el.money.toString())
+      const money = createElWithText('h6', el.money.toString())
       const coin = createIconWithWidth('/assets/coinCustomIcon.png', '30px')
       rightSide.append(coin, money)
 

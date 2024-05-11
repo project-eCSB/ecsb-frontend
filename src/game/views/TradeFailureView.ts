@@ -3,8 +3,8 @@ import {
   createButtonWithInnerText,
   createDivWithClassName,
   createDivWithId,
-  createHeading,
-  createHeadingWithClass,
+  createElWithText,
+  createElWithClassText,
   createIconWithWidth,
   createParagraph,
   getId,
@@ -26,14 +26,14 @@ export class TradeFailureView {
     // Header
     const tradeFailureBoxHeaderWrapper = createDivWithId('tradeFailureBoxHeaderWrapper')
     const tradeFailureBoxHeader = createDivWithId('tradeFailureBoxHeader')
-    const tradeSuccessBoxHeaderTitle = createHeading('h1', 'HANDEL')
+    const tradeSuccessBoxHeaderTitle = createElWithText('h1', 'HANDEL')
     tradeFailureBoxHeader.append(createArrowIcon(), tradeSuccessBoxHeaderTitle, createArrowIcon())
     tradeFailureBoxHeaderWrapper.appendChild(tradeFailureBoxHeader)
 
     // Failure information
     const tradeFailureBoxInformationBoxWrapper = createDivWithId('tradeFailureBoxInformationBoxWrapper')
     const tradeFailureBoxInformationBox = createDivWithId('tradeFailureBoxInformationBox')
-    const tradeFailureBoxInformationBoxText = createHeading('h1', 'Wymiana została przerwana!')
+    const tradeFailureBoxInformationBoxText = createElWithText('h1', 'Wymiana została przerwana!')
     tradeFailureBoxInformationBox.append(
       createIconWithWidth('/assets/failureCustomIcon.png', '20px'),
       tradeFailureBoxInformationBoxText,
@@ -49,7 +49,7 @@ export class TradeFailureView {
 
     // Content left
     const currentUserIdContainer = document.createElement('div')
-    const currentUserId = createHeadingWithClass('h2', currPlayerId, 'tradeFailureBoxContentBoxUsername')
+    const currentUserId = createElWithClassText('h2', currPlayerId, 'tradeFailureBoxContentBoxUsername')
     currentUserIdContainer.appendChild(currentUserId)
 
     // Content middle
@@ -66,7 +66,7 @@ export class TradeFailureView {
 
     // Content right
     const otherUserIdContainer = document.createElement('div')
-    const otherUserId = createHeadingWithClass('h2', otherPlayerId, 'tradeFailureBoxContentBoxUsername')
+    const otherUserId = createElWithClassText('h2', otherPlayerId, 'tradeFailureBoxContentBoxUsername')
     otherUserIdContainer.appendChild(otherUserId)
 
     tradeFailureBoxContentBox.append(currentUserIdContainer, messageContainer, otherUserIdContainer)

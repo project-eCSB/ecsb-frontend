@@ -1,6 +1,6 @@
 import { type ClassResourceRepresentation, type Equipment } from '../../apis/game/Types'
 import { ImageCropper } from '../tools/ImageCropper'
-import { createCrop, createDivWithClassName, createDivWithId, createIconWithAll, createParagraph } from './ViewUtils'
+import { createCrop, createDivWithClassName, createDivWithId, createIconWithSize, createParagraph } from './ViewUtils'
 
 export class EquipmentView {
   public static readonly equipmentBoxID = 'equipmentBox'
@@ -75,7 +75,7 @@ export class EquipmentView {
       equipmentBoxContent.appendChild(itemBox)
     })
     const moneyBox = document.createElement('div')
-    const moneyBoxIcon = createIconWithAll('/assets/coinCustomIcon.png', '38px')
+    const moneyBoxIcon = createIconWithSize('/assets/coinCustomIcon.png', '38px')
     const moneyValueWrapper = document.createElement('div')
     const moneyBoxValue = createParagraph(eq.money.toString())
 

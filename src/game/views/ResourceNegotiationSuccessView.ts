@@ -6,7 +6,7 @@ import {
   createCrop,
   createDivWithClassName,
   createDivWithId,
-  createHeading,
+  createElWithText,
   createIconWithWidth,
   getId,
   getTimeContainer,
@@ -47,7 +47,7 @@ export class ResourceNegotiationSuccessView {
     // Header
     const resourceNegotiationSuccessHeaderWrapper = createDivWithId('resourceNegotiationSuccessHeaderBoxWrapper')
     const resourceNegotiationSuccessHeader = createDivWithId('resourceNegotiationSuccessHeaderBox')
-    const tradeSuccessBoxHeaderTitle = createHeading('h1', 'WYPRAWA')
+    const tradeSuccessBoxHeaderTitle = createElWithText('h1', 'WYPRAWA')
     resourceNegotiationSuccessHeader.appendChild(tradeSuccessBoxHeaderTitle)
     resourceNegotiationSuccessHeaderWrapper.appendChild(resourceNegotiationSuccessHeader)
     this.resourceNegotiationSuccessBox.appendChild(resourceNegotiationSuccessHeaderWrapper)
@@ -55,7 +55,7 @@ export class ResourceNegotiationSuccessView {
     // Success Information
     const resourceNegotiationSuccessInformationBoxWrapper = createDivWithId('resourceNegotiationSuccessInformationBoxWrapper')
     const resourceNegotiationSuccessInformationBox = createDivWithId('resourceNegotiationSuccessInformationBox')
-    const resourceNegotiationSuccessInformationBoxText = createHeading('h2', 'Podział zakończony sukcesem!')
+    const resourceNegotiationSuccessInformationBoxText = createElWithText('h2', 'Podział zakończony sukcesem!')
     const leftSuccessIcon = createIconWithWidth('/assets/successCustomIcon.png', '20px')
     const rightSuccessIcon = createIconWithWidth('/assets/successCustomIcon.png', '20px')
 
@@ -69,7 +69,7 @@ export class ResourceNegotiationSuccessView {
     const resourceNegotiationSuccessContentBox = createDivWithId('resourceNegotiationSuccessContentBox')
     // Content - Players' names
     const resourceNegotiationSuccessContentBoxPlayersNames = createDivWithId('resourceNegotiationSuccessContentBoxPlayersNames')
-    resourceNegotiationSuccessContentBoxPlayersNames.append(createHeading('h3', `${player}`), createHeading('h3', `${partner}`))
+    resourceNegotiationSuccessContentBoxPlayersNames.append(createElWithText('h3', `${player}`), createElWithText('h3', `${partner}`))
     resourceNegotiationSuccessContentBox.appendChild(resourceNegotiationSuccessContentBoxPlayersNames)
     // Content - Players' resources
     const resourceNegotiationSuccessContentBoxPlayersResources = createDivWithId('resourceNegotiationSuccessContentBoxPlayersResources')
@@ -86,7 +86,7 @@ export class ResourceNegotiationSuccessView {
       playerResourceIconWrapper.appendChild(playerResourceIcon)
       playerResourceItem.appendChild(playerResourceIconWrapper)
       const playerResourceValueWrapper = document.createElement('div')
-      const playerResourceValue = createHeading('h5', `${resource.value}`)
+      const playerResourceValue = createElWithText('h5', `${resource.value}`)
       playerResourceValueWrapper.appendChild(playerResourceValue)
       playerResourceItem.appendChild(playerResourceValueWrapper)
       playerResources.appendChild(playerResourceItem)
@@ -110,7 +110,7 @@ export class ResourceNegotiationSuccessView {
       partnerResourceIconWrapper.appendChild(partnerResourceIcon)
       partnerResourceItem.appendChild(partnerResourceIconWrapper)
       const partnerResourceValueWrapper = document.createElement('div')
-      const partnerResourceValue = createHeading('h5', `${resource.value}`)
+      const partnerResourceValue = createElWithText('h5', `${resource.value}`)
       partnerResourceValueWrapper.appendChild(partnerResourceValue)
       partnerResourceItem.appendChild(partnerResourceValueWrapper)
       partnerResources.appendChild(partnerResourceItem)
@@ -128,7 +128,7 @@ export class ResourceNegotiationSuccessView {
     const resourceNegotiationSuccessContentBoxTravelDestination = createDivWithId('resourceNegotiationSuccessContentBoxTravelDestination')
 
     const trainIcon = createIconWithWidth('/assets/trainCustomIcon.png', '56px')
-    const travelName = createHeading('h3', `${travel.value.name}`)
+    const travelName = createElWithText('h3', `${travel.value.name}`)
     resourceNegotiationSuccessContentBoxTravelDestination.append(trainIcon, travelName)
     resourceNegotiationSuccessContentBox.appendChild(resourceNegotiationSuccessContentBoxTravelDestination)
     resourceNegotiationSuccessContentBoxWrapper.appendChild(resourceNegotiationSuccessContentBox)

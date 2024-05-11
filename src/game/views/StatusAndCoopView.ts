@@ -7,10 +7,10 @@ import {
   addResourcesTimes,
   createButtonWithInnerText,
   createCrop,
-  createDivWithAll,
+  createDivWithIdClass,
   createDivWithClassName,
   createDivWithId,
-  createHeading,
+  createElWithText,
   createIcon,
   createIconWithWidth,
   createIElement,
@@ -71,7 +71,7 @@ export class StatusAndCoopView {
     equipment.resources.forEach((element) => {
       const row = createDivWithClassName('advertisementContainerRow')
       const buttonGiveWrapper = createDivWithId('adButtonWrapper')
-      const buttonGive = createDivWithAll('adButton', 'adGive')
+      const buttonGive = createDivWithIdClass('adButton', 'adGive')
       const giveImage = createIconWithWidth('/assets/giveCustomIcon.png', '30px')
       const resourceGiveImg = createCrop(this.cropper, this.url, this.resRepresentation, element.key)
       buttonGive.append(giveImage, resourceGiveImg)
@@ -107,7 +107,7 @@ export class StatusAndCoopView {
       })
       buttonGiveWrapper.appendChild(buttonGive)
       const buttonReceiveWrapper = createDivWithId('adButtonWrapper')
-      const buttonReceive = createDivWithAll('adButton', 'adReceive')
+      const buttonReceive = createDivWithIdClass('adButton', 'adReceive')
       const receiveImage = createIconWithWidth('/assets/receiveCustomIcon.png', '30px')
       const resourceReceiveImg = createCrop(this.cropper, this.url, this.resRepresentation, element.key)
       buttonReceive.append(receiveImage, resourceReceiveImg)
@@ -262,8 +262,8 @@ export class StatusAndCoopView {
     // Buttons
     const coopDialogButtons = createDivWithId('singleCoopDialogButtons')
     // Buttons - Resign
-    const coopDialogButtonsResignExtraWrapper = createDivWithAll(StatusAndCoopView.coopDialogButtonsResignExtraWrapperID, StatusAndCoopView.coopDialogButtonsResignExtraWrapperID + 'Enabled')
-    const coopDialogButtonsResignWrapper = createDivWithAll(StatusAndCoopView.coopDialogButtonsResignWrapperID, StatusAndCoopView.coopDialogButtonsResignWrapperID + 'Enabled')
+    const coopDialogButtonsResignExtraWrapper = createDivWithIdClass(StatusAndCoopView.coopDialogButtonsResignExtraWrapperID, StatusAndCoopView.coopDialogButtonsResignExtraWrapperID + 'Enabled')
+    const coopDialogButtonsResignWrapper = createDivWithIdClass(StatusAndCoopView.coopDialogButtonsResignWrapperID, StatusAndCoopView.coopDialogButtonsResignWrapperID + 'Enabled')
     const coopDialogButtonsResign = createButtonWithInnerText(StatusAndCoopView.coopDialogButtonsResignID, 'Zrezygnuj')
     coopDialogButtonsResign.className = StatusAndCoopView.coopDialogButtonsResignID + 'Enabled'
     coopDialogButtonsResign.addEventListener('click', () => {
@@ -406,8 +406,8 @@ export class StatusAndCoopView {
     const coopDialogButtons = createDivWithId('multiCoopDialogButtons')
 
     // Buttons - Break
-    const coopDialogButtonsBreakExtraWrapper = createDivWithAll(StatusAndCoopView.coopDialogButtonsBreakExtraWrapperID, StatusAndCoopView.coopDialogButtonsBreakExtraWrapperID + 'Enabled')
-    const coopDialogButtonsBreakWrapper = createDivWithAll(StatusAndCoopView.coopDialogButtonsBreakWrapperID, StatusAndCoopView.coopDialogButtonsBreakWrapperID + 'Enabled')
+    const coopDialogButtonsBreakExtraWrapper = createDivWithIdClass(StatusAndCoopView.coopDialogButtonsBreakExtraWrapperID, StatusAndCoopView.coopDialogButtonsBreakExtraWrapperID + 'Enabled')
+    const coopDialogButtonsBreakWrapper = createDivWithIdClass(StatusAndCoopView.coopDialogButtonsBreakWrapperID, StatusAndCoopView.coopDialogButtonsBreakWrapperID + 'Enabled')
     const coopDialogButtonsBreak = createButtonWithInnerText(StatusAndCoopView.coopDialogButtonsBreakID, 'Zerwij')
     coopDialogButtonsBreak.className = StatusAndCoopView.coopDialogButtonsBreakID + 'Enabled'
     coopDialogButtonsBreak.addEventListener('click', () => {
@@ -444,7 +444,7 @@ export class StatusAndCoopView {
     if (playerResourceValue < playerRequiredValue) hasAllResources = false
 
     const itemValueWrapper = document.createElement('div')
-    const itemValue = createHeading('h4', `${Math.min(playerResourceValue, playerRequiredValue)}/${resource.value}`)
+    const itemValue = createElWithText('h4', `${Math.min(playerResourceValue, playerRequiredValue)}/${resource.value}`)
 
     itemValueWrapper.appendChild(itemValue)
     coopDialogResourcesItem.append(itemImage, itemValueWrapper)

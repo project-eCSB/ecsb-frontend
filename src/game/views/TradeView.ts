@@ -8,12 +8,12 @@ import {
   createArrowIcon,
   createButtonWithId,
   createButtonWithInnerText,
-  createDivWithAll,
+  createDivWithIdClass,
   createDivWithClassName,
   createDivWithId,
-  createHeading,
-  createHeadingWithAll,
-  createHeadingWithId,
+  createElWithText,
+  createElWithIdClassText,
+  createElWithIdText,
   createIconWithWidth,
   createIElement,
   createIElementWithColor,
@@ -133,7 +133,7 @@ export class TradeView {
     // Header
     const tradeBoxHeaderWrapper = createDivWithId(TradeView.tradeBoxHeaderWrapperID)
     const tradeBoxHeader = createDivWithId(TradeView.tradeBoxHeaderID)
-    const workshopTitleHeader = createHeading('h1', 'HANDEL')
+    const workshopTitleHeader = createElWithText('h1', 'HANDEL')
 
     tradeBoxHeader.append(createArrowIcon(), workshopTitleHeader, createArrowIcon())
     tradeBoxHeaderWrapper.appendChild(tradeBoxHeader)
@@ -176,7 +176,7 @@ export class TradeView {
     const tradeBoxContentLeftWrapper = createDivWithId(TradeView.tradeBoxContentLeftWrapperID)
     const tradeBoxContentLeftWrapperTitleExtraWrapper = createDivWithId(TradeView.tradeBoxContentLeftWrapperTitleExtraWrapperID)
     const tradeBoxContentLeftWrapperTitleWrapper = createDivWithId(TradeView.tradeBoxContentLeftWrapperTitleWrapperID)
-    const tradeBoxContentLeftWrapperTitle = createHeadingWithId('h2', TradeView.tradeBoxContentLeftWrapperTitleID, 'Oferujesz')
+    const tradeBoxContentLeftWrapperTitle = createElWithIdText('h2', TradeView.tradeBoxContentLeftWrapperTitleID, 'Oferujesz')
     tradeBoxContentLeftWrapperTitleWrapper.appendChild(tradeBoxContentLeftWrapperTitle)
     tradeBoxContentLeftWrapperTitleExtraWrapper.appendChild(tradeBoxContentLeftWrapperTitleWrapper)
 
@@ -191,14 +191,14 @@ export class TradeView {
     const tradeBoxContentRightWrapper = createDivWithId(TradeView.tradeBoxContentRightWrapperID)
     const tradeBoxContentRightWrapperTitleExtraWrapper = createDivWithId(TradeView.tradeBoxContentRightWrapperTitleExtraWrapperID)
     const tradeBoxContentRightWrapperTitleWrapper = createDivWithId(TradeView.tradeBoxContentRightWrapperTitleWrapperID)
-    const tradeBoxContentRightWrapperTitle = createHeadingWithId('h2', TradeView.tradeBoxContentRightWrapperTitleID, 'Otrzymujesz')
+    const tradeBoxContentRightWrapperTitle = createElWithIdText('h2', TradeView.tradeBoxContentRightWrapperTitleID, 'Otrzymujesz')
     tradeBoxContentRightWrapperTitleWrapper.appendChild(tradeBoxContentRightWrapperTitle)
     tradeBoxContentRightWrapperTitleExtraWrapper.appendChild(tradeBoxContentRightWrapperTitleWrapper)
 
     const tradeBoxContentRight = createDivWithId(TradeView.tradeBoxContentRightID)
     this.fillOtherPlayerEq(otherPlayerId, tradeBoxContentRight, this.youGet)
 
-    this.tradeBoxReceivedMessageExtraWrapper = createDivWithAll('tradeMessageReceivedExtraWrapper', 'tradeMessageExtraWrapper')
+    this.tradeBoxReceivedMessageExtraWrapper = createDivWithIdClass('tradeMessageReceivedExtraWrapper', 'tradeMessageExtraWrapper')
     const tradeBoxReceivedMessageWrapper = createDivWithClassName('tradeMessageWrapper')
     this.tradeBoxReceivedMessage = createDivWithClassName('tradeMessage')
     this.tradeBoxReceivedMessage.innerText = ''
@@ -437,7 +437,7 @@ export class TradeView {
 
       const resourceValueWrapper = document.createElement('div')
       const valueWrapper = document.createElement('div')
-      const value = createHeading('h4', `${resource.value}`)
+      const value = createElWithText('h4', `${resource.value}`)
       let upperBoundary = Number.MAX_VALUE
       if (what === 'Left') {
         upperBoundary = limitedState.resources.find((item: GameResourceDto) => item.key === resource.key)!.value
@@ -502,7 +502,7 @@ export class TradeView {
 
     const moneyValueWrapper = document.createElement('div')
     const valueWrapper = document.createElement('div')
-    const value = createHeading('h4', `${currentState.money}`)
+    const value = createElWithText('h4', `${currentState.money}`)
     if (what === 'Left') {
       value.style.color = currentState.money > this.currPlayerEq.money ? 'red' : 'black'
     }
@@ -565,10 +565,10 @@ export class TradeView {
       const resultResourceIcon = createTradeCrop(this.cropper, this.resourceURL, this.resourceRepresentation, resource.key)
       resultResourceIconWrapper.appendChild(resultResourceIcon)
       const valueWrapper = document.createElement('div')
-      const value = createHeadingWithId('h4', `tradeBoxContent${what}Result-${resource.key}-value`, `${resource.value}`)
+      const value = createElWithIdText('h4', `tradeBoxContent${what}Result-${resource.key}-value`, `${resource.value}`)
       valueWrapper.appendChild(value)
 
-      const exclamationMark = createHeadingWithAll('h4', `tradeBoxContent${what}Result-${resource.key}-exclamationMark`, '!', 'tradeBoxContentResultExclamationMark')
+      const exclamationMark = createElWithIdClassText('h4', `tradeBoxContent${what}Result-${resource.key}-exclamationMark`, '!', 'tradeBoxContentResultExclamationMark')
       let resourceObject
       if (what === 'Left') {
         resourceObject = this.youGetPrevious.resources.find((r) => r.key === resource.key)!.value
@@ -587,10 +587,10 @@ export class TradeView {
     resultMoneyIconWrapper.appendChild(resultMoneyIcon)
 
     const resultValueWrapper = document.createElement('div')
-    const resultValue = createHeadingWithId('h4', `tradeBoxContent${what}Result-money-value`, `${currentState.money}`)
+    const resultValue = createElWithIdText('h4', `tradeBoxContent${what}Result-money-value`, `${currentState.money}`)
     resultValueWrapper.appendChild(resultValue)
 
-    const exclamationMark = createHeadingWithAll('h4', `tradeBoxContent${what}Result-money-exclamationMark`, '!', 'tradeBoxContentResultExclamationMark')
+    const exclamationMark = createElWithIdClassText('h4', `tradeBoxContent${what}Result-money-exclamationMark`, '!', 'tradeBoxContentResultExclamationMark')
     if (what === 'Left') {
       exclamationMark.style.display = !this.isFirstOffer && currentState.money !== this.youGetPrevious.money ? 'block' : 'none'
     } else {

@@ -4,7 +4,7 @@ import {
   createArrowIcon,
   createButtonWithInnerText,
   createDivWithId,
-  createHeading,
+  createElWithText,
   createIconWithWidth,
   createItemContainer,
   createMoneyContainer,
@@ -43,14 +43,14 @@ export class TradeSuccessView {
     // Header
     const tradeSuccessBoxHeaderWrapper = createDivWithId('tradeSuccessBoxHeaderWrapper')
     const tradeSuccessBoxHeader = createDivWithId('tradeSuccessBoxHeader')
-    const tradeSuccessBoxHeaderTitle = createHeading('h1', 'HANDEL')
+    const tradeSuccessBoxHeaderTitle = createElWithText('h1', 'HANDEL')
     tradeSuccessBoxHeader.append(createArrowIcon(), tradeSuccessBoxHeaderTitle, createArrowIcon())
     tradeSuccessBoxHeaderWrapper.appendChild(tradeSuccessBoxHeader)
 
     // Success information
     const tradeSuccessBoxInformationBoxWrapper = createDivWithId('tradeSuccessBoxInformationBoxWrapper')
     const tradeSuccessBoxInformationBox = createDivWithId('tradeSuccessBoxInformationBox')
-    const tradeSuccessBoxInformationBoxText = createHeading('h1', 'Wymiana zakończona sukcesem!')
+    const tradeSuccessBoxInformationBoxText = createElWithText('h1', 'Wymiana zakończona sukcesem!')
     tradeSuccessBoxInformationBox.append(
       createIconWithWidth('/assets/successCustomIcon.png', '20px'),
       tradeSuccessBoxInformationBoxText,
@@ -63,8 +63,8 @@ export class TradeSuccessView {
     const tradeSuccessBoxContentBoxExtraWrapper = createDivWithId('tradeSuccessBoxContentBoxExtraWrapper')
     const tradeSuccessBoxContentBoxWrapper = createDivWithId('tradeSuccessBoxContentBoxWrapper')
     const tradeSuccessBoxContentBox = createDivWithId('tradeSuccessBoxContentBox')
-    const currentUserId = createHeading('h2', currPlayerId)
-    const otherUserId = createHeading('h2', otherPlayerId)
+    const currentUserId = createElWithText('h2', currPlayerId)
+    const otherUserId = createElWithText('h2', otherPlayerId)
 
     const resourcesBox = createDivWithId('tradeSuccessBoxContentBoxResourcesBox')
 

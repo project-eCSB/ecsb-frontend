@@ -11,9 +11,9 @@ import {
   createCrop,
   createDivWithClassName,
   createDivWithId,
-  createHeading,
-  createHeadingWithId,
-  createIconWithAll, createIconWithWidth,
+  createElWithText,
+  createElWithIdText,
+  createIconWithSize, createIconWithWidth,
   createIElementWithColor,
   createSpan,
   getClassName,
@@ -166,8 +166,8 @@ export class ResourceNegotiationView {
     this.resourceNegotiationHeaderBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationHeaderBoxWrapperID)
     this.resourceNegotiationHeaderBox = createDivWithId(ResourceNegotiationView.resourceNegotiationHeaderBoxID)
 
-    const resourceNegotiationHeaderTitle = createHeading('h1', 'WYPRAWA')
-    const resourceNegotiationHeaderSubtitle = createHeading('h2', 'PODZIAŁ WKŁADU i ZYSKU')
+    const resourceNegotiationHeaderTitle = createElWithText('h1', 'WYPRAWA')
+    const resourceNegotiationHeaderSubtitle = createElWithText('h2', 'PODZIAŁ WKŁADU i ZYSKU')
     this.resourceNegotiationCloseButton = createButtonWithId(ResourceNegotiationView.resourceNegotiationCloseButtonID)
     this.resourceNegotiationCloseButton.addEventListener('click', () => {
       sendCoopMessage(this.scene.chatWs, {
@@ -209,11 +209,11 @@ export class ResourceNegotiationView {
     const timeContainer = document.createElement('div')
     if (this.travel.value.time > 3) {
       const timeValue = createSpan(`${this.travel.value.time}`)
-      const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+      const timeIcon = createIconWithSize('/assets/timeCustomIcon.png', '20px')
       timeContainer.append(timeValue, timeIcon)
     } else {
       for (let i = 0; i < this.travel.value.time; i++) {
-        const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+        const timeIcon = createIconWithSize('/assets/timeCustomIcon.png', '20px')
         timeContainer.appendChild(timeIcon)
       }
     }
@@ -228,7 +228,7 @@ export class ResourceNegotiationView {
 
     const moneyContainer = document.createElement('div')
     const moneyValue = createSpan(`${this.travel.value.moneyRange.from}-${this.travel.value.moneyRange.to}`)
-    const moneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '20px')
+    const moneyIcon = createIconWithSize('/assets/coinCustomIcon.png', '20px')
     moneyContainer.append(moneyValue, moneyIcon)
     this.resourceNegotiationResultProfitBox.appendChild(moneyContainer)
 
@@ -236,7 +236,7 @@ export class ResourceNegotiationView {
     // Result - player turn
     this.resourceNegotiationPlayerTurnBoxWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationPlayerTurnBoxWrapperID)
 
-    this.resourceNegotiationPlayerTurnBox = createHeadingWithId('h3', ResourceNegotiationView.resourceNegotiationPlayerTurnBoxID, '')
+    this.resourceNegotiationPlayerTurnBox = createElWithIdText('h3', ResourceNegotiationView.resourceNegotiationPlayerTurnBoxID, '') as HTMLHeadingElement
     this.resourceNegotiationPlayerTurnBoxWrapper.appendChild(this.resourceNegotiationPlayerTurnBox)
 
     this.resourceNegotiationResultBox.append(
@@ -252,10 +252,10 @@ export class ResourceNegotiationView {
     this.resourceNegotiationContentBox = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxID)
     // Content - Player names
     const resourceNegotiationPlayerNameWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationPlayerNameWrapperID)
-    const resourceNegotiationPlayerName = createHeadingWithId('h3', ResourceNegotiationView.resourceNegotiationPlayerNameID, `${this.scene.playerId}`)
+    const resourceNegotiationPlayerName = createElWithIdText('h3', ResourceNegotiationView.resourceNegotiationPlayerNameID, `${this.scene.playerId}`)
     resourceNegotiationPlayerNameWrapper.appendChild(resourceNegotiationPlayerName)
     const resourceNegotiationPartnerNameWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationPartnerNameWrapperID)
-    const resourceNegotiationPartnerName = createHeadingWithId('h3', ResourceNegotiationView.resourceNegotiationPartnerNameID, `${this.partner}`)
+    const resourceNegotiationPartnerName = createElWithIdText('h3', ResourceNegotiationView.resourceNegotiationPartnerNameID, `${this.partner}`)
     resourceNegotiationPartnerNameWrapper.appendChild(resourceNegotiationPartnerName)
 
     this.resourceNegotiationContentBoxWrapper.appendChild(this.resourceNegotiationContentBox)
@@ -396,7 +396,7 @@ export class ResourceNegotiationView {
     this.clearContent()
     // Content - Negotiation - Resources
     const resourceNegotiationContentBoxResources = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxResourcesID)
-    resourceNegotiationContentBoxResources.appendChild(createHeading('h5', 'Podział kosztów'))
+    resourceNegotiationContentBoxResources.appendChild(createElWithText('h5', 'Podział kosztów'))
     const resourceNegotiationContentBoxResourcesContent = createDivWithId('resourceNegotiationContentBoxResourcesContent')
     for (const resource of this.travel.value.resources) {
       const resourceNegotiationContentBoxResourcesContentItem = document.createElement('div')
@@ -409,7 +409,7 @@ export class ResourceNegotiationView {
 
       const playerResourceValueWrapper = document.createElement('div')
       const playerValue = this.newPlayerBid.resources.find((r) => r.key === resource.key)!.value
-      const playerResourceValue = createHeadingWithId('h5', `coop-playerBid-${resource.key}`, `${playerValue}`)
+      const playerResourceValue = createElWithIdText('h5', `coop-playerBid-${resource.key}`, `${playerValue}`)
       playerResourceValueWrapper.appendChild(playerResourceValue)
       playerResourceContainer.appendChild(playerResourceValueWrapper)
       // Partner
@@ -422,7 +422,7 @@ export class ResourceNegotiationView {
 
       const partnerResourceValueWrapper = document.createElement('div')
       const partnerValue = this.newPartnerBid.resources.find((r) => r.key === resource.key)!.value
-      const partnerResourceValue = createHeadingWithId('h5', `coop-partnerBid-${resource.key}`, `${partnerValue}`)
+      const partnerResourceValue = createElWithIdText('h5', `coop-partnerBid-${resource.key}`, `${partnerValue}`)
       partnerResourceValueWrapper.appendChild(partnerResourceValue)
       partnerResourceContainer.appendChild(partnerResourceValueWrapper)
 
@@ -469,7 +469,7 @@ export class ResourceNegotiationView {
     this.resourceNegotiationContentBox.appendChild(resourceNegotiationContentBoxResources)
     // Content - Negotiation - Player & Time
     const resourceNegotiationContentBoxPlayerTime = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxPlayerTimeID)
-    resourceNegotiationContentBoxPlayerTime.appendChild(createHeading('h5', 'Wyjazd i wkład czasu'))
+    resourceNegotiationContentBoxPlayerTime.appendChild(createElWithText('h5', 'Wyjazd i wkład czasu'))
 
     const resourceNegotiationContentBoxPlayerTimeContent = createDivWithId('resourceNegotiationContentBoxPlayerTimeContent')
     const playerMovesCheckbox = document.createElement('input')
@@ -534,7 +534,7 @@ export class ResourceNegotiationView {
     this.resourceNegotiationContentBox.appendChild(document.createElement('hr'))
     // Content - Negotiation - Profit
     const resourceNegotiationContentBoxProfit = createDivWithId(ResourceNegotiationView.resourceNegotiationContentBoxProfitID)
-    resourceNegotiationContentBoxProfit.appendChild(createHeading('h5', 'Podział zysków'))
+    resourceNegotiationContentBoxProfit.appendChild(createElWithText('h5', 'Podział zysków'))
     const resourceNegotiationContentBoxProfitContent = createDivWithId('resourceNegotiationContentBoxProfitContent')
 
     const playerProfit = document.createElement('div')
@@ -545,10 +545,10 @@ export class ResourceNegotiationView {
 
     const playerMoneyValueContainer = document.createElement('div')
     const playerMoneyValuePercentageWrapper = document.createElement('div')
-    const playerMoneyValuePercentage = createHeadingWithId('h5', `coop-playerBid-money-percentage`, `${this.newPlayerBid.moneyRatio}%`)
+    const playerMoneyValuePercentage = createElWithIdText('h5', `coop-playerBid-money-percentage`, `${this.newPlayerBid.moneyRatio}%`)
     playerMoneyValuePercentageWrapper.appendChild(playerMoneyValuePercentage)
     const playerMoneyValueValueWrapper = document.createElement('div')
-    const playerMoneyValueValue = createHeadingWithId('h5', `coop-playerBid-money-value`, `(${Math.floor(
+    const playerMoneyValueValue = createElWithIdText('h5', `coop-playerBid-money-value`, `(${Math.floor(
       this.travel.value.moneyRange.from * (this.newPlayerBid.moneyRatio / 100),
     )}-${Math.ceil(this.travel.value.moneyRange.to * (this.newPlayerBid.moneyRatio / 100))})`)
     playerMoneyValueValueWrapper.appendChild(playerMoneyValueValue)
@@ -602,10 +602,10 @@ export class ResourceNegotiationView {
 
     const partnerMoneyValueContainer = document.createElement('div')
     const partnerMoneyValuePercentageWrapper = document.createElement('div')
-    const partnerMoneyValuePercentage = createHeadingWithId('h5', `coop-partnerBid-money-percentage`, `${this.newPartnerBid.moneyRatio}%`)
+    const partnerMoneyValuePercentage = createElWithIdText('h5', `coop-partnerBid-money-percentage`, `${this.newPartnerBid.moneyRatio}%`)
     partnerMoneyValuePercentageWrapper.appendChild(partnerMoneyValuePercentage)
     const partnerMoneyValueValueWrapper = document.createElement('div')
-    const partnerMoneyValueValue = createHeadingWithId('h5', `coop-partnerBid-money-value`, `(${Math.floor(
+    const partnerMoneyValueValue = createElWithIdText('h5', `coop-partnerBid-money-value`, `(${Math.floor(
       this.travel.value.moneyRange.from * (this.newPartnerBid.moneyRatio / 100),
     )}-${Math.ceil(this.travel.value.moneyRange.to * (this.newPartnerBid.moneyRatio / 100))})`)
     partnerMoneyValueValueWrapper.appendChild(partnerMoneyValueValue)

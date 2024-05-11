@@ -9,8 +9,8 @@ import {
   createButtonWithInnerText,
   createCrop,
   createDivWithId,
-  createHeading,
-  createIconWithAll,
+  createElWithText,
+  createIconWithSize,
   createIElement,
   createIElementWithColor,
   createSpan,
@@ -77,10 +77,10 @@ export class WorkshopView {
     const workshopBoxHeaderBoxExtraWrapper = createDivWithId(WorkshopView.workshopBoxHeaderBoxExtraWrapperID)
     const workshopBoxHeaderBoxWrapper = createDivWithId(WorkshopView.workshopBoxHeaderBoxWrapperID)
     const workshopBoxHeaderBox = createDivWithId(WorkshopView.workshopBoxHeaderBoxID)
-    const workshopTitleHeader = createHeading('h1', 'WARSZTAT')
+    const workshopTitleHeader = createElWithText('h1', 'WARSZTAT')
     const workshopTitleClassWrapper = document.createElement('div')
 
-    const workshopTitleClass = createHeading('h2', `${this.scene.status.className.toUpperCase()}A`)
+    const workshopTitleClass = createElWithText('h2', `${this.scene.status.className.toUpperCase()}A`)
     const leftIcon = itemIconReversed.cloneNode(true)
     const rightIcon = itemIcon.cloneNode(true)
 
@@ -122,8 +122,8 @@ export class WorkshopView {
       false,
     )
     const equalsElement = createSpan(' = ')
-    const moneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '20px')
-    const timeIcon = createIconWithAll('/assets/timeCustomIcon.png', '20px')
+    const moneyIcon = createIconWithSize('/assets/coinCustomIcon.png', '20px')
+    const timeIcon = createIconWithSize('/assets/timeCustomIcon.png', '20px')
     const moneySpan = createSpan(`${this.scene.workshopUnitPrice * this.scene.workshopMaxProduction}`)
     const timeSpan = createSpan(`+ ${1}`)
 
@@ -143,18 +143,18 @@ export class WorkshopView {
     const workshopBoxContentBoxCostBox = createDivWithId(WorkshopView.workshopBoxContentBoxCostBoxID)
 
     const pMoneyIconWrapper = document.createElement('div')
-    const pMoneyIcon = createIconWithAll('/assets/coinCustomIcon.png', '38px')
+    const pMoneyIcon = createIconWithSize('/assets/coinCustomIcon.png', '38px')
     pMoneyIconWrapper.appendChild(pMoneyIcon)
 
     const pMoneyInputWrapper = document.createElement('div')
-    const pMoneyInput = createHeading('h4', '0')
+    const pMoneyInput = createElWithText('h4', '0')
     pMoneyInputWrapper.appendChild(pMoneyInput)
     const pMoney = document.createElement('div')
     pMoney.append(pMoneyInputWrapper, pMoneyIconWrapper)
 
     this.pTime = createDivWithId('pTime')
 
-    const costHeader = createHeading('h2', 'Koszt')
+    const costHeader = createElWithText('h2', 'Koszt')
     const costResources = document.createElement('div')
     costResources.append(pMoney, this.pTime)
 
@@ -163,9 +163,9 @@ export class WorkshopView {
     // Left - ResultBox
     const workshopBoxContentBoxResultBox = createDivWithId(WorkshopView.workshopBoxContentBoxResultBoxID)
 
-    const pWantLabel = createHeading('h1', 'Wyprodukujesz')
+    const pWantLabel = createElWithText('h1', 'Wyprodukujesz')
     const pWantInputWrapper = document.createElement('div')
-    const pWantInput = createHeading('h2', '0')
+    const pWantInput = createElWithText('h2', '0')
     pWantInputWrapper.appendChild(pWantInput)
 
     const inputWrapper = document.createElement('div')
@@ -193,7 +193,7 @@ export class WorkshopView {
 
       const pTimeIconExtraWrapper = document.createElement('div')
       const pTimeIconWrapper = document.createElement('div')
-      const pTimeIcon = createIconWithAll('/assets/timeCustomIcon.png', '25px')
+      const pTimeIcon = createIconWithSize('/assets/timeCustomIcon.png', '25px')
       pTimeIconWrapper.appendChild(pTimeIcon)
       pTimeIconExtraWrapper.appendChild(pTimeIconWrapper)
       this.pTime.appendChild(pTimeIconExtraWrapper)
