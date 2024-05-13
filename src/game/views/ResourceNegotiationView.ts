@@ -18,6 +18,8 @@ import {
   createSpan,
   getClassName,
   getTimeContainer,
+  getId,
+  getValue,
 } from './ViewUtils'
 
 export class ResourceNegotiationView {
@@ -27,6 +29,8 @@ export class ResourceNegotiationView {
   public static readonly resourceNegotiationHeaderBoxWrapperID = 'resourceNegotiationHeaderBoxWrapper'
   public static readonly resourceNegotiationHeaderBoxID = 'resourceNegotiationHeaderBox'
   public static readonly resourceNegotiationCloseButtonID = 'resourceNegotiationCloseButton'
+  public static readonly resourceNegotiationCloseButtonActiveID = 'resourceNegotiationCloseButtonActive'
+  public static readonly resourceNegotiationCloseMessageButtonID = 'resourceNegotiationCloseMessageButton'
   public static readonly resourceNegotiationResultBoxID = 'resourceNegotiationResultBox'
   public static readonly resourceNegotiationResultCostBoxWrapperID = 'resourceNegotiationResultCostBoxWrapper'
   public static readonly resourceNegotiationResultCostBoxID = 'resourceNegotiationResultCostBox'
@@ -48,6 +52,9 @@ export class ResourceNegotiationView {
   public static readonly resourceNegotiationButtonsProposeButtonExtraWrapperID = 'resourceNegotiationButtonsProposeButtonExtraWrapper'
   public static readonly resourceNegotiationButtonsProposeButtonWrapperID = 'resourceNegotiationButtonsProposeButtonWrapper'
   public static readonly resourceNegotiationButtonsProposeButtonID = 'resourceNegotiationButtonsProposeButton'
+  public static readonly resourceNegotiationProposeMessageButtonExtraWrapperID = 'resourceNegotiationProposeMessageButtonExtraWrapper'
+  public static readonly resourceNegotiationProposeMessageButtonWrapperID = 'resourceNegotiationProposeMessageButtonWrapper'
+  public static readonly resourceNegotiationProposeMessageButtonID = 'resourceNegotiationProposeMessageButton'
   public static readonly resourceNegotiationButtonsAcceptButtonExtraWrapperID = 'resourceNegotiationButtonsAcceptButtonExtraWrapper'
   public static readonly resourceNegotiationButtonsAcceptButtonWrapperID = 'resourceNegotiationButtonsAcceptButtonWrapper'
   public static readonly resourceNegotiationButtonsAcceptButtonID = 'resourceNegotiationButtonsAcceptButton'
@@ -80,6 +87,11 @@ export class ResourceNegotiationView {
   private readonly resourceNegotiationButtonsAcceptButtonExtraWrapper: HTMLDivElement
   private readonly resourceNegotiationButtonsAcceptButtonWrapper: HTMLDivElement
   private readonly resourceNegotiationButtonsAcceptButton: HTMLButtonElement
+  // MESSAGES
+  private readonly negotiationCloseMessageButton: HTMLButtonElement
+  private readonly negotiationCloseMessagesContainer: HTMLDivElement
+  private readonly resourceNegotiationProposeMessageButtonExtraWrapper: HTMLDivElement
+  private readonly resourceNegotiationProposeMessagesContainer: HTMLDivElement
 
   private isPlayerTurn: boolean
   private isFirstTurn: boolean
@@ -170,16 +182,32 @@ export class ResourceNegotiationView {
     const resourceNegotiationHeaderSubtitle = createElWithText('h2', 'PODZIAŁ WKŁADU i ZYSKU')
     this.resourceNegotiationCloseButton = createButtonWithId(ResourceNegotiationView.resourceNegotiationCloseButtonID)
     this.resourceNegotiationCloseButton.addEventListener('click', () => {
-      sendCoopMessage(this.scene.chatWs, {
-        type: OutcomingCoopMessageType.CancelNegotiation,
-        message: 'empty for now',
-      })
-      this.close(false)
+      this.handleClose('')
     })
+
+    this.negotiationCloseMessageButton = createButtonWithId(ResourceNegotiationView.resourceNegotiationCloseMessageButtonID)
+    this.negotiationCloseMessageButton.addEventListener('click', () => {
+      this.negotiationCloseMessagesContainer.style.display = getValue(this.negotiationCloseMessagesContainer.style.display, 'block', 'none')
+      this.resourceNegotiationCloseButton.id = this.negotiationCloseMessageButton.id === ResourceNegotiationView.resourceNegotiationCloseMessageButtonID ? ResourceNegotiationView.resourceNegotiationCloseButtonActiveID : ResourceNegotiationView.resourceNegotiationCloseButtonID
+      this.negotiationCloseMessageButton.id = getId(this.negotiationCloseMessageButton, ResourceNegotiationView.resourceNegotiationCloseMessageButtonID)
+    })
+    const CloseChatIcon = createIElementWithColor('comment', 'black')
+    this.negotiationCloseMessageButton.appendChild(CloseChatIcon)
+
+    this.negotiationCloseMessagesContainer = createDivWithId('resourceNegotiationCloseMessagesContainer')
+    this.negotiationCloseMessagesContainer.style.display = 'none'
+    const closePage1 = this.createMessagePage('first msg', ['second msg'], false, false, 'resourceNegotiationCancel-page')
+    closePage1.id = 'cancel-page-active'
+    const closePage2 = this.createMessagePage('third msg', ['forth msg'], false, false, 'resourceNegotiationCancel-page')
+    const closePage3 = this.createMessagePage('fifth msg', [], false, false, 'resourceNegotiationCancel-page')
+    this.negotiationCloseMessagesContainer.append(closePage1, closePage2, closePage3)
+    const closePaginationBar = this.createPaginationBar(this.negotiationCloseMessagesContainer, 'resourceNegotiationCancel-page', 'cancel-page-active', 0)
+    this.negotiationCloseMessagesContainer.appendChild(closePaginationBar)
+
     const XIcon = createIElementWithColor('times', 'black')
     this.resourceNegotiationCloseButton.appendChild(XIcon)
     this.resourceNegotiationHeaderBox.append(resourceNegotiationHeaderTitle, resourceNegotiationHeaderSubtitle)
-    this.resourceNegotiationHeaderBoxWrapper.append(this.resourceNegotiationHeaderBox, this.resourceNegotiationCloseButton)
+    this.resourceNegotiationHeaderBoxWrapper.append(this.resourceNegotiationHeaderBox, this.resourceNegotiationCloseButton, this.negotiationCloseMessageButton, this.negotiationCloseMessagesContainer)
     this.resourceNegotiationHeaderBoxExtraWrapper.appendChild(this.resourceNegotiationHeaderBoxWrapper)
     this.resourceNegotiationBox.append(this.resourceNegotiationHeaderBoxExtraWrapper)
     // Result
@@ -270,32 +298,43 @@ export class ResourceNegotiationView {
     this.resourceNegotiationButtonsProposeButtonWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
     this.resourceNegotiationButtonsProposeButton = createButtonWithInnerText(ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID, 'ZAPROPONUJ')
     this.resourceNegotiationButtonsProposeButton.addEventListener('click', () => {
-      this.disableAcceptBtn()
-      this.disableProposeButton()
-      sendCoopMessage(this.scene.chatWs, {
-        type: OutcomingCoopMessageType.ResourceDecide,
-        yourBid: {
-          travelerId: this.newPlayerBid.travelerId !== '' ? this.newPlayerBid.travelerId : this.newPartnerBid.travelerId,
-          moneyRatio: this.newPlayerBid.moneyRatio,
-          resources: this.newPlayerBid.resources,
-        },
-        message: 'empty for now',
-      })
-      this.resourceNegotiationButtonsProposeButtonExtraWrapper.className = getClassName(
-        this.resourceNegotiationButtonsProposeButtonExtraWrapper,
-        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
-      this.resourceNegotiationButtonsProposeButtonWrapper.className = getClassName(
-        this.resourceNegotiationButtonsProposeButtonWrapper,
-        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
-      this.resourceNegotiationButtonsProposeButton.className = getClassName(
-        this.resourceNegotiationButtonsProposeButton,
-        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID)
-      this.update(false, this.newPlayerBid)
+      this.handlePropose('')
     })
 
     this.resourceNegotiationButtonsProposeButtonWrapper.appendChild(this.resourceNegotiationButtonsProposeButton)
     this.resourceNegotiationButtonsProposeButtonExtraWrapper.appendChild(this.resourceNegotiationButtonsProposeButtonWrapper)
     this.resourceNegotiationButtons.appendChild(this.resourceNegotiationButtonsProposeButtonExtraWrapper)
+
+    // Show/Hide propose messages button
+    this.resourceNegotiationProposeMessageButtonExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationProposeMessageButtonExtraWrapperID)
+    const resourceNegotiationMessageButtonWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationProposeMessageButtonWrapperID)
+    const resourceNegotiationProposeMessageButton = createButtonWithId(ResourceNegotiationView.resourceNegotiationProposeMessageButtonID)
+    resourceNegotiationProposeMessageButton.addEventListener('click', () => {
+      this.resourceNegotiationProposeMessagesContainer.style.display = getValue(this.resourceNegotiationProposeMessagesContainer.style.display, 'block', 'none')
+      this.resourceNegotiationProposeMessageButtonExtraWrapper.id = getId(this.resourceNegotiationProposeMessageButtonExtraWrapper, ResourceNegotiationView.resourceNegotiationProposeMessageButtonExtraWrapperID)
+      this.resourceNegotiationButtonsProposeButtonExtraWrapper.className = getClassName(this.resourceNegotiationButtonsProposeButtonExtraWrapper, ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
+      this.resourceNegotiationButtonsProposeButtonWrapper.className = getClassName(this.resourceNegotiationButtonsProposeButtonWrapper, ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
+      this.resourceNegotiationButtonsProposeButton.className = getClassName(this.resourceNegotiationButtonsProposeButton, ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID)
+    })
+    const ProposeChatIcon = createIElementWithColor('comment', 'black')
+    resourceNegotiationProposeMessageButton.appendChild(ProposeChatIcon)
+    resourceNegotiationMessageButtonWrapper.appendChild(resourceNegotiationProposeMessageButton)
+    this.resourceNegotiationProposeMessageButtonExtraWrapper.appendChild(resourceNegotiationMessageButtonWrapper)
+
+    this.resourceNegotiationButtons.appendChild(this.resourceNegotiationProposeMessageButtonExtraWrapper)
+
+    // Propose messages
+    this.resourceNegotiationProposeMessagesContainer = createDivWithId('resourceNegotiationMessagesContainer')
+    const page1 = this.createMessagePage('first msg', ['second msg', 'third msg'], true, true, 'resourceNegotiationPropose-page')
+    page1.id = 'propose-page-active'
+    const page2 = this.createMessagePage('forth msg', ['fifth msg'], true, true, 'resourceNegotiationPropose-page')
+    this.resourceNegotiationProposeMessagesContainer.append(page1, page2)
+    const paginationBar = this.createPaginationBar(this.resourceNegotiationProposeMessagesContainer, 'resourceNegotiationPropose-page', 'propose-page-active', 0)
+    this.resourceNegotiationProposeMessagesContainer.appendChild(paginationBar)
+    this.resourceNegotiationProposeMessagesContainer.style.display = 'none'
+
+    this.resourceNegotiationButtons.appendChild(this.resourceNegotiationProposeMessagesContainer)
+
     // Buttons - accept
     this.resourceNegotiationButtonsAcceptButtonExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonExtraWrapperID)
     this.resourceNegotiationButtonsAcceptButtonWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationButtonsAcceptButtonWrapperID)
@@ -720,6 +759,8 @@ export class ResourceNegotiationView {
       'resourceNegotiationButtonsProposeButtonWrapperEnabled'
     this.resourceNegotiationButtonsProposeButton.className =
       'resourceNegotiationButtonsProposeButtonEnabled'
+    
+    this.resourceNegotiationProposeMessageButtonExtraWrapper.style.display = 'flex'
   }
 
   private disableProposeButton(): void {
@@ -731,6 +772,10 @@ export class ResourceNegotiationView {
       'resourceNegotiationButtonsProposeButtonWrapperDisabled'
     this.resourceNegotiationButtonsProposeButton.className =
       'resourceNegotiationButtonsProposeButtonDisabled'
+
+    this.resourceNegotiationProposeMessageButtonExtraWrapper.id = 'resourceNegotiationProposeMessageButtonExtraWrapper'
+    this.resourceNegotiationProposeMessageButtonExtraWrapper.style.display = 'none'
+    this.resourceNegotiationProposeMessagesContainer.style.display = 'none'
   }
 
   private enableAcceptButton(): void {
@@ -753,6 +798,124 @@ export class ResourceNegotiationView {
       'resourceNegotiationButtonsAcceptButtonWrapperDisabled'
     this.resourceNegotiationButtonsAcceptButton.className =
       'resourceNegotiationButtonsAcceptButtonDisabled'
+  }
+
+  private handleClose(msg: string): void {
+    sendCoopMessage(this.scene.chatWs, {
+      type: OutcomingCoopMessageType.CancelNegotiation,
+      message: msg,
+    })
+    this.close(false)
+  }
+
+  private handlePropose(msg: string): void {
+    this.disableAcceptBtn()
+      this.disableProposeButton()
+      sendCoopMessage(this.scene.chatWs, {
+        type: OutcomingCoopMessageType.ResourceDecide,
+        yourBid: {
+          travelerId: this.newPlayerBid.travelerId !== '' ? this.newPlayerBid.travelerId : this.newPartnerBid.travelerId,
+          moneyRatio: this.newPlayerBid.moneyRatio,
+          resources: this.newPlayerBid.resources,
+        },
+        message: msg,
+      })
+      this.resourceNegotiationButtonsProposeButtonExtraWrapper.className = getClassName(
+        this.resourceNegotiationButtonsProposeButtonExtraWrapper,
+        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
+      this.resourceNegotiationButtonsProposeButtonWrapper.className = getClassName(
+        this.resourceNegotiationButtonsProposeButtonWrapper,
+        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
+      this.resourceNegotiationButtonsProposeButton.className = getClassName(
+        this.resourceNegotiationButtonsProposeButton,
+        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID)
+      this.update(false, this.newPlayerBid)
+  }
+
+  private createMessageButton(message: string, propose: boolean): HTMLDivElement {
+    const tradeBoxProposeMessageExtraWrapper = document.createElement('div')
+    tradeBoxProposeMessageExtraWrapper.classList.add('resourceNegotiationMessageExtraWrapper', 'resourceNegotiationMessageClickable')
+    tradeBoxProposeMessageExtraWrapper.addEventListener('click', () => {
+      propose ? this.handlePropose(message) : this.handleClose(message)
+    })
+    const tradeBoxProposeMessageWrapper = createDivWithClassName('resourceNegotiationMessageWrapper')
+    const tradeBoxProposeMessage = document.createElement('div')
+    tradeBoxProposeMessage.classList.add('resourceNegotiationMessage')
+    if (propose) {
+      tradeBoxProposeMessage.classList.add('resourceNegotiationMessageMiddle')
+    }
+    tradeBoxProposeMessage.innerText = message
+    tradeBoxProposeMessageExtraWrapper.appendChild(tradeBoxProposeMessageWrapper)
+    tradeBoxProposeMessageWrapper.appendChild(tradeBoxProposeMessage)
+    return tradeBoxProposeMessageExtraWrapper
+  }
+
+  private createMessagePage(msgFirst: string, msgTail: string[], row: boolean, propose: boolean, className: string): HTMLDivElement {
+    const page = createDivWithClassName(className)
+    page.style.display = 'flex'
+    page.style.flexDirection = row ? 'row' : 'column'
+    page.style.justifyContent = 'space-around'
+    const firstModal = this.createMessageButton(msgFirst, propose)
+    page.appendChild(firstModal)
+    msgTail.forEach(element => {
+      if (element) {
+        page.style.justifyContent = 'flex-start'
+        const secondModal = this.createMessageButton(element, propose)
+        page.appendChild(secondModal)
+      }
+    })
+    return page
+  }
+
+  private createPaginationBar(
+    parent: HTMLDivElement,
+    defaultClass: string,
+    chosenId: string,
+    startingPage: number,
+  ): HTMLDivElement {
+    const bar = createDivWithId('pagination-bar')
+    const pageCounter = parent.querySelectorAll(`.${defaultClass}`).length
+    let page = startingPage
+    const pages = parent.querySelectorAll(`.${defaultClass}`)
+
+    const buttonUpWrapper = createDivWithId('pagination-buttonUpWrapper')
+    const buttonUp = document.createElement('button')
+    const buttonDownWrapper = createDivWithId('pagination-buttonDownWrapper')
+    const buttonDown = document.createElement('button')
+    const dots: HTMLDivElement[] = []
+    for (let i = 0; i < pageCounter; i++) {
+      const dot = createDivWithId('pagination-dot')
+      dots.push(dot)
+    }
+    dots[startingPage].id = 'pagination-dot-active'
+
+    buttonUp.addEventListener('click', () => {
+      pages[page].id = ''
+      dots[page].id = 'pagination-dot'
+      page = ((page - 1) + pageCounter) % pageCounter
+      pages[page].id = chosenId
+      dots[page].id = 'pagination-dot-active'
+    })
+
+    buttonDown.addEventListener('click', () => {
+      pages[page].id = ''
+      dots[page].id = 'pagination-dot'
+      page = ((page + 1) + pageCounter) % pageCounter
+      pages[page].id = chosenId
+      dots[page].id = 'pagination-dot-active'
+    })
+
+    bar.appendChild(buttonUpWrapper)
+    for (let i = 0; i < pageCounter; i++) {
+      bar.appendChild(dots[i])
+    }
+    bar.appendChild(buttonDownWrapper)
+    buttonUpWrapper.appendChild(buttonUp)
+    buttonDownWrapper.appendChild(buttonDown)
+
+    const barWrapper = createDivWithId('pagination-bar-wrapper')
+    barWrapper.appendChild(bar)
+    return barWrapper
   }
 
   public show(): void {

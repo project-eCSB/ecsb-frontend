@@ -3057,10 +3057,6 @@
   transform: none;
 }
 
-#tradeBoxCloseMessagesContainer > .tradeMessageExtraWrapper {
-  margin-bottom: 8px;
-}
-
 #tradeMessageReceivedExtraWrapper {
   width: 200px;
   position: absolute;
@@ -3156,15 +3152,18 @@
   filter: drop-shadow(-5px 6px #835211);
 }
 
-.tradeMessageExtraWrapper:hover > .tradeMessageWrapper {
-  transform: translate(2px, -2px);
-}
-
 #tradeBoxCloseMessagesContainer
   > .tradeCancel-page
   > .tradeMessageExtraWrapper:last-child:hover
   > .tradeMessageWrapper {
   transform: scale(1, -1) translate(2px, 2px);
+}
+
+#tradeBoxCloseMessagesContainer
+  > .tradeCancel-page 
+  > .tradeMessageExtraWrapper:first-child:hover 
+  > .tradeMessageWrapper {
+  transform: translate(2px, -2px);
 }
 
 .tradeMessage {
@@ -6021,10 +6020,14 @@
   font-size: 1rem;
 }
 
-#resourceNegotiationCloseButton {
+#resourceNegotiationCloseButton,
+#resourceNegotiationCloseButtonActive,
+#resourceNegotiationCloseMessageButton,
+#resourceNegotiationCloseMessageButtonActive,
+#resourceNegotiationProposeMessageButton {
   border: none;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   color: #000;
   font-style: normal;
@@ -6035,7 +6038,7 @@
   right: -7px;
   font-size: 1rem;
   z-index: 999999;
-  background-color: #d39f59;
+  background-color: #edb872;
   filter: drop-shadow(-1px 2px rgb(48, 20, 1, 0.9));
   display: flex;
   justify-content: center;
@@ -6044,14 +6047,306 @@
   transition: 0.1s ease-in-out all;
 }
 
-#resourceNegotiationCloseButton:hover {
-  transform: translate(1px, -1px);
-  filter: drop-shadow(-2px 3px rgb(48, 20, 1, 0.9));
+#resourceNegotiationCloseButton > i,
+#resourceNegotiationCloseButtonActive > i,
+#resourceNegotiationCloseMessageButton > i,
+#resourceNegotiationCloseMessageButtonActive > i {
+  font-size: large;
 }
 
-#resourceNegotiationCloseButton:active {
+#resourceNegotiationProposeMessageButton {
+  filter: none;
+  width: 30px;
+  height: 30px;
+}
+
+#resourceNegotiationCloseButton,
+#resourceNegotiationCloseButtonActive {
+  top: -10px;
+  right: -10px;
+}
+
+#resourceNegotiationCloseMessageButton,
+#resourceNegotiationCloseMessageButtonActive {
+  transform: scale(0.7);
+  top: 3px;
+  right: -33px;
+}
+
+#resourceNegotiationCloseButton:hover,
+#resourceNegotiationCloseMessageButton:hover {
+  transform: translate(2px, -2px);
+  filter: drop-shadow(-3px 4px rgb(48, 20, 1, 0.9));
+}
+
+#resourceNegotiationCloseMessageButton:hover {
+  transform: scale(0.66) translate(3px, -3px);
+}
+
+#resourceNegotiationCloseButton:active,
+#resourceNegotiationCloseButtonActive,
+#resourceNegotiationCloseMessageButton:active,
+#resourceNegotiationCloseMessageButtonActive {
+  background-color: #ab742b;
   filter: none;
   transform: translate(0, 0);
+}
+
+#resourceNegotiationCloseMessageButton:active,
+#resourceNegotiationCloseMessageButtonActive {
+  transform: scale(0.66) translate(0, 0);
+}
+
+
+#resourceNegotiationProposeMessageButtonExtraWrapper,
+#resourceNegotiationProposeMessageButtonExtraWrapperActive {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  top: 37px;
+  right: 42px;
+  width: 30px;
+  height: 30px;
+}
+
+#resourceNegotiationProposeMessageButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+  width: 100%;
+  height: 100%;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper #resourceNegotiationProposeMessageButton {
+  transform: translate(3px, -4px);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper:hover #resourceNegotiationProposeMessageButton {
+  transform: translate(5px, -6px);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper:hover > #resourceNegotiationProposeMessageButtonWrapper {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapperActive {
+  filter: none;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapperActive > #resourceNegotiationProposeMessageButtonWrapper {
+  filter: none;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapperActive #resourceNegotiationProposeMessageButton {
+  background-color: #ab742b;
+  transform: translate(0, 0);
+}
+
+#resourceNegotiationCloseMessagesContainer {
+  position: absolute;
+  top: -40px;
+  right: -170px;
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:last-child > div {
+  transform: scale(1, -1);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:last-child:hover > div {
+  transform: scale(1, -1) translate(2px, 2px);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:last-child > div > div {
+  transform: scale(1, -1);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:first-child > div {
+  transform: none;
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:first-child:hover > div {
+  transform: translate(2px, -2px);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:first-child > div > div {
+  transform: none;
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationMessageExtraWrapper {
+  margin-bottom: 8px;
+}
+
+#resourceNegotiationMessageReceivedExtraWrapper {
+  width: 200px;
+  position: absolute;
+  top: 100px;
+  right: -200px;
+}
+
+.resourceNegotiationMessageClickable {
+  cursor: pointer;
+}
+
+.resourceNegotiationMessageExtraWrapper {
+  filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s ease-in-out all;
+}
+
+.resourceNegotiationMessageWrapper {
+  padding: 8px 20px 12px 20px;
+  background-color: #e3c296;
+  clip-path: polygon(
+    8.33% 12.29%,
+    11.22% 12%,
+    15.22% 12.29%,
+    19.89% 12.29%,
+    25.44% 11.71%,
+    33.33% 12%,
+    40.67% 12.86%,
+    47.78% 12.57%,
+    54.78% 11.71%,
+    60.11% 11.43%,
+    63.67% 12.29%,
+    68.56% 12.57%,
+    72.67% 12%,
+    73.78% 15.71%,
+    75.33% 12.57%,
+    78.89% 13.43%,
+    82.44% 13.43%,
+    86.67% 14%,
+    91.33% 14%,
+    95.44% 14.57%,
+    96% 26.86%,
+    96.22% 35.71%,
+    96.56% 42.29%,
+    96.67% 50.29%,
+    96.89% 60.86%,
+    96.56% 70.57%,
+    96.22% 75.43%,
+    95.67% 79.14%,
+    94.89% 82%,
+    92.44% 83.14%,
+    88.78% 83.43%,
+    85.11% 84%,
+    82% 84.29%,
+    76.44% 84.57%,
+    70.78% 84%,
+    62.78% 83.71%,
+    56.56% 83.14%,
+    50.56% 83.14%,
+    44.56% 82.57%,
+    37.67% 82%,
+    32.56% 81.14%,
+    30.44% 77.71%,
+    27.89% 81.43%,
+    24.56% 80.57%,
+    21.11% 79.71%,
+    18.22% 79.71%,
+    15.56% 80.86%,
+    12.56% 84%,
+    8.67% 88.86%,
+    5.56% 92.29%,
+    1.44% 98%,
+    2.33% 94%,
+    3.33% 90.57%,
+    4.33% 85.71%,
+    4.78% 80.86%,
+    5.33% 76.86%,
+    5.56% 73.43%,
+    5.44% 66.29%,
+    5.22% 58%,
+    4.78% 49.43%,
+    4.67% 41.43%,
+    4.89% 31.14%,
+    5.22% 21.14%,
+    5.56% 16.57%,
+    6.33% 13.14%
+  );
+  width: 100%;
+  height: 100%;
+  transition: 0.2s ease-in-out all;
+}
+
+.resourceNegotiationMessageExtraWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+.resourceNegotiationMessageExtraWrapper:hover > .resourceNegotiationMessageWrapper {
+  transform: translate(2px, -2px);
+}
+
+#resourceNegotiationBoxCloseMessagesContainer
+  > .resourceNegotiationCancel-page
+  > .resourceNegotiationMessageExtraWrapper:last-child:hover
+  > .resourceNegotiationMessageWrapper {
+  transform: scale(1, -1) translate(2px, 2px);
+}
+
+.resourceNegotiationMessage {
+  width: 120%;
+  height: 100%;
+  padding: 5px;
+}
+
+#resourceNegotiationMessagesContainer {
+  position: relative;
+  top: -10px;
+  right: -70px;
+}
+
+#resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div > div {
+  transform: scale(1, -1);
+}
+
+#resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div > div > div {
+  transform: scale(1, -1);
+}
+
+#resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div:hover > div {
+  transform: scale(1, -1) translate(-2px, 2px);
+}
+
+#resourceNegotiationMessageReceivedExtraWrapper {
+  filter: none;
+}
+
+#resourceNegotiationMessageReceivedExtraWrapper > .resourceNegotiationMessageWrapper {
+  transform: none;
+}
+
+.resourceNegotiationPropose-page {
+  position: absolute;
+  width: 150px;
+  top: 700px;
+  left: -77px;
+  transition: 0.3s ease-in-out all;
+}
+
+.resourceNegotiationCancel-page {
+  position: absolute;
+  width: 150px;
+  top: -600px;
+  left: -130px;
+  transition: 0.3s ease-in-out all;
+}
+
+#resourceNegotiationMessagesContainer > #pagination-bar-wrapper {
+  right: -100px;
+  top: 15px;
+  height: 185px;
+}
+
+#resourceNegotiationCloseMessagesContainer > #pagination-bar-wrapper {
+  right: -50px;
+  height: 130px;
 }
 
 /* ResourceNegotiationView - Result*/
@@ -7269,8 +7564,14 @@
   transition: 0.3s ease-in-out all;
 }
 
-#cancel-page-active {
-  top: 0;
+#tradeBoxCloseMessagesContainer
+  > #cancel-page-active {
+  top: 13px;
+}
+
+#resourceNegotiationCloseMessagesContainer
+  > #cancel-page-active {
+  top: 13px;
 }
 
 #pagination-bar-wrapper {

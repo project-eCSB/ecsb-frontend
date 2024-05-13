@@ -860,7 +860,10 @@ export class TradeView {
     })
     const tradeBoxProposeMessageWrapper = createDivWithClassName('tradeMessageWrapper')
     const tradeBoxProposeMessage = document.createElement('div')
-    tradeBoxProposeMessage.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessage.classList.add('tradeMessage')
+    if (propose) {
+      tradeBoxProposeMessage.classList.add('tradeMessageMiddle')
+    }
     tradeBoxProposeMessage.innerText = message
     tradeBoxProposeMessageExtraWrapper.appendChild(tradeBoxProposeMessageWrapper)
     tradeBoxProposeMessageWrapper.appendChild(tradeBoxProposeMessage)
