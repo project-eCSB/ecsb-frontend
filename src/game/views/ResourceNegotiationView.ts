@@ -201,7 +201,7 @@ export class ResourceNegotiationView {
     const closePage2 = this.createMessagePage('third msg', ['forth msg'], false, false, 'resourceNegotiationCancel-page')
     const closePage3 = this.createMessagePage('fifth msg', [], false, false, 'resourceNegotiationCancel-page')
     this.negotiationCloseMessagesContainer.append(closePage1, closePage2, closePage3)
-    const closePaginationBar = this.createPaginationBar(this.negotiationCloseMessagesContainer, 'resourceNegotiationCancel-page', 'cancel-page-active', 0)
+    const closePaginationBar = this.createPaginationBarWithDimension(this.negotiationCloseMessagesContainer, 'resourceNegotiationCancel-page', 'cancel-page-active', 0, false)
     this.negotiationCloseMessagesContainer.appendChild(closePaginationBar)
 
     const XIcon = createIElementWithColor('times', 'black')
@@ -329,7 +329,7 @@ export class ResourceNegotiationView {
     page1.id = 'propose-page-active'
     const page2 = this.createMessagePage('forth msg', ['fifth msg'], true, true, 'resourceNegotiationPropose-page')
     this.resourceNegotiationProposeMessagesContainer.append(page1, page2)
-    const paginationBar = this.createPaginationBar(this.resourceNegotiationProposeMessagesContainer, 'resourceNegotiationPropose-page', 'propose-page-active', 0)
+    const paginationBar = this.createPaginationBarWithDimension(this.resourceNegotiationProposeMessagesContainer, 'resourceNegotiationPropose-page', 'propose-page-active', 0, true)
     this.resourceNegotiationProposeMessagesContainer.appendChild(paginationBar)
     this.resourceNegotiationProposeMessagesContainer.style.display = 'none'
 
@@ -867,13 +867,14 @@ export class ResourceNegotiationView {
     return page
   }
 
-  private createPaginationBar(
+  private createPaginationBarWithDimension(
     parent: HTMLDivElement,
     defaultClass: string,
     chosenId: string,
     startingPage: number,
+    row: boolean,
   ): HTMLDivElement {
-    const bar = createDivWithId('pagination-bar')
+    const bar = createDivWithId(row ? 'pagination-bar-row' : 'pagination-bar')
     const pageCounter = parent.querySelectorAll(`.${defaultClass}`).length
     let page = startingPage
     const pages = parent.querySelectorAll(`.${defaultClass}`)
@@ -913,7 +914,7 @@ export class ResourceNegotiationView {
     buttonUpWrapper.appendChild(buttonUp)
     buttonDownWrapper.appendChild(buttonDown)
 
-    const barWrapper = createDivWithId('pagination-bar-wrapper')
+    const barWrapper = createDivWithId(row ? 'pagination-bar-wrapper-row' : 'pagination-bar-wrapper')
     barWrapper.appendChild(bar)
     return barWrapper
   }
