@@ -743,7 +743,7 @@ export class Scene extends Phaser.Scene {
         this.resourceNegotiationView?.close(false)
         break
       case IncomingCoopMessageType.CoopNegotiationBid:
-        this.resourceNegotiationView?.update(true, msg.message.coopBid)
+        this.resourceNegotiationView?.update(true, msg.message.coopBid, msg.message.message)
         break
       case IncomingCoopMessageType.CoopProposeOwnTravel:
         this.showCoopInvite(
@@ -766,6 +766,9 @@ export class Scene extends Phaser.Scene {
         )
         this.plannedTravel = null
         this.statusAndCoopView?.updateCoopView()
+        break
+      case IncomingCoopMessageType.CoopServerRemind:
+        this.resourceNegotiationView?.onRemind()
         break
       case NotificationMessageType.NotificationStartAdvertiseCoop:
         this.advertisementInfoBuilder.addBubbleForCoop(msg.message.travelName, msg.senderId)

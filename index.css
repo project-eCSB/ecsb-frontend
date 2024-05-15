@@ -6309,16 +6309,8 @@
   right: -70px;
 }
 
-#resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div > div {
-  transform: scale(1, -1);
-}
-
-#resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div > div > div {
-  transform: scale(1, -1);
-}
-
 #resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div:hover > div {
-  transform: scale(1, -1) translate(2px, 2px);
+  transform: translate(2px, -2px);
 }
 
 #resourceNegotiationMessageReceivedExtraWrapper {
@@ -6331,7 +6323,7 @@
 
 .resourceNegotiationPropose-page {
   position: absolute;
-  top: 10px;
+  top: -20px;
   left: 1000px;
   transition: 0.3s ease-in-out all;
 }
@@ -6346,7 +6338,7 @@
 
 #resourceNegotiationMessagesContainer > #pagination-bar-wrapper-row {
   right: -290px;
-  top: 80px;
+  top: 55px;
   width: 370px;
 }
 
@@ -6435,6 +6427,7 @@
   top: 20px;
   left: -140px;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: 0.2s all ease-in-out;
 }
 
 #resourceNegotiationPlayerTurnBoxWrapper > h3 {
@@ -6893,61 +6886,72 @@
 }
 
 #resourceNegotiationButtonsProposeButtonExtraWrapper,
-#resourceNegotiationButtonsAcceptButtonExtraWrapper {
+#resourceNegotiationButtonsAcceptButtonExtraWrapper,
+#resourceNegotiationButtonsRemindButtonExtraWrapper {
   border: none;
 }
 
 #resourceNegotiationButtonsProposeButtonWrapper,
-#resourceNegotiationButtonsAcceptButtonWrapper {
+#resourceNegotiationButtonsAcceptButtonWrapper,
+#resourceNegotiationButtonsRemindButtonWrapper {
   border: none;
 }
 
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabled,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled {
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabled {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px 4px #edb872);
 }
 
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover {
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabled:hover {
   filter: none;
 }
 
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabledActive,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive {
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabledActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperEnabledActive,
-.resourceNegotiationButtonsAcceptButtonWrapperEnabledActive {
+.resourceNegotiationButtonsAcceptButtonWrapperEnabledActive,
+.resourceNegotiationButtonsRemindButtonWrapperEnabledActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperEnabled,
-.resourceNegotiationButtonsAcceptButtonWrapperEnabled {
+.resourceNegotiationButtonsAcceptButtonWrapperEnabled,
+.resourceNegotiationButtonsRemindButtonWrapperEnabled {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperEnabled:hover,
-.resourceNegotiationButtonsAcceptButtonWrapperEnabled:hover {
+.resourceNegotiationButtonsAcceptButtonWrapperEnabled:hover,
+.resourceNegotiationButtonsRemindButtonWrapperEnabled:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperDisabled,
-.resourceNegotiationButtonsAcceptButtonWrapperDisabled {
+.resourceNegotiationButtonsAcceptButtonWrapperDisabled,
+.resourceNegotiationButtonsRemindButtonWrapperDisabled {
   filter: drop-shadow(-3px 4px #3f382e);
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperDisabled:hover,
-.resourceNegotiationButtonsAcceptButtonWrapperDisabled:hover {
+.resourceNegotiationButtonsAcceptButtonWrapperDisabled:hover,
+.resourceNegotiationButtonsRemindButtonWrapperDisabled:hover {
   filter: drop-shadow(-3px 4px #3f382e);
 }
 
 #resourceNegotiationButtonsProposeButton,
-#resourceNegotiationButtonsAcceptButton {
+#resourceNegotiationButtonsAcceptButton,
+#resourceNegotiationButtonsRemindButton {
   width: 100%;
   padding: 0.5rem;
   clip-path: polygon(
@@ -6998,20 +7002,24 @@
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover
   .resourceNegotiationButtonsProposeButtonEnabled,
 .resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover
-  .resourceNegotiationButtonsAcceptButtonEnabled {
+  .resourceNegotiationButtonsAcceptButtonEnabled,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabled:hover
+  .resourceNegotiationButtonsRemindButtonEnabled {
   cursor: pointer;
   transform: translate(2px, -2px);
 }
 
 .resourceNegotiationButtonsProposeButtonEnabled,
-.resourceNegotiationButtonsAcceptButtonEnabled {
+.resourceNegotiationButtonsAcceptButtonEnabled,
+.resourceNegotiationButtonsRemindButtonEnabled {
   transition: 0.2s all ease-in-out;
   color: #000;
   background-color: #edb872;
 }
 
 .resourceNegotiationButtonsProposeButtonEnabledActive,
-.resourceNegotiationButtonsAcceptButtonEnabledActive {
+.resourceNegotiationButtonsAcceptButtonEnabledActive,
+.resourceNegotiationButtonsRemindButtonEnabledActive {
   background-color: #ab742b;
   color: #000;
   transition: 0.2s all ease-in-out;
@@ -7019,13 +7027,15 @@
 }
 
 .resourceNegotiationButtonsProposeButtonDisabled,
-.resourceNegotiationButtonsAcceptButtonDisabled {
+.resourceNegotiationButtonsAcceptButtonDisabled,
+.resourceNegotiationButtonsRemindButtonDisabled {
   background-color: #e9d3b7;
   color: #787272;
 }
 
 .resourceNegotiationButtonsProposeButtonDisabled:hover,
-.resourceNegotiationButtonsAcceptButtonDisabled:hover {
+.resourceNegotiationButtonsAcceptButtonDisabled:hover,
+.resourceNegotiationButtonsRemindButtonDisabeld:hover {
   cursor: auto;
   transform: none;
 }
@@ -7568,6 +7578,7 @@
 }
 
 #resourceNegotiationMessagesContainer > #propose-page-active {
+  top: -20px;
   left: -77px;
 }
 

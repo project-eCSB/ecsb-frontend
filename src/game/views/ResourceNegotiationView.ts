@@ -20,6 +20,7 @@ import {
   getTimeContainer,
   getId,
   getValue,
+  createDivWithIdClass,
 } from './ViewUtils'
 
 export class ResourceNegotiationView {
@@ -58,6 +59,9 @@ export class ResourceNegotiationView {
   public static readonly resourceNegotiationButtonsAcceptButtonExtraWrapperID = 'resourceNegotiationButtonsAcceptButtonExtraWrapper'
   public static readonly resourceNegotiationButtonsAcceptButtonWrapperID = 'resourceNegotiationButtonsAcceptButtonWrapper'
   public static readonly resourceNegotiationButtonsAcceptButtonID = 'resourceNegotiationButtonsAcceptButton'
+  public static readonly resourceNegotiationRemindButtonExtraWrapperID = 'resourceNegotiationButtonsRemindButtonExtraWrapper'
+  public static readonly resourceNegotiationRemindButtonWrapperID = 'resourceNegotiationButtonsRemindButtonWrapper'
+  public static readonly resourceNegotiationRemindButtonID = 'resourceNegotiationButtonsRemindButton'
 
   // CONTAINER
   private readonly resourceNegotiationBoxWrapper: HTMLDivElement
@@ -87,11 +91,18 @@ export class ResourceNegotiationView {
   private readonly resourceNegotiationButtonsAcceptButtonExtraWrapper: HTMLDivElement
   private readonly resourceNegotiationButtonsAcceptButtonWrapper: HTMLDivElement
   private readonly resourceNegotiationButtonsAcceptButton: HTMLButtonElement
+  private readonly resourceNegotiationRemindButtonExtraWrapper: HTMLDivElement
+  private readonly resourceNegotiationRemindButtonWrapper: HTMLDivElement
+  private readonly resourceNegotiationRemindButton: HTMLButtonElement
   // MESSAGES
   private readonly negotiationCloseMessageButton: HTMLButtonElement
   private readonly negotiationCloseMessagesContainer: HTMLDivElement
   private readonly resourceNegotiationProposeMessageButtonExtraWrapper: HTMLDivElement
   private readonly resourceNegotiationProposeMessagesContainer: HTMLDivElement
+  private readonly resourceNegotiationReceivedMessage: HTMLDivElement
+  private readonly resourceNegotiationReceivedMessageExtraWrapper: HTMLDivElement
+
+  private remindButtonTimeoutID: number | null = null
 
   private isPlayerTurn: boolean
   private isFirstTurn: boolean
@@ -286,8 +297,18 @@ export class ResourceNegotiationView {
     const resourceNegotiationPartnerName = createElWithIdText('h3', ResourceNegotiationView.resourceNegotiationPartnerNameID, `${this.partner}`)
     resourceNegotiationPartnerNameWrapper.appendChild(resourceNegotiationPartnerName)
 
+    //Content - Message
+    this.resourceNegotiationReceivedMessageExtraWrapper = createDivWithIdClass('resourceNegotiationMessageReceivedExtraWrapper', 'resourceNegotiationMessageExtraWrapper')
+    const resourceNegotiationReceivedMessageWrapper = createDivWithClassName('resourceNegotiationMessageWrapper')
+    this.resourceNegotiationReceivedMessage = createDivWithClassName('resourceNegotiationMessage')
+    this.resourceNegotiationReceivedMessage.innerText = ''
+    this.hideReceivedMessage()
+
+    this.resourceNegotiationReceivedMessageExtraWrapper.appendChild(resourceNegotiationReceivedMessageWrapper)
+    resourceNegotiationReceivedMessageWrapper.appendChild(this.resourceNegotiationReceivedMessage)
+
     this.resourceNegotiationContentBoxWrapper.appendChild(this.resourceNegotiationContentBox)
-    this.resourceNegotiationContentBoxExtraWrapper.append(this.resourceNegotiationContentBoxWrapper, resourceNegotiationPlayerNameWrapper, resourceNegotiationPartnerNameWrapper)
+    this.resourceNegotiationContentBoxExtraWrapper.append(this.resourceNegotiationContentBoxWrapper, resourceNegotiationPlayerNameWrapper, resourceNegotiationPartnerNameWrapper, this.resourceNegotiationReceivedMessageExtraWrapper)
     this.resourceNegotiationBox.append(this.resourceNegotiationContentBoxExtraWrapper)
 
     // Buttons
@@ -367,17 +388,55 @@ export class ResourceNegotiationView {
     this.resourceNegotiationButtonsAcceptButtonWrapper.appendChild(this.resourceNegotiationButtonsAcceptButton)
     this.resourceNegotiationButtonsAcceptButtonExtraWrapper.appendChild(this.resourceNegotiationButtonsAcceptButtonWrapper)
     this.resourceNegotiationButtons.appendChild(this.resourceNegotiationButtonsAcceptButtonExtraWrapper)
+
+    // Remind button
+    this.resourceNegotiationRemindButtonExtraWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationRemindButtonExtraWrapperID)
+    this.resourceNegotiationRemindButtonWrapper = createDivWithId(ResourceNegotiationView.resourceNegotiationRemindButtonWrapperID)
+    this.resourceNegotiationRemindButton = createButtonWithInnerText(ResourceNegotiationView.resourceNegotiationRemindButtonID, 'PRZYPOMNIJ')
+    this.resourceNegotiationRemindButton.addEventListener('click', () => {
+      if (!this.isPlayerTurn) {
+        this.resourceNegotiationRemindButtonExtraWrapper.className = getClassName(this.resourceNegotiationRemindButtonExtraWrapper, ResourceNegotiationView.resourceNegotiationRemindButtonExtraWrapperID)
+        this.resourceNegotiationRemindButtonWrapper.className = getClassName(this.resourceNegotiationRemindButtonWrapper, ResourceNegotiationView.resourceNegotiationRemindButtonWrapperID)
+        this.resourceNegotiationRemindButton.className = getClassName(this.resourceNegotiationRemindButton, ResourceNegotiationView.resourceNegotiationRemindButtonID)
+        this.remind()
+        this.disableRemindButton()
+        this.remindButtonTimeoutID = setTimeout(() => {
+          this.enableRemindButton()
+        }, 5000)
+      }
+    })
+    this.disableRemindButton()
+
+    this.resourceNegotiationRemindButtonWrapper.appendChild(this.resourceNegotiationRemindButton)
+    this.resourceNegotiationRemindButtonExtraWrapper.appendChild(this.resourceNegotiationRemindButtonWrapper)
+    this.resourceNegotiationButtons.appendChild(this.resourceNegotiationRemindButtonExtraWrapper)
+
     this.resourceNegotiationBox.append(this.resourceNegotiationButtons)
     this.resourceNegotiationBoxWrapper.appendChild(this.resourceNegotiationBox)
 
     // Content - Negotiation
     this.setPlayerTurn(isPlayerTurn)
     this.updateContent()
+
+    if (!this.isPlayerTurn) {
+      this.remindButtonTimeoutID = setTimeout(() => {
+        this.enableRemindButton()
+      }, 20000)
+    }
   }
 
-  public update(isPlayerTurn: boolean, playerBid: CoopBid): void {
+  public update(isPlayerTurn: boolean, playerBid: CoopBid, msg: string): void {
     this.isFirstTurn = false
     this.setPlayerTurn(isPlayerTurn)
+
+    if (this.remindButtonTimeoutID) {
+      clearTimeout(this.remindButtonTimeoutID)
+      this.remindButtonTimeoutID = !this.isPlayerTurn
+        ? setTimeout(() => {
+          this.enableRemindButton()
+        }, 20000)
+        : null
+    }
 
     if (isPlayerTurn) {
       const currPlayerBidResources: GameResourceDto[] = []
@@ -428,6 +487,13 @@ export class ResourceNegotiationView {
         resources: currPartnerBidResources,
       }
     }
+
+    if (msg.length > 0) {
+      this.showReceivedMessage(msg)
+    } else {
+      this.hideReceivedMessage()
+    }
+
     this.updateContent()
   }
 
@@ -800,6 +866,58 @@ export class ResourceNegotiationView {
       'resourceNegotiationButtonsAcceptButtonDisabled'
   }
 
+  public enableRemindButton(): void {
+    this.resourceNegotiationRemindButton.disabled = false
+    this.resourceNegotiationRemindButton.className = ResourceNegotiationView.resourceNegotiationRemindButtonID + 'Enabled'
+    this.resourceNegotiationRemindButtonExtraWrapper.style.display = 'block'
+    this.resourceNegotiationRemindButtonExtraWrapper.className = ResourceNegotiationView.resourceNegotiationRemindButtonExtraWrapperID + 'Enabled'
+    this.resourceNegotiationRemindButtonWrapper.className = ResourceNegotiationView.resourceNegotiationRemindButtonWrapperID + 'Enabled'
+  }
+
+  public disableRemindButton(): void {
+    this.resourceNegotiationRemindButton.disabled = true
+    this.resourceNegotiationRemindButton.className = ResourceNegotiationView.resourceNegotiationRemindButtonID + 'Disabled'
+    this.resourceNegotiationRemindButtonExtraWrapper.style.display = 'none'
+    this.resourceNegotiationRemindButtonExtraWrapper.className = ResourceNegotiationView.resourceNegotiationRemindButtonExtraWrapperID + 'Disabled'
+    this.resourceNegotiationRemindButtonWrapper.className = ResourceNegotiationView.resourceNegotiationRemindButtonWrapperID + 'Disabled'
+  }
+
+  public showReceivedMessage(message: string): void {
+    this.resourceNegotiationReceivedMessage.innerText = message
+    this.resourceNegotiationReceivedMessageExtraWrapper.style.display = 'block'
+  }
+
+  public hideReceivedMessage(): void {
+    this.resourceNegotiationReceivedMessage.innerText = ''
+    this.resourceNegotiationReceivedMessageExtraWrapper.style.display = 'none'
+  }
+
+  public remind(): void {
+    sendCoopMessage(this.scene.chatWs, {
+      type: OutcomingCoopMessageType.CoopRemind,
+      receiverId: this.partner!,
+    })
+  }
+
+  public onRemind(): void {
+    this.resourceNegotiationPlayerTurnBoxWrapper.style.transform = 'scale(1.2)'
+    setTimeout(() => {
+      this.resourceNegotiationPlayerTurnBoxWrapper.style.transform = 'none'
+    }, 200)
+    setTimeout(() => {
+      this.resourceNegotiationPlayerTurnBoxWrapper.style.transform = 'scale(1.2)'
+    }, 400)
+    setTimeout(() => {
+      this.resourceNegotiationPlayerTurnBoxWrapper.style.transform = 'none'
+    }, 600)
+    setTimeout(() => {
+      this.resourceNegotiationPlayerTurnBoxWrapper.style.transform = 'scale(1.2)'
+    }, 800)
+    setTimeout(() => {
+      this.resourceNegotiationPlayerTurnBoxWrapper.style.transform = 'none'
+    }, 1000)
+  }
+
   private handleClose(msg: string): void {
     sendCoopMessage(this.scene.chatWs, {
       type: OutcomingCoopMessageType.CancelNegotiation,
@@ -810,26 +928,29 @@ export class ResourceNegotiationView {
 
   private handlePropose(msg: string): void {
     this.disableAcceptBtn()
-      this.disableProposeButton()
-      sendCoopMessage(this.scene.chatWs, {
-        type: OutcomingCoopMessageType.ResourceDecide,
-        yourBid: {
-          travelerId: this.newPlayerBid.travelerId !== '' ? this.newPlayerBid.travelerId : this.newPartnerBid.travelerId,
-          moneyRatio: this.newPlayerBid.moneyRatio,
-          resources: this.newPlayerBid.resources,
-        },
-        message: msg,
-      })
-      this.resourceNegotiationButtonsProposeButtonExtraWrapper.className = getClassName(
-        this.resourceNegotiationButtonsProposeButtonExtraWrapper,
-        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
-      this.resourceNegotiationButtonsProposeButtonWrapper.className = getClassName(
-        this.resourceNegotiationButtonsProposeButtonWrapper,
-        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
-      this.resourceNegotiationButtonsProposeButton.className = getClassName(
-        this.resourceNegotiationButtonsProposeButton,
-        ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID)
-      this.update(false, this.newPlayerBid)
+    this.disableProposeButton()
+    sendCoopMessage(this.scene.chatWs, {
+      type: OutcomingCoopMessageType.ResourceDecide,
+      yourBid: {
+        travelerId: this.newPlayerBid.travelerId !== '' ? this.newPlayerBid.travelerId : this.newPartnerBid.travelerId,
+        moneyRatio: this.newPlayerBid.moneyRatio,
+        resources: this.newPlayerBid.resources,
+      },
+      message: msg,
+    })
+    this.resourceNegotiationButtonsProposeButtonExtraWrapper.className = getClassName(
+      this.resourceNegotiationButtonsProposeButtonExtraWrapper,
+      ResourceNegotiationView.resourceNegotiationButtonsProposeButtonExtraWrapperID)
+    this.resourceNegotiationButtonsProposeButtonWrapper.className = getClassName(
+      this.resourceNegotiationButtonsProposeButtonWrapper,
+      ResourceNegotiationView.resourceNegotiationButtonsProposeButtonWrapperID)
+    this.resourceNegotiationButtonsProposeButton.className = getClassName(
+      this.resourceNegotiationButtonsProposeButton,
+      ResourceNegotiationView.resourceNegotiationButtonsProposeButtonID)
+    this.update(false, this.newPlayerBid, '')
+    this.remindButtonTimeoutID = setTimeout(() => {
+      this.enableRemindButton()
+    }, 20000)
   }
 
   private createMessageButton(message: string, propose: boolean): HTMLDivElement {

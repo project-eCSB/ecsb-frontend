@@ -343,7 +343,7 @@ export class TradeView {
       this.remindButtonTimeoutID = !this.isCurrPlayerTurn
         ? setTimeout(() => {
           this.enableRemindButton()
-        }, 60000)
+        }, 20000)
         : null
     }
 
@@ -700,7 +700,7 @@ export class TradeView {
 
       this.remindButtonTimeoutID = setTimeout(() => {
         this.enableRemindButton()
-      }, 60000)
+      }, 20000)
     }
   }
 
