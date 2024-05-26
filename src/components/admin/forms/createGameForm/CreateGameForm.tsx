@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type {
   AssetConfig,
   DefaultAssetsResponse,
@@ -123,7 +123,9 @@ const CreateGameForm = () => {
 
   const [page, setPage] = useState(1)
   const [requestInProgress, setRequestInProgress] = useState<boolean>(false)
-  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(JSON.parse(JSON.stringify(emptyForm)))
+  const [createGameFormData, setCreateGameFormData] = useState<CreateGameFormData>(
+    JSON.parse(JSON.stringify(emptyForm)),
+  )
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
   const [modifyTravelData, setModifyTravelData] = useState<ModifyTravelData>({
     index: 0,
@@ -140,6 +142,9 @@ const CreateGameForm = () => {
   const submitButton = useRef<HTMLButtonElement>(null)
   const [isConfigLoading, setIsConfigLoading] = useState<boolean>(false)
   const [gameSessionId, setGameSessionId] = useState<number>(0)
+
+  const [error, setError] = useState<string | null>(null)
+  const [showErrorTooltip, setShowErrorTooltip] = useState<boolean>(false)
 
   const setAndShowSavedAssetModalForm = (fileType: string) => {
     gameService
@@ -257,14 +262,14 @@ const CreateGameForm = () => {
 
   const maxPage = formPages.length
 
-  const isNextPageDisabled = (): boolean => {
-    if (page + 1 > maxPage) {
-      return true
-    }
-
+  const validatePage = (): string | null => {
     const characterMappings = new Set<number>()
     const itemNames = new Set<string>()
     const itemMappings = new Set<number>()
+    const allTravels = createGameFormData.lowTravels.concat(
+      createGameFormData.mediumTravels,
+      createGameFormData.highTravels,
+    )
     const allTravelNames = [
       ...createGameFormData.lowTravels.map((travel) => travel.townName),
       ...createGameFormData.mediumTravels.map((travel) => travel.townName),
@@ -274,7 +279,7 @@ const CreateGameForm = () => {
 
     switch (page) {
       case 1:
-        return (
+        if (
           (createGameFormData.assets[FileType.CHARACTER]!.file === null &&
             createGameFormData.assets[FileType.CHARACTER]!.id === null) ||
           (createGameFormData.assets[FileType.RESOURCE]!.file === null &&
@@ -283,28 +288,43 @@ const CreateGameForm = () => {
             createGameFormData.assets[FileType.TILE]!.id === null) ||
           (createGameFormData.assets[FileType.MAP]!.file === null &&
             createGameFormData.assets[FileType.MAP]!.id === null)
-        )
+        ) {
+          return 'Wszystkie zasoby muszą być dodane.'
+        }
+        break
       case 2:
         for (const classResource of createGameFormData.classResources) {
-          if (checkMappings(characterMappings, classResource)) {
-            return true
+          // Character
+          if (
+            classResource.characterMapping < 1 ||
+            classResource.characterMapping > createGameFormData.classResources.length
+          ) {
+            return `Mapowania postaci muszą mieć wartości od 1 do ${createGameFormData.classResources.length}.`
           }
 
-          if (classResource.classTokenRegeneration <= 0) {
-            return true
+          if (characterMappings.has(classResource.characterMapping)) {
+            return 'Mapowania postaci muszą być unikalne.'
           }
 
-          if (itemNames.has(classResource.itemName) || classResource.itemName === '') {
-            return true
+          // Resource
+          if (classResource.itemName === '') {
+            return 'Nazwy przedmiotów nie mogą być puste.'
           }
 
-          if (checkMappings(itemMappings, classResource)) {
-            return true
+          if (itemNames.has(classResource.itemName)) {
+            return 'Nazwy przedmiotów muszą być unikalne.'
           }
 
-          characterMappings.add(classResource.characterMapping)
-          itemNames.add(classResource.itemName)
-          itemMappings.add(classResource.itemMapping)
+          if (
+            classResource.itemMapping < 1 ||
+            classResource.itemMapping > createGameFormData.classResources.length
+          ) {
+            return `Mapowania przedmiotów muszą mieć wartości od 1 do ${createGameFormData.classResources.length}.`
+          }
+
+          if (itemMappings.has(classResource.itemMapping)) {
+            return 'Mapowania przedmiotów muszą być unikalne.'
+          }
 
           if (
             classResource.costPerItem < 1 ||
@@ -312,59 +332,122 @@ const CreateGameForm = () => {
             classResource.itemPerWorkshop < 1 ||
             classResource.itemPerWorkshop > 1000000
           ) {
-            return true
+            return 'Koszt za przedmiot oraz ilość przedmiotów na warsztat muszą wynosić od 1 do 1,000,000.'
+          }
+
+          // Token
+          if (classResource.classTokenRegeneration <= 0) {
+            return 'Regeneracja tokenów musi być większa niż 0.'
+          }
+
+          characterMappings.add(classResource.characterMapping)
+          itemNames.add(classResource.itemName)
+          itemMappings.add(classResource.itemMapping)
+        }
+
+        if (createGameFormData.maxTimeTokens <= 0) {
+          return 'Maksymalna liczba tokenów czasowych musi być większa niż 0.'
+        }
+
+        if (createGameFormData.interactionRadius <= 0) {
+          return 'Promień interakcji musi być większy niż 0.'
+        }
+
+        if (createGameFormData.movingSpeed <= 0) {
+          return 'Prędkość ruchu musi być większa niż 0.'
+        }
+
+        if (createGameFormData.defaultMoney <= 0) {
+          return 'Domyślna ilość monet nie może być ujemna.'
+        }
+        break
+      case 3:
+        if (createGameFormData.lowTravels.length === 0) {
+          return 'Musisz dodać podróże dla niskiego poziomu.'
+        }
+
+        if (createGameFormData.mediumTravels.length === 0) {
+          return 'Musisz dodać podróże dla średniego poziomu.'
+        }
+
+        if (createGameFormData.highTravels.length === 0) {
+          return 'Musisz dodać podróże dla wysokiego poziomu.'
+        }
+
+        for (const travel of allTravels) {
+          const timeCost = travel.cost.find((itemCost) => itemCost.itemName === 'time')
+          if (!timeCost || timeCost.itemCost <= 0) {
+            return `Podróż do miasta ${travel.townName} musi mieć określony koszt czasu większy niż 0.`
+          }
+
+          const otherCosts = travel.cost.filter((itemCost) => itemCost.itemName !== 'time')
+          const hasOtherPositiveCost = otherCosts.some((itemCost) => itemCost.itemCost > 0)
+          if (!hasOtherPositiveCost) {
+            return `Podróż do miasta ${travel.townName} musi mieć przynajmniej jeden przedmiot z dodatnią wartością.`
+          }
+
+          if (travel.cost.length === 0) {
+            return `Podróż do miasta ${travel.townName} musi mieć określony koszt.`
+          }
+
+          if (travel.minReward <= 0) {
+            return `Podróż do miasta ${travel.townName} musi mieć minimalną nagrodę większą niż 0.`
+          }
+
+          if (travel.maxReward <= 0) {
+            return `Podróż do miasta ${travel.townName} musi mieć maksymalną nagrodę większą niż 0.`
+          }
+
+          if (travel.minReward > travel.maxReward) {
+            return `Podróż do miasta ${travel.townName} musi mieć maksymalną nagrodę większą niż minimalna.`
+          }
+
+          if (travel.regenTime <= 0) {
+            return `Podróż do miasta ${travel.townName} musi mieć czas regeneracji większy niż 0.`
+          }
+
+          if (travel.townName.trim() === '') {
+            return 'Podróże muszą mieć nazwy miast.'
           }
         }
 
-        return checkFormDataValues(createGameFormData)
-
-      case 3:
-        if (
-          createGameFormData.lowTravels.length === 0 ||
-          createGameFormData.mediumTravels.length === 0 ||
-          createGameFormData.highTravels.length === 0
-        ) {
-          return true
+        if (allTravelNames.length !== uniqueTravelNames.size) {
+          return 'Nazwy miast muszą być unikalne.'
         }
-
-        if (
-          createGameFormData.lowTravels
-            .concat(createGameFormData.mediumTravels, createGameFormData.highTravels)
-            .some(
-              (travel) =>
-                Math.min(
-                  travel.cost.length,
-                  travel.minReward,
-                  travel.maxReward,
-                  travel.regenTime,
-                ) === 0 || travel.townName === '',
-            )
-        ) {
-          return true
-        }
-
-        return allTravelNames.length !== uniqueTravelNames.size
+        break
       case 4:
-        return createGameFormData.gameName === '' || createGameFormData.gameFullTime <= 0
+        if (createGameFormData.gameName === '' || createGameFormData.gameFullTime <= 0) {
+          return 'Nazwa gry nie może być pusta oraz czas trwania gry musi być większy niż 0.'
+        }
+        break
       default:
-        return true
+        return 'Nieznana strona.'
     }
+    return null
   }
 
-  function checkMappings(characterMappings: Set<number>, classResource: ClassResource) {
-    return (
-      characterMappings.has(classResource.characterMapping) ||
-      classResource.characterMapping < 1 ||
-      classResource.characterMapping > createGameFormData.classResources.length
-    )
+  const isNextPageDisabled = (): boolean => {
+    if (page + 1 > maxPage) {
+      return true
+    }
+
+    return validatePage() !== null
   }
 
-  function checkFormDataValues(formData: CreateGameFormData): boolean {
-    return (
-      Math.min(formData.maxTimeTokens, formData.interactionRadius, formData.movingSpeed) <= 0 ||
-      formData.defaultMoney < 0
-    )
-  }
+  useEffect(() => {
+    setError(null)
+
+    if (page + 1 > maxPage) {
+      return
+    }
+
+    const error = validatePage()
+    if (error) {
+      setShowErrorTooltip(false)
+      setError(error)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createGameFormData, page])
 
   const uploadCharacterAssetFile = async () => {
     await new Promise((resolve, reject) => {
@@ -794,15 +877,45 @@ const CreateGameForm = () => {
           <button id={'reset-btn'} onClick={resetForm}>
             <p className='text'>Reset</p>
           </button>
-          <button
-            disabled={isNextPageDisabled() || requestInProgress}
-            className={`${isNextPageDisabled() || requestInProgress ? 'disabled' : ''}`}
-            onClick={async () => {
-              await handleNextPage()
-            }}
-          >
-            <p className='text'>Next</p>
-          </button>
+          <div className='next-button-container'>
+            <>
+              {error && (
+                <>
+                  {showErrorTooltip && (
+                    <div className='error-tooltip'>
+                      <span className='text-danger'>{error}</span>
+                    </div>
+                  )}
+                  <svg
+                    onMouseOver={() => {
+                      setShowErrorTooltip(true)
+                    }}
+                    onMouseOut={() => {
+                      setShowErrorTooltip(false)
+                    }}
+                    xmlns='http://www.w3.org/2000/svg'
+                    width='30'
+                    height='30'
+                    fill='currentColor'
+                    className='bi bi-exclamation-triangle'
+                    viewBox='0 0 16 16'
+                  >
+                    <path d='M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z' />
+                    <path d='M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z' />
+                  </svg>
+                </>
+              )}
+              <button
+                disabled={isNextPageDisabled() || requestInProgress}
+                className={`${isNextPageDisabled() || requestInProgress ? 'disabled' : ''}`}
+                onClick={async () => {
+                  await handleNextPage()
+                }}
+              >
+                <p className='text'>Next</p>
+              </button>
+            </>
+          </div>
         </div>
       </div>
       {showSavedAssetModal && (
