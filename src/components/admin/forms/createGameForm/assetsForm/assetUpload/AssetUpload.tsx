@@ -49,55 +49,55 @@ const AssetUpload: FC<AssetUploadProps> = ({
         .getAsset(fileId)
         .then(setURL)
         .catch((error) => {
-          console.error('Error fetching asset:', error);
-        });
+          console.error('Error fetching asset:', error)
+        })
     } else {
       setURL(null)
     }
-  }, [fileId]);
+  }, [fileId])
 
   return (
-    <div className="asset-upload-container">
-      <h5 className="asset-title">{title}</h5>
+    <div className='asset-upload-container'>
+      <h5 className='asset-title'>{title}</h5>
       {fileName && (
-        <div className="asset-file">
+        <div className='asset-file'>
           <h5>Currently selected file: {fileName}</h5>
-          {file && <img className="asset-image" src={URL.createObjectURL(file)} alt={fileName} />}
-          {url && <img className="asset-image" src={url} alt={fileName} />}
+          {file && <img className='asset-image' src={URL.createObjectURL(file)} alt={fileName} />}
+          {url && <img className='asset-image' src={url} alt={fileName} />}
         </div>
       )}
       {!fileName && url && (
         <>
           <h5>Currently selected file: {fileId}</h5>
-          <img className="asset-image" src={url} alt="" />
+          <img className='asset-image' src={url} alt='' />
         </>
       )}
-      <div className="asset-buttons">
-        <div className="simple-button">
-          <label htmlFor={uuid} className="text">
+      <div className='asset-buttons'>
+        <div className='simple-button'>
+          <label htmlFor={uuid} className='text'>
             Upload
           </label>
           <input
             accept={fileExtension}
             hidden
             id={uuid}
-            type="file"
+            type='file'
             onChange={(e) => {
-              selectFiles(e.target.files);
+              selectFiles(e.target.files)
             }}
           />
         </div>
         <button
-          className="cta-button"
+          className='cta-button'
           onClick={() => {
-            setAndShowSavedAssetModalForm(fileType);
+            setAndShowSavedAssetModalForm(fileType)
           }}
         >
-          <p className="text">Saved Assets</p>
+          <p className='text'>Saved Assets</p>
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AssetUpload;
+export default AssetUpload

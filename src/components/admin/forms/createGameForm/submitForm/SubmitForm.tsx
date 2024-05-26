@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { type CreateGameRequest } from '../../../../../apis/game/Types'
 import gameService from '../../../../../services/game/GameService'
 import {
@@ -22,6 +23,14 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   setAndShowResultModal,
   setRequestInProgress,
 }) => {
+  const [gameNameError, setGameNameError] = useState<string | null>('Nazwa gry nie może być pusta.')
+  const [gameFullTimeError, setGameFullTimeError] = useState<string | null>(
+    'Czas trwania gry musi być większy niż 0.',
+  )
+  const [gameMinPlayerToStartError, setGameMinPlayerToStartError] = useState<string | null>(
+    'Minimalna liczba graczy do rozpoczęcia nie może być 0.',
+  )
+
   const renderClassResources = (classResources: ClassResource[]) => {
     return classResources.map((resource, index) => (
       <>
@@ -162,16 +171,49 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     }
   }
 
+  const handleChangeGameName = (value: string) => {
+    setGameNameError(null)
+
+    if (value.length === 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        gameName: '',
+      }))
+      setGameNameError('Nazwa gry nie może być pusta.')
+      return
+    }
+
+    if (value.length < 3) {
+      setGameNameError('Nazwa gry musi mieć co najmniej 3 znaki.')
+    }
+
+    setCreateGameFormData((prevFormData) => ({
+      ...prevFormData,
+      gameName: value,
+    }))
+  }
+
   const handleChangeGameFullTime = (value: string) => {
+    setGameFullTimeError(null)
+
     if (value.length === 0) {
       setCreateGameFormData((prevFormData) => ({
         ...prevFormData,
         gameFullTime: 0,
       }))
+      setGameFullTimeError('Czas trwania gry musi być większy niż 0.')
       return
     }
 
     const parsedValue = Math.min(Math.max(0, parseInt(value)), 60)
+    if (parsedValue <= 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        gameFullTime: 0,
+      }))
+      setGameFullTimeError('Czas trwania gry musi być większy niż 0.')
+    }
+
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
       gameFullTime: parsedValue,
@@ -179,15 +221,25 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   }
 
   const handleChangeNumberOfPlayers = (value: string) => {
+    setGameMinPlayerToStartError(null)
+
     if (value.length === 0) {
       setCreateGameFormData((prevFormData) => ({
         ...prevFormData,
         minPlayersToStart: 0,
       }))
+      setGameMinPlayerToStartError('Minimalna liczba graczy do rozpoczęcia nie może być 0.')
       return
     }
 
     const parsedValue = Math.min(Math.max(0, parseInt(value)), 30)
+    if (parsedValue <= 0) {
+      setCreateGameFormData((prevFormData) => ({
+        ...prevFormData,
+        minPlayersToStart: 0,
+      }))
+      setGameMinPlayerToStartError('Minimalna liczba graczy do rozpoczęcia nie może być 0.')
+    }
     setCreateGameFormData((prevFormData) => ({
       ...prevFormData,
       minPlayersToStart: parsedValue,
@@ -246,47 +298,62 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
           <div className='summary-travels-container'>{renderTravels(formData.highTravels)}</div>
         </div>
       </div>
-      <div className='game-submit-form-input'>
-        <label htmlFor=''>Game name</label>
-        <input
-          minLength={3}
-          maxLength={254}
-          value={formData.gameName}
-          type='text'
-          onChange={(e) => {
-            setCreateGameFormData({ ...formData, gameName: e.target.value })
-          }}
-        />
+      <div className='game-submit-form-row'>
+        <div className='game-submit-form-input'>
+          <label htmlFor=''>Game name</label>
+          <input
+            minLength={3}
+            maxLength={254}
+            value={formData.gameName}
+            type='text'
+            onChange={(e) => {
+              handleChangeGameName(e.target.value)
+            }}
+          />
+        </div>
+        {gameNameError && <span className='text-danger'>{gameNameError}</span>}
       </div>
-      <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
-        <label htmlFor=''>Game Full Time (in minutes)</label>
-        <input
-          min={1}
-          max={60}
-          value={formData.gameFullTime}
-          type='number'
-          onChange={(e) => {
-            handleChangeGameFullTime(e.target.value)
-          }}
-        />
+      <div className='game-submit-form-row'>
+        <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
+          <label htmlFor=''>Game Full Time (in minutes)</label>
+          <input
+            min={1}
+            max={60}
+            value={formData.gameFullTime}
+            type='number'
+            onChange={(e) => {
+              handleChangeGameFullTime(e.target.value)
+            }}
+          />
+        </div>
+        {gameFullTimeError && <span className='text-danger'>{gameFullTimeError}</span>}
       </div>
-      <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
-        <label htmlFor=''>Minimum number of players to start</label>
-        <input
-          min={1}
-          max={30}
-          value={formData.minPlayersToStart}
-          type='number'
-          onChange={(e) => {
-            handleChangeNumberOfPlayers(e.target.value)
-          }}
-        />
+      <div className='game-submit-form-row'>
+        <div id='game-submit-form-input-gamefulltime' className='game-submit-form-input'>
+          <label htmlFor=''>Minimum number of players to start</label>
+          <input
+            min={1}
+            max={30}
+            value={formData.minPlayersToStart}
+            type='number'
+            onChange={(e) => {
+              handleChangeNumberOfPlayers(e.target.value)
+            }}
+          />
+        </div>
+        {gameMinPlayerToStartError && (
+          <span className='text-danger'>{gameMinPlayerToStartError}</span>
+        )}
       </div>
       <div className='submit-form-button'>
         <button
           onClick={handleSubmit}
-          disabled={formData.gameName.length < 3 || formData.gameFullTime < 1}
-          className={`${formData.gameName.length < 3 || formData.gameFullTime < 1 ? 'disabled' : ''}`}
+          disabled={
+            formData.gameName.length < 3 ||
+            formData.gameFullTime < 1 ||
+            formData.minPlayersToStart < 1
+          }
+          className={`${formData.gameName.length < 3 || formData.gameFullTime < 1 || formData.minPlayersToStart < 1 ? 'disabled' : ''}`}
         >
           Submit
         </button>

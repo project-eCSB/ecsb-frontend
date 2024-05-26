@@ -57,6 +57,7 @@
   justify-content: space-between;
   padding: 1rem;
   width: 100%;
+  position: relative;
 }
 
 .create-game-form-pages-buttons button {
@@ -105,4 +106,28 @@
 
 .load-previous-config > form {
   width: 100%;
+}
+
+.text-danger {
+  color: red;
+}
+
+.next-button-container {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 1rem;
+}
+
+.next-button-container svg {
+  color: red;
+  cursor: pointer;
+}
+
+.next-button-container .error-tooltip {
+  background-color: #fee;
+  padding: 0.3rem 0.5rem;
+  position: absolute;
+  top: -16px;
+  right: 0;
 }
