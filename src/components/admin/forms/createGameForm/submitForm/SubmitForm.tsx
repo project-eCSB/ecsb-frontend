@@ -23,12 +23,14 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   setAndShowResultModal,
   setRequestInProgress,
 }) => {
-  const [gameNameError, setGameNameError] = useState<string | null>('Nazwa gry nie może być pusta.')
+  const [gameNameError, setGameNameError] = useState<string | null>(
+    formData.gameName ? null : 'Nazwa gry nie może być pusta.',
+  )
   const [gameFullTimeError, setGameFullTimeError] = useState<string | null>(
-    'Czas trwania gry musi być większy niż 0.',
+    formData.gameFullTime ? null : 'Czas trwania gry musi być większy niż 0.',
   )
   const [gameMinPlayerToStartError, setGameMinPlayerToStartError] = useState<string | null>(
-    'Minimalna liczba graczy do rozpoczęcia nie może być 0.',
+    formData.minPlayersToStart ? null : 'Minimalna liczba graczy do rozpoczęcia nie może być 0.',
   )
 
   const renderClassResources = (classResources: ClassResource[]) => {
@@ -54,22 +56,25 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       <>
         <div key={index} className='summary-travels-travel'>
           <div className='summary-travels-travel-info'>
-            <p>Town Name: {travel.townName}</p>
+            <p>Town Name: {travel.name}</p>
           </div>
           <div className='summary-travels-travel-cost'>
             <p>Cost:</p>
-            {travel.cost.map((cost, i) => (
+            {travel.resources.map((cost, i) => (
               <div key={i}>
                 <p>
-                  {cost.itemName} - {cost.itemCost}
+                  {cost.key} - {cost.value}
                 </p>
               </div>
             ))}
+            <div key={travel.resources.length}>
+              <p>time - {travel.time}</p>
+            </div>
           </div>
           <div className='summary-travels-travel-reward'>
             <p>Time token regeneration: {travel.regenTime}</p>
-            <p>Min Reward: {travel.minReward}</p>
-            <p>Max Reward: {travel.maxReward}</p>
+            <p>Min Reward: {travel.moneyRange.from}</p>
+            <p>Max Reward: {travel.moneyRange.to}</p>
           </div>
         </div>
         {index !== travels.length - 1 && <hr />}
@@ -112,7 +117,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       transformedData.travels.push({
         key: 'low',
         value: formData.lowTravels.map((travel) => ({
-          key: travel.townName,
+          key: travel.name,
           value: transformTravelData(travel),
         })),
       })
@@ -122,7 +127,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       transformedData.travels.push({
         key: 'medium',
         value: formData.mediumTravels.map((travel) => ({
-          key: travel.townName,
+          key: travel.name,
           value: transformTravelData(travel),
         })),
       })
@@ -132,7 +137,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
       transformedData.travels.push({
         key: 'high',
         value: formData.highTravels.map((travel) => ({
-          key: travel.townName,
+          key: travel.name,
           value: transformTravelData(travel),
         })),
       })
@@ -158,15 +163,15 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   // eslint-disable-next-line
   const transformTravelData = (travel: Travel): any => {
     return {
-      assets: travel.cost.slice(0, travel.cost.length - 1).map((item) => ({
-        key: item.itemName,
-        value: item.itemCost,
+      assets: travel.resources.map((item) => ({
+        key: item.key,
+        value: item.value,
       })),
       moneyRange: {
-        from: travel.minReward,
-        to: travel.maxReward,
+        from: travel.moneyRange.from,
+        to: travel.moneyRange.to,
       },
-      time: travel.cost[travel.cost.length - 1].itemCost,
+      time: travel.time,
       regenTime: travel.regenTime * 1000,
     }
   }
