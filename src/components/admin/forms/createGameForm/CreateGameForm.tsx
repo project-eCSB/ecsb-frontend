@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type {
-  AssetConfig,
+  MapConfig,
   DefaultAssetsResponse,
   GameSettings,
   GameSettingsTravels,
@@ -689,8 +689,8 @@ const CreateGameForm = () => {
         return
       }
 
-      await gameService.getAssetConfig(createGameFormData.assets[FileType.MAP]!.id).then(
-        (response: AssetConfig) => {
+      await gameService.getMapConfig(createGameFormData.assets[FileType.MAP]!.id).then(
+        (response: MapConfig) => {
           if (createGameFormData.classResources.length === 0) {
             const classResources: ClassResource[] = []
             for (const resource in response.professionWorkshops) {

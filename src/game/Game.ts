@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import GridEngine from 'grid-engine'
 import { Scene } from './scenes/Scene'
-import type { AssetConfig, GameSettings, GameStatus } from '../apis/game/Types'
+import type { MapConfig, GameSettings, GameStatus } from '../apis/game/Types'
 
 export interface GameData {
   game: Phaser.Game
@@ -12,7 +12,7 @@ export const startGame = (
   gameToken: string,
   userStatus: GameStatus,
   settings: GameSettings,
-  mapConfig: AssetConfig,
+  mapConfig: MapConfig,
   characterURL: string,
   resourceURL: string,
   tileSetURL: string,

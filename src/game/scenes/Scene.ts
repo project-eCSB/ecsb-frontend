@@ -4,7 +4,7 @@ import { Direction } from 'grid-engine'
 import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
 import type {
-  AssetConfig,
+  MapConfig,
   CoopEquipmentDto,
   EndGameStatus,
   Equipment,
@@ -165,7 +165,7 @@ export class Scene extends Phaser.Scene {
     gameToken: string,
     userStatus: GameStatus,
     settings: GameSettings,
-    mapConfig: AssetConfig,
+    mapConfig: MapConfig,
     characterUrl: string,
     resourceUrl: string,
     tileUrl: string,

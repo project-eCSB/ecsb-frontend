@@ -1,7 +1,7 @@
 import { setGameToken } from '../../apis/apis'
 import gameAPI from '../../apis/game/GameAPI'
 import type {
-  AssetConfig,
+  MapConfig,
   AssetId,
   AssetURL,
   CreateGameRequest,
@@ -89,8 +89,8 @@ const uploadAsset = async (file: ArrayBuffer, fileName: string, fileType: string
   return await gameAPI.uploadAsset({ file, fileName, fileType }).catch(handleError)
 }
 
-const getAssetConfig = async (assetId: AssetId): Promise<AssetConfig> => {
-  return await gameAPI.getAssetConfig(assetId).catch(handleError)
+const getMapConfig = async (assetId: AssetId): Promise<MapConfig> => {
+  return await gameAPI.getMapConfig(assetId).catch(handleError)
 }
 
 const getSavedAssets = async (fileType: FileType): Promise<SavedAssetsResponse> => {
@@ -116,7 +116,7 @@ const gameService = {
   getPlayerResults,
   getUserGameStatus,
   uploadAsset,
-  getAssetConfig,
+  getMapConfig,
   getSavedAssets,
   getAsset,
   getDefaultAssets,

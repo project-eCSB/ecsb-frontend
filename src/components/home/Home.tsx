@@ -81,7 +81,7 @@ const Home = () => {
         if (!gameToken) {
           setError('Error getting game token')
         } else {
-          const mapConfig = await gameService.getAssetConfig(
+          const mapConfig = await gameService.getMapConfig(
             gameSettings.gameAssets.find((asset) => asset.key === FileType.MAP)!.value,
           )
 
