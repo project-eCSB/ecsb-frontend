@@ -2,7 +2,6 @@ import {
   authTokenAuthAndManagementAPI,
   authTokenAuthAndManagementOctetAPI,
   gameTokenAPI,
-  gameTokenSelfInteractionsAPI,
 } from '../apis'
 import type {
   AssetConfig,
@@ -10,7 +9,8 @@ import type {
   AssetURL,
   CopyGameRequest,
   CreateGameRequest,
-  DefaultAssetsResponse, EndGameStatus, Equipment,
+  DefaultAssetsResponse,
+  EndGameStatus,
   FileType,
   GameSessionId,
   GameSettings,
@@ -72,7 +72,7 @@ const copyGame = async (data: CopyGameRequest): Promise<GameSessionId> => {
 
 const getAdminGameLogs = async (gameSessionId: number): Promise<string> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/getLogs/${gameSessionId}`)
+    .get(`/admin/getLogs/${gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
         console.error(response.status)
@@ -94,13 +94,6 @@ const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> 
 const getUserGameSettings = async (): Promise<GameSettings> => {
   return await gameTokenAPI
     .get('/settings')
-    .then(standardThen)
-    .catch(handleError)
-}
-
-const getPlayerEquipment = async (): Promise<Equipment> => {
-  return await gameTokenSelfInteractionsAPI
-    .get('/equipment')
     .then(standardThen)
     .catch(handleError)
 }
@@ -173,7 +166,6 @@ const gameAPI = {
   getAdminGameSettings,
   getAdminGameLogs,
   getGameToken,
-  getPlayerEquipment,
   getPlayerResults,
   getUserGameSettings,
   getUserGameStatus,

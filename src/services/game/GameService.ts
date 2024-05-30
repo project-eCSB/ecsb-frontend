@@ -7,7 +7,6 @@ import type {
   CreateGameRequest,
   DefaultAssetsResponse,
   EndGameStatus,
-  Equipment,
   FileType,
   GameResponseError,
   GameSessionId,
@@ -78,10 +77,6 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
   return await gameAPI.getUserGameSettings().catch(handleError)
 }
 
-const getPlayerEquipment = async (): Promise<Equipment> => {
-  return await gameAPI.getPlayerEquipment().catch(handleError)
-}
-
 const getPlayerResults = async (): Promise<EndGameStatus> => {
   return await gameAPI.getPlayerResults().catch(handleError)
 }
@@ -118,7 +113,6 @@ const gameService = {
   getAdminGameLogs,
   getUserGameSettings,
   getGameSession,
-  getPlayerEquipment,
   getPlayerResults,
   getUserGameStatus,
   uploadAsset,
