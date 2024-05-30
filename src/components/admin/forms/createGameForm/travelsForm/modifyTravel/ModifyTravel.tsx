@@ -19,7 +19,7 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
     if (!isNaN(value)) {
       const updatedTravels = { ...createGameFormData }
       const { travel, index } = travelData
-      updatedTravels[`${travel.type}Travels`][index].cost[itemIndex].itemCost = value
+      updatedTravels[`${travel.type}Travels`][index].resources[itemIndex].value = value
       setCreateGameFormData(updatedTravels)
     }
   }
@@ -27,14 +27,21 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
   const handleMinRewardChange = (value: number) => {
     const updatedTravels = { ...createGameFormData }
     const { index, travel } = travelData
-    updatedTravels[`${travel.type}Travels`][index].minReward = value
+    updatedTravels[`${travel.type}Travels`][index].moneyRange.from = value
     setCreateGameFormData(updatedTravels)
   }
 
   const handleMaxRewardChange = (value: number) => {
     const updatedTravels = { ...createGameFormData }
     const { index, travel } = travelData
-    updatedTravels[`${travel.type}Travels`][index].maxReward = value
+    updatedTravels[`${travel.type}Travels`][index].moneyRange.to = value
+    setCreateGameFormData(updatedTravels)
+  }
+
+  const handleTimeChange = (value: number) => {
+    const updatedTravels = { ...createGameFormData }
+    const { index, travel } = travelData
+    updatedTravels[`${travel.type}Travels`][index].time = value
     setCreateGameFormData(updatedTravels)
   }
 
@@ -49,7 +56,7 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
     <div className='modify-travel-modal'>
       <div className='modify-travel-modal-content'>
         <div className='modify-travel-modal-headers'>
-          <h5>Travel info - {travelData.travel.townName}</h5>
+          <h5>Travel info - {travelData.travel.name}</h5>
           <h6>Update your travel info</h6>
         </div>
         <table className='modify-travel-table'>
@@ -60,15 +67,15 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
             </tr>
           </thead>
           <tbody>
-            {travelData.travel.cost.map((item, index) => (
+            {travelData.travel.resources.map((item, index) => (
               <tr key={index}>
-                <td className='td-name'>{item.itemName}</td>
+                <td className='td-name'>{item.key}</td>
                 <td className='td-input'>
                   <input
                     min={0}
                     max={1000000}
                     type='number'
-                    value={item.itemCost}
+                    value={item.value}
                     onChange={(e) => {
                       handleItemCostChange(parseInt(e.target.value, 10), index)
                     }}
@@ -76,6 +83,20 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
                 </td>
               </tr>
             ))}
+            <tr key={travelData.travel.resources.length}>
+              <td className='td-name'>time</td>
+              <td className='td-input'>
+                <input
+                  min={0}
+                  max={1000000}
+                  type='number'
+                  value={travelData.travel.time}
+                  onChange={(e) => {
+                    handleTimeChange(parseInt(e.target.value, 10))
+                  }}
+                />
+              </td>
+            </tr>
           </tbody>
         </table>
         <div className='modify-travel-modal-token-regeneration'>
@@ -101,7 +122,7 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
                 min={0}
                 max={1000000}
                 type='number'
-                value={travelData.travel.minReward}
+                value={travelData.travel.moneyRange.from}
                 onChange={(e) => {
                   handleMinRewardChange(parseInt(e.target.value, 10))
                 }}
@@ -113,7 +134,7 @@ const ModifyTravel: React.FC<ModifyTravelProps> = ({
                 min={0}
                 max={1000000}
                 type='number'
-                value={travelData.travel.maxReward}
+                value={travelData.travel.moneyRange.to}
                 onChange={(e) => {
                   handleMaxRewardChange(parseInt(e.target.value, 10))
                 }}

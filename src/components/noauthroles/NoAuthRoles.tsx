@@ -22,15 +22,13 @@ const NoAuthRoles = () => {
   }
 
   return (
-    <div id="no-auth-roles-container">
+    <div id='no-auth-roles-container'>
       <h1>Your account does not have any assigned roles.</h1>
       <p>
-        Please contact your administrator to assign roles to your account,
-        or log out and log in with another account that has assigned roles.
+        Please contact your administrator to assign roles to your account, or log out and log in
+        with another account that has assigned roles.
       </p>
-      <button onClick={handleLogOut}>
-        Log out
-      </button>
+      <button onClick={handleLogOut}>Log out</button>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import type React from 'react'
 import { useState } from 'react'
-import { type CreateGameFormData, type Travel } from '../CreateGameForm'
+import { type CreateGameFormData, type Travel, TravelType } from '../CreateGameForm'
 import './GameTravelsForm.css'
 
 interface GameTravelsFormProps {
@@ -40,7 +40,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
 
   const handleChangeLowTownName = (index: number, townName: string) => {
     const newTravels = [...createGameFormData.lowTravels]
-    newTravels[index].townName = townName
+    newTravels[index].name = townName
     setCreateGameFormData({
       ...createGameFormData,
       lowTravels: newTravels,
@@ -49,7 +49,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
 
   const handleChangeMediumTownName = (index: number, townName: string) => {
     const newTravels = [...createGameFormData.mediumTravels]
-    newTravels[index].townName = townName
+    newTravels[index].name = townName
     setCreateGameFormData({
       ...createGameFormData,
       mediumTravels: newTravels,
@@ -58,14 +58,14 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
 
   const handleChangeHighTownName = (index: number, townName: string) => {
     const newTravels = [...createGameFormData.highTravels]
-    newTravels[index].townName = townName
+    newTravels[index].name = townName
     setCreateGameFormData({
       ...createGameFormData,
       highTravels: newTravels,
     })
   }
 
-  const removeTravel = (index: number) => {
+  const removeTravel = () => {
     switch (selectedTab) {
       case 'low':
         removeLowTravel()
@@ -123,25 +123,23 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
   const addLowTravel = () => {
     const newTravels = [...createGameFormData.lowTravels]
     newTravels.push({
-      type: 'low',
-      townName: '',
-      cost: [],
-      minReward: 0,
-      maxReward: 0,
+      type: TravelType.low,
+      name: '',
+      time: 0,
       regenTime: 0,
+      moneyRange: {
+        from: 0,
+        to: 0,
+      },
+      resources: [],
     })
 
     for (const resource of createGameFormData.classResources) {
-      newTravels[newTravels.length - 1].cost.push({
-        itemName: resource.itemName,
-        itemCost: 0,
+      newTravels[newTravels.length - 1].resources.push({
+        key: resource.itemName,
+        value: 0,
       })
     }
-
-    newTravels[newTravels.length - 1].cost.push({
-      itemName: 'time',
-      itemCost: 0,
-    })
 
     setCreateGameFormData({
       ...createGameFormData,
@@ -152,25 +150,23 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
   const addMediumTravel = () => {
     const newTravels = [...createGameFormData.mediumTravels]
     newTravels.push({
-      type: 'medium',
-      townName: '',
-      cost: [],
-      minReward: 0,
-      maxReward: 0,
+      type: TravelType.medium,
+      name: '',
+      time: 0,
       regenTime: 0,
+      moneyRange: {
+        from: 0,
+        to: 0,
+      },
+      resources: [],
     })
 
     for (const resource of createGameFormData.classResources) {
-      newTravels[newTravels.length - 1].cost.push({
-        itemName: resource.itemName,
-        itemCost: 0,
+      newTravels[newTravels.length - 1].resources.push({
+        key: resource.itemName,
+        value: 0,
       })
     }
-
-    newTravels[newTravels.length - 1].cost.push({
-      itemName: 'time',
-      itemCost: 0,
-    })
 
     setCreateGameFormData({
       ...createGameFormData,
@@ -181,25 +177,23 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
   const addHighTravel = () => {
     const newTravels = [...createGameFormData.highTravels]
     newTravels.push({
-      type: 'high',
-      townName: '',
-      cost: [],
-      minReward: 0,
-      maxReward: 0,
+      type: TravelType.high,
+      name: '',
+      time: 0,
       regenTime: 0,
+      moneyRange: {
+        from: 0,
+        to: 0,
+      },
+      resources: [],
     })
 
     for (const resource of createGameFormData.classResources) {
-      newTravels[newTravels.length - 1].cost.push({
-        itemName: resource.itemName,
-        itemCost: 0,
+      newTravels[newTravels.length - 1].resources.push({
+        key: resource.itemName,
+        value: 0,
       })
     }
-
-    newTravels[newTravels.length - 1].cost.push({
-      itemName: 'time',
-      itemCost: 0,
-    })
 
     setCreateGameFormData({
       ...createGameFormData,
@@ -223,7 +217,7 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
         <input
           maxLength={255}
           type='text'
-          value={travel.townName}
+          value={travel.name}
           onChange={(e) => {
             handleChangeTownName(index, e.target.value)
           }}
@@ -234,15 +228,15 @@ const GameTravelsForm: React.FC<GameTravelsFormProps> = ({
             onClick={() => {
               modifyTravel(travel, index)
             }}
-            disabled={travel.townName === ''}
-            className={`${travel.townName ? '' : 'disabled'}`}
+            disabled={travel.name === ''}
+            className={`${travel.name ? '' : 'disabled'}`}
           >
             <p>Modify</p>
           </button>
           <button
             id='remove-btn'
             onClick={() => {
-              removeTravel(index)
+              removeTravel()
             }}
           >
             <p>Remove</p>

@@ -9,8 +9,8 @@ import authService from '../../services/auth/AuthService'
 import './Form.css'
 
 const LoginForm = () => {
-  const { state } = useLocation();
-  const message = state ? "Check your email" : ""
+  const { state } = useLocation()
+  const message = state ? 'Check your email' : ''
   window.history.replaceState({}, '')
 
   const navigate: NavigateFunction = useNavigate()

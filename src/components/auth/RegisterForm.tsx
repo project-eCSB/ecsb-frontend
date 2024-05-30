@@ -41,7 +41,7 @@ const RegisterForm = () => {
 
     authService.register(formData.email, formData.password).then(
       () => {
-        navigate('/login', { state: true });
+        navigate('/login', { state: true })
       },
       (error: Error) => {
         setRegisterStatus(error.message)

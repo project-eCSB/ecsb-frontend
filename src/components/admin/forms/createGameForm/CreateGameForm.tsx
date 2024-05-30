@@ -29,18 +29,25 @@ export interface ClassResource {
   itemBuyout: number
 }
 
-export interface ItemCost {
-  itemName: string
-  itemCost: number
+export enum TravelType {
+  low = 'low',
+  medium = 'medium',
+  high = 'high',
 }
 
 export interface Travel {
-  type: 'low' | 'medium' | 'high'
-  townName: string
-  cost: ItemCost[]
-  minReward: number
-  maxReward: number
+  type: TravelType
+  name: string
+  time: number
   regenTime: number
+  moneyRange: {
+    from: number
+    to: number
+  }
+  resources: {
+    key: string
+    value: number
+  }[]
 }
 
 export enum FileType {
@@ -129,7 +136,14 @@ const CreateGameForm = () => {
   const [showModifyTravelModal, setShowModifyTravelModal] = useState<boolean>(false)
   const [modifyTravelData, setModifyTravelData] = useState<ModifyTravelData>({
     index: 0,
-    travel: { type: 'low', townName: '', cost: [], minReward: 0, maxReward: 0, regenTime: 0 },
+    travel: {
+      type: TravelType.low,
+      name: '',
+      time: 0,
+      regenTime: 0,
+      moneyRange: { from: 0, to: 0 },
+      resources: [],
+    },
   })
   const [showSavedAssetModal, setShowSavedAssetModal] = useState<boolean>(false)
   const [savedAssets, setSavedAssets] = useState<SavedAssetData>({
@@ -271,168 +285,170 @@ const CreateGameForm = () => {
       createGameFormData.highTravels,
     )
     const allTravelNames = [
-      ...createGameFormData.lowTravels.map((travel) => travel.townName),
-      ...createGameFormData.mediumTravels.map((travel) => travel.townName),
-      ...createGameFormData.highTravels.map((travel) => travel.townName),
+      ...createGameFormData.lowTravels.map((travel) => travel.name),
+      ...createGameFormData.mediumTravels.map((travel) => travel.name),
+      ...createGameFormData.highTravels.map((travel) => travel.name),
     ]
     const uniqueTravelNames = new Set(allTravelNames)
 
-    switch (page) {
-      case 1:
-        if (
-          (createGameFormData.assets[FileType.CHARACTER]!.file === null &&
-            createGameFormData.assets[FileType.CHARACTER]!.id === null) ||
-          (createGameFormData.assets[FileType.RESOURCE]!.file === null &&
-            createGameFormData.assets[FileType.RESOURCE]!.id === null) ||
-          (createGameFormData.assets[FileType.TILE]!.file === null &&
-            createGameFormData.assets[FileType.TILE]!.id === null) ||
-          (createGameFormData.assets[FileType.MAP]!.file === null &&
-            createGameFormData.assets[FileType.MAP]!.id === null)
-        ) {
+    const validateAssets = () => {
+      const requiredAssets = [FileType.CHARACTER, FileType.RESOURCE, FileType.TILE, FileType.MAP]
+
+      for (const asset of requiredAssets) {
+        if (!createGameFormData.assets[asset]?.file && !createGameFormData.assets[asset]?.id) {
           return 'Wszystkie zasoby muszą być dodane.'
         }
-        break
+      }
+
+      return null
+    }
+
+    const validateClassResources = () => {
+      for (const classResource of createGameFormData.classResources) {
+        if (
+          classResource.characterMapping < 1 ||
+          classResource.characterMapping > createGameFormData.classResources.length ||
+          characterMappings.has(classResource.characterMapping)
+        ) {
+          return `Mapowania postaci muszą być unikalne i mieć wartości od 1 do ${createGameFormData.classResources.length}.`
+        }
+
+        if (!classResource.itemName || itemNames.has(classResource.itemName)) {
+          return 'Nazwy przedmiotów muszą być unikalne i nie mogą być puste.'
+        }
+
+        if (
+          classResource.itemMapping < 1 ||
+          classResource.itemMapping > createGameFormData.classResources.length ||
+          itemMappings.has(classResource.itemMapping)
+        ) {
+          return `Mapowania przedmiotów muszą być unikalne i mieć wartości od 1 do ${createGameFormData.classResources.length}.`
+        }
+
+        if (
+          classResource.costPerItem < 1 ||
+          classResource.costPerItem > 1000000 ||
+          classResource.itemPerWorkshop < 1 ||
+          classResource.itemPerWorkshop > 1000000
+        ) {
+          return 'Koszt za przedmiot oraz ilość przedmiotów na warsztat muszą wynosić od 1 do 1,000,000.'
+        }
+
+        if (classResource.classTokenRegeneration <= 0) {
+          return 'Regeneracja tokenów musi być większa niż 0.'
+        }
+
+        characterMappings.add(classResource.characterMapping)
+        itemNames.add(classResource.itemName)
+        itemMappings.add(classResource.itemMapping)
+      }
+
+      const otherValidations = [
+        {
+          condition: createGameFormData.maxTimeTokens <= 0,
+          message: 'Maksymalna liczba tokenów czasowych musi być większa niż 0.',
+        },
+        {
+          condition: createGameFormData.interactionRadius <= 0,
+          message: 'Promień interakcji musi być większy niż 0.',
+        },
+        {
+          condition: createGameFormData.movingSpeed <= 0,
+          message: 'Prędkość ruchu musi być większa niż 0.',
+        },
+        {
+          condition: createGameFormData.defaultMoney <= 0,
+          message: 'Domyślna ilość monet nie może być ujemna.',
+        },
+      ]
+
+      for (const validation of otherValidations) {
+        if (validation.condition) {
+          return validation.message
+        }
+      }
+
+      return null
+    }
+
+    const validateTravels = () => {
+      const travelTypes = [
+        { type: 'low', travels: createGameFormData.lowTravels },
+        { type: 'medium', travels: createGameFormData.mediumTravels },
+        { type: 'high', travels: createGameFormData.highTravels },
+      ]
+
+      for (const { type, travels } of travelTypes) {
+        if (travels.length === 0) {
+          return `Musisz dodać podróże dla ${type} poziomu.`
+        }
+      }
+
+      for (const travel of allTravels) {
+        if (travel.time <= 0) {
+          return `Podróż do miasta ${travel.name} musi mieć określony koszt czasu większy niż 0.`
+        }
+
+        const hasPositiveResourceValue = travel.resources.some((resource) => resource.value > 0)
+        if (!hasPositiveResourceValue) {
+          return `Podróż do miasta ${travel.name} musi mieć przynajmniej jeden przedmiot z dodatnią wartością.`
+        }
+
+        if (
+          travel.moneyRange.from <= 0 ||
+          travel.moneyRange.to <= 0 ||
+          travel.moneyRange.from > travel.moneyRange.to
+        ) {
+          return `Podróż do miasta ${travel.name} musi mieć prawidłowy zakres nagród pieniężnych.`
+        }
+
+        if (travel.regenTime <= 0) {
+          return `Podróż do miasta ${travel.name} musi mieć czas regeneracji większy niż 0.`
+        }
+
+        if (!travel.name.trim()) {
+          return 'Podróże muszą mieć nazwy miast.'
+        }
+      }
+
+      if (allTravelNames.length !== uniqueTravelNames.size) {
+        return 'Nazwy miast muszą być unikalne.'
+      }
+
+      return null
+    }
+
+    const validateGameDetails = () => {
+      if (createGameFormData.gameName.length < 3) {
+        return 'Nazwa gry musi mieć przynajmniej 3 znaki.'
+      }
+
+      if (createGameFormData.gameFullTime <= 0) {
+        return 'Czas trwania gry musi być większy niż 0.'
+      }
+
+      if (createGameFormData.minPlayersToStart <= 0) {
+        return 'Minimalna liczba graczy wymaganych do rozpoczęcia rozgrywki musi być większa niż 0.'
+      }
+
+      return null
+    }
+
+    switch (page) {
+      case 1:
+        return validateAssets()
       case 2:
-        for (const classResource of createGameFormData.classResources) {
-          // Character
-          if (
-            classResource.characterMapping < 1 ||
-            classResource.characterMapping > createGameFormData.classResources.length
-          ) {
-            return `Mapowania postaci muszą mieć wartości od 1 do ${createGameFormData.classResources.length}.`
-          }
-
-          if (characterMappings.has(classResource.characterMapping)) {
-            return 'Mapowania postaci muszą być unikalne.'
-          }
-
-          // Resource
-          if (classResource.itemName === '') {
-            return 'Nazwy przedmiotów nie mogą być puste.'
-          }
-
-          if (itemNames.has(classResource.itemName)) {
-            return 'Nazwy przedmiotów muszą być unikalne.'
-          }
-
-          if (
-            classResource.itemMapping < 1 ||
-            classResource.itemMapping > createGameFormData.classResources.length
-          ) {
-            return `Mapowania przedmiotów muszą mieć wartości od 1 do ${createGameFormData.classResources.length}.`
-          }
-
-          if (itemMappings.has(classResource.itemMapping)) {
-            return 'Mapowania przedmiotów muszą być unikalne.'
-          }
-
-          if (
-            classResource.costPerItem < 1 ||
-            classResource.costPerItem > 1000000 ||
-            classResource.itemPerWorkshop < 1 ||
-            classResource.itemPerWorkshop > 1000000
-          ) {
-            return 'Koszt za przedmiot oraz ilość przedmiotów na warsztat muszą wynosić od 1 do 1,000,000.'
-          }
-
-          // Token
-          if (classResource.classTokenRegeneration <= 0) {
-            return 'Regeneracja tokenów musi być większa niż 0.'
-          }
-
-          characterMappings.add(classResource.characterMapping)
-          itemNames.add(classResource.itemName)
-          itemMappings.add(classResource.itemMapping)
-        }
-
-        if (createGameFormData.maxTimeTokens <= 0) {
-          return 'Maksymalna liczba tokenów czasowych musi być większa niż 0.'
-        }
-
-        if (createGameFormData.interactionRadius <= 0) {
-          return 'Promień interakcji musi być większy niż 0.'
-        }
-
-        if (createGameFormData.movingSpeed <= 0) {
-          return 'Prędkość ruchu musi być większa niż 0.'
-        }
-
-        if (createGameFormData.defaultMoney <= 0) {
-          return 'Domyślna ilość monet nie może być ujemna.'
-        }
-        break
+        return validateClassResources()
       case 3:
-        if (createGameFormData.lowTravels.length === 0) {
-          return 'Musisz dodać podróże dla niskiego poziomu.'
-        }
-
-        if (createGameFormData.mediumTravels.length === 0) {
-          return 'Musisz dodać podróże dla średniego poziomu.'
-        }
-
-        if (createGameFormData.highTravels.length === 0) {
-          return 'Musisz dodać podróże dla wysokiego poziomu.'
-        }
-
-        for (const travel of allTravels) {
-          const timeCost = travel.cost.find((itemCost) => itemCost.itemName === 'time')
-          if (!timeCost || timeCost.itemCost <= 0) {
-            return `Podróż do miasta ${travel.townName} musi mieć określony koszt czasu większy niż 0.`
-          }
-
-          const otherCosts = travel.cost.filter((itemCost) => itemCost.itemName !== 'time')
-          const hasOtherPositiveCost = otherCosts.some((itemCost) => itemCost.itemCost > 0)
-          if (!hasOtherPositiveCost) {
-            return `Podróż do miasta ${travel.townName} musi mieć przynajmniej jeden przedmiot z dodatnią wartością.`
-          }
-
-          if (travel.cost.length === 0) {
-            return `Podróż do miasta ${travel.townName} musi mieć określony koszt.`
-          }
-
-          if (travel.minReward <= 0) {
-            return `Podróż do miasta ${travel.townName} musi mieć minimalną nagrodę większą niż 0.`
-          }
-
-          if (travel.maxReward <= 0) {
-            return `Podróż do miasta ${travel.townName} musi mieć maksymalną nagrodę większą niż 0.`
-          }
-
-          if (travel.minReward > travel.maxReward) {
-            return `Podróż do miasta ${travel.townName} musi mieć maksymalną nagrodę większą niż minimalna.`
-          }
-
-          if (travel.regenTime <= 0) {
-            return `Podróż do miasta ${travel.townName} musi mieć czas regeneracji większy niż 0.`
-          }
-
-          if (travel.townName.trim() === '') {
-            return 'Podróże muszą mieć nazwy miast.'
-          }
-        }
-
-        if (allTravelNames.length !== uniqueTravelNames.size) {
-          return 'Nazwy miast muszą być unikalne.'
-        }
-        break
+        return validateTravels()
       case 4:
-        if (createGameFormData.gameName === '' || createGameFormData.gameFullTime <= 0) {
-          return 'Nazwa gry nie może być pusta oraz czas trwania gry musi być większy niż 0.'
-        }
-        break
+        return validateGameDetails()
       default:
         return 'Nieznana strona.'
     }
-    return null
   }
 
-  const isNextPageDisabled = (): boolean => {
-    if (page + 1 > maxPage) {
-      return true
-    }
-
-    return validatePage() !== null
-  }
+  const isNextPageDisabled = (): boolean => page + 1 > maxPage || validatePage() !== null
 
   useEffect(() => {
     setError(null)
@@ -747,6 +763,29 @@ const CreateGameForm = () => {
     setIsConfigLoading(true)
     disableSubmitButton()
 
+
+    const mapTravels = (travels: GameSettingsTravels[], travelType: TravelType): Travel[] => {
+      const travel = travels.find((travel: GameSettingsTravels) => travel.key === travelType.toString());
+      if (!travel) {
+        return [];
+      }
+
+      return travel.value.map((travelValue) => ({
+        type: travelType,
+        name: travelValue.value.name,
+        time: travelValue.value.time,
+        regenTime: travelValue.value.regenTime,
+        moneyRange: {
+          from: travelValue.value.moneyRange.from,
+          to: travelValue.value.moneyRange.to,
+        },
+        resources: travelValue.value.resources.map((resource) => ({
+          key: resource.key,
+          value: resource.value,
+        })),
+      }));
+    };
+
     await gameService
       .getAdminGameSettings(gameSessionId)
       .then((res: GameSettings) => {
@@ -772,45 +811,9 @@ const CreateGameForm = () => {
             itemPerWorkshop: repr.value.maxProduction,
             itemBuyout: repr.value.buyoutPrice,
           })),
-          lowTravels: res.travels
-            .find((entry: GameSettingsTravels) => entry.key === 'low')!
-            .value.map((travel) => ({
-              type: 'low',
-              townName: travel.value.name,
-              cost: travel.value.resources.map((resource) => ({
-                itemName: resource.key,
-                itemCost: resource.value,
-              })),
-              minReward: travel.value.moneyRange.from,
-              maxReward: travel.value.moneyRange.to,
-              regenTime: travel.value.regenTime,
-            })),
-          mediumTravels: res.travels
-            .find((entry: GameSettingsTravels) => entry.key === 'medium')!
-            .value.map((travel) => ({
-              type: 'medium',
-              townName: travel.value.name,
-              cost: travel.value.resources.map((resource) => ({
-                itemName: resource.key,
-                itemCost: resource.value,
-              })),
-              minReward: travel.value.moneyRange.from,
-              maxReward: travel.value.moneyRange.to,
-              regenTime: travel.value.regenTime,
-            })),
-          highTravels: res.travels
-            .find((entry: GameSettingsTravels) => entry.key === 'high')!
-            .value.map((travel) => ({
-              type: 'high',
-              townName: travel.value.name,
-              cost: travel.value.resources.map((resource) => ({
-                itemName: resource.key,
-                itemCost: resource.value,
-              })),
-              minReward: travel.value.moneyRange.from,
-              maxReward: travel.value.moneyRange.to,
-              regenTime: travel.value.regenTime,
-            })),
+          lowTravels: mapTravels(res.travels, TravelType.low),
+          mediumTravels: mapTravels(res.travels, TravelType.medium),
+          highTravels: mapTravels(res.travels, TravelType.high),
           gameName: res.name,
           gameFullTime: res.timeForGame / 60000,
           minPlayersToStart: res.minPlayersToStart,
