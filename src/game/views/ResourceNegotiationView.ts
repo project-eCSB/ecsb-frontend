@@ -4,6 +4,7 @@ import { type Scene } from '../scenes/Scene'
 import { CloudType } from '../scenes/Types'
 import { ImageCropper } from '../tools/ImageCropper'
 import { type CoopBid, OutcomingCoopMessageType, sendCoopMessage } from '../webSocketMessage/chat/CoopMessageHandler'
+import { ResourceNegotiationFailureView } from './ResourceNegotiationFailureView'
 import { ResourceNegotiationSuccessView } from './ResourceNegotiationSuccessView'
 import {
   createButtonWithId,
@@ -207,11 +208,10 @@ export class ResourceNegotiationView {
 
     this.negotiationCloseMessagesContainer = createDivWithId('resourceNegotiationCloseMessagesContainer')
     this.negotiationCloseMessagesContainer.style.display = 'none'
-    const closePage1 = this.createMessagePage('first msg', ['second msg'], false, false, 'resourceNegotiationCancel-page')
+    const closePage1 = this.createMessagePage('Jednak nie chcę', ['Nieuczciwie!'], false, false, 'resourceNegotiationCancel-page')
     closePage1.id = 'cancel-page-active'
-    const closePage2 = this.createMessagePage('third msg', ['forth msg'], false, false, 'resourceNegotiationCancel-page')
-    const closePage3 = this.createMessagePage('fifth msg', [], false, false, 'resourceNegotiationCancel-page')
-    this.negotiationCloseMessagesContainer.append(closePage1, closePage2, closePage3)
+    const closePage2 = this.createMessagePage('Inna wyprawa?', ['Może handel?'], false, false, 'resourceNegotiationCancel-page')
+    this.negotiationCloseMessagesContainer.append(closePage1, closePage2)
     const closePaginationBar = this.createPaginationBarWithDimension(this.negotiationCloseMessagesContainer, 'resourceNegotiationCancel-page', 'cancel-page-active', 0, false)
     this.negotiationCloseMessagesContainer.appendChild(closePaginationBar)
 
@@ -297,7 +297,7 @@ export class ResourceNegotiationView {
     const resourceNegotiationPartnerName = createElWithIdText('h3', ResourceNegotiationView.resourceNegotiationPartnerNameID, `${this.partner}`)
     resourceNegotiationPartnerNameWrapper.appendChild(resourceNegotiationPartnerName)
 
-    //Content - Message
+    // Content - Message
     this.resourceNegotiationReceivedMessageExtraWrapper = createDivWithIdClass('resourceNegotiationMessageReceivedExtraWrapper', 'resourceNegotiationMessageExtraWrapper')
     const resourceNegotiationReceivedMessageWrapper = createDivWithClassName('resourceNegotiationMessageWrapper')
     this.resourceNegotiationReceivedMessage = createDivWithClassName('resourceNegotiationMessage')
@@ -346,9 +346,9 @@ export class ResourceNegotiationView {
 
     // Propose messages
     this.resourceNegotiationProposeMessagesContainer = createDivWithId('resourceNegotiationMessagesContainer')
-    const page1 = this.createMessagePage('first msg', ['second msg', 'third msg'], true, true, 'resourceNegotiationPropose-page')
+    const page1 = this.createMessagePage('Za drogo', ['Nieuczciwie!', 'Zdobędę więcej'], true, true, 'resourceNegotiationPropose-page')
     page1.id = 'propose-page-active'
-    const page2 = this.createMessagePage('forth msg', ['fifth msg'], true, true, 'resourceNegotiationPropose-page')
+    const page2 = this.createMessagePage('Tego nie dam!', ['Nie chcę jechać!'], true, true, 'resourceNegotiationPropose-page')
     this.resourceNegotiationProposeMessagesContainer.append(page1, page2)
     const paginationBar = this.createPaginationBarWithDimension(this.resourceNegotiationProposeMessagesContainer, 'resourceNegotiationPropose-page', 'propose-page-active', 0, true)
     this.resourceNegotiationProposeMessagesContainer.appendChild(paginationBar)
@@ -495,6 +495,7 @@ export class ResourceNegotiationView {
     }
 
     this.updateContent()
+    this.disableRemindButton()
   }
 
   private updateContent(): void {
@@ -895,7 +896,7 @@ export class ResourceNegotiationView {
   public remind(): void {
     sendCoopMessage(this.scene.chatWs, {
       type: OutcomingCoopMessageType.CoopRemind,
-      receiverId: this.partner!,
+      receiverId: this.partner,
     })
   }
 
@@ -923,7 +924,7 @@ export class ResourceNegotiationView {
       type: OutcomingCoopMessageType.CancelNegotiation,
       message: msg,
     })
-    this.close(false)
+    this.close(false, '')
   }
 
   private handlePropose(msg: string): void {
@@ -1046,7 +1047,7 @@ export class ResourceNegotiationView {
     this.scene.movingEnabled = false
   }
 
-  public close(success: boolean): void {
+  public close(success: boolean, message: string): void {
     document.getElementById(ResourceNegotiationView.resourceNegotiationBoxWrapperID)?.remove()
     this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
     this.scene.resourceNegotiationView = null
@@ -1066,7 +1067,23 @@ export class ResourceNegotiationView {
       )
       successView.show()
     } else {
-      this.scene.movingEnabled = true
+      if (message.length > 0) {
+        const failureView = new ResourceNegotiationFailureView(
+          this.scene.playerId,
+          this.partner,
+          message,
+          () => {
+            this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
+            this.scene.resourceNegotiationView = null
+            this.scene.movingEnabled = true
+          }
+        )
+        failureView.show()
+      } else {
+        this.scene.interactionCloudBuilder.hideInteractionCloud(this.scene.playerId, CloudType.TALK)
+        this.scene.resourceNegotiationView = null
+        this.scene.movingEnabled = true
+      }
     }
   }
 }

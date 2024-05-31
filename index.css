@@ -3166,10 +3166,20 @@
   transform: translate(2px, -2px);
 }
 
+#tradeBoxCloseMessagesContainer .tradeMessage {
+  position: relative;
+  left: -10px;
+}
+
 .tradeMessage {
   width: 120%;
-  height: 100%;
+  height: 60px;
   padding: 5px;
+  display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+  text-align: center;
 }
 
 .tradeMessageMiddle {
@@ -3346,7 +3356,8 @@
 
 /* TradeSuccessBox & TradeFailureBox */
 #tradeSuccessBox,
-#tradeFailureBox {
+#tradeFailureBox,
+#negotiationFailureBox {
   position: fixed;
   top: -50vh;
   left: -50vw;
@@ -3363,13 +3374,15 @@
 
 /* TradeSuccessBox - Header */
 #tradeSuccessBoxHeaderWrapper,
-#tradeFailureBoxHeaderWrapper {
+#tradeFailureBoxHeaderWrapper,
+#negotiationFailureBoxHeaderWrapper {
   position: relative;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 #tradeSuccessBoxHeader,
-#tradeFailureBoxHeader {
+#tradeFailureBoxHeader,
+#negotiationFailureBoxHeader {
   width: 100%;
   background-color: #edb872;
   clip-path: polygon(
@@ -3422,7 +3435,8 @@
 }
 
 #tradeSuccessBoxHeader > h1,
-#tradeFailureBoxHeader > h1 {
+#tradeFailureBoxHeader > h1,
+#negotiationFailureBoxHeader > h1 {
   font-size: 1.5rem;
   text-align: center;
 }
@@ -3430,7 +3444,9 @@
 #tradeSuccessBoxHeader > div:first-child,
 #tradeSuccessBoxHeader > div:last-child,
 #tradeFailureBoxHeader > div:first-child,
-#tradeFailureBoxHeader > div:last-child {
+#tradeFailureBoxHeader > div:last-child,
+#negotiationFailureBoxHeader > div:first-child,
+#negotiationFailureBoxHeader > div:last-child {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3438,18 +3454,21 @@
 }
 
 #tradeSuccessBoxHeader > div:first-child,
-#tradeFailureBoxHeader > div:first-child {
+#tradeFailureBoxHeader > div:first-child,
+#negotiationFailureBoxHeader > div:first-child {
   margin-right: 8px;
 }
 
 /* TradeSuccessBox - Information */
 #tradeSuccessBoxInformationBoxWrapper,
-#tradeFailureBoxInformationBoxWrapper {
+#tradeFailureBoxInformationBoxWrapper,
+#negotiationFailureBoxInformationBoxWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 #tradeSuccessBoxInformationBox,
-#tradeFailureBoxInformationBox {
+#tradeFailureBoxInformationBox,
+#negotiationFailureBoxInformationBox {
   padding: 1.2rem;
   background-color: #e3c296;
   clip-path: polygon(
@@ -3497,7 +3516,8 @@
 }
 
 #tradeSuccessBoxInformationBox > h1,
-#tradeFailureBoxInformationBox > h1 {
+#tradeFailureBoxInformationBox > h1,
+#negotiationFailureBoxInformationBox > h1 {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -3507,12 +3527,14 @@
 
 /* TradeSuccessBox - Content */
 #tradeSuccessBoxContentBoxExtraWrapper,
-#tradeFailureBoxContentBoxExtraWrapper {
+#tradeFailureBoxContentBoxExtraWrapper,
+#negotiationFailureBoxContentBoxExtraWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 #tradeSuccessBoxContentBoxWrapper,
-#tradeFailureBoxContentBoxWrapper {
+#tradeFailureBoxContentBoxWrapper,
+#negotiationFailureBoxContentBoxWrapper {
   background-color: #edb872;
   clip-path: polygon(
     3.05% 90%,
@@ -3555,29 +3577,35 @@
 }
 
 #tradeSuccessBoxContentBox,
-#tradeFailureBoxContentBox {
+#tradeFailureBoxContentBox,
+#negotiationFailureBoxContentBox {
   padding: 30px 50px;
   display: flex;
   gap: 20px;
 }
 
-#tradeFailureBoxContentBox {
+#tradeFailureBoxContentBox,
+#negotiationFailureBoxContentBox {
   min-height: 150px;
 }
 
-.tradeFailureBoxContentBoxUsername {
+.tradeFailureBoxContentBoxUsername,
+.negotiationFailureBoxContentBoxUsername {
   font-size: 1.2rem;
 }
 
 #tradeFailureBoxContentBox > div:first-child,
-#tradeFailureBoxContentBox > div:last-child {
+#tradeFailureBoxContentBox > div:last-child,
+#negotiationFailureBoxContentBox > div:first-child,
+#negotiationFailureBoxContentBox > div:last-child {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: end;
 }
 
-#tradeFailureBoxContentBox > div:nth-child(2) {
+#tradeFailureBoxContentBox > div:nth-child(2),
+#negotiationFailureBoxContentBox > div:nth-child(2) {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -3586,18 +3614,26 @@
 
 /* #tradeFailureBoxContentBox > div > .tra */
 
-#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper {
+#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper,
+#negotiationFailureBoxContentBox > div > .resourceNegotiationMessageExtraWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
   transform: scale(-1, 1);
 }
 
-#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper:hover > .tradeMessageWrapper {
+#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper:hover > .tradeMessageWrapper,
+#negotiationFailureBoxContentBox > div > .resourceNegotiationMessageExtraWrapper:hover > .resourceNegotiationMessageWrapper {
   transform: none;
 }
 
-#tradeFailureBoxContentBox .tradeMessage > p {
+#tradeFailureBoxContentBox .tradeMessage > p,
+#negotiationFailureBoxContentBox .resourceNegotiationMessage > p {
   transform: scale(-1, 1);
-  margin-right: 15px;
+  margin: 0 15px;
+}
+
+#tradeFailureBoxContentBox .tradeMessage {
+  position: relative;
+  right: 15px;
 }
 
 #tradeSuccessBoxContentBox > h2 {
@@ -3703,42 +3739,49 @@
 
 /* TradeSuccessBox - Ok button */
 #tradeSuccessBoxOkButtonExtraWrapper,
-#tradeFailureBoxOkButtonExtraWrapper {
+#tradeFailureBoxOkButtonExtraWrapper,
+#negotiationFailureBoxOkButtonExtraWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px 4px #edb872);
   border: none;
 }
 
 #tradeSuccessBoxOkButtonExtraWrapper:hover,
-#tradeFailureBoxOkButtonExtraWrapper:hover {
+#tradeFailureBoxOkButtonExtraWrapper:hover,
+#negotiationFailureBoxOkButtonExtraWrapper:hover {
   filter: none;
 }
 
 #tradeSuccessBoxOkButtonExtraWrapperActive,
-#tradeFailureBoxOkButtonExtraWrapperActive {
+#tradeFailureBoxOkButtonExtraWrapperActive,
+#negotiationFailureBoxOkButtonExtraWrapperActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 #tradeSuccessBoxOkButtonWrapper,
-#tradeFailureBoxOkButtonWrapper {
+#tradeFailureBoxOkButtonWrapper,
+#negotiationFailureBoxOkButtonWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
 }
 
 #tradeSuccessBoxOkButtonWrapper:hover,
-#tradeFailureBoxOkButtonWrapper:hover {
+#tradeFailureBoxOkButtonWrapper:hover,
+#negotiationFailureBoxOkButtonWrapper:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
 #tradeSuccessBoxOkButtonWrapperActive,
-#tradeFailureBoxOkButtonWrapperActive {
+#tradeFailureBoxOkButtonWrapperActive,
+#negotiationFailureBoxOkButtonWrapperActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 #tradeSuccessBoxOkButton,
-#tradeFailureBoxOkButton {
+#tradeFailureBoxOkButton,
+#negotiationFailureBoxOkButton {
   border: none;
   padding: 0.8rem 1.6rem;
   font-style: normal;
@@ -3789,24 +3832,30 @@
 }
 
 #tradeSuccessBoxOkButtonExtraWrapper:hover #tradeSuccessBoxOkButton,
-#tradeFailureBoxOkButtonExtraWrapper:hover #tradeFailureBoxOkButton {
+#tradeFailureBoxOkButtonExtraWrapper:hover #tradeFailureBoxOkButton,
+#negotiationFailureBoxOkButtonExtraWrapper:hover #negotiationFailureBoxOkButton {
   cursor: pointer;
   transform: translate(2px, -2px);
 }
 
 #tradeSuccessBoxOkButton,
-#tradeFailureBoxOkButton {
+#tradeFailureBoxOkButton,
+#negotiationFailureBoxOkButton {
   transition: 0.2s all ease-in-out;
   color: #000;
   background-color: #edb872;
   cursor: pointer;
 }
 
-#tradeSuccessBoxOkButton:hover #tradeFailureBoxOkButton:hover {
+#tradeSuccessBoxOkButton:hover,
+#tradeFailureBoxOkButton:hover,
+#negotiationFailureBoxOkButton:hover {
   transform: translate(-1px, 2px);
 }
 
-#tradeSuccessBoxOkButtonActive #tradeFailureBoxOkButtonActive {
+#tradeSuccessBoxOkButtonActive,
+#tradeFailureBoxOkButtonActive,
+#negotiationFailureBoxOkButtonActive {
   background-color: #ab742b;
   color: #000;
   transition: 0.2s all ease-in-out;
@@ -3820,6 +3869,9 @@
   #tradeFailureBox {
     transform: scale(0.85);
   }
+  #negotiationFailureBox {
+    transform: scale(0.85);
+  }
 }
 
 @media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
@@ -3827,6 +3879,9 @@
     transform: scale(0.7);
   }
   #tradeFailureBox {
+    transform: scale(0.7);
+  }
+  #negotiationFailureBox {
     transform: scale(0.7);
   }
 }
@@ -6200,12 +6255,13 @@
 }
 
 .resourceNegotiationMessageExtraWrapper {
+  height: 69px;
   filter: drop-shadow(-3px 4px #835211);
   transition: 0.2s ease-in-out all;
 }
 
 .resourceNegotiationMessageWrapper {
-  padding: 8px 20px 12px 20px;
+  padding: 8px 15px 12px 15px;
   background-color: #e3c296;
   clip-path: polygon(
     8.33% 12.29%,
@@ -6298,9 +6354,10 @@
 }
 
 .resourceNegotiationMessage {
-  width: 120%;
+  width: 100%;
   height: auto;
-  padding: 5px;
+  padding: 5px 0px;
+  text-align: center;
 }
 
 #resourceNegotiationMessagesContainer {
@@ -7592,12 +7649,12 @@
 
 #tradeBoxCloseMessagesContainer
   > #cancel-page-active {
-  top: 13px;
+  top: -18px;
 }
 
 #resourceNegotiationCloseMessagesContainer
   > #cancel-page-active {
-  top: 13px;
+  top: -5px;
 }
 
 #pagination-bar-wrapper {
@@ -7617,7 +7674,7 @@
 #tradeBoxMessagesContainer > #pagination-bar-wrapper {
   right: -100px;
   top: 15px;
-  height: 185px;
+  height: 230px;
 }
 
 #tradeBoxCloseMessagesContainer > #pagination-bar-wrapper {

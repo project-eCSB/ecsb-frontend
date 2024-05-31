@@ -730,7 +730,7 @@ export class Scene extends Phaser.Scene {
         }
         break
       case IncomingCoopMessageType.CoopFinishNegotiation:
-        this.resourceNegotiationView?.close(true)
+        this.resourceNegotiationView?.close(true, '')
         this.loadingView.close()
         this.plannedTravel = null
         break
@@ -740,7 +740,7 @@ export class Scene extends Phaser.Scene {
             `Gracz ${msg.senderId} przerwał negocjacje dotyczące podziału zasobów`,
           )
         }
-        this.resourceNegotiationView?.close(false)
+        this.resourceNegotiationView?.close(false, msg.message.message)
         break
       case IncomingCoopMessageType.CoopNegotiationBid:
         this.resourceNegotiationView?.update(true, msg.message.coopBid, msg.message.message)
