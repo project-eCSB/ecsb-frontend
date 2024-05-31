@@ -1,5 +1,4 @@
 import {
-    createArrowIcon,
     createButtonWithInnerText,
     createDivWithClassName,
     createDivWithId,
