@@ -1,13 +1,12 @@
 import { setGameToken } from '../../apis/apis'
 import gameAPI from '../../apis/game/GameAPI'
 import type {
-  AssetConfig,
+  MapConfig,
   AssetId,
   AssetURL,
   CreateGameRequest,
   DefaultAssetsResponse,
   EndGameStatus,
-  Equipment,
   FileType,
   GameResponseError,
   GameSessionId,
@@ -78,10 +77,6 @@ const getUserGameSettings = async (): Promise<GameSettings> => {
   return await gameAPI.getUserGameSettings().catch(handleError)
 }
 
-const getPlayerEquipment = async (): Promise<Equipment> => {
-  return await gameAPI.getPlayerEquipment().catch(handleError)
-}
-
 const getPlayerResults = async (): Promise<EndGameStatus> => {
   return await gameAPI.getPlayerResults().catch(handleError)
 }
@@ -94,8 +89,8 @@ const uploadAsset = async (file: ArrayBuffer, fileName: string, fileType: string
   return await gameAPI.uploadAsset({ file, fileName, fileType }).catch(handleError)
 }
 
-const getAssetConfig = async (assetId: AssetId): Promise<AssetConfig> => {
-  return await gameAPI.getAssetConfig(assetId).catch(handleError)
+const getMapConfig = async (assetId: AssetId): Promise<MapConfig> => {
+  return await gameAPI.getMapConfig(assetId).catch(handleError)
 }
 
 const getSavedAssets = async (fileType: FileType): Promise<SavedAssetsResponse> => {
@@ -118,11 +113,10 @@ const gameService = {
   getAdminGameLogs,
   getUserGameSettings,
   getGameSession,
-  getPlayerEquipment,
   getPlayerResults,
   getUserGameStatus,
   uploadAsset,
-  getAssetConfig,
+  getMapConfig,
   getSavedAssets,
   getAsset,
   getDefaultAssets,

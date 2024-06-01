@@ -4,7 +4,7 @@ import { Direction } from 'grid-engine'
 import type { Websocket } from 'websocket-ts'
 import { WebsocketBuilder } from 'websocket-ts'
 import type {
-  AssetConfig,
+  MapConfig,
   CoopEquipmentDto,
   EndGameStatus,
   Equipment,
@@ -143,6 +143,7 @@ export class Scene extends Phaser.Scene {
   public imageCropper!: ImageCropper
   public loadingBarBuilder: LoadingBarAndResultBuilder | undefined
   public movingEnabled: boolean
+  public equipmentInitialized: boolean
   private lobbyWs!: Websocket
   private movementWs!: Websocket
   public chatWs!: Websocket
@@ -164,7 +165,7 @@ export class Scene extends Phaser.Scene {
     gameToken: string,
     userStatus: GameStatus,
     settings: GameSettings,
-    mapConfig: AssetConfig,
+    mapConfig: MapConfig,
     characterUrl: string,
     resourceUrl: string,
     tileUrl: string,
@@ -177,6 +178,7 @@ export class Scene extends Phaser.Scene {
     this.players = {}
     this.actionTrade = null
     this.movingEnabled = false
+    this.equipmentInitialized = false
     this.tradeWindow = null
     this.userDataView = new UserDataView(this.playerId, this.status.className)
     this.timeView = null
@@ -341,26 +343,6 @@ export class Scene extends Phaser.Scene {
         }
       },
     )
-
-    gameService.getPlayerEquipment()
-      .then((eq: Equipment) => {
-        this.equipment = eq
-        this.equipmentView = new EquipmentView(
-          eq,
-          this.resourceUrl,
-          this.settings.classResourceRepresentation,
-        )
-        this.equipmentView.show()
-        this.statusAndCoopView = new StatusAndCoopView(
-          eq,
-          this.resourceUrl,
-          this.settings.classResourceRepresentation,
-          this,
-        )
-        this.statusAndCoopView.show()
-      }).catch((err) => {
-      console.error(err)
-    })
 
     this.userDataView.show()
 
@@ -867,7 +849,24 @@ export class Scene extends Phaser.Scene {
         break
       case EquipmentMessageType.EquipmentChange:
         this.equipment = msg.message.playerEquipment
-        this.equipmentView?.update(msg.message.playerEquipment)
+        if (!this.equipmentInitialized) {
+          this.equipmentView = new EquipmentView(
+            this.equipment,
+            this.resourceUrl,
+            this.settings.classResourceRepresentation,
+          )
+          this.equipmentView.show()
+          this.statusAndCoopView = new StatusAndCoopView(
+            this.equipment,
+            this.resourceUrl,
+            this.settings.classResourceRepresentation,
+            this,
+          )
+          this.statusAndCoopView.show()
+          this.equipmentInitialized = true
+        } else {
+          this.equipmentView?.update(msg.message.playerEquipment)
+        }
         break
       case TimeMessageType.End:
         this.chatWs.close()

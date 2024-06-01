@@ -120,7 +120,7 @@ export interface UploadAssetRequest {
   fileType: string
 }
 
-export interface AssetConfig {
+export interface MapConfig {
   lowLevelTravels: Coordinate[]
   mediumLevelTravels: Coordinate[]
   highLevelTravels: Coordinate[]

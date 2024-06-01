@@ -2,15 +2,15 @@ import {
   authTokenAuthAndManagementAPI,
   authTokenAuthAndManagementOctetAPI,
   gameTokenAPI,
-  gameTokenSelfInteractionsAPI,
 } from '../apis'
 import type {
-  AssetConfig,
+  MapConfig,
   AssetId,
   AssetURL,
   CopyGameRequest,
   CreateGameRequest,
-  DefaultAssetsResponse, EndGameStatus, Equipment,
+  DefaultAssetsResponse,
+  EndGameStatus,
   FileType,
   GameSessionId,
   GameSettings,
@@ -72,7 +72,7 @@ const copyGame = async (data: CopyGameRequest): Promise<GameSessionId> => {
 
 const getAdminGameLogs = async (gameSessionId: number): Promise<string> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/getLogs/${gameSessionId}`)
+    .get(`/admin/getLogs/${gameSessionId}`)
     .then((response) => {
       if (response.status !== 200) {
         console.error(response.status)
@@ -94,13 +94,6 @@ const getGameToken = async (data: GameTokenRequest): Promise<GameTokenResponse> 
 const getUserGameSettings = async (): Promise<GameSettings> => {
   return await gameTokenAPI
     .get('/settings')
-    .then(standardThen)
-    .catch(handleError)
-}
-
-const getPlayerEquipment = async (): Promise<Equipment> => {
-  return await gameTokenSelfInteractionsAPI
-    .get('/equipment')
     .then(standardThen)
     .catch(handleError)
 }
@@ -129,9 +122,9 @@ const uploadAsset = async (uploadAssetRequest: UploadAssetRequest): Promise<Asse
     .catch(handleError)
 }
 
-const getAssetConfig = async (assetId: AssetId): Promise<AssetConfig> => {
+const getMapConfig = async (assetId: AssetId): Promise<MapConfig> => {
   return await authTokenAuthAndManagementAPI
-    .get(`/assets/config/${assetId}`)
+    .get(`/assets/map/${assetId}`)
     .then(standardThen)
     .catch(handleError)
 }
@@ -173,12 +166,11 @@ const gameAPI = {
   getAdminGameSettings,
   getAdminGameLogs,
   getGameToken,
-  getPlayerEquipment,
   getPlayerResults,
   getUserGameSettings,
   getUserGameStatus,
   uploadAsset,
-  getAssetConfig,
+  getMapConfig,
   getSavedAssets,
   getAsset,
   getDefaultAssets,
