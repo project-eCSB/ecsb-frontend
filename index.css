@@ -3057,10 +3057,6 @@
   transform: none;
 }
 
-#tradeBoxCloseMessagesContainer > .tradeMessageExtraWrapper {
-  margin-bottom: 8px;
-}
-
 #tradeMessageReceivedExtraWrapper {
   width: 200px;
   position: absolute;
@@ -3156,10 +3152,6 @@
   filter: drop-shadow(-5px 6px #835211);
 }
 
-.tradeMessageExtraWrapper:hover > .tradeMessageWrapper {
-  transform: translate(2px, -2px);
-}
-
 #tradeBoxCloseMessagesContainer
   > .tradeCancel-page
   > .tradeMessageExtraWrapper:last-child:hover
@@ -3167,10 +3159,27 @@
   transform: scale(1, -1) translate(2px, 2px);
 }
 
+#tradeBoxCloseMessagesContainer
+  > .tradeCancel-page 
+  > .tradeMessageExtraWrapper:first-child:hover 
+  > .tradeMessageWrapper {
+  transform: translate(2px, -2px);
+}
+
+#tradeBoxCloseMessagesContainer .tradeMessage {
+  position: relative;
+  left: -10px;
+}
+
 .tradeMessage {
   width: 120%;
-  height: 100%;
+  height: 60px;
   padding: 5px;
+  display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+  text-align: center;
 }
 
 .tradeMessageMiddle {
@@ -3347,7 +3356,8 @@
 
 /* TradeSuccessBox & TradeFailureBox */
 #tradeSuccessBox,
-#tradeFailureBox {
+#tradeFailureBox,
+#negotiationFailureBox {
   position: fixed;
   top: -50vh;
   left: -50vw;
@@ -3364,13 +3374,15 @@
 
 /* TradeSuccessBox - Header */
 #tradeSuccessBoxHeaderWrapper,
-#tradeFailureBoxHeaderWrapper {
+#tradeFailureBoxHeaderWrapper,
+#negotiationFailureBoxHeaderWrapper {
   position: relative;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 #tradeSuccessBoxHeader,
-#tradeFailureBoxHeader {
+#tradeFailureBoxHeader,
+#negotiationFailureBoxHeader {
   width: 100%;
   background-color: #edb872;
   clip-path: polygon(
@@ -3423,7 +3435,8 @@
 }
 
 #tradeSuccessBoxHeader > h1,
-#tradeFailureBoxHeader > h1 {
+#tradeFailureBoxHeader > h1,
+#negotiationFailureBoxHeader > h1 {
   font-size: 1.5rem;
   text-align: center;
 }
@@ -3431,7 +3444,9 @@
 #tradeSuccessBoxHeader > div:first-child,
 #tradeSuccessBoxHeader > div:last-child,
 #tradeFailureBoxHeader > div:first-child,
-#tradeFailureBoxHeader > div:last-child {
+#tradeFailureBoxHeader > div:last-child,
+#negotiationFailureBoxHeader > div:first-child,
+#negotiationFailureBoxHeader > div:last-child {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3439,18 +3454,21 @@
 }
 
 #tradeSuccessBoxHeader > div:first-child,
-#tradeFailureBoxHeader > div:first-child {
+#tradeFailureBoxHeader > div:first-child,
+#negotiationFailureBoxHeader > div:first-child {
   margin-right: 8px;
 }
 
 /* TradeSuccessBox - Information */
 #tradeSuccessBoxInformationBoxWrapper,
-#tradeFailureBoxInformationBoxWrapper {
+#tradeFailureBoxInformationBoxWrapper,
+#negotiationFailureBoxInformationBoxWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 #tradeSuccessBoxInformationBox,
-#tradeFailureBoxInformationBox {
+#tradeFailureBoxInformationBox,
+#negotiationFailureBoxInformationBox {
   padding: 1.2rem;
   background-color: #e3c296;
   clip-path: polygon(
@@ -3498,7 +3516,8 @@
 }
 
 #tradeSuccessBoxInformationBox > h1,
-#tradeFailureBoxInformationBox > h1 {
+#tradeFailureBoxInformationBox > h1,
+#negotiationFailureBoxInformationBox > h1 {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -3508,12 +3527,14 @@
 
 /* TradeSuccessBox - Content */
 #tradeSuccessBoxContentBoxExtraWrapper,
-#tradeFailureBoxContentBoxExtraWrapper {
+#tradeFailureBoxContentBoxExtraWrapper,
+#negotiationFailureBoxContentBoxExtraWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
 }
 
 #tradeSuccessBoxContentBoxWrapper,
-#tradeFailureBoxContentBoxWrapper {
+#tradeFailureBoxContentBoxWrapper,
+#negotiationFailureBoxContentBoxWrapper {
   background-color: #edb872;
   clip-path: polygon(
     3.05% 90%,
@@ -3556,29 +3577,35 @@
 }
 
 #tradeSuccessBoxContentBox,
-#tradeFailureBoxContentBox {
+#tradeFailureBoxContentBox,
+#negotiationFailureBoxContentBox {
   padding: 30px 50px;
   display: flex;
   gap: 20px;
 }
 
-#tradeFailureBoxContentBox {
+#tradeFailureBoxContentBox,
+#negotiationFailureBoxContentBox {
   min-height: 150px;
 }
 
-.tradeFailureBoxContentBoxUsername {
+.tradeFailureBoxContentBoxUsername,
+.negotiationFailureBoxContentBoxUsername {
   font-size: 1.2rem;
 }
 
 #tradeFailureBoxContentBox > div:first-child,
-#tradeFailureBoxContentBox > div:last-child {
+#tradeFailureBoxContentBox > div:last-child,
+#negotiationFailureBoxContentBox > div:first-child,
+#negotiationFailureBoxContentBox > div:last-child {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: end;
 }
 
-#tradeFailureBoxContentBox > div:nth-child(2) {
+#tradeFailureBoxContentBox > div:nth-child(2),
+#negotiationFailureBoxContentBox > div:nth-child(2) {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -3587,18 +3614,26 @@
 
 /* #tradeFailureBoxContentBox > div > .tra */
 
-#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper {
+#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper,
+#negotiationFailureBoxContentBox > div > .resourceNegotiationMessageExtraWrapper {
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
   transform: scale(-1, 1);
 }
 
-#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper:hover > .tradeMessageWrapper {
+#tradeFailureBoxContentBox > div > .tradeMessageExtraWrapper:hover > .tradeMessageWrapper,
+#negotiationFailureBoxContentBox > div > .resourceNegotiationMessageExtraWrapper:hover > .resourceNegotiationMessageWrapper {
   transform: none;
 }
 
-#tradeFailureBoxContentBox .tradeMessage > p {
+#tradeFailureBoxContentBox .tradeMessage > p,
+#negotiationFailureBoxContentBox .resourceNegotiationMessage > p {
   transform: scale(-1, 1);
-  margin-right: 15px;
+  margin: 0 15px;
+}
+
+#tradeFailureBoxContentBox .tradeMessage {
+  position: relative;
+  right: 15px;
 }
 
 #tradeSuccessBoxContentBox > h2 {
@@ -3704,42 +3739,49 @@
 
 /* TradeSuccessBox - Ok button */
 #tradeSuccessBoxOkButtonExtraWrapper,
-#tradeFailureBoxOkButtonExtraWrapper {
+#tradeFailureBoxOkButtonExtraWrapper,
+#negotiationFailureBoxOkButtonExtraWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px 4px #edb872);
   border: none;
 }
 
 #tradeSuccessBoxOkButtonExtraWrapper:hover,
-#tradeFailureBoxOkButtonExtraWrapper:hover {
+#tradeFailureBoxOkButtonExtraWrapper:hover,
+#negotiationFailureBoxOkButtonExtraWrapper:hover {
   filter: none;
 }
 
 #tradeSuccessBoxOkButtonExtraWrapperActive,
-#tradeFailureBoxOkButtonExtraWrapperActive {
+#tradeFailureBoxOkButtonExtraWrapperActive,
+#negotiationFailureBoxOkButtonExtraWrapperActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 #tradeSuccessBoxOkButtonWrapper,
-#tradeFailureBoxOkButtonWrapper {
+#tradeFailureBoxOkButtonWrapper,
+#negotiationFailureBoxOkButtonWrapper {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
 }
 
 #tradeSuccessBoxOkButtonWrapper:hover,
-#tradeFailureBoxOkButtonWrapper:hover {
+#tradeFailureBoxOkButtonWrapper:hover,
+#negotiationFailureBoxOkButtonWrapper:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
 #tradeSuccessBoxOkButtonWrapperActive,
-#tradeFailureBoxOkButtonWrapperActive {
+#tradeFailureBoxOkButtonWrapperActive,
+#negotiationFailureBoxOkButtonWrapperActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 #tradeSuccessBoxOkButton,
-#tradeFailureBoxOkButton {
+#tradeFailureBoxOkButton,
+#negotiationFailureBoxOkButton {
   border: none;
   padding: 0.8rem 1.6rem;
   font-style: normal;
@@ -3790,24 +3832,30 @@
 }
 
 #tradeSuccessBoxOkButtonExtraWrapper:hover #tradeSuccessBoxOkButton,
-#tradeFailureBoxOkButtonExtraWrapper:hover #tradeFailureBoxOkButton {
+#tradeFailureBoxOkButtonExtraWrapper:hover #tradeFailureBoxOkButton,
+#negotiationFailureBoxOkButtonExtraWrapper:hover #negotiationFailureBoxOkButton {
   cursor: pointer;
   transform: translate(2px, -2px);
 }
 
 #tradeSuccessBoxOkButton,
-#tradeFailureBoxOkButton {
+#tradeFailureBoxOkButton,
+#negotiationFailureBoxOkButton {
   transition: 0.2s all ease-in-out;
   color: #000;
   background-color: #edb872;
   cursor: pointer;
 }
 
-#tradeSuccessBoxOkButton:hover #tradeFailureBoxOkButton:hover {
+#tradeSuccessBoxOkButton:hover,
+#tradeFailureBoxOkButton:hover,
+#negotiationFailureBoxOkButton:hover {
   transform: translate(-1px, 2px);
 }
 
-#tradeSuccessBoxOkButtonActive #tradeFailureBoxOkButtonActive {
+#tradeSuccessBoxOkButtonActive,
+#tradeFailureBoxOkButtonActive,
+#negotiationFailureBoxOkButtonActive {
   background-color: #ab742b;
   color: #000;
   transition: 0.2s all ease-in-out;
@@ -3821,6 +3869,9 @@
   #tradeFailureBox {
     transform: scale(0.85);
   }
+  #negotiationFailureBox {
+    transform: scale(0.85);
+  }
 }
 
 @media only screen and (max-width: 1050px), only screen and (max-height: 600px) {
@@ -3828,6 +3879,9 @@
     transform: scale(0.7);
   }
   #tradeFailureBox {
+    transform: scale(0.7);
+  }
+  #negotiationFailureBox {
     transform: scale(0.7);
   }
 }
@@ -6021,10 +6075,14 @@
   font-size: 1rem;
 }
 
-#resourceNegotiationCloseButton {
+#resourceNegotiationCloseButton,
+#resourceNegotiationCloseButtonActive,
+#resourceNegotiationCloseMessageButton,
+#resourceNegotiationCloseMessageButtonActive,
+#resourceNegotiationProposeMessageButton {
   border: none;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   color: #000;
   font-style: normal;
@@ -6035,7 +6093,7 @@
   right: -7px;
   font-size: 1rem;
   z-index: 999999;
-  background-color: #d39f59;
+  background-color: #edb872;
   filter: drop-shadow(-1px 2px rgb(48, 20, 1, 0.9));
   display: flex;
   justify-content: center;
@@ -6044,14 +6102,306 @@
   transition: 0.1s ease-in-out all;
 }
 
-#resourceNegotiationCloseButton:hover {
-  transform: translate(1px, -1px);
-  filter: drop-shadow(-2px 3px rgb(48, 20, 1, 0.9));
+#resourceNegotiationCloseButton > i,
+#resourceNegotiationCloseButtonActive > i,
+#resourceNegotiationCloseMessageButton > i,
+#resourceNegotiationCloseMessageButtonActive > i {
+  font-size: large;
 }
 
-#resourceNegotiationCloseButton:active {
+#resourceNegotiationProposeMessageButton {
+  filter: none;
+  width: 30px;
+  height: 30px;
+}
+
+#resourceNegotiationCloseButton,
+#resourceNegotiationCloseButtonActive {
+  top: -10px;
+  right: -10px;
+}
+
+#resourceNegotiationCloseMessageButton,
+#resourceNegotiationCloseMessageButtonActive {
+  transform: scale(0.7);
+  top: 3px;
+  right: -33px;
+}
+
+#resourceNegotiationCloseButton:hover,
+#resourceNegotiationCloseMessageButton:hover {
+  transform: translate(2px, -2px);
+  filter: drop-shadow(-3px 4px rgb(48, 20, 1, 0.9));
+}
+
+#resourceNegotiationCloseMessageButton:hover {
+  transform: scale(0.66) translate(3px, -3px);
+}
+
+#resourceNegotiationCloseButton:active,
+#resourceNegotiationCloseButtonActive,
+#resourceNegotiationCloseMessageButton:active,
+#resourceNegotiationCloseMessageButtonActive {
+  background-color: #ab742b;
   filter: none;
   transform: translate(0, 0);
+}
+
+#resourceNegotiationCloseMessageButton:active,
+#resourceNegotiationCloseMessageButtonActive {
+  transform: scale(0.66) translate(0, 0);
+}
+
+
+#resourceNegotiationProposeMessageButtonExtraWrapper,
+#resourceNegotiationProposeMessageButtonExtraWrapperActive {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  top: 37px;
+  right: 24px;
+  width: 30px;
+  height: 30px;
+}
+
+#resourceNegotiationProposeMessageButtonWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px #835211);
+  width: 100%;
+  height: 100%;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper {
+  transition: 0.2s all ease-in-out;
+  filter: drop-shadow(-3px 4px 4px #edb872);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper #resourceNegotiationProposeMessageButton {
+  transform: translate(3px, -4px);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper:hover #resourceNegotiationProposeMessageButton {
+  transform: translate(5px, -6px);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper:hover > #resourceNegotiationProposeMessageButtonWrapper {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapper:hover {
+  filter: none;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapperActive {
+  filter: none;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapperActive > #resourceNegotiationProposeMessageButtonWrapper {
+  filter: none;
+}
+
+#resourceNegotiationProposeMessageButtonExtraWrapperActive #resourceNegotiationProposeMessageButton {
+  background-color: #ab742b;
+  transform: translate(0, 0);
+}
+
+#resourceNegotiationCloseMessagesContainer {
+  position: absolute;
+  top: -40px;
+  right: -170px;
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:last-child > div {
+  transform: scale(1, -1);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:last-child:hover > div {
+  transform: scale(1, -1) translate(2px, 2px);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:last-child > div > div {
+  transform: scale(1, -1);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:first-child > div {
+  transform: none;
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:first-child:hover > div {
+  transform: translate(2px, -2px);
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationCancel-page > div:first-child > div > div {
+  transform: none;
+}
+
+#resourceNegotiationCloseMessagesContainer > .resourceNegotiationMessageExtraWrapper {
+  margin-bottom: 8px;
+}
+
+.resourceNegotiationPropose-page > .resourceNegotiationMessageExtraWrapper {
+  width: 120px;
+}
+
+#resourceNegotiationMessageReceivedExtraWrapper {
+  width: 200px;
+  position: absolute;
+  top: 100px;
+  right: -200px;
+}
+
+.resourceNegotiationMessageClickable {
+  cursor: pointer;
+}
+
+.resourceNegotiationMessageExtraWrapper {
+  height: 69px;
+  filter: drop-shadow(-3px 4px #835211);
+  transition: 0.2s ease-in-out all;
+}
+
+.resourceNegotiationMessageWrapper {
+  padding: 8px 15px 12px 15px;
+  background-color: #e3c296;
+  clip-path: polygon(
+    8.33% 12.29%,
+    11.22% 12%,
+    15.22% 12.29%,
+    19.89% 12.29%,
+    25.44% 11.71%,
+    33.33% 12%,
+    40.67% 12.86%,
+    47.78% 12.57%,
+    54.78% 11.71%,
+    60.11% 11.43%,
+    63.67% 12.29%,
+    68.56% 12.57%,
+    72.67% 12%,
+    73.78% 15.71%,
+    75.33% 12.57%,
+    78.89% 13.43%,
+    82.44% 13.43%,
+    86.67% 14%,
+    91.33% 14%,
+    95.44% 14.57%,
+    96% 26.86%,
+    96.22% 35.71%,
+    96.56% 42.29%,
+    96.67% 50.29%,
+    96.89% 60.86%,
+    96.56% 70.57%,
+    96.22% 75.43%,
+    95.67% 79.14%,
+    94.89% 82%,
+    92.44% 83.14%,
+    88.78% 83.43%,
+    85.11% 84%,
+    82% 84.29%,
+    76.44% 84.57%,
+    70.78% 84%,
+    62.78% 83.71%,
+    56.56% 83.14%,
+    50.56% 83.14%,
+    44.56% 82.57%,
+    37.67% 82%,
+    32.56% 81.14%,
+    30.44% 77.71%,
+    27.89% 81.43%,
+    24.56% 80.57%,
+    21.11% 79.71%,
+    18.22% 79.71%,
+    15.56% 80.86%,
+    12.56% 84%,
+    8.67% 88.86%,
+    5.56% 92.29%,
+    1.44% 98%,
+    2.33% 94%,
+    3.33% 90.57%,
+    4.33% 85.71%,
+    4.78% 80.86%,
+    5.33% 76.86%,
+    5.56% 73.43%,
+    5.44% 66.29%,
+    5.22% 58%,
+    4.78% 49.43%,
+    4.67% 41.43%,
+    4.89% 31.14%,
+    5.22% 21.14%,
+    5.56% 16.57%,
+    6.33% 13.14%
+  );
+  width: 100%;
+  height: 100%;
+  transition: 0.2s ease-in-out all;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resourceNegotiationMessageExtraWrapper:hover {
+  filter: drop-shadow(-5px 6px #835211);
+}
+
+.resourceNegotiationMessageExtraWrapper:hover > .resourceNegotiationMessageWrapper {
+  transform: translate(2px, -2px);
+}
+
+#resourceNegotiationBoxCloseMessagesContainer
+  > .resourceNegotiationCancel-page
+  > .resourceNegotiationMessageExtraWrapper:last-child:hover
+  > .resourceNegotiationMessageWrapper {
+  transform: scale(1, -1) translate(2px, 2px);
+}
+
+.resourceNegotiationMessage {
+  width: 100%;
+  height: auto;
+  padding: 5px 0px;
+  text-align: center;
+}
+
+#resourceNegotiationMessagesContainer {
+  position: relative;
+  top: -10px;
+  right: -70px;
+}
+
+#resourceNegotiationMessagesContainer > .resourceNegotiationPropose-page > div:hover > div {
+  transform: translate(2px, -2px);
+}
+
+#resourceNegotiationMessageReceivedExtraWrapper {
+  filter: none;
+}
+
+#resourceNegotiationMessageReceivedExtraWrapper > .resourceNegotiationMessageWrapper {
+  transform: none;
+}
+
+.resourceNegotiationPropose-page {
+  position: absolute;
+  top: -20px;
+  left: 1000px;
+  transition: 0.3s ease-in-out all;
+}
+
+.resourceNegotiationCancel-page {
+  position: absolute;
+  width: 150px;
+  top: -600px;
+  left: -130px;
+  transition: 0.3s ease-in-out all;
+}
+
+#resourceNegotiationMessagesContainer > #pagination-bar-wrapper-row {
+  right: -290px;
+  top: 55px;
+  width: 370px;
+}
+
+#resourceNegotiationCloseMessagesContainer > #pagination-bar-wrapper {
+  right: -50px;
+  height: 130px;
 }
 
 /* ResourceNegotiationView - Result*/
@@ -6134,6 +6484,7 @@
   top: 20px;
   left: -140px;
   filter: drop-shadow(-4px 4px 4px rgba(0, 0, 0, 0.25));
+  transition: 0.2s all ease-in-out;
 }
 
 #resourceNegotiationPlayerTurnBoxWrapper > h3 {
@@ -6586,62 +6937,78 @@
   align-items: center;
 }
 
+#resourceNegotiationButtonsProposeButtonExtraWrapper {
+  position: relative;
+  left: 15px;
+}
+
 #resourceNegotiationButtonsProposeButtonExtraWrapper,
-#resourceNegotiationButtonsAcceptButtonExtraWrapper {
+#resourceNegotiationButtonsAcceptButtonExtraWrapper,
+#resourceNegotiationButtonsRemindButtonExtraWrapper {
   border: none;
 }
 
 #resourceNegotiationButtonsProposeButtonWrapper,
-#resourceNegotiationButtonsAcceptButtonWrapper {
+#resourceNegotiationButtonsAcceptButtonWrapper,
+#resourceNegotiationButtonsRemindButtonWrapper {
   border: none;
 }
 
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabled,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled {
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabled {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px 4px #edb872);
 }
 
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover {
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabled:hover {
   filter: none;
 }
 
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabledActive,
-.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive {
+.resourceNegotiationButtonsAcceptButtonExtraWrapperEnabledActive,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabledActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperEnabledActive,
-.resourceNegotiationButtonsAcceptButtonWrapperEnabledActive {
+.resourceNegotiationButtonsAcceptButtonWrapperEnabledActive,
+.resourceNegotiationButtonsRemindButtonWrapperEnabledActive {
   transition: 0.2s all ease-in-out;
   filter: none;
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperEnabled,
-.resourceNegotiationButtonsAcceptButtonWrapperEnabled {
+.resourceNegotiationButtonsAcceptButtonWrapperEnabled,
+.resourceNegotiationButtonsRemindButtonWrapperEnabled {
   transition: 0.2s all ease-in-out;
   filter: drop-shadow(-3px 4px #835211);
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperEnabled:hover,
-.resourceNegotiationButtonsAcceptButtonWrapperEnabled:hover {
+.resourceNegotiationButtonsAcceptButtonWrapperEnabled:hover,
+.resourceNegotiationButtonsRemindButtonWrapperEnabled:hover {
   filter: drop-shadow(-5px 6px #835211);
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperDisabled,
-.resourceNegotiationButtonsAcceptButtonWrapperDisabled {
+.resourceNegotiationButtonsAcceptButtonWrapperDisabled,
+.resourceNegotiationButtonsRemindButtonWrapperDisabled {
   filter: drop-shadow(-3px 4px #3f382e);
 }
 
 .resourceNegotiationButtonsProposeButtonWrapperDisabled:hover,
-.resourceNegotiationButtonsAcceptButtonWrapperDisabled:hover {
+.resourceNegotiationButtonsAcceptButtonWrapperDisabled:hover,
+.resourceNegotiationButtonsRemindButtonWrapperDisabled:hover {
   filter: drop-shadow(-3px 4px #3f382e);
 }
 
 #resourceNegotiationButtonsProposeButton,
-#resourceNegotiationButtonsAcceptButton {
+#resourceNegotiationButtonsAcceptButton,
+#resourceNegotiationButtonsRemindButton {
   width: 100%;
   padding: 0.5rem;
   clip-path: polygon(
@@ -6692,20 +7059,24 @@
 .resourceNegotiationButtonsProposeButtonExtraWrapperEnabled:hover
   .resourceNegotiationButtonsProposeButtonEnabled,
 .resourceNegotiationButtonsAcceptButtonExtraWrapperEnabled:hover
-  .resourceNegotiationButtonsAcceptButtonEnabled {
+  .resourceNegotiationButtonsAcceptButtonEnabled,
+.resourceNegotiationButtonsRemindButtonExtraWrapperEnabled:hover
+  .resourceNegotiationButtonsRemindButtonEnabled {
   cursor: pointer;
   transform: translate(2px, -2px);
 }
 
 .resourceNegotiationButtonsProposeButtonEnabled,
-.resourceNegotiationButtonsAcceptButtonEnabled {
+.resourceNegotiationButtonsAcceptButtonEnabled,
+.resourceNegotiationButtonsRemindButtonEnabled {
   transition: 0.2s all ease-in-out;
   color: #000;
   background-color: #edb872;
 }
 
 .resourceNegotiationButtonsProposeButtonEnabledActive,
-.resourceNegotiationButtonsAcceptButtonEnabledActive {
+.resourceNegotiationButtonsAcceptButtonEnabledActive,
+.resourceNegotiationButtonsRemindButtonEnabledActive {
   background-color: #ab742b;
   color: #000;
   transition: 0.2s all ease-in-out;
@@ -6713,13 +7084,15 @@
 }
 
 .resourceNegotiationButtonsProposeButtonDisabled,
-.resourceNegotiationButtonsAcceptButtonDisabled {
+.resourceNegotiationButtonsAcceptButtonDisabled,
+.resourceNegotiationButtonsRemindButtonDisabled {
   background-color: #e9d3b7;
   color: #787272;
 }
 
 .resourceNegotiationButtonsProposeButtonDisabled:hover,
-.resourceNegotiationButtonsAcceptButtonDisabled:hover {
+.resourceNegotiationButtonsAcceptButtonDisabled:hover,
+.resourceNegotiationButtonsRemindButtonDisabeld:hover {
   cursor: auto;
   transform: none;
 }
@@ -7261,6 +7634,11 @@
   top: 10px;
 }
 
+#resourceNegotiationMessagesContainer > #propose-page-active {
+  top: -20px;
+  left: -77px;
+}
+
 .tradeCancel-page {
   position: absolute;
   width: 150px;
@@ -7269,8 +7647,14 @@
   transition: 0.3s ease-in-out all;
 }
 
-#cancel-page-active {
-  top: 0;
+#tradeBoxCloseMessagesContainer
+  > #cancel-page-active {
+  top: -18px;
+}
+
+#resourceNegotiationCloseMessagesContainer
+  > #cancel-page-active {
+  top: -5px;
 }
 
 #pagination-bar-wrapper {
@@ -7280,10 +7664,17 @@
   justify-content: center;
 }
 
+#pagination-bar-wrapper-row {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 #tradeBoxMessagesContainer > #pagination-bar-wrapper {
   right: -100px;
   top: 15px;
-  height: 185px;
+  height: 230px;
 }
 
 #tradeBoxCloseMessagesContainer > #pagination-bar-wrapper {
@@ -7299,7 +7690,16 @@
   gap: 0.4rem;
 }
 
-#pagination-bar > #pagination-dot {
+#pagination-bar-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+#pagination-bar > #pagination-dot,
+#pagination-bar-row > #pagination-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -7307,7 +7707,8 @@
   opacity: 0.4;
 }
 
-#pagination-bar > #pagination-dot-active {
+#pagination-bar > #pagination-dot-active,
+#pagination-bar-row > #pagination-dot-active {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -7342,9 +7743,25 @@
   filter: drop-shadow(-1px 2px #835211);
 }
 
+#pagination-bar-row > #pagination-buttonUpWrapper,
+#pagination-bar-row > #pagination-buttonDownWrapper {
+  transition: 0.2s ease-in-out;
+  filter: drop-shadow(-1px -2px #835211);
+}
+
+#pagination-bar-row > #pagination-buttonUpWrapper,
+#pagination-bar-row > #pagination-buttonDownWrapper {
+  transform: rotate(-0.25turn);
+}
+
 #pagination-buttonUpWrapper:hover > button,
 #pagination-buttonDownWrapper:hover > button {
   transform: translate(1px, -1px);
+}
+
+#pagination-bar-row > #pagination-buttonUpWrapper:hover > button,
+#pagination-bar-row > #pagination-buttonDownWrapper:hover > button {
+  transform: translate(1px, 1px);
 }
 
 #pagination-buttonUpWrapper:hover,
@@ -7352,9 +7769,20 @@
   filter: drop-shadow(-2px 3px #835211);
 }
 
+#pagination-bar-row > #pagination-buttonUpWrapper:hover,
+#pagination-bar-row > #pagination-buttonDownWrapper:hover {
+  filter: drop-shadow(-2px -3px #835211);
+}
+
 #pagination-buttonUpWrapper > button:active,
 #pagination-buttonDownWrapper > button:active {
   transform: translate(-1px, 2px);
+  background-color: #835211;
+}
+
+#pagination-bar-row > #pagination-buttonUpWrapper > button:active,
+#pagination-bar-row > #pagination-buttonDownWrapper > button:active {
+  transform: translate(-1px, -2px);
   background-color: #835211;
 }
 

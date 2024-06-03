@@ -170,10 +170,10 @@ export class TravelView {
           travelItemContainer.append(travelItemHeader, document.createElement('hr'))
 
           // Item - Content
-          const travelItemContent = createDivWithId('travelBoxContentItemContent')
+          const travelItemContent = createDivWithClassName('travelBoxContentItemContent')
 
           // Item - Content Left
-          const travelItemContentLeft = createDivWithId('travelBoxContentItemContentLeft')
+          const travelItemContentLeft = createDivWithClassName('travelBoxContentItemContentLeft')
           const travelItemContentLeftHeader = createElWithText('h3', 'Koszt:')
           travelItemContentLeft.appendChild(travelItemContentLeftHeader)
 

@@ -160,11 +160,10 @@ export class TradeView {
 
     // Close messages
     this.tradeBoxCloseMessagesContainer = createDivWithId('tradeBoxCloseMessagesContainer')
-    const closePage1 = this.createMessagePage('first msg', ['second msg'], false, false, 'tradeCancel-page')
+    const closePage1 = this.createMessagePage('Jednak nie chcę', ['Za drogo'], false, false, 'tradeCancel-page')
     closePage1.id = 'cancel-page-active'
-    const closePage2 = this.createMessagePage('third msg', ['forth msg'], false, false, 'tradeCancel-page')
-    const closePage3 = this.createMessagePage('fifth msg', [], false, false, 'tradeCancel-page')
-    this.tradeBoxCloseMessagesContainer.append(closePage1, closePage2, closePage3)
+    const closePage2 = this.createMessagePage('Wrócę z towarem', ['Może wyprawa?'], false, false, 'tradeCancel-page')
+    this.tradeBoxCloseMessagesContainer.append(closePage1, closePage2)
     const closePaginationBar = this.createPaginationBar(this.tradeBoxCloseMessagesContainer, 'tradeCancel-page', 'cancel-page-active', 0)
     this.tradeBoxCloseMessagesContainer.appendChild(closePaginationBar)
     tradeBoxHeaderWrapper.appendChild(this.tradeBoxCloseMessagesContainer)
@@ -261,9 +260,9 @@ export class TradeView {
 
     // Propose messages
     this.tradeBoxProposeMessagesContainer = createDivWithId('tradeBoxMessagesContainer')
-    const page1 = this.createMessagePage('first msg', ['second msg', 'third msg'], false, true, 'tradePropose-page')
+    const page1 = this.createMessagePage('Nie stać mnie', ['Za drogo', 'Zdobędę więcej'], false, true, 'tradePropose-page')
     page1.id = 'propose-page-active'
-    const page2 = this.createMessagePage('forth msg', ['fifth msg'], false, true, 'tradePropose-page')
+    const page2 = this.createMessagePage('Zbieram na wyprawę', ['Tego nie dam!', 'Potrzebuję tego!'], false, true, 'tradePropose-page')
     this.tradeBoxProposeMessagesContainer.append(page1, page2)
     const paginationBar = this.createPaginationBar(this.tradeBoxProposeMessagesContainer, 'tradePropose-page', 'propose-page-active', 0)
     this.tradeBoxProposeMessagesContainer.appendChild(paginationBar)
@@ -343,7 +342,7 @@ export class TradeView {
       this.remindButtonTimeoutID = !this.isCurrPlayerTurn
         ? setTimeout(() => {
           this.enableRemindButton()
-        }, 60000)
+        }, 20000)
         : null
     }
 
@@ -700,7 +699,7 @@ export class TradeView {
 
       this.remindButtonTimeoutID = setTimeout(() => {
         this.enableRemindButton()
-      }, 60000)
+      }, 20000)
     }
   }
 
@@ -860,7 +859,10 @@ export class TradeView {
     })
     const tradeBoxProposeMessageWrapper = createDivWithClassName('tradeMessageWrapper')
     const tradeBoxProposeMessage = document.createElement('div')
-    tradeBoxProposeMessage.classList.add('tradeMessage', 'tradeMessageMiddle')
+    tradeBoxProposeMessage.classList.add('tradeMessage')
+    if (propose) {
+      tradeBoxProposeMessage.classList.add('tradeMessageMiddle')
+    }
     tradeBoxProposeMessage.innerText = message
     tradeBoxProposeMessageExtraWrapper.appendChild(tradeBoxProposeMessageWrapper)
     tradeBoxProposeMessageWrapper.appendChild(tradeBoxProposeMessage)

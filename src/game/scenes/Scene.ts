@@ -712,7 +712,7 @@ export class Scene extends Phaser.Scene {
         }
         break
       case IncomingCoopMessageType.CoopFinishNegotiation:
-        this.resourceNegotiationView?.close(true)
+        this.resourceNegotiationView?.close(true, '')
         this.loadingView.close()
         this.plannedTravel = null
         break
@@ -722,10 +722,10 @@ export class Scene extends Phaser.Scene {
             `Gracz ${msg.senderId} przerwał negocjacje dotyczące podziału zasobów`,
           )
         }
-        this.resourceNegotiationView?.close(false)
+        this.resourceNegotiationView?.close(false, msg.message.message)
         break
       case IncomingCoopMessageType.CoopNegotiationBid:
-        this.resourceNegotiationView?.update(true, msg.message.coopBid)
+        this.resourceNegotiationView?.update(true, msg.message.coopBid, msg.message.message)
         break
       case IncomingCoopMessageType.CoopProposeOwnTravel:
         this.showCoopInvite(
@@ -748,6 +748,9 @@ export class Scene extends Phaser.Scene {
         )
         this.plannedTravel = null
         this.statusAndCoopView?.updateCoopView()
+        break
+      case IncomingCoopMessageType.CoopServerRemind:
+        this.resourceNegotiationView?.onRemind()
         break
       case NotificationMessageType.NotificationStartAdvertiseCoop:
         this.advertisementInfoBuilder.addBubbleForCoop(msg.message.travelName, msg.senderId)
