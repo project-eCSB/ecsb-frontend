@@ -1,8 +1,7 @@
 import * as Phaser from 'phaser'
 import type { GridEngine, Position } from 'grid-engine'
 import { Direction } from 'grid-engine'
-import type { Websocket } from 'websocket-ts'
-import { WebsocketBuilder } from 'websocket-ts'
+import {ArrayQueue, ConstantBackoff, WebsocketBuilder, type Websocket} from 'websocket-ts'
 import type {
   MapConfig,
   CoopEquipmentDto,
@@ -143,6 +142,8 @@ export class Scene extends Phaser.Scene {
   public imageCropper!: ImageCropper
   public loadingBarBuilder: LoadingBarAndResultBuilder | undefined
   public movingEnabled: boolean
+  public moveWsOpened: boolean
+  public chatWsOpened: boolean
   public equipmentInitialized: boolean
   private lobbyWs!: Websocket
   private movementWs!: Websocket
@@ -178,6 +179,8 @@ export class Scene extends Phaser.Scene {
     this.players = {}
     this.actionTrade = null
     this.movingEnabled = false
+    this.moveWsOpened = false
+    this.chatWsOpened = false
     this.equipmentInitialized = false
     this.tradeWindow = null
     this.userDataView = new UserDataView(this.playerId, this.status.className)
@@ -379,6 +382,20 @@ export class Scene extends Phaser.Scene {
     this.tradeWindow.show()
   }
 
+  showResults():void{
+    gameService.getPlayerResults()
+    .then((leaderboard: EndGameStatus) => {
+      this.movingEnabled = false
+      this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {
+        this.destroy()
+      })
+      this.leaderboardView.show()
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+  }
+
   configureLobbyWebSocket(): void {
     this.lobbyWs = new WebsocketBuilder(`${VITE_ECSB_LOBBY_WS_API_URL}/ws?gameToken=${this.gameToken}`)
       .onOpen((_i, _e) => {
@@ -412,23 +429,17 @@ export class Scene extends Phaser.Scene {
             break
           case LobbyMessageType.LobbyEnd:
             this.lobbyView?.close()
-            gameService
-              .getPlayerResults()
-              .then((leaderboard: EndGameStatus) => {
-                this.movingEnabled = false
-                this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {
-                  this.destroy()
-                })
-                this.leaderboardView.show()
-              })
-              .catch((err) => {
-                console.error(err)
-              })
+            this.showResults()
             break
         }
       })
       .onRetry((_i, _e) => {
-        console.log('retry')
+        console.log('lobbyWs retry')
+      })
+      .withBuffer(new ArrayQueue())
+      .withBackoff(new ConstantBackoff(1000))
+      .onReconnect((_v, _e) => {
+        console.log('lobbyWs reconnected')
       })
       .build()
   }
@@ -439,6 +450,7 @@ export class Scene extends Phaser.Scene {
     )
       .onOpen((_i, _e) => {
         console.log('movementWs opened')
+        this.moveWsOpened = true
         sendMovementMessage(this.movementWs, { type: MovementMessageType.SyncRequest })
       })
       .onClose((_i, ev) => {
@@ -447,7 +459,7 @@ export class Scene extends Phaser.Scene {
 
         clearOverlayWindows()
 
-        this.movingEnabled = false
+        this.moveWsOpened = false
         const errorMessage = new ErrorView()
         errorMessage.setText('moveWs closed - please reconnect')
         errorMessage.show()
@@ -462,6 +474,11 @@ export class Scene extends Phaser.Scene {
       })
       .onRetry((_i, _e) => {
         console.log('retry')
+      })
+      .withBuffer(new ArrayQueue())
+      .withBackoff(new ConstantBackoff(1000))
+      .onReconnect((_v, _e) => {
+        console.log('movingWs reconnected')
       })
       .build()
   }
@@ -506,6 +523,7 @@ export class Scene extends Phaser.Scene {
       .onOpen((_i, _e) => {
         this.loadingView.show()
         console.log('chatWs opened')
+        this.chatWsOpened = true
 
         sendTimeMessage(this.chatWs, {
           type: TimeMessageType.SyncRequest,
@@ -520,7 +538,7 @@ export class Scene extends Phaser.Scene {
 
         clearOverlayWindows()
 
-        this.movingEnabled = false
+        this.chatWsOpened = false
         const errorMessage = new ErrorView()
         errorMessage.setText('chatWs closed - please reconnect')
         errorMessage.show()
@@ -564,6 +582,11 @@ export class Scene extends Phaser.Scene {
       })
       .onRetry((_i, _e) => {
         console.log('retry')
+      })
+      .withBuffer(new ArrayQueue())
+      .withBackoff(new ConstantBackoff(1000))
+      .onReconnect((_v, _e) => {
+        console.log('chatWs reconnected')
       })
       .build()
   }
@@ -874,18 +897,7 @@ export class Scene extends Phaser.Scene {
       case TimeMessageType.End:
         this.chatWs.close()
         this.movementWs.close()
-
-        gameService.getPlayerResults()
-          .then((leaderboard: EndGameStatus) => {
-            this.movingEnabled = false
-            this.leaderboardView = new LeaderboardView(leaderboard, this.playerId, () => {
-              this.destroy()
-            })
-            this.leaderboardView.show()
-          })
-          .catch((err) => {
-            console.error(err)
-          })
+        this.showResults()
         break
       case TimeMessageType.Remaining:
         this.timeView?.setTimer(Math.floor(msg.message.timeLeftSeconds / 1000))
@@ -977,7 +989,7 @@ export class Scene extends Phaser.Scene {
 
     sprite.setInteractive()
     sprite.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if ((!this.actionTrade || this.actionTrade !== id) && this.movingEnabled) {
+      if ((!this.actionTrade || this.actionTrade !== id) && (this.movingEnabled && this.moveWsOpened && this.chatWsOpened)) {
         sendUserMessage(this.chatWs, {
           type: UserMessageType.UserClicked,
           name: id,
@@ -1200,10 +1212,7 @@ export class Scene extends Phaser.Scene {
     return null
   }
 
-  getEquipmentFromCoopEquipment = (
-    coopEquipment: CoopEquipmentDto,
-    required: boolean,
-  ): Equipment => {
+  getEquipmentFromCoopEquipment = (coopEquipment: CoopEquipmentDto, required: boolean,): Equipment => {
     const resources: GameResourceDto[] = []
     for (const resource of this.equipment!.resources) {
       resources.push({
@@ -1389,7 +1398,7 @@ export class Scene extends Phaser.Scene {
       this.advertisementInfoBuilder.hide()
     }
 
-    if (!this.movingEnabled) return
+    if (!(this.movingEnabled && this.moveWsOpened && this.chatWsOpened)) return
 
     const moveMapping: Array<{ keys: Key[]; direction: Direction }> = [
       { keys: [controls.left, controls.up], direction: Direction.UP_LEFT },
